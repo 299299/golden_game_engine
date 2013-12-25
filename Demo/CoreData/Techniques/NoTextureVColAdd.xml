@@ -1,0 +1,3 @@
+<technique>
+    <pass name="alpha" vs="Unlit_VCol" ps="Unlit_VCol" depthwrite="false" blend="add" />
+</technique>

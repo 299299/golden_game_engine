@@ -1,0 +1,104 @@
+{
+		"Layers" : 
+		[
+			{
+				"States":
+				[
+					{
+						"Type":"SimpleAnimationState",
+						"Name":"IdleState",
+						"Animations":
+						[
+							{
+								"Animation":"monk/animations/monk_stand_idle.hkx",
+								"PlaybackSpeed":1.0
+							},
+						],
+						"Transitions":
+						[
+							{
+								"Name":"Go",
+							 	"Dest State Name":"MoveState"
+							},
+							{
+								"Name":"Test",
+							 	"Dest State Name":"RunTurn180",
+							 	"Motion Blend Type":"ignore source"
+							},
+							{
+								"Name":"Test1",
+							 	"Dest State Name":"StandToRun",
+							 	"Motion Blend Type":"ignore source"
+							}
+						]
+					},
+
+					{
+						"Type":"SimpleAnimationState",
+						"Name":"MoveState",
+						"Animations":
+						[
+							{
+								"Animation":"monk/animations/monk_run_fwd.hkx",
+								"PlaybackSpeed":1.0
+							},
+						],
+						"Transitions":
+						[
+							{
+								"Name":"Stop",
+							 	"Dest State Name":"IdleState"
+							},
+							{
+								"Name":"Turn180",
+							 	"Dest State Name":"RunTurn180",
+							 	//"Motion Blend Type":"ignore source"
+							}
+						]
+					},
+
+					{
+						"Type":"SimpleAnimationState",
+						"Name":"RunTurn180",
+						"Animations":
+						[
+							{
+								"Animation":"monk/animations/monk_run_turn_180.hkx",
+								"PlaybackSpeed":1.0,
+								"Looped":false
+							},
+						],
+						"Transitions":
+						[
+							{
+								"Name":"Continue1",
+							 	"Dest State Name":"MoveState",
+							 	//"Motion Blend Type":"ignore dest"
+							},
+						]
+					},
+
+					{
+						"Type":"SimpleAnimationState",
+						"Name":"StandToRun",
+						"Animations":
+						[
+							{
+								"Animation":"monk/animations/monk_stand_to_run_turn_180.hkx",
+								"PlaybackSpeed":1.0,
+								"Looped":false
+							},
+						],
+						"Transitions":
+						[
+							{
+								"Name":"Continue1",
+							 	"Dest State Name":"MoveState",
+							 	//"Motion Blend Type":"ignore dest"
+							},
+						]
+					}
+				]
+			}
+		]
+	}

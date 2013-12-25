@@ -1,0 +1,6 @@
+<shaders>
+    <shader type="vs">
+        <variation name="" />
+        <variation name="Instanced" define="INSTANCED" />
+    </shader>
+</shaders>
