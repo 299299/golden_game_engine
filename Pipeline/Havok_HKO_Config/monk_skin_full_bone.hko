@@ -6,7 +6,7 @@
 	</hkobject>
 	<hkobject class="hctConfigurationData">
 		<hkparam name="configurationName">Skin</hkparam>
-		<hkparam name="numFilters">4</hkparam>
+		<hkparam name="numFilters">5</hkparam>
 	</hkobject>
 	<hkobject name="Transform Scene" class="hctFilterData">
 		<hkparam name="id">2860016997</hkparam>
@@ -52,7 +52,7 @@
 	<hkobject name="Create Skins" class="hctCreateSkinOptions">
 		<hkparam name="simplifyBindings">true</hkparam>
 		<hkparam name="moveMeshesToSkeletonSpace">false</hkparam>
-		<hkparam name="boneLimit">64</hkparam>
+		<hkparam name="boneLimit">-1</hkparam>
 		<hkparam name="ignoreBonesInSkin">true</hkparam>
 	</hkobject>
 	<hkobject name="Prune Types" class="hctFilterData">
@@ -83,5 +83,23 @@
 		<hkparam name="pruneAllAnimationData">false</hkparam>
 		<hkparam name="pruneMeshBindingData">false</hkparam>
 		<hkparam name="pruneRagdollAndMapperData">true</hkparam>
+	</hkobject>
+	<hkobject name="Write to Platform" class="hctFilterData">
+		<hkparam name="id">2876798309</hkparam>
+		<hkparam name="ver">66048</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Write to Platform" class="hctPlatformWriterOptions">
+		<hkparam name="filename">c:\temp.hkx</hkparam>
+		<hkparam name="tagfile">false</hkparam>
+		<hkparam name="preset">MSVC_WIN32</hkparam>
+		<hkparam name="bytesInPointer">4</hkparam>
+		<hkparam name="littleEndian">1</hkparam>
+		<hkparam name="reusePaddingOptimized">0</hkparam>
+		<hkparam name="emptyBaseClassOptimized">1</hkparam>
+		<hkparam name="removeMetadata">false</hkparam>
+		<hkparam name="userTag">0</hkparam>
+		<hkparam name="saveEnvironmentData">false</hkparam>
+		<hkparam name="xmlFormat">false</hkparam>
 	</hkobject>
 </hkoptions>
