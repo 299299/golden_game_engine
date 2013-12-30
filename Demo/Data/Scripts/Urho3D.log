@@ -1,0 +1,240 @@
+[Tue Dec 24 21:20:23 2013] INFO: Opened log file Urho3D.log
+[Tue Dec 24 21:20:23 2013] INFO: Created 3 worker threads
+[Tue Dec 24 21:20:23 2013] INFO: Added resource path E:/Code/other_engine/NagaGame/Urho3D/Bin/CoreData/
+[Tue Dec 24 21:20:23 2013] INFO: Added resource path E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/
+[Tue Dec 24 21:20:23 2013] INFO: Created Direct3D9 device
+[Tue Dec 24 21:20:23 2013] INFO: Set screen mode 1024x768 windowed resizable
+[Tue Dec 24 21:20:23 2013] INFO: Initialized input
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Shaders/HLSL/Basic.xml
+[Tue Dec 24 21:20:23 2013] DEBUG: Shaders/HLSL/Basic.xml loaded time cost = 1(MS)
+[Tue Dec 24 21:20:23 2013] INFO: Initialized user interface
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Ramp.png
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Ramp.xml
+[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Ramp.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Ramp.png loaded time cost = 1(MS)
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Spot.png
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Spot.xml
+[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Spot.xml loaded time cost = 1(MS)
+[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Spot.png loaded time cost = 2(MS)
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Materials/Default.xml
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Techniques/NoTexture.xml
+[Tue Dec 24 21:20:23 2013] DEBUG: Techniques/NoTexture.xml loaded time cost = 1(MS)
+[Tue Dec 24 21:20:23 2013] DEBUG: Materials/Default.xml loaded time cost = 1(MS)
+[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource RenderPaths/Forward.xml
+[Tue Dec 24 21:20:23 2013] DEBUG: RenderPaths/Forward.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:23 2013] INFO: Initialized renderer
+[Tue Dec 24 21:20:23 2013] INFO: Set audio mode 44100 Hz stereo interpolated
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Scripts/Animation.as
+[Tue Dec 24 21:20:24 2013] INFO: Compiled script module Scripts/Animation.as
+[Tue Dec 24 21:20:24 2013] DEBUG: Scripts/Animation.as loaded time cost = 62(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Started watching path E:/Code/other_engine/NagaGame/Urho3D/Bin/CoreData/
+[Tue Dec 24 21:20:24 2013] DEBUG: Started watching path E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/LogoLarge.jpg
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/LogoLarge.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/LogoLarge.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/LogoLarge.jpg loaded time cost = 232(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource UI/DefaultStyle.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: UI/DefaultStyle.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Fonts/Anonymous Pro.ttf
+[Tue Dec 24 21:20:24 2013] DEBUG: Fonts/Anonymous Pro.ttf loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Font face Anonymous Pro (11pt) has 624 glyphs
+[Tue Dec 24 21:20:24 2013] DEBUG: Font face Anonymous Pro (11pt) uses a static page texture of size 512x256
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/UI.png
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/UI.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/UI.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/UI.png loaded time cost = 4(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Fonts/MONACO.TTF
+[Tue Dec 24 21:20:24 2013] DEBUG: Fonts/MONACO.TTF loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (15pt) has 370 glyphs
+[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (15pt) uses a static page texture of size 512x256
+[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (12pt) has 370 glyphs
+[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (12pt) uses a static page texture of size 256x256
+[Tue Dec 24 21:20:24 2013] INFO: Loading scene from E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/Scenes/testScene.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Models/Box.mdl
+[Tue Dec 24 21:20:24 2013] DEBUG: Models/Box.mdl loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Materials/Skybox.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffSkybox.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffSkybox.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/Skybox.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_PosX.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_PosX.dds loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_NegX.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_NegX.dds loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_PosY.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_PosY.dds loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_NegY.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_NegY.dds loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_PosZ.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_PosZ.dds loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_NegZ.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_NegZ.dds loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/Skybox.xml loaded time cost = 8(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Materials/Skybox.xml loaded time cost = 9(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Materials/StoneTiled.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffNormalPacked.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffNormalPacked.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/Diff.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/Diff.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/StoneDiffuse.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/StoneDiffuse.dds loaded time cost = 2(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/StoneNormal.dds
+[Tue Dec 24 21:20:24 2013] DEBUG: Textures/StoneNormal.dds loaded time cost = 3(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Materials/StoneTiled.xml loaded time cost = 8(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk.mdl
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk.mdl loaded time cost = 5(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_rig.hkx
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk_rig.hkx loaded time cost = 1(MS)
+[Tue Dec 24 21:20:24 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_head.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffNormalSpec.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffNormalSpec.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Head_D.DDS
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Head_D.DDS loaded time cost = 1(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Head_N.DDS
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Head_N.DDS loaded time cost = 1(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Head_S.DDS
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Head_S.DDS loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk_head.xml loaded time cost = 6(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_hair.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffNormalSpecAlphaMask.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffNormalSpecAlphaMask.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Hair_D.DDS
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Hair_D.DDS loaded time cost = 1(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Hair_N.DDS
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Hair_N.DDS loaded time cost = 1(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Hair_S.DDS
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Hair_S.DDS loaded time cost = 1(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk_hair.xml loaded time cost = 6(MS)
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_armor.xml
+[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_d.DDS
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_d.DDS loaded time cost = 3(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/monk_n.DDS
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_n.DDS loaded time cost = 3(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/monk_s.DDS
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_s.DDS loaded time cost = 0(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_armor.xml loaded time cost = 9(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/monk_body.xml
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/MonkBody_D.DDS
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/MonkBody_D.DDS loaded time cost = 3(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/MonkBody_N.DDS
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/MonkBody_N.DDS loaded time cost = 3(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/MonkBody_S.DDS
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/MonkBody_S.DDS loaded time cost = 1(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_body.xml loaded time cost = 9(MS)
+[Tue Dec 24 21:20:25 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Models/Sphere.mdl
+[Tue Dec 24 21:20:25 2013] DEBUG: Models/Sphere.mdl loaded time cost = 0(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Json/BoxShape.json
+[Tue Dec 24 21:20:25 2013] DEBUG: Json/BoxShape.json loaded time cost = 0(MS)
+[Tue Dec 24 21:20:25 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Json/CharacerShape.json
+[Tue Dec 24 21:20:25 2013] DEBUG: Json/CharacerShape.json loaded time cost = 0(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Json/Monk_Animation_FSM.json
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_stand_idle.hkx
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_stand_idle.hkx loaded time cost = 1(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_run_fwd.hkx
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_fwd.hkx loaded time cost = 1(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_run_turn_180.hkx
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_run_turn_180.json
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_turn_180.json loaded time cost = 0(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_turn_180.hkx loading animation trigger data: Continue time: 0.67
+[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_turn_180.hkx loaded time cost = 2(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Json/Monk_Animation_FSM.json loaded time cost = 4(MS)
+[Tue Dec 24 21:20:25 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Tue Dec 24 21:20:25 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Tue Dec 24 21:20:25 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+[Tue Dec 24 21:20:25 2013] INFO: XPort 0 has connected.
+[Tue Dec 24 21:20:25 2013] DEBUG: Reloading shaders
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Shaders/HLSL/Stencil.xml
+[Tue Dec 24 21:20:25 2013] DEBUG: Shaders/HLSL/Stencil.xml loaded time cost = 1(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Shaders/HLSL/Shadow.xml
+[Tue Dec 24 21:20:25 2013] DEBUG: Shaders/HLSL/Shadow.xml loaded time cost = 1(MS)
+[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Shaders/HLSL/LitSolid.xml
+[Tue Dec 24 21:20:27 2013] DEBUG: Shaders/HLSL/LitSolid.xml loaded time cost = 2675(MS)
+[Tue Dec 24 21:20:27 2013] DEBUG: Loading resource Shaders/HLSL/Skybox.xml
+[Tue Dec 24 21:20:27 2013] DEBUG: Shaders/HLSL/Skybox.xml loaded time cost = 0(MS)
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Shadow.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Shadow.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Shadow_Skinned.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Shadow_AlphaMask.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadow.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalPackedAmbientDirSpecShadowHW.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowInstanced.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_AmbientDirSpecShadowHW.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadow.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadowSkinned.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAmbientDirSpecShadowHW.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAlphaMaskAmbientDirSpecShadowHW.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Skybox.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Skybox.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Basic_VCol.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_VCol.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Basic_DiffVCol.vs3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_DiffVCol.ps3
+[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_AlphaVCol.ps3
+[Tue Dec 24 21:21:12 2013] DEBUG: Reloading changed resource Scripts/Animation.as
+[Tue Dec 24 21:21:12 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
+[Tue Dec 24 21:21:13 2013] INFO: Scripts/Animation.as:328,1 Compiling void UpdateInput(float)
+[Tue Dec 24 21:21:13 2013] ERROR: Scripts/Animation.as:334,22 'KC_Q' is not declared
+[Tue Dec 24 21:21:13 2013] ERROR: Failed to compile script module Scripts/Animation.as
+[Tue Dec 24 21:21:18 2013] DEBUG: Reloading changed resource Scripts/Animation.as
+[Tue Dec 24 21:21:18 2013] INFO: Compiled script module Scripts/Animation.as
+[Tue Dec 24 21:21:18 2013] INFO: Loading scene from E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/Scenes/testScene.xml
+[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+[Tue Dec 24 21:21:18 2013] DEBUG: Reloading changed resource Scripts/Animation.as
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
+[Tue Dec 24 21:21:18 2013] INFO: Compiled script module Scripts/Animation.as
+[Tue Dec 24 21:21:18 2013] INFO: Loading scene from E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/Scenes/testScene.xml
+[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+[Tue Dec 24 21:21:38 2013] DEBUG: Reloading changed resource monk/animations/monk_run_turn_180.hkx
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: Util\hkNativePackfileUtils.cpp(167): [0x78B7AD37] Assert: Packfile is too small
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: Stack trace is:
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'hkDefaultError::message'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'hkError::messageAssert'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'hkNativePackfileUtils::getRequiredBufferSize'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\extension\engineextension\common\havokresource.cpp(46):'Urho3D::HavokResource::Load'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\resource\resourcecache.cpp(337):'Urho3D::ResourceCache::ReloadResource'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\resource\resourcecache.cpp(751):'Urho3D::ResourceCache::HandleBeginFrame'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\object.h(258):'Urho3D::EventHandlerImpl<Urho3D::ResourceCache>::Invoke'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\object.cpp(78):'Urho3D::Object::OnEvent'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\object.cpp(276):'Urho3D::Object::SendEvent'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\timer.cpp(92):'Urho3D::Time::BeginFrame'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\engine\engine.cpp(330):'Urho3D::Engine::RunFrame'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\engine\application.cpp(69):'Urho3D::Application::Run'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\extension\nagagamedemo\nagagamedemo.cpp(43):'RunApplication'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\extension\nagagamedemo\nagagamedemo.cpp(43):'WinMain'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c(528):'__tmainCRTStartup'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c(377):'WinMainCRTStartup'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'BaseThreadInitThunk'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'RtlInitializeExceptionChain'
+
+[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'RtlInitializeExceptionChain'
+

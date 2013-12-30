@@ -1,0 +1,18 @@
+[Mon Dec 30 21:36:54 2013] INFO: Opened log file Urho3D.log
+[Mon Dec 30 21:36:54 2013] INFO: Created 3 worker threads
+[Mon Dec 30 21:36:54 2013] INFO: Added resource path E:/Code/NagaGame/Demo/CoreData/
+[Mon Dec 30 21:36:54 2013] INFO: Added resource path E:/Code/NagaGame/Demo/Data/
+[Mon Dec 30 21:36:54 2013] INFO: Created Direct3D9 device
+[Mon Dec 30 21:36:54 2013] INFO: Set screen mode 1024x768 windowed
+[Mon Dec 30 21:36:54 2013] INFO: Initialized input
+[Mon Dec 30 21:36:54 2013] INFO: Initialized user interface
+[Mon Dec 30 21:36:54 2013] INFO: Initialized renderer
+[Mon Dec 30 21:36:54 2013] INFO: Set audio mode 44100 Hz stereo interpolated
+[Mon Dec 30 21:36:54 2013] INFO: Compiled script module Scripts/Animation.as
+[Mon Dec 30 21:36:55 2013] INFO: Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene.xml
+[Mon Dec 30 21:36:55 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Mon Dec 30 21:36:55 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Mon Dec 30 21:36:55 2013] INFO: hkaPose::getRequiredMemorySize = 6400
+[Mon Dec 30 21:36:55 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Mon Dec 30 21:36:55 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Mon Dec 30 21:36:55 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
