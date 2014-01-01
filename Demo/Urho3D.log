@@ -1,18 +1,47 @@
-[Mon Dec 30 21:36:54 2013] INFO: Opened log file Urho3D.log
-[Mon Dec 30 21:36:54 2013] INFO: Created 3 worker threads
-[Mon Dec 30 21:36:54 2013] INFO: Added resource path E:/Code/NagaGame/Demo/CoreData/
-[Mon Dec 30 21:36:54 2013] INFO: Added resource path E:/Code/NagaGame/Demo/Data/
-[Mon Dec 30 21:36:54 2013] INFO: Created Direct3D9 device
-[Mon Dec 30 21:36:54 2013] INFO: Set screen mode 1024x768 windowed
-[Mon Dec 30 21:36:54 2013] INFO: Initialized input
-[Mon Dec 30 21:36:54 2013] INFO: Initialized user interface
-[Mon Dec 30 21:36:54 2013] INFO: Initialized renderer
-[Mon Dec 30 21:36:54 2013] INFO: Set audio mode 44100 Hz stereo interpolated
-[Mon Dec 30 21:36:54 2013] INFO: Compiled script module Scripts/Animation.as
-[Mon Dec 30 21:36:55 2013] INFO: Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene.xml
-[Mon Dec 30 21:36:55 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Mon Dec 30 21:36:55 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Mon Dec 30 21:36:55 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Mon Dec 30 21:36:55 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
-[Mon Dec 30 21:36:55 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
-[Mon Dec 30 21:36:55 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+[Wed Jan 01 20:24:27 2014] INFO: Opened log file Urho3D.log
+[Wed Jan 01 20:24:27 2014] INFO: Created 3 worker threads
+[Wed Jan 01 20:24:27 2014] INFO: Added resource path E:/Code/NagaGame/Demo/CoreData/
+[Wed Jan 01 20:24:27 2014] INFO: Added resource path E:/Code/NagaGame/Demo/Data/
+[Wed Jan 01 20:24:27 2014] INFO: Created Direct3D9 device
+[Wed Jan 01 20:24:27 2014] INFO: Set screen mode 1024x768 windowed
+[Wed Jan 01 20:24:27 2014] INFO: Initialized input
+[Wed Jan 01 20:24:27 2014] INFO: Initialized user interface
+[Wed Jan 01 20:24:27 2014] INFO: Initialized renderer
+[Wed Jan 01 20:24:27 2014] INFO: Set audio mode 44100 Hz stereo interpolated
+[Wed Jan 01 20:24:27 2014] INFO: Scripts/Animation.as:358,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 20:24:27 2014] WARNING: Scripts/Animation.as:367,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 20:24:27 2014] INFO: Compiled script module Scripts/Animation.as
+[Wed Jan 01 20:24:28 2014] INFO: Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene.xml
+[Wed Jan 01 20:24:28 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 20:24:28 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 20:24:28 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 20:24:28 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Wed Jan 01 20:24:28 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Wed Jan 01 20:24:28 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+select 15 = monk_stand_to_run
+select 30 = monk_stand_to_run_turn_45
+select 45 = monk_stand_to_run_turn_45
+select 60 = monk_stand_to_run_turn_45
+select 75 = monk_stand_to_run_turn_90
+select 90 = monk_stand_to_run_turn_90
+select 105 = monk_stand_to_run_turn_90
+select 120 = monk_stand_to_run_turn_135
+select 135 = monk_stand_to_run_turn_135
+select 150 = monk_stand_to_run_turn_135
+select 165 = monk_stand_to_run_turn_180
+select 180 = monk_stand_to_run_turn_180
+select -180 = monk_stand_to_run_turn_180
+select -165 = monk_stand_to_run_turn_180
+select -150 = monk_stand_to_run_turn_135_mirror
+select -135 = monk_stand_to_run_turn_135_mirror
+select -120 = monk_stand_to_run_turn_135_mirror
+select -105 = monk_stand_to_run_turn_90_mirror
+select -90 = monk_stand_to_run_turn_90_mirror
+select -75 = monk_stand_to_run_turn_90_mirror
+select -60 = monk_stand_to_run_turn_45_mirror
+select -45 = monk_stand_to_run_turn_45_mirror
+select -30 = monk_stand_to_run_turn_45_mirror
+select -15 = monk_stand_to_run
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run_turn_180

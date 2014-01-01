@@ -1,4 +1,5 @@
 #include "Scripts/Utilities/Sample.as"
+#include "Scripts/Input.as"
 
 String sceneToLoad = "Data/Scenes/testScene.xml";
 Scene@ scene_;
@@ -7,13 +8,13 @@ Node@ characterNode;
 
 float yaw = 0.0f;
 float pitch = 0.0f;
-int cameraMode = 0;
-Vector3 lookAtTarget;
+int cameraMode = 1;
 
 int drawDebugMode = 0;
-bool dumpAnimation = false;
+bool dumpAnimation = true;
 
 AnimatorController@ animController;
+HavokAnimator@      animator;
 
 float timeScale = 1.0f;
 Array<float> timeScales = { 0.1f, 0.25f, 0.5f, 0.75f, 1.0f, 2.5f, 5.0f, 10.0f};
@@ -21,62 +22,9 @@ uint currentTimeScaleIndex = 0;
 
 float cam_radius = 20.0f;
 float dumpTime = 0;
-float turn_angle = 0;
 
-class GamePad
-{
-    float m_padAngle;
-    float m_padMagnitude;
-    float m_previousLeftStickX;
-    float m_previousLeftStickY;
-    float m_leftStickX;
-    float m_leftStickY;
-    float m_leftStickHoldTime;
-    float m_rightStickX;
-    float m_rightStickY;
-    GamePad()
-    {
-        m_padAngle = 0;
-        m_padMagnitude = 0;
-        m_previousLeftStickX = 0;
-        m_previousLeftStickY = 0;
-        m_leftStickX = 0;
-        m_leftStickY = 0;
-        m_leftStickHoldTime = 0;
-        m_rightStickX = 0;
-        m_rightStickY = 0;
-    }
-    bool isLeftStickStationary()
-    {
-        return (m_leftStickHoldTime > 0.01f);
-    }
-    bool hasLeftStickBeenStationary(float value )
-    {
-        return (m_leftStickHoldTime > value);
-    }
-    void update(float timestep)
-    {
-        m_previousLeftStickX = m_leftStickX;
-        m_previousLeftStickY = m_leftStickY;
+bool bWalk = false;
 
-        Vector3 leftStick = nagainput.GetLeftStickValue(0);
-        Vector3 rightStick = nagainput.GetRightStickValue(0);
-
-        m_leftStickX = Lerp(m_leftStickX, leftStick.x, 0.9f);
-        m_leftStickY = Lerp(m_leftStickY, leftStick.y, 0.9f);
-        m_rightStickX = Lerp(m_rightStickX, rightStick.x, 0.9f);
-        m_rightStickY = Lerp(m_rightStickY, rightStick.y, 0.9f);
-    
-        m_padAngle = Atan2( m_leftStickY, m_leftStickX);
-        m_padMagnitude = leftStick.z;
-        
-        float diff = (m_previousLeftStickX - m_leftStickX) * (m_previousLeftStickX - m_leftStickX) + (m_previousLeftStickY - m_leftStickY) * (m_previousLeftStickY - m_leftStickY);
-        if(diff < 0.1f)      
-            m_leftStickHoldTime = m_leftStickHoldTime + timestep;
-        else        
-            m_leftStickHoldTime = 0; 
-    }
-};
 
 GamePad@ g_gamePad = GamePad();
 
@@ -92,8 +40,57 @@ void Start()
         CreateInstructions();
     }
     CreateScene();
-    SetupViewport();
+    
+    if(!engine.headless)
+        SetupViewport();
+
     SubscribeToEvents();
+
+    Array<float> angles = 
+    {
+        15,
+        30,
+        45,
+        60,
+        75,
+        90,
+        105,
+        120,
+        135,
+        150,
+        165,
+        180,
+        -180,
+        -165,
+        -150,
+        -135,
+        -120,
+        -105,
+        -90,
+        -75,
+        -60,
+        -45,
+        -30,
+        -15
+    };
+    Array<String> animations = 
+    {
+        "monk_stand_to_run",
+        "monk_stand_to_run_turn_45",
+        "monk_stand_to_run_turn_90",
+        "monk_stand_to_run_turn_135",
+        "monk_stand_to_run_turn_180",
+        "monk_stand_to_run_turn_135_mirror",
+        "monk_stand_to_run_turn_90_mirror",
+        "monk_stand_to_run_turn_45_mirror"
+    };
+
+    for(uint i=0; i<angles.length;++i)
+    {
+        int animIndex = SelectAnimation(angles[i], 8);
+        Print("select " + String(angles[i]) + " = " + String(animations[animIndex]));
+    }
+    
 }
 
 void Stop()
@@ -110,31 +107,51 @@ void CreateScene()
     if (characterNode is null)
         return;
 
-    characterNode.worldRotation = Quaternion(0,0,0);
+    characterNode.rotation = Quaternion(0,0,0);
+    characterNode.position = Vector3(0,0,0);
     cameraNode = scene_.CreateChild("Camera");
     cameraNode.CreateComponent("Camera");
 
-    cameraNode.position = Vector3(0.0f, 5.0f, 0.0f);
+    Vector3 cameraPosition = Vector3(20.0f, 10.0f, -20.0f);
+    cameraPosition.x = characterNode.position.x;
+    cameraNode.position = cameraPosition;
+    yaw = cameraNode.rotation.yaw;
+    pitch = cameraNode.rotation.pitch;
+    cameraNode.LookAt(characterNode.position);
 
     animController = characterNode.GetComponent("AnimatorController");
-    animController.Start();
+    animator = characterNode.GetComponent("HavokAnimator");
 
-    //CharacterController@ cc = characterNode.GetComponent("CharacterController");
-    //cc.SetApplyMotion(false);
+    /*
+    for(uint i=0; i<characterNode.numComponents; ++i)
+    {
+        Component@ comp = characterNode.components[i];
+        String msg;
+        comp.SaveJson(msg, true);
+
+        String fName = comp.typeName + ".json";
+        File jsonFile;
+        jsonFile.Open(fName, FILE_WRITE);
+        jsonFile.WriteLine(msg);
+        jsonFile.Close();
+    }
+
+    engine.Exit();
+    */
 }
 
 void CreateInstructions()
 {
     // Construct new Text object, set string to display and font to use
     Text@ instructionText = ui.root.CreateChild("Text", "IN");
-    instructionText.text = "Animation ShowCase Of NagaGameEngine timeScale = " + timeScale;
-    instructionText.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 15);
+    instructionText.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 12);
+    UpdateInstructionText();
 
     // Position the text relative to the screen center
     instructionText.horizontalAlignment = HA_CENTER;
     instructionText.verticalAlignment = VA_CENTER;
     instructionText.SetPosition(0, ui.root.height / 4);
-    instructionText.color = Color(1.0f, 0.0, 0.0f);
+    instructionText.color = Color(1.0f, 0.0f, 0.0f);
 
     Text@ statusText = ui.root.CreateChild("Text", "STS");
     statusText.horizontalAlignment = HA_LEFT;
@@ -147,7 +164,20 @@ void CreateInstructions()
     animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 12);
     animation_dump_text.SetPosition(0, 0);
     animation_dump_text.color = Color(0.0f, 0.0f, 1.0f);
-    animation_dump_text.textEffect = TE_SHADOW;
+}
+
+void UpdateInstructionText()
+{
+    Text@ instructionText = ui.root.GetChild("IN");
+    String text = "Animation ShowCase Of NagaGameEngine timeScale = " + timeScale;
+    text += ("\nF1 Toggle Console, F2 Toggle Debug HUD");
+    text += ("\nF3 Toggle Debug Mode, F4 Toggle Camera Mode");
+    text += ("\nF5 Toggle Dump Animation, F6 Toggle TimeScale");
+    text += ("\nE Reset Animation, F Toggle Rotation Only");
+    text += ("\nC Toggle RootMotion, Space To Toggle Scene Update");
+    text += ("\nG Toggle Walk");
+	text += ("\n Key UP/DOWN/LEFT/RIGHT To Move");
+    instructionText.text = text;
 }
 
 void SetupViewport()
@@ -163,21 +193,13 @@ void MoveCamera(float timeStep)
 {
     //timeStep /= timeScale;
 
+    //a first person free camera
     if(cameraMode == 0)
     {
-        // Do not move if the UI has a focused element (the console)
-        if (ui.focusElement !is null)
-            return;
-
-        // Movement speed as world units per second
         float MOVE_SPEED = 20.0f;
-        // Mouse sensitivity as degrees per pixel
         const float MOUSE_SENSITIVITY = 0.1f;
-
         if(input.keyDown[KEY_LSHIFT])
             MOVE_SPEED = 200.0f;
-
-        // Rotate camera
         if (input.mouseButtonDown[MOUSEB_RIGHT])
         {
             IntVector2 mouseMove = input.mouseMove;
@@ -188,10 +210,6 @@ void MoveCamera(float timeStep)
                 cameraNode.rotation = Quaternion(pitch, yaw, 0);
             }
         }
-
-        // Read WASD keys and move the camera scene node to the corresponding direction if they are pressed
-        // Use the TranslateRelative() function to move relative to the node's orientation. Alternatively we could
-        // multiply the desired direction with the node's orientation quaternion, and use just Translate()
         if (input.keyDown['W'])
             cameraNode.TranslateRelative(Vector3(0.0f, 0.0f, 1.0f) * MOVE_SPEED * timeStep);
         if (input.keyDown['S'])
@@ -201,10 +219,14 @@ void MoveCamera(float timeStep)
         if (input.keyDown['D'])
             cameraNode.TranslateRelative(Vector3(1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
     }
-    else {
-        lookAtTarget = lookAtTarget.Lerp(characterNode.worldPosition, timeStep*10);
-        cameraNode.LookAt(lookAtTarget);
-        cameraNode.worldPosition = Vector3(0,20,0);
+    //a side way look camera
+    else if(cameraMode == 1)
+    {
+        Vector3 dir = Vector3(7.5f, 2, 0);
+        cameraNode.position = dir + characterNode.position;
+        Vector3 position = characterNode.position;
+        position.y = dir.y;
+        cameraNode.LookAt(position);
     }
 }
 
@@ -218,10 +240,7 @@ void SubscribeToEvents()
 
 void HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-    // Take the frame time step, which is stored as a float
     float timeStep = eventData["TimeStep"].GetFloat();
-
-    // Move the camera, scale movement with time step
     MoveCamera(timeStep);
 }
 
@@ -246,12 +265,8 @@ void HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)
         else 
             text.text = "";
     }
-    
 
-    if(!animController.IsStarted())
-        animController.Start();
-
-    UpdateInput(timeStep);
+    UpdateCharacter(timeStep);
 }
 
 void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
@@ -260,7 +275,13 @@ void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
     // bones. Note that debug geometry has to be separately requested each frame. Disable depth test so that we can see the
     // bones properly
     DebugRenderer@ debug = scene_.debugRenderer;
-    debug.AddNode(characterNode, 2.0f, false);
+    //debug.AddNode(characterNode, 2.0f, false);
+    Vector3 pos; Quaternion rotation;
+    if(animator !is null)
+    {
+        animator.GetBoneWorldTransform(0, pos, rotation);
+        debug.AddAxis(pos, rotation, 1.0, false);
+    }
 
 
     if (drawDebugMode == 0)
@@ -274,28 +295,17 @@ void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
     int key = eventData["Key"].GetInt();
-
-    // Close console (if open) or exit when ESC is pressed
-    if (key == KEY_ESC)
+    if(key == KEY_ESC)
     {
         if (!console.visible)
-        {
             engine.Exit();
-        }
         else
-        {
             console.visible = false;
-        }
     }
-
-    // Toggle console with F1
-    else if (key == KEY_F1)
-        console.Toggle();
-
-    // Toggle debug HUD with F2
-    else if (key == KEY_F2)
+    else if(key == KEY_F1)
+      console.Toggle();
+    else if(key == KEY_F2)
         debugHud.ToggleAll();
-
     else if(key == KEY_F3)
     {
         ++drawDebugMode;
@@ -309,119 +319,80 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
             cameraMode = 0;
     }
     else if(key == KEY_F5)
-    {
         dumpAnimation = !dumpAnimation;
-    }
     else if(key == KEY_F6)
     {
-        timeScale = timeScales[currentTimeScaleIndex];
+         timeScale = timeScales[currentTimeScaleIndex];
         ++currentTimeScaleIndex;
         if(currentTimeScaleIndex >= timeScales.length)
             currentTimeScaleIndex = 0;
         scene_.timeScale = timeScale;
-
-        Text@ text = ui.root.GetChild("IN");
-        text.text = "Animation ShowCase Of NagaGameEngine timeScale = " + timeScale;
+        UpdateInstructionText();
     }
     else if(key == 'E')
     {
-        animController.Start();
+        animController.Reset();
         characterNode.worldRotation = Quaternion(0,0,0);
     }
+    else if(key == 'F')
+    {
+        CharacterController@ cc = characterNode.GetComponent("CharacterController");
+        cc.SetRotationOnly(!cc.IsRotationOnly());
+    }
+    else if(key == KEY_SPACE)
+        scene_.updateEnabled = !scene_.updateEnabled;
+    else if(key == 'G')
+        bWalk = !bWalk;
 }
 
-void UpdateInput(float timeStep)
-{
-    g_gamePad.update(timeStep);
-    int stateId = animController.GetCurStateId(0);
-
-    if(nagainput.IsButtonDown(0, XINPUT_GAMEPAD::A) ||
-       input.keyDown['Q'])
-    {
-        //nagainput.Vibrate(0, 1, 1, 5);
-        animController.FireEvent("Test", 0);
-    }
-
-    if(input.keyDown['R'])
-        animController.FireEvent("Test1", 0);
-
-    //idle
-    if(stateId == 0)
-    {
-        //if the user is pushing the gamepad out of the dead zone start walking or running
-        if (g_gamePad.m_padMagnitude > 0.1f && g_gamePad.isLeftStickStationary())
-            animController.FireEvent("Go", 0);
-    }
-    //moving
-    else if(stateId == 1)
-    {
-        if(g_gamePad.m_padMagnitude < 0.1f && g_gamePad.hasLeftStickBeenStationary(0.1f))
-        {
-            animController.FireEvent("Stop", 0);
-            return;
-        }
-    
-        float characterDifference = computeDifference();
-        if(characterDifference > 120) 
-        {
-            animController.FireEvent("Turn180", 0);
-            return;
-        }
-
-        float turnSeed = 3.0f;
-        turn_angle = characterDifference * turnSeed * timeStep;
-        characterNode.Yaw(-turn_angle);
-    }
-}
-
-//-- clamps an angle to the rangle of [-2PI, 2PI]
+//-- clamps an angle to the rangle of [-PI, PI]
 float angleDiff( float diff )
 {
     if (diff > 180)
-        diff = diff - 360;
+        diff -= 360;
     if (diff < -180) 
-        diff = diff + 360;
+        diff += 360;
     return diff;
 }
 
-float mapAngle(float angle)
+int SelectAnimation(float angle, int slice)
 {
-    if(angle < 0)
-        angle  = angle + 360;
-    return angle;
+    //as 0 --> [-22.5, 22.5] range
+    //we should move it a bit.
+    angle += 180/slice;
+    float anglePerSlice = 360/slice;
+    float ret = angle/anglePerSlice;
+    if(ret < 0)
+        ret += slice;
+    return ret;
 }
 
 //-- computes the difference between the characters current heading and the
 //-- heading the user wants them to go in.
 float computeDifference()
 {
-    //-- if the user is not pushing the stick anywhere return.  this prevents the character from turning while stopping (which
-    //-- looks bad - like the skid to stop animation)
-    Text@ statusText = ui.root.GetChild("STS");
-
+    //-- if the user is not pushing the stick anywhere return.  
+    // this prevents the character from turning while stopping 
+    // (which looks bad - like the skid to stop animation)
     if( g_gamePad.m_padMagnitude < 0.5f )
     {
-        //statusText.text = "";
         return 0;
     }
 
-    Vector3 desire_fwd_dir = cameraNode.worldRotation * Vector3(g_gamePad.m_leftStickX,0,g_gamePad.m_leftStickY);
+    Vector3 desire_fwd_dir = cameraNode.worldRotation * Vector3(g_gamePad.m_leftStickX, 0, g_gamePad.m_leftStickY);
     Vector3 character_fwd_dir = characterNode.worldRotation * Vector3(0,0,1);
     float desireAngle = Atan2(desire_fwd_dir.z, desire_fwd_dir.x);
     float characterAngle = Atan2(character_fwd_dir.z, character_fwd_dir.x);
-    // padAngle = g_gamePad.m_padAngle;
 
     //-- check the difference between the characters current heading and the desired heading from the gamepad
-    float ret = angleDiff( desireAngle - characterAngle);
+    float rawDiff = desireAngle - characterAngle;
+    float ret = -angleDiff( rawDiff);
 
     String text;
-    text = ("desired = ") + desireAngle;
-    text += ("\ncharacter = ") + characterAngle;
-    //text += ("\npad = ") + padAngle;
+    text += ("\nrawDiff = ") + rawDiff;
     text += ("\ndiff = ") + ret;
-    text += ("\nturn angle = ") + turn_angle;
-    text += ("\npad x = ") + g_gamePad.m_leftStickX + (" y = ") + g_gamePad.m_leftStickY;
 
+    Text@ statusText = ui.root.GetChild("STS");
     if(statusText !is null)
     {
         statusText.text = text;
@@ -430,3 +401,101 @@ float computeDifference()
     return ret;
 }
 
+void CheckFootFoward()
+{
+    if(animator is null)
+        return;
+    int left_bone_id = animator.GetBoneIndex("Character1_LeftFoot"); 
+    int right_bone_id = animator.GetBoneIndex("Character1_RightFoot");
+    float left_dot = animator.GetDotFromBoneTranslationMS(Vector3(0,0,1), left_bone_id);
+    float right_dot = animator.GetDotFromBoneTranslationMS(Vector3(0,0,1), right_bone_id);
+    if(right_dot > left_dot )
+    {
+        characterNode.vars["IsRightFootForward"] = 1;
+    }
+    else {
+        characterNode.vars["IsRightFootForward"] = 0;
+    }
+}
+
+void OnUpdateIdle(float timeStep)
+{
+    //if the user is pushing the gamepad out of the dead zone start walking or running
+    if (g_gamePad.m_padMagnitude > 0.1f && g_gamePad.isLeftStickStationary())
+    {
+        float characterDifference = computeDifference();
+        int animIndex = SelectAnimation(characterDifference, 8);
+        characterNode.vars["StandToRunIndex"] = animIndex;
+        
+        Array<String> animations = 
+        {
+            "monk_stand_to_run",
+            "monk_stand_to_run_turn_45",
+            "monk_stand_to_run_turn_90",
+            "monk_stand_to_run_turn_135",
+            "monk_stand_to_run_turn_180",
+            "monk_stand_to_run_turn_135_mirror",
+            "monk_stand_to_run_turn_90_mirror",
+            "monk_stand_to_run_turn_45_mirror"
+        };
+        Print("set animation = " + animations[animIndex]);
+
+        if(bWalk)
+            animController.FireEvent("Walk", 0);
+        else
+            animController.FireEvent("Go", 0);
+        return;
+    }
+}
+
+void OnUpdateMoving(float timeStep)
+{
+    if(g_gamePad.m_padMagnitude < 0.1f && g_gamePad.hasLeftStickBeenStationary(0.1f))
+    {
+        animController.FireEvent("Stop", 0);
+        return;
+    }
+
+    // don't try to turn if the character is already turning
+    // if is in run turn 180 state
+    if(animController.IsStateActive("RunTurn180State", 0))
+        return;
+
+    float characterDifference = computeDifference();
+    if(characterDifference > 120 && g_gamePad.isLeftStickStationary()) 
+    {
+        animController.FireEvent("Turn180", 0);
+        return;
+    }
+
+    float turnSeed = 3.0f;
+    characterNode.Yaw(characterDifference * turnSeed * timeStep);
+}
+
+void OnUpdateStandToRun(float timeStep)
+{
+    if(g_gamePad.m_padMagnitude < 0.5)
+        animController.FireEvent("Stop", 0);
+}
+
+void UpdateCharacter(float timeStep)
+{
+    g_gamePad.update(timeStep);
+    CheckFootFoward();
+
+    int stateId = animController.GetCurStateId(0);
+    switch(stateId)
+    {
+    case 0:
+        OnUpdateIdle(timeStep);
+        break;
+    case 1:
+    case 5:
+        OnUpdateMoving(timeStep);
+        break;
+    case 3:
+    case 6:
+        OnUpdateStandToRun(timeStep);
+        break;
+    }
+}

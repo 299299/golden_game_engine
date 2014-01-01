@@ -1,0 +1,9 @@
+{
+	"Triggers":
+	[
+		{
+			"time":1,
+			"value":"Continue"
+		}
+	]
+}

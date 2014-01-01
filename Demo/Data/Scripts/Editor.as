@@ -10,6 +10,7 @@
 #include "Scripts/Editor/EditorSettings.as"
 #include "Scripts/Editor/EditorPreferences.as"
 #include "Scripts/Editor/EditorToolBar.as"
+#include "Scripts/Editor/EditorSecondaryToolbar.as"
 #include "Scripts/Editor/EditorUI.as"
 #include "Scripts/Editor/EditorImport.as"
 
@@ -67,13 +68,16 @@ void ParseArguments()
     Array<String> arguments = GetArguments();
     bool loaded = false;
 
-    // The first argument should be the editor script name. Scan for a scene to load
+    // Scan for a scene to load
     for (uint i = 1; i < arguments.length; ++i)
     {
-        if (arguments[i][0] != '-')
+        if (arguments[i].ToLower() == "-scene")
         {
-            loaded = LoadScene(arguments[i]);
-            break;
+            if (++i < arguments.length)
+            {
+                loaded = LoadScene(arguments[i]);
+                break;
+            }
         }
     }
 

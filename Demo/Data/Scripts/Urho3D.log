@@ -1,240 +1,596 @@
-[Tue Dec 24 21:20:23 2013] INFO: Opened log file Urho3D.log
-[Tue Dec 24 21:20:23 2013] INFO: Created 3 worker threads
-[Tue Dec 24 21:20:23 2013] INFO: Added resource path E:/Code/other_engine/NagaGame/Urho3D/Bin/CoreData/
-[Tue Dec 24 21:20:23 2013] INFO: Added resource path E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/
-[Tue Dec 24 21:20:23 2013] INFO: Created Direct3D9 device
-[Tue Dec 24 21:20:23 2013] INFO: Set screen mode 1024x768 windowed resizable
-[Tue Dec 24 21:20:23 2013] INFO: Initialized input
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Shaders/HLSL/Basic.xml
-[Tue Dec 24 21:20:23 2013] DEBUG: Shaders/HLSL/Basic.xml loaded time cost = 1(MS)
-[Tue Dec 24 21:20:23 2013] INFO: Initialized user interface
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Ramp.png
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Ramp.xml
-[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Ramp.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Ramp.png loaded time cost = 1(MS)
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Spot.png
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Textures/Spot.xml
-[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Spot.xml loaded time cost = 1(MS)
-[Tue Dec 24 21:20:23 2013] DEBUG: Textures/Spot.png loaded time cost = 2(MS)
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Materials/Default.xml
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource Techniques/NoTexture.xml
-[Tue Dec 24 21:20:23 2013] DEBUG: Techniques/NoTexture.xml loaded time cost = 1(MS)
-[Tue Dec 24 21:20:23 2013] DEBUG: Materials/Default.xml loaded time cost = 1(MS)
-[Tue Dec 24 21:20:23 2013] DEBUG: Loading resource RenderPaths/Forward.xml
-[Tue Dec 24 21:20:23 2013] DEBUG: RenderPaths/Forward.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:23 2013] INFO: Initialized renderer
-[Tue Dec 24 21:20:23 2013] INFO: Set audio mode 44100 Hz stereo interpolated
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Scripts/Animation.as
-[Tue Dec 24 21:20:24 2013] INFO: Compiled script module Scripts/Animation.as
-[Tue Dec 24 21:20:24 2013] DEBUG: Scripts/Animation.as loaded time cost = 62(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Started watching path E:/Code/other_engine/NagaGame/Urho3D/Bin/CoreData/
-[Tue Dec 24 21:20:24 2013] DEBUG: Started watching path E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/LogoLarge.jpg
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/LogoLarge.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/LogoLarge.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/LogoLarge.jpg loaded time cost = 232(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource UI/DefaultStyle.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: UI/DefaultStyle.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Fonts/Anonymous Pro.ttf
-[Tue Dec 24 21:20:24 2013] DEBUG: Fonts/Anonymous Pro.ttf loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Font face Anonymous Pro (11pt) has 624 glyphs
-[Tue Dec 24 21:20:24 2013] DEBUG: Font face Anonymous Pro (11pt) uses a static page texture of size 512x256
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/UI.png
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/UI.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/UI.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/UI.png loaded time cost = 4(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Fonts/MONACO.TTF
-[Tue Dec 24 21:20:24 2013] DEBUG: Fonts/MONACO.TTF loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (15pt) has 370 glyphs
-[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (15pt) uses a static page texture of size 512x256
-[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (12pt) has 370 glyphs
-[Tue Dec 24 21:20:24 2013] DEBUG: Font face MONACO (12pt) uses a static page texture of size 256x256
-[Tue Dec 24 21:20:24 2013] INFO: Loading scene from E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/Scenes/testScene.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Models/Box.mdl
-[Tue Dec 24 21:20:24 2013] DEBUG: Models/Box.mdl loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Materials/Skybox.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffSkybox.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffSkybox.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/Skybox.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_PosX.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_PosX.dds loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_NegX.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_NegX.dds loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_PosY.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_PosY.dds loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_NegY.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_NegY.dds loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_PosZ.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_PosZ.dds loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/BrightDay1_NegZ.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/BrightDay1_NegZ.dds loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/Skybox.xml loaded time cost = 8(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Materials/Skybox.xml loaded time cost = 9(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Materials/StoneTiled.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffNormalPacked.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffNormalPacked.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/Diff.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/Diff.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/StoneDiffuse.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/StoneDiffuse.dds loaded time cost = 2(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Textures/StoneNormal.dds
-[Tue Dec 24 21:20:24 2013] DEBUG: Textures/StoneNormal.dds loaded time cost = 3(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Materials/StoneTiled.xml loaded time cost = 8(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk.mdl
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk.mdl loaded time cost = 5(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_rig.hkx
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk_rig.hkx loaded time cost = 1(MS)
-[Tue Dec 24 21:20:24 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_head.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffNormalSpec.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffNormalSpec.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Head_D.DDS
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Head_D.DDS loaded time cost = 1(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Head_N.DDS
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Head_N.DDS loaded time cost = 1(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Head_S.DDS
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Head_S.DDS loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk_head.xml loaded time cost = 6(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_hair.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource Techniques/DiffNormalSpecAlphaMask.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Techniques/DiffNormalSpecAlphaMask.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Hair_D.DDS
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Hair_D.DDS loaded time cost = 1(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Hair_N.DDS
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Hair_N.DDS loaded time cost = 1(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/Monk_Hair_S.DDS
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/Monk_Hair_S.DDS loaded time cost = 1(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: monk/monk_hair.xml loaded time cost = 6(MS)
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_armor.xml
-[Tue Dec 24 21:20:24 2013] DEBUG: Loading resource monk/monk_d.DDS
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_d.DDS loaded time cost = 3(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/monk_n.DDS
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_n.DDS loaded time cost = 3(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/monk_s.DDS
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_s.DDS loaded time cost = 0(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_armor.xml loaded time cost = 9(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/monk_body.xml
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/MonkBody_D.DDS
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/MonkBody_D.DDS loaded time cost = 3(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/MonkBody_N.DDS
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/MonkBody_N.DDS loaded time cost = 3(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/MonkBody_S.DDS
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/MonkBody_S.DDS loaded time cost = 1(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/monk_body.xml loaded time cost = 9(MS)
-[Tue Dec 24 21:20:25 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Models/Sphere.mdl
-[Tue Dec 24 21:20:25 2013] DEBUG: Models/Sphere.mdl loaded time cost = 0(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Json/BoxShape.json
-[Tue Dec 24 21:20:25 2013] DEBUG: Json/BoxShape.json loaded time cost = 0(MS)
-[Tue Dec 24 21:20:25 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Json/CharacerShape.json
-[Tue Dec 24 21:20:25 2013] DEBUG: Json/CharacerShape.json loaded time cost = 0(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Json/Monk_Animation_FSM.json
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_stand_idle.hkx
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_stand_idle.hkx loaded time cost = 1(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_run_fwd.hkx
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_fwd.hkx loaded time cost = 1(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_run_turn_180.hkx
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource monk/animations/monk_run_turn_180.json
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_turn_180.json loaded time cost = 0(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_turn_180.hkx loading animation trigger data: Continue time: 0.67
-[Tue Dec 24 21:20:25 2013] DEBUG: monk/animations/monk_run_turn_180.hkx loaded time cost = 2(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Json/Monk_Animation_FSM.json loaded time cost = 4(MS)
-[Tue Dec 24 21:20:25 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
-[Tue Dec 24 21:20:25 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
-[Tue Dec 24 21:20:25 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
-[Tue Dec 24 21:20:25 2013] INFO: XPort 0 has connected.
-[Tue Dec 24 21:20:25 2013] DEBUG: Reloading shaders
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Shaders/HLSL/Stencil.xml
-[Tue Dec 24 21:20:25 2013] DEBUG: Shaders/HLSL/Stencil.xml loaded time cost = 1(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Shaders/HLSL/Shadow.xml
-[Tue Dec 24 21:20:25 2013] DEBUG: Shaders/HLSL/Shadow.xml loaded time cost = 1(MS)
-[Tue Dec 24 21:20:25 2013] DEBUG: Loading resource Shaders/HLSL/LitSolid.xml
-[Tue Dec 24 21:20:27 2013] DEBUG: Shaders/HLSL/LitSolid.xml loaded time cost = 2675(MS)
-[Tue Dec 24 21:20:27 2013] DEBUG: Loading resource Shaders/HLSL/Skybox.xml
-[Tue Dec 24 21:20:27 2013] DEBUG: Shaders/HLSL/Skybox.xml loaded time cost = 0(MS)
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Shadow.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Shadow.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Shadow_Skinned.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Shadow_AlphaMask.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadow.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalPackedAmbientDirSpecShadowHW.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowInstanced.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_AmbientDirSpecShadowHW.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadow.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadowSkinned.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAmbientDirSpecShadowHW.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAlphaMaskAmbientDirSpecShadowHW.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Skybox.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Skybox.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Basic_VCol.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_VCol.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created vertex shader Shaders/HLSL/SM3/Basic_DiffVCol.vs3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_DiffVCol.ps3
-[Tue Dec 24 21:20:27 2013] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_AlphaVCol.ps3
-[Tue Dec 24 21:21:12 2013] DEBUG: Reloading changed resource Scripts/Animation.as
-[Tue Dec 24 21:21:12 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
-[Tue Dec 24 21:21:13 2013] INFO: Scripts/Animation.as:328,1 Compiling void UpdateInput(float)
-[Tue Dec 24 21:21:13 2013] ERROR: Scripts/Animation.as:334,22 'KC_Q' is not declared
-[Tue Dec 24 21:21:13 2013] ERROR: Failed to compile script module Scripts/Animation.as
-[Tue Dec 24 21:21:18 2013] DEBUG: Reloading changed resource Scripts/Animation.as
-[Tue Dec 24 21:21:18 2013] INFO: Compiled script module Scripts/Animation.as
-[Tue Dec 24 21:21:18 2013] INFO: Loading scene from E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/Scenes/testScene.xml
-[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
-[Tue Dec 24 21:21:18 2013] DEBUG: Reloading changed resource Scripts/Animation.as
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
-[Tue Dec 24 21:21:18 2013] INFO: Compiled script module Scripts/Animation.as
-[Tue Dec 24 21:21:18 2013] INFO: Loading scene from E:/Code/other_engine/NagaGame/Urho3D/Bin/Data/Scenes/testScene.xml
-[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:21:18 2013] INFO: hkaPose::getRequiredMemorySize = 6400
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
-[Tue Dec 24 21:21:18 2013] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
-[Tue Dec 24 21:21:38 2013] DEBUG: Reloading changed resource monk/animations/monk_run_turn_180.hkx
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: Util\hkNativePackfileUtils.cpp(167): [0x78B7AD37] Assert: Packfile is too small
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: Stack trace is:
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'hkDefaultError::message'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'hkError::messageAssert'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'hkNativePackfileUtils::getRequiredBufferSize'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\extension\engineextension\common\havokresource.cpp(46):'Urho3D::HavokResource::Load'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\resource\resourcecache.cpp(337):'Urho3D::ResourceCache::ReloadResource'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\resource\resourcecache.cpp(751):'Urho3D::ResourceCache::HandleBeginFrame'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\object.h(258):'Urho3D::EventHandlerImpl<Urho3D::ResourceCache>::Invoke'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\object.cpp(78):'Urho3D::Object::OnEvent'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\object.cpp(276):'Urho3D::Object::SendEvent'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\core\timer.cpp(92):'Urho3D::Time::BeginFrame'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\engine\engine.cpp(330):'Urho3D::Engine::RunFrame'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\engine\engine\application.cpp(69):'Urho3D::Application::Run'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\extension\nagagamedemo\nagagamedemo.cpp(43):'RunApplication'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: e:\code\other_engine\nagagame\urho3d\source\extension\nagagamedemo\nagagamedemo.cpp(43):'WinMain'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c(528):'__tmainCRTStartup'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c(377):'WinMainCRTStartup'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'BaseThreadInitThunk'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'RtlInitializeExceptionChain'
-
-[Tue Dec 24 21:21:38 2013] ERROR: Havok_errorReport: (null)(0):'RtlInitializeExceptionChain'
-
+[Wed Jan 01 17:28:56 2014] INFO: Opened log file Urho3D.log
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Image
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = XMLFile
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = NetworkPriority
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Sound
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SoundSource
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SoundSource3D
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SoundListener
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Font
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = UIElement
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = BorderImage
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Sprite
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Button
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = CheckBox
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Cursor
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Text
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Text3D
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Window
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = View3D
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = LineEdit
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Slider
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ScrollBar
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ScrollView
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ListView
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Menu
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = DropDownList
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = FileSelector
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ToolTip
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Node
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Scene
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SmoothedTransform
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Navigable
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = NavigationMesh
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = OffMeshConnection
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokSystem
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokAnimation
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokRig
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokFootIK
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokLookAtIK
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokReachIK
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokAnimator
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokAnimateWorld
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = AnimStateMachine
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = AnimatorController
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokRagdoll
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = RagdollInstance
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SimpleAnimationState
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SwitchAnimationState
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ComplexAnimationState
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = StateTransition
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokPhysicsWorld
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokRigidBody
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokPhantom
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokCharacterRigidBody
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokCharacterProxy
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = HavokShape
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = CharacterController
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = JsonFile
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = NagaInput
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = TrailMesh
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SparksParticle
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ExplosionParticle
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = SmokeParticle
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = DustParticle
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = DebrisParticle
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Animation
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Material
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Model
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Shader
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Technique
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Texture2D
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = TextureCube
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Camera
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Light
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = StaticModel
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = StaticModelGroup
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Skybox
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = AnimatedModel
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = AnimationController
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = BillboardSet
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = ParticleEmitter
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = CustomGeometry
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = DecalSet
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Terrain
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = TerrainPatch
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = DebugRenderer
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Octree
+[Wed Jan 01 17:28:56 2014] DEBUG: DEBUG Create Object Type = Zone
+[Wed Jan 01 17:28:56 2014] INFO: Created 3 worker threads
+[Wed Jan 01 17:28:56 2014] INFO: Added resource path E:/Code/NagaEngine/Urho3D/Bin/CoreData/
+[Wed Jan 01 17:28:56 2014] INFO: Added resource path E:/Code/NagaEngine/Urho3D/Bin/Data/
+[Wed Jan 01 17:28:56 2014] INFO: Created Direct3D9 device
+[Wed Jan 01 17:28:56 2014] INFO: Set screen mode 1024x768 windowed
+[Wed Jan 01 17:28:56 2014] INFO: Initialized input
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Shaders/HLSL/Basic.xml
+[Wed Jan 01 17:28:56 2014] DEBUG: Shaders/HLSL/Basic.xml loaded time cost = 1(MS)
+[Wed Jan 01 17:28:56 2014] INFO: Initialized user interface
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Textures/Ramp.png
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Textures/Ramp.xml
+[Wed Jan 01 17:28:56 2014] DEBUG: Textures/Ramp.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:56 2014] DEBUG: Textures/Ramp.png loaded time cost = 0(MS)
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Textures/Spot.png
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Textures/Spot.xml
+[Wed Jan 01 17:28:56 2014] DEBUG: Textures/Spot.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:56 2014] DEBUG: Textures/Spot.png loaded time cost = 1(MS)
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Materials/Default.xml
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource Techniques/NoTexture.xml
+[Wed Jan 01 17:28:56 2014] DEBUG: Techniques/NoTexture.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:56 2014] DEBUG: Materials/Default.xml loaded time cost = 1(MS)
+[Wed Jan 01 17:28:56 2014] DEBUG: Loading resource RenderPaths/Forward.xml
+[Wed Jan 01 17:28:56 2014] DEBUG: RenderPaths/Forward.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:56 2014] INFO: Initialized renderer
+[Wed Jan 01 17:28:56 2014] INFO: Set audio mode 44100 Hz stereo interpolated
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Scripts/Animation.as
+[Wed Jan 01 17:28:57 2014] INFO: Scripts/Animation.as:357,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 17:28:57 2014] WARNING: Scripts/Animation.as:366,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 17:28:57 2014] INFO: Compiled script module Scripts/Animation.as
+[Wed Jan 01 17:28:57 2014] DEBUG: Scripts/Animation.as loaded time cost = 73(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Started watching path E:/Code/NagaEngine/Urho3D/Bin/CoreData/
+[Wed Jan 01 17:28:57 2014] DEBUG: Started watching path E:/Code/NagaEngine/Urho3D/Bin/Data/
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/LogoLarge.jpg
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/LogoLarge.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/LogoLarge.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/LogoLarge.jpg loaded time cost = 222(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource UI/DefaultStyle.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: UI/DefaultStyle.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Fonts/Anonymous Pro.ttf
+[Wed Jan 01 17:28:57 2014] DEBUG: Fonts/Anonymous Pro.ttf loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Font face Anonymous Pro (11pt) has 624 glyphs
+[Wed Jan 01 17:28:57 2014] DEBUG: Font face Anonymous Pro (11pt) uses a static page texture of size 512x256
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/UI.png
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/UI.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/UI.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/UI.png loaded time cost = 4(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Fonts/MONACO.TTF
+[Wed Jan 01 17:28:57 2014] DEBUG: Fonts/MONACO.TTF loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Font face MONACO (12pt) has 370 glyphs
+[Wed Jan 01 17:28:57 2014] DEBUG: Font face MONACO (12pt) uses a static page texture of size 256x256
+[Wed Jan 01 17:28:57 2014] DEBUG: Font face MONACO (15pt) has 370 glyphs
+[Wed Jan 01 17:28:57 2014] DEBUG: Font face MONACO (15pt) uses a static page texture of size 512x256
+[Wed Jan 01 17:28:57 2014] INFO: Loading scene from E:/Code/NagaEngine/Urho3D/Bin/Data/Scenes/testScene.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Models/Box.mdl
+[Wed Jan 01 17:28:57 2014] DEBUG: Models/Box.mdl loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Materials/Skybox.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Techniques/DiffSkybox.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Techniques/DiffSkybox.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/Skybox.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/BrightDay1_PosX.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/BrightDay1_PosX.dds loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/BrightDay1_NegX.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/BrightDay1_NegX.dds loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/BrightDay1_PosY.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/BrightDay1_PosY.dds loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/BrightDay1_NegY.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/BrightDay1_NegY.dds loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/BrightDay1_PosZ.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/BrightDay1_PosZ.dds loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/BrightDay1_NegZ.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/BrightDay1_NegZ.dds loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/Skybox.xml loaded time cost = 7(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Materials/Skybox.xml loaded time cost = 8(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Materials/StoneTiled.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Techniques/DiffNormalPacked.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Techniques/DiffNormalPacked.xml loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Techniques/Diff.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Techniques/Diff.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/StoneDiffuse.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/StoneDiffuse.dds loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Textures/StoneNormal.dds
+[Wed Jan 01 17:28:57 2014] DEBUG: Textures/StoneNormal.dds loaded time cost = 4(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Materials/StoneTiled.xml loaded time cost = 8(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk.mdl
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk.mdl loaded time cost = 4(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_rig.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_rig.hkx loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_head.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Techniques/DiffNormalSpec.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Techniques/DiffNormalSpec.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/Monk_Head_D.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/Monk_Head_D.DDS loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/Monk_Head_N.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/Monk_Head_N.DDS loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/Monk_Head_S.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/Monk_Head_S.DDS loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_head.xml loaded time cost = 7(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_hair.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Techniques/DiffNormalSpecAlphaMask.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Techniques/DiffNormalSpecAlphaMask.xml loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/Monk_Hair_D.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/Monk_Hair_D.DDS loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/Monk_Hair_N.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/Monk_Hair_N.DDS loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/Monk_Hair_S.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/Monk_Hair_S.DDS loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_hair.xml loaded time cost = 5(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_armor.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_d.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_d.DDS loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_n.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_n.DDS loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_s.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_s.DDS loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_armor.xml loaded time cost = 8(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/monk_body.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/MonkBody_D.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/MonkBody_D.DDS loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/MonkBody_N.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/MonkBody_N.DDS loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/MonkBody_S.DDS
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/MonkBody_S.DDS loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/monk_body.xml loaded time cost = 8(MS)
+[Wed Jan 01 17:28:57 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Models/Sphere.mdl
+[Wed Jan 01 17:28:57 2014] DEBUG: Models/Sphere.mdl loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Json/BoxShape.json
+[Wed Jan 01 17:28:57 2014] DEBUG: Json/BoxShape.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Json/CharacerShape.json
+[Wed Jan 01 17:28:57 2014] DEBUG: Json/CharacerShape.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Json/Monk_Animation_FSM.json
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_idle.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_idle.hkx length = 0.0416667 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_idle.hkx loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_run_fwd.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_run_fwd.hkx length = 0.666667 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_fwd.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_run_turn_180.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_run_turn_180.hkx length = 1 frames = 30
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_run_turn_180.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_turn_180.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_turn_180.hkx loading animation trigger data: Continue time: 0.67
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_turn_180.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_run.hkx length = 0.8 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_45.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_run_turn_45.hkx length = 0.666667 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_45.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_45.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_45.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_45.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_90.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_run_turn_90.hkx length = 0.666667 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_90.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_90.json loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_90.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_90.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_135.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_run_turn_135.hkx length = 0.833333 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_135.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_135.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_135.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_135.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_180.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_run_turn_180.hkx length = 0.916667 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_run_turn_180.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_180.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_180.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_run_turn_180.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_run_to_stand.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_run_to_stand.hkx length = 1.13333 frames = 30
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_run_to_stand.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_to_stand.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_to_stand.hkx loading animation trigger data: Continue time: 1
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_run_to_stand.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_walk_fwd.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_walk_fwd.hkx length = 0.933333 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_walk_fwd.hkx loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_walk.hkx length = 0.933333 frames = 0
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_45.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_walk_turn_45.hkx length = 2.36667 frames = 60
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_45.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_45.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_45.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_45.hkx loaded time cost = 2(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_90.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_walk_turn_90.hkx length = 2.36667 frames = 60
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_90.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_90.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_90.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_90.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_135.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_walk_turn_135.hkx length = 2.4 frames = 60
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_135.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_135.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_135.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_135.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_180.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_stand_to_walk_turn_180.hkx length = 2.4 frames = 60
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_stand_to_walk_turn_180.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_180.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_180.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_stand_to_walk_turn_180.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_walk_turn_180.hkx
+[Wed Jan 01 17:28:57 2014] DEBUG: ********* animation monk/animations/monk_walk_turn_180.hkx length = 2.83333 frames = 60
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource monk/animations/monk_walk_turn_180.json
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_walk_turn_180.json loaded time cost = 0(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_walk_turn_180.hkx loading animation trigger data: Continue time: 0.6
+[Wed Jan 01 17:28:57 2014] DEBUG: monk/animations/monk_walk_turn_180.hkx loaded time cost = 3(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: dummping state layer 0
+[Wed Jan 01 17:28:57 2014] DEBUG: state[0] = IdleState
+[Wed Jan 01 17:28:57 2014] DEBUG: state[1] = MoveState
+[Wed Jan 01 17:28:57 2014] DEBUG: state[2] = RunTurn180State
+[Wed Jan 01 17:28:57 2014] DEBUG: state[3] = StandToRunState
+[Wed Jan 01 17:28:57 2014] DEBUG: state[4] = RunToStandState
+[Wed Jan 01 17:28:57 2014] DEBUG: state[5] = WalkState
+[Wed Jan 01 17:28:57 2014] DEBUG: state[6] = StandToWalkState
+[Wed Jan 01 17:28:57 2014] DEBUG: state[7] = WalkTurn180State
+[Wed Jan 01 17:28:57 2014] DEBUG: Json/Monk_Animation_FSM.json loaded time cost = 48(MS)
+[Wed Jan 01 17:28:57 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Wed Jan 01 17:28:57 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Wed Jan 01 17:28:57 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+select 15 = monk_stand_to_run
+select 30 = monk_stand_to_run_turn_45
+select 45 = monk_stand_to_run_turn_45
+select 60 = monk_stand_to_run_turn_45
+select 75 = monk_stand_to_run_turn_90
+select 90 = monk_stand_to_run_turn_90
+select 105 = monk_stand_to_run_turn_90
+select 120 = monk_stand_to_run_turn_135
+select 135 = monk_stand_to_run_turn_135
+select 150 = monk_stand_to_run_turn_135
+select 165 = monk_stand_to_run_turn_180
+select 180 = monk_stand_to_run_turn_180
+select -180 = monk_stand_to_run_turn_180
+select -165 = monk_stand_to_run_turn_180
+select -150 = monk_stand_to_run_turn_135_mirror
+select -135 = monk_stand_to_run_turn_135_mirror
+select -120 = monk_stand_to_run_turn_135_mirror
+select -105 = monk_stand_to_run_turn_90_mirror
+select -90 = monk_stand_to_run_turn_90_mirror
+select -75 = monk_stand_to_run_turn_90_mirror
+select -60 = monk_stand_to_run_turn_45_mirror
+select -45 = monk_stand_to_run_turn_45_mirror
+select -30 = monk_stand_to_run_turn_45_mirror
+select -15 = monk_stand_to_run
+[Wed Jan 01 17:28:57 2014] DEBUG: Reloading shaders
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Shaders/HLSL/Stencil.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Shaders/HLSL/Stencil.xml loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Shaders/HLSL/Shadow.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Shaders/HLSL/Shadow.xml loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Shaders/HLSL/LitSolid.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Shaders/HLSL/LitSolid.xml loaded time cost = 4(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Loading resource Shaders/HLSL/Skybox.xml
+[Wed Jan 01 17:28:57 2014] DEBUG: Shaders/HLSL/Skybox.xml loaded time cost = 1(MS)
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/Shadow.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/Shadow.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/Shadow_Skinned.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/Shadow_AlphaMask.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadow.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalPackedAmbientDirSpecShadowHW.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadow.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_AmbientDirSpecShadowHW.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowInstanced.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadowSkinned.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAlphaMaskAmbientDirSpecShadowHW.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAmbientDirSpecShadowHW.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/Skybox.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/Skybox.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/Basic_VCol.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_VCol.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/Basic_DiffVCol.vs3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_DiffVCol.ps3
+[Wed Jan 01 17:28:57 2014] DEBUG: Created pixel shader Shaders/HLSL/SM3/Basic_AlphaVCol.ps3
+[Wed Jan 01 17:28:58 2014] DEBUG: Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowBillboard.vs3
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run
+[Wed Jan 01 17:29:26 2014] DEBUG: Reloading changed resource Scripts/Animation.as
+[Wed Jan 01 17:29:26 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
+[Wed Jan 01 17:29:26 2014] INFO: Scripts/Animation.as:294,1 Compiling void CustomHandleKeyDown(StringHash, VariantMap&inout)
+[Wed Jan 01 17:29:26 2014] ERROR: Scripts/Animation.as:327,35 Expected ';'
+[Wed Jan 01 17:29:26 2014] ERROR: Scripts/Animation.as:335,2 Expected expression value
+[Wed Jan 01 17:29:26 2014] INFO: Scripts/Animation.as:365,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 17:29:26 2014] WARNING: Scripts/Animation.as:374,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 17:29:26 2014] ERROR: Failed to compile script module Scripts/Animation.as
+[Wed Jan 01 17:29:30 2014] DEBUG: Reloading changed resource Scripts/Animation.as
+[Wed Jan 01 17:29:30 2014] INFO: Scripts/Animation.as:357,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 17:29:30 2014] WARNING: Scripts/Animation.as:366,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 17:29:30 2014] INFO: Compiled script module Scripts/Animation.as
+[Wed Jan 01 17:29:30 2014] INFO: Loading scene from E:/Code/NagaEngine/Urho3D/Bin/Data/Scenes/testScene.xml
+[Wed Jan 01 17:29:30 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:30 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:30 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:30 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Wed Jan 01 17:29:30 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Wed Jan 01 17:29:30 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+select 15 = monk_stand_to_run
+select 30 = monk_stand_to_run_turn_45
+select 45 = monk_stand_to_run_turn_45
+select 60 = monk_stand_to_run_turn_45
+select 75 = monk_stand_to_run_turn_90
+select 90 = monk_stand_to_run_turn_90
+select 105 = monk_stand_to_run_turn_90
+select 120 = monk_stand_to_run_turn_135
+select 135 = monk_stand_to_run_turn_135
+select 150 = monk_stand_to_run_turn_135
+select 165 = monk_stand_to_run_turn_180
+select 180 = monk_stand_to_run_turn_180
+select -180 = monk_stand_to_run_turn_180
+select -165 = monk_stand_to_run_turn_180
+select -150 = monk_stand_to_run_turn_135_mirror
+select -135 = monk_stand_to_run_turn_135_mirror
+select -120 = monk_stand_to_run_turn_135_mirror
+select -105 = monk_stand_to_run_turn_90_mirror
+select -90 = monk_stand_to_run_turn_90_mirror
+select -75 = monk_stand_to_run_turn_90_mirror
+select -60 = monk_stand_to_run_turn_45_mirror
+select -45 = monk_stand_to_run_turn_45_mirror
+select -30 = monk_stand_to_run_turn_45_mirror
+select -15 = monk_stand_to_run
+[Wed Jan 01 17:29:34 2014] DEBUG: Reloading changed resource Scripts/Animation.as
+[Wed Jan 01 17:29:34 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
+[Wed Jan 01 17:29:34 2014] INFO: Scripts/Animation.as:357,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 17:29:34 2014] WARNING: Scripts/Animation.as:366,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 17:29:34 2014] INFO: Compiled script module Scripts/Animation.as
+[Wed Jan 01 17:29:34 2014] INFO: Loading scene from E:/Code/NagaEngine/Urho3D/Bin/Data/Scenes/testScene.xml
+[Wed Jan 01 17:29:34 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:34 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:34 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:34 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Wed Jan 01 17:29:34 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Wed Jan 01 17:29:34 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+select 15 = monk_stand_to_run
+select 30 = monk_stand_to_run_turn_45
+select 45 = monk_stand_to_run_turn_45
+select 60 = monk_stand_to_run_turn_45
+select 75 = monk_stand_to_run_turn_90
+select 90 = monk_stand_to_run_turn_90
+select 105 = monk_stand_to_run_turn_90
+select 120 = monk_stand_to_run_turn_135
+select 135 = monk_stand_to_run_turn_135
+select 150 = monk_stand_to_run_turn_135
+select 165 = monk_stand_to_run_turn_180
+select 180 = monk_stand_to_run_turn_180
+select -180 = monk_stand_to_run_turn_180
+select -165 = monk_stand_to_run_turn_180
+select -150 = monk_stand_to_run_turn_135_mirror
+select -135 = monk_stand_to_run_turn_135_mirror
+select -120 = monk_stand_to_run_turn_135_mirror
+select -105 = monk_stand_to_run_turn_90_mirror
+select -90 = monk_stand_to_run_turn_90_mirror
+select -75 = monk_stand_to_run_turn_90_mirror
+select -60 = monk_stand_to_run_turn_45_mirror
+select -45 = monk_stand_to_run_turn_45_mirror
+select -30 = monk_stand_to_run_turn_45_mirror
+select -15 = monk_stand_to_run
+[Wed Jan 01 17:29:38 2014] DEBUG: Reloading changed resource Scripts/Animation.as
+[Wed Jan 01 17:29:38 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
+[Wed Jan 01 17:29:38 2014] INFO: Scripts/Animation.as:357,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 17:29:38 2014] WARNING: Scripts/Animation.as:366,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 17:29:38 2014] INFO: Compiled script module Scripts/Animation.as
+[Wed Jan 01 17:29:38 2014] INFO: Loading scene from E:/Code/NagaEngine/Urho3D/Bin/Data/Scenes/testScene.xml
+[Wed Jan 01 17:29:38 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:38 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:38 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:38 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Wed Jan 01 17:29:38 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Wed Jan 01 17:29:38 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+select 15 = monk_stand_to_run
+select 30 = monk_stand_to_run_turn_45
+select 45 = monk_stand_to_run_turn_45
+select 60 = monk_stand_to_run_turn_45
+select 75 = monk_stand_to_run_turn_90
+select 90 = monk_stand_to_run_turn_90
+select 105 = monk_stand_to_run_turn_90
+select 120 = monk_stand_to_run_turn_135
+select 135 = monk_stand_to_run_turn_135
+select 150 = monk_stand_to_run_turn_135
+select 165 = monk_stand_to_run_turn_180
+select 180 = monk_stand_to_run_turn_180
+select -180 = monk_stand_to_run_turn_180
+select -165 = monk_stand_to_run_turn_180
+select -150 = monk_stand_to_run_turn_135_mirror
+select -135 = monk_stand_to_run_turn_135_mirror
+select -120 = monk_stand_to_run_turn_135_mirror
+select -105 = monk_stand_to_run_turn_90_mirror
+select -90 = monk_stand_to_run_turn_90_mirror
+select -75 = monk_stand_to_run_turn_90_mirror
+select -60 = monk_stand_to_run_turn_45_mirror
+select -45 = monk_stand_to_run_turn_45_mirror
+select -30 = monk_stand_to_run_turn_45_mirror
+select -15 = monk_stand_to_run
+[Wed Jan 01 17:29:42 2014] DEBUG: Reloading changed resource Scripts/Animation.as
+[Wed Jan 01 17:29:42 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(93): [0x1293ADEF] Report: Server deleted.
+[Wed Jan 01 17:29:42 2014] INFO: Scripts/Animation.as:357,1 Compiling int SelectAnimation(float, int)
+[Wed Jan 01 17:29:42 2014] WARNING: Scripts/Animation.as:366,12 Float value truncated in implicit conversion to integer
+[Wed Jan 01 17:29:42 2014] INFO: Compiled script module Scripts/Animation.as
+[Wed Jan 01 17:29:42 2014] INFO: Loading scene from E:/Code/NagaEngine/Urho3D/Bin/Data/Scenes/testScene.xml
+[Wed Jan 01 17:29:42 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:42 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:42 2014] INFO: hkaPose::getRequiredMemorySize = 6400
+[Wed Jan 01 17:29:42 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[Wed Jan 01 17:29:42 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[Wed Jan 01 17:29:42 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+select 15 = monk_stand_to_run
+select 30 = monk_stand_to_run_turn_45
+select 45 = monk_stand_to_run_turn_45
+select 60 = monk_stand_to_run_turn_45
+select 75 = monk_stand_to_run_turn_90
+select 90 = monk_stand_to_run_turn_90
+select 105 = monk_stand_to_run_turn_90
+select 120 = monk_stand_to_run_turn_135
+select 135 = monk_stand_to_run_turn_135
+select 150 = monk_stand_to_run_turn_135
+select 165 = monk_stand_to_run_turn_180
+select 180 = monk_stand_to_run_turn_180
+select -180 = monk_stand_to_run_turn_180
+select -165 = monk_stand_to_run_turn_180
+select -150 = monk_stand_to_run_turn_135_mirror
+select -135 = monk_stand_to_run_turn_135_mirror
+select -120 = monk_stand_to_run_turn_135_mirror
+select -105 = monk_stand_to_run_turn_90_mirror
+select -90 = monk_stand_to_run_turn_90_mirror
+select -75 = monk_stand_to_run_turn_90_mirror
+select -60 = monk_stand_to_run_turn_45_mirror
+select -45 = monk_stand_to_run_turn_45_mirror
+select -30 = monk_stand_to_run_turn_45_mirror
+select -15 = monk_stand_to_run
+[Wed Jan 01 17:29:52 2014] DEBUG: Reloading changed resource Json/Monk_Animation_FSM.json
+[Wed Jan 01 17:29:52 2014] DEBUG: dummping state layer 0
+[Wed Jan 01 17:29:52 2014] DEBUG: state[0] = IdleState
+[Wed Jan 01 17:29:52 2014] DEBUG: state[1] = MoveState
+[Wed Jan 01 17:29:52 2014] DEBUG: state[2] = RunTurn180State
+[Wed Jan 01 17:29:52 2014] DEBUG: state[3] = StandToRunState
+[Wed Jan 01 17:29:52 2014] DEBUG: state[4] = RunToStandState
+[Wed Jan 01 17:29:52 2014] DEBUG: state[5] = WalkState
+[Wed Jan 01 17:29:52 2014] DEBUG: state[6] = StandToWalkState
+[Wed Jan 01 17:29:52 2014] DEBUG: state[7] = WalkTurn180State
+[Wed Jan 01 17:29:59 2014] DEBUG: Reloading changed resource Json/Monk_Animation_FSM.json
+[Wed Jan 01 17:29:59 2014] DEBUG: dummping state layer 0
+[Wed Jan 01 17:29:59 2014] DEBUG: state[0] = IdleState
+[Wed Jan 01 17:29:59 2014] DEBUG: state[1] = MoveState
+[Wed Jan 01 17:29:59 2014] DEBUG: state[2] = RunTurn180State
+[Wed Jan 01 17:29:59 2014] DEBUG: state[3] = StandToRunState
+[Wed Jan 01 17:29:59 2014] DEBUG: state[4] = RunToStandState
+[Wed Jan 01 17:29:59 2014] DEBUG: state[5] = WalkState
+[Wed Jan 01 17:29:59 2014] DEBUG: state[6] = StandToWalkState
+[Wed Jan 01 17:29:59 2014] DEBUG: state[7] = WalkTurn180State
+[Wed Jan 01 17:30:03 2014] DEBUG: Reloading changed resource Json/Monk_Animation_FSM.json
+[Wed Jan 01 17:30:03 2014] DEBUG: dummping state layer 0
+[Wed Jan 01 17:30:03 2014] DEBUG: state[0] = IdleState
+[Wed Jan 01 17:30:03 2014] DEBUG: state[1] = MoveState
+[Wed Jan 01 17:30:03 2014] DEBUG: state[2] = RunTurn180State
+[Wed Jan 01 17:30:03 2014] DEBUG: state[3] = StandToRunState
+[Wed Jan 01 17:30:03 2014] DEBUG: state[4] = RunToStandState
+[Wed Jan 01 17:30:03 2014] DEBUG: state[5] = WalkState
+[Wed Jan 01 17:30:03 2014] DEBUG: state[6] = StandToWalkState
+[Wed Jan 01 17:30:03 2014] DEBUG: state[7] = WalkTurn180State
+[Wed Jan 01 17:30:10 2014] DEBUG: Reloading changed resource Json/Monk_Animation_FSM.json
+[Wed Jan 01 17:30:10 2014] DEBUG: dummping state layer 0
+[Wed Jan 01 17:30:10 2014] DEBUG: state[0] = IdleState
+[Wed Jan 01 17:30:10 2014] DEBUG: state[1] = MoveState
+[Wed Jan 01 17:30:10 2014] DEBUG: state[2] = RunTurn180State
+[Wed Jan 01 17:30:10 2014] DEBUG: state[3] = StandToRunState
+[Wed Jan 01 17:30:10 2014] DEBUG: state[4] = RunToStandState
+[Wed Jan 01 17:30:10 2014] DEBUG: state[5] = WalkState
+[Wed Jan 01 17:30:10 2014] DEBUG: state[6] = StandToWalkState
+[Wed Jan 01 17:30:10 2014] DEBUG: state[7] = WalkTurn180State
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run_turn_90_mirror
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run_turn_90_mirror
+set animation = monk_stand_to_run_turn_45_mirror
+set animation = monk_stand_to_run
+[Wed Jan 01 17:31:31 2014] DEBUG: Reloading changed resource Json/Monk_Animation_FSM.json
+[Wed Jan 01 17:31:31 2014] DEBUG: dummping state layer 0
+[Wed Jan 01 17:31:31 2014] DEBUG: state[0] = IdleState
+[Wed Jan 01 17:31:31 2014] DEBUG: state[1] = MoveState
+[Wed Jan 01 17:31:31 2014] DEBUG: state[2] = RunTurn180State
+[Wed Jan 01 17:31:31 2014] DEBUG: state[3] = StandToRunState
+[Wed Jan 01 17:31:31 2014] DEBUG: state[4] = RunToStandState
+[Wed Jan 01 17:31:31 2014] DEBUG: state[5] = WalkState
+[Wed Jan 01 17:31:31 2014] DEBUG: state[6] = StandToWalkState
+[Wed Jan 01 17:31:31 2014] DEBUG: state[7] = WalkTurn180State
+set animation = monk_stand_to_run
+set animation = monk_stand_to_run_turn_45
+set animation = monk_stand_to_run_turn_180
+set animation = monk_stand_to_run_turn_90_mirror

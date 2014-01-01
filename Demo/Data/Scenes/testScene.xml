@@ -4,9 +4,9 @@
 	<attribute name="Time Scale" value="1" />
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
-	<attribute name="Elapsed Time" value="2632.61" />
-	<attribute name="Next Replicated Node ID" value="23" />
-	<attribute name="Next Replicated Component ID" value="43" />
+	<attribute name="Elapsed Time" value="2646.12" />
+	<attribute name="Next Replicated Node ID" value="24" />
+	<attribute name="Next Replicated Component ID" value="46" />
 	<attribute name="Next Local Node ID" value="16777349" />
 	<attribute name="Next Local Component ID" value="16777216" />
 	<attribute name="Variables" />
@@ -139,8 +139,8 @@
 	<node id="17">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sphere" />
-		<attribute name="Position" value="6.86228 0.499695 23.0603" />
-		<attribute name="Rotation" value="1 0 0 -2.70553e-008" />
+		<attribute name="Position" value="8.77217 0.500011 23.0603" />
+		<attribute name="Rotation" value="1 0 0 -1.39478e-008" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="22">
@@ -253,6 +253,23 @@
 		</component>
 		<component type="CharacterController" id="42">
 			<attribute name="Max Vertical Separation" value="5" />
+		</component>
+	</node>
+	<node id="23">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Sphere" />
+		<attribute name="Position" value="11.7503 5.5391 18.6068" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="44">
+			<attribute name="Model" value="Model;Models/Sphere.mdl" />
+			<attribute name="Material" value="Material;" />
+		</component>
+		<component type="DustParticle" id="45">
+			<attribute name="Material" value="Material;Materials/Particle.xml" />
+			<attribute name="Emit Time" value="1" />
+			<attribute name="Emission Rate" value="1" />
 		</component>
 	</node>
 </scene>
