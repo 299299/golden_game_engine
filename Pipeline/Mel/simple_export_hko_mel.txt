@@ -1,4 +1,4 @@
-proc slient_havok_export(int $type, string $file_name)
+global proc silent_havok_export(int $type, string $file_name)
 {
     string $hko_path = "E:/Code/NagaGame/Pipeline/Havok_HKO_Config/";
     string $hko_files[] = 
@@ -27,5 +27,5 @@ proc slient_havok_export(int $type, string $file_name)
     print("system command = " + $move_file_cmd);
     system($move_file_cmd);
 };
-//slient_havok_export(4, "monk/animations/monk_stand_to_run.hkx");
-slient_havok_export(5, "monk/animations/monk_stand_to_run_turn_180.hkx");
+//silent_havok_export(4, "monk/animations/monk_stand_to_run.hkx");
+silent_havok_export(5, "monk/animations/monk_stand_to_run_turn_180.hkx");

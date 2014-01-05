@@ -13,7 +13,7 @@ Array<XMLFile@> uiElementCopyBuffer;
 bool suppressUIElementChanges = false;
 
 // Registered UIElement user variable reverse mappings
-VariantMap uiElementVarNames;
+VariantMap uiElementVarNames(false);
 
 const ShortStringHash FILENAME_VAR("FileName");
 const ShortStringHash MODIFIED_VAR("Modified");
@@ -99,20 +99,23 @@ void OpenUILayout(const String&in fileName)
     // Check if the UI element has been opened before
     if (editorUIElement.GetChild(FILENAME_VAR, Variant(fileName)) !is null)
     {
-        log.Warning("UI element is already opened: " + fileName);
+        MessageBox("UI element is already opened.\n" + fileName);
         return;
     }
 
     // Always load from the filesystem, not from resource paths
     if (!fileSystem.FileExists(fileName))
     {
-        log.Error("No such file: " + fileName);
+        MessageBox("No such file.\n" + fileName);
         return;
     }
 
     File file(fileName, FILE_READ);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return;
+    }
 
     // Add the UI layout's resource path in case it's necessary
     SetResourcePath(GetPath(fileName), true, true);
@@ -141,6 +144,8 @@ void OpenUILayout(const String&in fileName)
 
         ClearEditActions();
     }
+    else
+        MessageBox("Could not load UI layout successfully!\nSee Urho3D.log for more detail.");
 
     suppressUIElementChanges = false;
 }
@@ -148,6 +153,26 @@ void OpenUILayout(const String&in fileName)
 bool CloseUILayout()
 {
     ui.cursor.shape = CS_BUSY;
+
+    if (messageBoxCallback is null)
+    {
+        for (uint i = 0; i < selectedUIElements.length; ++i)
+        {
+            UIElement@ element = GetTopLevelUIElement(selectedUIElements[i]);
+            if (element !is null && element.vars[MODIFIED_VAR].GetBool())
+            {
+                MessageBox@ messageBox = MessageBox("UI layout has been modified.\nContinue to close?", "Warning");
+                Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
+                cancelButton.visible = true;
+                cancelButton.focus = true;
+                SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
+                messageBoxCallback = @CloseUILayout;
+                return false;
+            }
+        }
+    }
+    else
+        messageBoxCallback = null;
 
     suppressUIElementChanges = true;
 
@@ -171,6 +196,26 @@ bool CloseUILayout()
 bool CloseAllUILayouts()
 {
     ui.cursor.shape = CS_BUSY;
+
+    if (messageBoxCallback is null)
+    {
+        for (uint i = 0; i < editorUIElement.numChildren; ++i)
+        {
+            UIElement@ element = editorUIElement.children[i];
+            if (element !is null && element.vars[MODIFIED_VAR].GetBool())
+            {
+                MessageBox@ messageBox = MessageBox("UI layout has been modified.\nContinue to close?", "Warning");
+                Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
+                cancelButton.visible = true;
+                cancelButton.focus = true;
+                SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
+                messageBoxCallback = @CloseAllUILayouts;
+                return false;
+            }
+        }
+    }
+    else
+        messageBoxCallback = null;
 
     suppressUIElementChanges = true;
 
@@ -197,7 +242,10 @@ bool SaveUILayout(const String&in fileName)
 
     File file(fileName, FILE_WRITE);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return false;
+    }
 
     UIElement@ element = GetTopLevelUIElement(editUIElement);
     if (element is null)
@@ -216,6 +264,8 @@ bool SaveUILayout(const String&in fileName)
             SetUIElementModified(element, false);
         }
     }
+    if (!success)
+        MessageBox("Could not save UI layout successfully!\nSee Urho3D.log for more detail.");
 
     return success;
 }
@@ -244,13 +294,16 @@ void LoadChildUIElement(const String&in fileName)
 
     if (!fileSystem.FileExists(fileName))
     {
-        log.Error("No such file: " + fileName);
+        MessageBox("No such file.\n" + fileName);
         return;
     }
 
     File file(fileName, FILE_READ);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return;
+    }
 
     XMLFile@ xmlFile = XMLFile();
     xmlFile.Load(file);
@@ -292,7 +345,10 @@ bool SaveChildUIElement(const String&in fileName)
 
     File file(fileName, FILE_WRITE);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return false;
+    }
 
     XMLFile@ elementData = XMLFile();
     XMLElement rootElem = elementData.CreateRoot("element");
@@ -304,6 +360,8 @@ bool SaveChildUIElement(const String&in fileName)
         if (success)
             editUIElement.vars[CHILD_ELEMENT_FILENAME_VAR] = fileName;
     }
+    if (!success)
+        MessageBox("Could not save child UI element successfully!\nSee Urho3D.log for more detail.");
 
     return success;
 }
@@ -318,13 +376,16 @@ void SetUIElementDefaultStyle(const String&in fileName)
     // Always load from the filesystem, not from resource paths
     if (!fileSystem.FileExists(fileName))
     {
-        log.Error("No such file: " + fileName);
+        MessageBox("No such file.\n" + fileName);
         return;
     }
 
     File file(fileName, FILE_READ);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return;
+    }
 
     uiElementDefaultStyle = XMLFile();
     uiElementDefaultStyle.Load(file);

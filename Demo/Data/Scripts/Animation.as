@@ -8,10 +8,11 @@ Node@ characterNode;
 
 float yaw = 0.0f;
 float pitch = 0.0f;
-int cameraMode = 1;
 
+int cameraMode = 0;
 int drawDebugMode = 0;
 bool dumpAnimation = true;
+bool bWalk = false;
 
 AnimatorController@ animController;
 HavokAnimator@      animator;
@@ -23,13 +24,15 @@ uint currentTimeScaleIndex = 0;
 float cam_radius = 20.0f;
 float dumpTime = 0;
 
-bool bWalk = false;
+float last_right_foot_z = 0;
+String animationString;
 
 
 GamePad@ g_gamePad = GamePad();
 
 void Start()
 {
+    script.defaultScriptFile = scriptFile;
     // Enable automatic resource reloading
     cache.autoReloadResources = true;
     input.mouseVisible = true;
@@ -45,52 +48,6 @@ void Start()
         SetupViewport();
 
     SubscribeToEvents();
-
-    Array<float> angles = 
-    {
-        15,
-        30,
-        45,
-        60,
-        75,
-        90,
-        105,
-        120,
-        135,
-        150,
-        165,
-        180,
-        -180,
-        -165,
-        -150,
-        -135,
-        -120,
-        -105,
-        -90,
-        -75,
-        -60,
-        -45,
-        -30,
-        -15
-    };
-    Array<String> animations = 
-    {
-        "monk_stand_to_run",
-        "monk_stand_to_run_turn_45",
-        "monk_stand_to_run_turn_90",
-        "monk_stand_to_run_turn_135",
-        "monk_stand_to_run_turn_180",
-        "monk_stand_to_run_turn_135_mirror",
-        "monk_stand_to_run_turn_90_mirror",
-        "monk_stand_to_run_turn_45_mirror"
-    };
-
-    for(uint i=0; i<angles.length;++i)
-    {
-        int animIndex = SelectAnimation(angles[i], 8);
-        Print("select " + String(angles[i]) + " = " + String(animations[animIndex]));
-    }
-    
 }
 
 void Stop()
@@ -121,6 +78,7 @@ void CreateScene()
 
     animController = characterNode.GetComponent("AnimatorController");
     animator = characterNode.GetComponent("HavokAnimator");
+    SubscribeToEvent(characterNode, "AnimationStateEnter", "HandleAnimationStateEnter");
 
     /*
     for(uint i=0; i<characterNode.numComponents; ++i)
@@ -151,7 +109,7 @@ void CreateInstructions()
     instructionText.horizontalAlignment = HA_CENTER;
     instructionText.verticalAlignment = VA_CENTER;
     instructionText.SetPosition(0, ui.root.height / 4);
-    instructionText.color = Color(1.0f, 0.0f, 0.0f);
+    instructionText.color = Color(0.0f, 0.25, 0.75f);
 
     Text@ statusText = ui.root.CreateChild("Text", "STS");
     statusText.horizontalAlignment = HA_LEFT;
@@ -176,7 +134,6 @@ void UpdateInstructionText()
     text += ("\nE Reset Animation, F Toggle Rotation Only");
     text += ("\nC Toggle RootMotion, Space To Toggle Scene Update");
     text += ("\nG Toggle Walk");
-	text += ("\n Key UP/DOWN/LEFT/RIGHT To Move");
     instructionText.text = text;
 }
 
@@ -242,6 +199,9 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     float timeStep = eventData["TimeStep"].GetFloat();
     MoveCamera(timeStep);
+
+    String consoleInput = GetConsoleInput();
+    HanldeConsoleInput(consoleInput);
 }
 
 void HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)
@@ -257,8 +217,8 @@ void HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)
             const float FIX_DUMP_TIME = 1.0f/60.0f;
             if(dumpTime > FIX_DUMP_TIME)
             {
-                String msg = animController.Dump();
-                text.text = msg;
+                animController.Dump(animationString);
+                text.text = animationString;
                 dumpTime -= FIX_DUMP_TIME;
             } 
         }
@@ -275,13 +235,11 @@ void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
     // bones. Note that debug geometry has to be separately requested each frame. Disable depth test so that we can see the
     // bones properly
     DebugRenderer@ debug = scene_.debugRenderer;
-    //debug.AddNode(characterNode, 2.0f, false);
-    Vector3 pos; Quaternion rotation;
-    if(animator !is null)
-    {
-        animator.GetBoneWorldTransform(0, pos, rotation);
-        debug.AddAxis(pos, rotation, 1.0, false);
-    }
+    debug.AddNode(characterNode, 2.0f, false);
+
+    debug.Add2DLine(Vector2(10,10), Vector2(10, 100), Color(1,0,0));
+    debug.Add2DStar(Vector2(50,50), Color(0,1,0), 20);
+    debug.Add2DSquare(Vector2(100,100), Color(0,0,1), 20);
 
 
     if (drawDebugMode == 0)
@@ -343,6 +301,15 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
         scene_.updateEnabled = !scene_.updateEnabled;
     else if(key == 'G')
         bWalk = !bWalk;
+    else if(key == 'C')
+    {
+        if(!scene_.updateEnabled)
+            scene_.Update(1.0f/60.0f);
+    }
+    else if(key == KEY_F9)
+    {
+        //engine.DumpMemory();
+    }
 }
 
 //-- clamps an angle to the rangle of [-PI, PI]
@@ -395,7 +362,7 @@ float computeDifference()
     Text@ statusText = ui.root.GetChild("STS");
     if(statusText !is null)
     {
-        statusText.text = text;
+        //statusText.text = text;
     }
     
     return ret;
@@ -405,17 +372,38 @@ void CheckFootFoward()
 {
     if(animator is null)
         return;
-    int left_bone_id = animator.GetBoneIndex("Character1_LeftFoot"); 
-    int right_bone_id = animator.GetBoneIndex("Character1_RightFoot");
+    int left_bone_id = animator.GetBoneIndex("Character1_LeftLeg"); 
+    int right_bone_id = animator.GetBoneIndex("Character1_RightLeg");
     float left_dot = animator.GetDotFromBoneTranslationMS(Vector3(0,0,1), left_bone_id);
     float right_dot = animator.GetDotFromBoneTranslationMS(Vector3(0,0,1), right_bone_id);
-    if(right_dot > left_dot )
+    
+    bool right_moving_forward = right_dot > last_right_foot_z;
+    bool right_is_foward = right_dot > left_dot;
+    float left_right_dis = Abs(right_dot - left_dot);
+    
+    last_right_foot_z = right_dot;
+    
+    Text@ statusText = ui.root.GetChild("STS");
+    if(statusText !is null)
     {
-        characterNode.vars["IsRightFootForward"] = 1;
+        String footForwardStatusText = right_is_foward ? "Right Foot Forward" : "Left Foot Forward";
+        String footMovingStatusText = right_moving_forward ? "Right Foot Moving Forward" : "Right Foot Moving Backward";
+        String footDisText = "Left Right Dis: " + String(left_right_dis);
+        String curVar = characterNode.vars["SelectRightForward"].ToString();
+        statusText.text = footForwardStatusText + "\n" + footMovingStatusText + "\n" +footDisText + "\n var = " + curVar;
     }
-    else {
-        characterNode.vars["IsRightFootForward"] = 0;
-    }
+
+   int SelectRightForward = 0;
+   if(right_is_foward)
+   {
+        SelectRightForward = 1;
+   }
+   else 
+   {
+       SelectRightForward = 0;
+   }
+   characterNode.vars["SelectRightForward"] = SelectRightForward;
+
 }
 
 void OnUpdateIdle(float timeStep)
@@ -427,18 +415,33 @@ void OnUpdateIdle(float timeStep)
         int animIndex = SelectAnimation(characterDifference, 8);
         characterNode.vars["StandToRunIndex"] = animIndex;
         
-        Array<String> animations = 
+        Array<String> run_animations = 
         {
-            "monk_stand_to_run",
-            "monk_stand_to_run_turn_45",
-            "monk_stand_to_run_turn_90",
-            "monk_stand_to_run_turn_135",
-            "monk_stand_to_run_turn_180",
-            "monk_stand_to_run_turn_135_mirror",
-            "monk_stand_to_run_turn_90_mirror",
-            "monk_stand_to_run_turn_45_mirror"
+            "monk_stand_to_run_0",
+            "monk_stand_to_run_45",
+            "monk_stand_to_run_90",
+            "monk_stand_to_run_135",
+            "monk_stand_to_run_180",
+            "monk_stand_to_run_135_mirror",
+            "monk_stand_to_run_90_mirror",
+            "monk_stand_to_run_45_mirror"
         };
-        Print("set animation = " + animations[animIndex]);
+        Array<String> walk_animations = 
+        {
+            "monk_stand_to_walk_0",
+            "monk_stand_to_walk_45",
+            "monk_stand_to_walk_90",
+            "monk_stand_to_walk_135",
+            "monk_stand_to_walk_180",
+            "monk_stand_to_walk_135_mirror",
+            "monk_stand_to_walk_90_mirror",
+            "monk_stand_to_walk_45_mirror"
+        };
+
+        if(bWalk)
+            Print("set animation = " + walk_animations[animIndex]);
+        else
+            Print("set animation = " + run_animations[animIndex]);
 
         if(bWalk)
             animController.FireEvent("Walk", 0);
@@ -476,6 +479,8 @@ void OnUpdateStandToRun(float timeStep)
 {
     if(g_gamePad.m_padMagnitude < 0.5)
         animController.FireEvent("Stop", 0);
+    else
+        animController.FireEvent("Continue", 0);
 }
 
 void UpdateCharacter(float timeStep)
@@ -498,4 +503,23 @@ void UpdateCharacter(float timeStep)
         OnUpdateStandToRun(timeStep);
         break;
     }
+}
+
+
+void HandleAnimationStateEnter(StringHash eventType, VariantMap& eventData)
+{
+    int nextStateId = eventData["NextState"].GetInt();
+    int lastStateId = eventData["LastState"].GetInt();
+    if(lastStateId == 2)
+    {
+        Print("freeze scene update");
+        //scene_.updateEnabled = false;
+    }
+}
+
+void HanldeConsoleInput(const String& inputText)
+{
+    if(inputText.length == 0)
+        return;
+    script.Execute(inputText);
 }

@@ -2,8 +2,9 @@
 	"Triggers":
 	[
 		{
-			"time":1,
-			"value":"Continue"
+			"time":0.5,
+			"id":"Continue",
+			"type":"Event"
 		}
 	]
 }

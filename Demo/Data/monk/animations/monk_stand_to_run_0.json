@@ -1,0 +1,10 @@
+{
+	"Triggers":
+	[
+		{
+			"frame":12,
+			"id":"RightFoot",
+			"type":"Beat"
+		}
+	]
+}

@@ -141,6 +141,7 @@ void CreateCursor()
 // AngelScript does not support closures (yet), but funcdef should do just fine as a workaround for a few cases here for now
 funcdef bool MENU_CALLBACK();
 Array<MENU_CALLBACK@> menuCallbacks;
+MENU_CALLBACK@ messageBoxCallback;
 
 void HandleQuickSearchChange(StringHash eventType, VariantMap& eventData)
 {
@@ -426,8 +427,48 @@ void CreateMenuBar()
 
 bool Exit()
 {
+    ui.cursor.shape = CS_BUSY;
+
+    if (messageBoxCallback is null)
+    {
+        String message;
+        if (sceneModified)
+            message = "Scene has been modified.\n";
+
+        bool uiLayoutModified = false;
+        for (uint i = 0; i < editorUIElement.numChildren; ++i)
+        {
+            UIElement@ element = editorUIElement.children[i];
+            if (element !is null && element.vars[MODIFIED_VAR].GetBool())
+            {
+                uiLayoutModified = true;
+                message += "UI layout has been modified.\n";
+                break;
+            }
+        }
+
+        if (sceneModified || uiLayoutModified)
+        {
+            MessageBox@ messageBox = MessageBox(message + "Continue to exit?", "Warning");
+            Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
+            cancelButton.visible = true;
+            cancelButton.focus = true;
+            SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
+            messageBoxCallback = @Exit;
+            return false;
+        }
+    }
+    else
+        messageBoxCallback = null;
+
     engine.Exit();
     return true;
+}
+
+void HandleExitRequested()
+{
+    if (!ui.HasModalElement())
+        Exit();
 }
 
 bool PickFile()
@@ -859,7 +900,6 @@ void CreateFileSelector(const String&in title, const String&in ok, const String&
     uiFileSelector.path = initialPath;
     uiFileSelector.SetButtonTexts(ok, cancel);
     uiFileSelector.SetFilters(filters, initialFilter);
-    uiFileSelector.window.priority = 1000;    // Ensure when it is visible then it has the highest priority (in front of all others UI)
     CenterDialog(uiFileSelector.window);
 }
 
@@ -1327,3 +1367,12 @@ void HandleMouseWheel(StringHash eventType, VariantMap& eventData)
     fValue += nWheel * 0.1f;
     edit.text = String(fValue);
 }
+
+void HandleMessageAcknowledgement(StringHash eventType, VariantMap& eventData)
+{
+    if (eventData["Ok"].GetBool())
+        messageBoxCallback();
+    else
+        messageBoxCallback = null;
+}
+

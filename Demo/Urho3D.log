@@ -1,47 +1,383 @@
-[Wed Jan 01 20:24:27 2014] INFO: Opened log file Urho3D.log
-[Wed Jan 01 20:24:27 2014] INFO: Created 3 worker threads
-[Wed Jan 01 20:24:27 2014] INFO: Added resource path E:/Code/NagaGame/Demo/CoreData/
-[Wed Jan 01 20:24:27 2014] INFO: Added resource path E:/Code/NagaGame/Demo/Data/
-[Wed Jan 01 20:24:27 2014] INFO: Created Direct3D9 device
-[Wed Jan 01 20:24:27 2014] INFO: Set screen mode 1024x768 windowed
-[Wed Jan 01 20:24:27 2014] INFO: Initialized input
-[Wed Jan 01 20:24:27 2014] INFO: Initialized user interface
-[Wed Jan 01 20:24:27 2014] INFO: Initialized renderer
-[Wed Jan 01 20:24:27 2014] INFO: Set audio mode 44100 Hz stereo interpolated
-[Wed Jan 01 20:24:27 2014] INFO: Scripts/Animation.as:358,1 Compiling int SelectAnimation(float, int)
-[Wed Jan 01 20:24:27 2014] WARNING: Scripts/Animation.as:367,12 Float value truncated in implicit conversion to integer
-[Wed Jan 01 20:24:27 2014] INFO: Compiled script module Scripts/Animation.as
-[Wed Jan 01 20:24:28 2014] INFO: Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene.xml
-[Wed Jan 01 20:24:28 2014] INFO: hkaPose::getRequiredMemorySize = 6400
-[Wed Jan 01 20:24:28 2014] INFO: hkaPose::getRequiredMemorySize = 6400
-[Wed Jan 01 20:24:28 2014] INFO: hkaPose::getRequiredMemorySize = 6400
-[Wed Jan 01 20:24:28 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
-[Wed Jan 01 20:24:28 2014] ERROR: Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
-[Wed Jan 01 20:24:28 2014] ERROR: Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
-select 15 = monk_stand_to_run
-select 30 = monk_stand_to_run_turn_45
-select 45 = monk_stand_to_run_turn_45
-select 60 = monk_stand_to_run_turn_45
-select 75 = monk_stand_to_run_turn_90
-select 90 = monk_stand_to_run_turn_90
-select 105 = monk_stand_to_run_turn_90
-select 120 = monk_stand_to_run_turn_135
-select 135 = monk_stand_to_run_turn_135
-select 150 = monk_stand_to_run_turn_135
-select 165 = monk_stand_to_run_turn_180
-select 180 = monk_stand_to_run_turn_180
-select -180 = monk_stand_to_run_turn_180
-select -165 = monk_stand_to_run_turn_180
-select -150 = monk_stand_to_run_turn_135_mirror
-select -135 = monk_stand_to_run_turn_135_mirror
-select -120 = monk_stand_to_run_turn_135_mirror
-select -105 = monk_stand_to_run_turn_90_mirror
-select -90 = monk_stand_to_run_turn_90_mirror
-select -75 = monk_stand_to_run_turn_90_mirror
-select -60 = monk_stand_to_run_turn_45_mirror
-select -45 = monk_stand_to_run_turn_45_mirror
-select -30 = monk_stand_to_run_turn_45_mirror
-select -15 = monk_stand_to_run
-set animation = monk_stand_to_run
-set animation = monk_stand_to_run_turn_180
-set animation = monk_stand_to_run_turn_180
+[0.0460] INFO:Opened log file Urho3D.log
+[0.0470] INFO:Created 3 worker threads
+[0.0470] INFO:Added resource path E:/Code/NagaGame/Demo/CoreData/
+[0.0470] INFO:Added resource path E:/Code/NagaGame/Demo/Data/
+[0.1440] INFO:Created Direct3D9 device
+[0.1450] INFO:Set screen mode 1024x768 windowed
+[0.1450] INFO:Initialized input
+[0.1450] DEBUG:Loading resource Shaders/HLSL/Basic.xml
+[0.1460] DEBUG:Shaders/HLSL/Basic.xml loaded time cost = 1(MS)
+[0.1460] INFO:Initialized user interface
+[0.1460] DEBUG:Loading resource Textures/Ramp.png
+[0.1460] DEBUG:Loading resource Textures/Ramp.xml
+[0.1470] DEBUG:Textures/Ramp.xml loaded time cost = 0(MS)
+[0.1470] DEBUG:Textures/Ramp.png loaded time cost = 1(MS)
+[0.1470] DEBUG:Loading resource Textures/Spot.png
+[0.1470] DEBUG:Loading resource Textures/Spot.xml
+[0.1470] DEBUG:Textures/Spot.xml loaded time cost = 0(MS)
+[0.1470] DEBUG:Textures/Spot.png loaded time cost = 0(MS)
+[0.1480] DEBUG:Loading resource Materials/Default.xml
+[0.1480] DEBUG:Loading resource Techniques/NoTexture.xml
+[0.1480] DEBUG:Techniques/NoTexture.xml loaded time cost = 0(MS)
+[0.1480] DEBUG:Materials/Default.xml loaded time cost = 0(MS)
+[0.1480] DEBUG:Loading resource RenderPaths/Forward.xml
+[0.1480] DEBUG:RenderPaths/Forward.xml loaded time cost = 0(MS)
+[0.1510] INFO:Initialized renderer
+[0.2110] INFO:Set audio mode 44100 Hz stereo interpolated
+[0.3930] DEBUG:Loading resource Scripts/Animation.as
+[0.4300] INFO:Scripts/Animation.as:325,1 Compiling int SelectAnimation(float, int)
+[0.4300] WARNING:Scripts/Animation.as:334,12 Float value truncated in implicit conversion to integer
+[0.4340] INFO:Compiled script module Scripts/Animation.as
+[0.4350] DEBUG:Scripts/Animation.as loaded time cost = 42(MS)
+[0.4350] DEBUG:Started watching path E:/Code/NagaGame/Demo/CoreData/
+[0.4360] DEBUG:Started watching path E:/Code/NagaGame/Demo/Data/
+[0.4360] DEBUG:Loading resource Textures/LogoLarge.jpg
+[0.5030] DEBUG:Loading resource Textures/LogoLarge.xml
+[0.5040] DEBUG:Textures/LogoLarge.xml loaded time cost = 0(MS)
+[0.5190] DEBUG:Textures/LogoLarge.jpg loaded time cost = 83(MS)
+[0.5200] DEBUG:Loading resource UI/DefaultStyle.xml
+[0.5200] DEBUG:UI/DefaultStyle.xml loaded time cost = 0(MS)
+[0.5210] DEBUG:Loading resource Fonts/Anonymous Pro.ttf
+[0.5210] DEBUG:Fonts/Anonymous Pro.ttf loaded time cost = 0(MS)
+[0.5220] DEBUG:Font face Anonymous Pro (11pt) has 624 glyphs
+[0.5580] DEBUG:Font face Anonymous Pro (11pt) uses a static page texture of size 512x256
+[0.5590] DEBUG:Loading resource Textures/UI.png
+[0.5610] DEBUG:Loading resource Textures/UI.xml
+[0.5610] DEBUG:Textures/UI.xml loaded time cost = 0(MS)
+[0.5620] DEBUG:Textures/UI.png loaded time cost = 2(MS)
+[0.5630] DEBUG:Loading resource Fonts/MONACO.TTF
+[0.5630] DEBUG:Fonts/MONACO.TTF loaded time cost = 0(MS)
+[0.5640] DEBUG:Font face MONACO (12pt) has 370 glyphs
+[0.5840] DEBUG:Font face MONACO (12pt) uses a static page texture of size 256x256
+[0.5840] DEBUG:Font face MONACO (15pt) has 370 glyphs
+[0.6040] DEBUG:Font face MONACO (15pt) uses a static page texture of size 512x256
+[0.6050] INFO:Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene.xml
+[0.6060] DEBUG:Loading resource Models/Box.mdl
+[0.6070] DEBUG:Models/Box.mdl loaded time cost = 1(MS)
+[0.6070] DEBUG:Loading resource Materials/Skybox.xml
+[0.6080] DEBUG:Loading resource Techniques/DiffSkybox.xml
+[0.6090] DEBUG:Techniques/DiffSkybox.xml loaded time cost = 1(MS)
+[0.6090] DEBUG:Loading resource Textures/Skybox.xml
+[0.6100] DEBUG:Loading resource Textures/BrightDay1_PosX.dds
+[0.6120] DEBUG:Textures/BrightDay1_PosX.dds loaded time cost = 0(MS)
+[0.6140] DEBUG:Loading resource Textures/BrightDay1_NegX.dds
+[0.6150] DEBUG:Textures/BrightDay1_NegX.dds loaded time cost = 0(MS)
+[0.6160] DEBUG:Loading resource Textures/BrightDay1_PosY.dds
+[0.6170] DEBUG:Textures/BrightDay1_PosY.dds loaded time cost = 0(MS)
+[0.6180] DEBUG:Loading resource Textures/BrightDay1_NegY.dds
+[0.6180] DEBUG:Textures/BrightDay1_NegY.dds loaded time cost = 0(MS)
+[0.6190] DEBUG:Loading resource Textures/BrightDay1_PosZ.dds
+[0.6200] DEBUG:Textures/BrightDay1_PosZ.dds loaded time cost = 0(MS)
+[0.6210] DEBUG:Loading resource Textures/BrightDay1_NegZ.dds
+[0.6220] DEBUG:Textures/BrightDay1_NegZ.dds loaded time cost = 0(MS)
+[0.6230] DEBUG:Textures/Skybox.xml loaded time cost = 13(MS)
+[0.6230] DEBUG:Materials/Skybox.xml loaded time cost = 15(MS)
+[0.6240] DEBUG:Loading resource Materials/StoneTiled.xml
+[0.6250] DEBUG:Loading resource Techniques/DiffNormalPacked.xml
+[0.6250] DEBUG:Techniques/DiffNormalPacked.xml loaded time cost = 0(MS)
+[0.6260] DEBUG:Loading resource Techniques/Diff.xml
+[0.6270] DEBUG:Techniques/Diff.xml loaded time cost = 0(MS)
+[0.6280] DEBUG:Loading resource Textures/StoneDiffuse.dds
+[0.6300] DEBUG:Textures/StoneDiffuse.dds loaded time cost = 2(MS)
+[0.6310] DEBUG:Loading resource Textures/StoneNormal.dds
+[0.6340] DEBUG:Textures/StoneNormal.dds loaded time cost = 3(MS)
+[0.6340] DEBUG:Materials/StoneTiled.xml loaded time cost = 9(MS)
+[0.6350] DEBUG:Loading resource monk/monk.mdl
+[0.6390] DEBUG:monk/monk.mdl loaded time cost = 3(MS)
+[0.6440] DEBUG:Loading resource monk/monk_rig.hkx
+[0.6460] DEBUG:monk/monk_rig.hkx loaded time cost = 1(MS)
+[0.6460] INFO:hkaPose::getRequiredMemorySize = 6400
+[0.6480] DEBUG:Loading resource monk/monk_head.xml
+[0.6480] DEBUG:Loading resource Techniques/DiffNormalSpec.xml
+[0.6490] DEBUG:Techniques/DiffNormalSpec.xml loaded time cost = 0(MS)
+[0.6500] DEBUG:Loading resource monk/Monk_Head_D.DDS
+[0.6520] DEBUG:monk/Monk_Head_D.DDS loaded time cost = 2(MS)
+[0.6520] DEBUG:Loading resource monk/Monk_Head_N.DDS
+[0.6540] DEBUG:monk/Monk_Head_N.DDS loaded time cost = 1(MS)
+[0.6540] DEBUG:Loading resource monk/Monk_Head_S.DDS
+[0.6550] DEBUG:monk/Monk_Head_S.DDS loaded time cost = 0(MS)
+[0.6560] DEBUG:monk/monk_head.xml loaded time cost = 8(MS)
+[0.6570] DEBUG:Loading resource monk/monk_hair.xml
+[0.6570] DEBUG:Loading resource Techniques/DiffNormalSpecAlphaMask.xml
+[0.6580] DEBUG:Techniques/DiffNormalSpecAlphaMask.xml loaded time cost = 0(MS)
+[0.6590] DEBUG:Loading resource monk/Monk_Hair_D.DDS
+[0.6600] DEBUG:monk/Monk_Hair_D.DDS loaded time cost = 1(MS)
+[0.6610] DEBUG:Loading resource monk/Monk_Hair_N.DDS
+[0.6610] DEBUG:monk/Monk_Hair_N.DDS loaded time cost = 0(MS)
+[0.6620] DEBUG:Loading resource monk/Monk_Hair_S.DDS
+[0.6630] DEBUG:monk/Monk_Hair_S.DDS loaded time cost = 0(MS)
+[0.6640] DEBUG:monk/monk_hair.xml loaded time cost = 7(MS)
+[0.6650] DEBUG:Loading resource monk/monk_armor.xml
+[0.6650] DEBUG:Loading resource monk/monk_d.DDS
+[0.6680] DEBUG:monk/monk_d.DDS loaded time cost = 2(MS)
+[0.6690] DEBUG:Loading resource monk/monk_n.DDS
+[0.6720] DEBUG:monk/monk_n.DDS loaded time cost = 3(MS)
+[0.6720] DEBUG:Loading resource monk/monk_s.DDS
+[0.6730] DEBUG:monk/monk_s.DDS loaded time cost = 0(MS)
+[0.6740] DEBUG:monk/monk_armor.xml loaded time cost = 9(MS)
+[0.6750] DEBUG:Loading resource monk/monk_body.xml
+[0.6750] DEBUG:Loading resource monk/MonkBody_D.DDS
+[0.6780] DEBUG:monk/MonkBody_D.DDS loaded time cost = 2(MS)
+[0.6790] DEBUG:Loading resource monk/MonkBody_N.DDS
+[0.6810] DEBUG:monk/MonkBody_N.DDS loaded time cost = 2(MS)
+[0.6820] DEBUG:Loading resource monk/MonkBody_S.DDS
+[0.6830] DEBUG:monk/MonkBody_S.DDS loaded time cost = 1(MS)
+[0.6960] DEBUG:monk/monk_body.xml loaded time cost = 21(MS)
+[0.6970] INFO:hkaPose::getRequiredMemorySize = 6400
+[0.6990] DEBUG:Loading resource Models/Sphere.mdl
+[0.6990] DEBUG:Models/Sphere.mdl loaded time cost = 0(MS)
+[0.7000] DEBUG:Loading resource Json/BoxShape.json
+[0.7010] DEBUG:Json/BoxShape.json loaded time cost = 0(MS)
+[0.7020] INFO:hkaPose::getRequiredMemorySize = 6400
+[0.7030] DEBUG:Loading resource Json/CharacerShape.json
+[0.7040] DEBUG:Json/CharacerShape.json loaded time cost = 1(MS)
+[0.7050] DEBUG:Loading resource Json/Monk_Animation_FSM.json
+[0.7060] DEBUG:Loading resource monk/animations/monk_stand_idle.hkx
+[0.7060] DEBUG:loaded animation monk/animations/monk_stand_idle.hkx, length = 0.04, frames = 1
+[0.7070] DEBUG:ResourceDependency monk/animations/monk_stand_idle.hkx ---> monk/animations/monk_stand_idle.json
+[0.7080] ERROR:HavokAnimation Zero sized JSON data in monk/animations/monk_stand_idle.json
+[0.7080] DEBUG:monk/animations/monk_stand_idle.hkx loaded time cost = 2(MS)
+[0.7090] DEBUG:Loading resource monk/animations/monk_run_0.hkx
+[0.7100] DEBUG:loaded animation monk/animations/monk_run_0.hkx, length = 0.67, frames = 20
+[0.7110] DEBUG:ResourceDependency monk/animations/monk_run_0.hkx ---> monk/animations/monk_run_0.json
+[0.7120] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7130] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
+[0.7130] DEBUG:loaded animation trigger id: RightFoot, time 0.200, type: Beat
+[0.7140] DEBUG:monk/animations/monk_run_0.hkx loaded time cost = 4(MS)
+[0.7150] DEBUG:Loading resource monk/animations/monk_run_180.hkx
+[0.7160] DEBUG:loaded animation monk/animations/monk_run_180.hkx, length = 1.00, frames = 30
+[0.7170] DEBUG:ResourceDependency monk/animations/monk_run_180.hkx ---> monk/animations/monk_run_180.json
+[0.7180] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7180] DEBUG:loaded animation trigger id: Continue, time 0.500, type: Event
+[0.7190] DEBUG:loaded animation trigger id: RightFoot, time 0.500, type: Beat
+[0.7200] DEBUG:loaded animation trigger id: LeftFoot, time 0.767, type: Beat
+[0.7200] DEBUG:monk/animations/monk_run_180.hkx loaded time cost = 4(MS)
+[0.7210] DEBUG:Loading resource monk/animations/monk_stand_to_run_0.hkx
+[0.7220] DEBUG:loaded animation monk/animations/monk_stand_to_run_0.hkx, length = 0.80, frames = 24
+[0.7230] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_0.hkx ---> monk/animations/monk_stand_to_run_0.json
+[0.7240] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7240] DEBUG:loaded animation trigger id: RightFoot, time 0.400, type: Beat
+[0.7250] DEBUG:monk/animations/monk_stand_to_run_0.hkx loaded time cost = 3(MS)
+[0.7260] DEBUG:Loading resource monk/animations/monk_stand_to_run_45.hkx
+[0.7270] DEBUG:loaded animation monk/animations/monk_stand_to_run_45.hkx, length = 0.67, frames = 20
+[0.7270] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_45.hkx ---> monk/animations/monk_stand_to_run_45.json
+[0.7280] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7290] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[0.7460] DEBUG:monk/animations/monk_stand_to_run_45.hkx loaded time cost = 20(MS)
+[0.7470] DEBUG:Loading resource monk/animations/monk_stand_to_run_90.hkx
+[0.7490] DEBUG:loaded animation monk/animations/monk_stand_to_run_90.hkx, length = 0.67, frames = 20
+[0.7490] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_90.hkx ---> monk/animations/monk_stand_to_run_90.json
+[0.7510] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7510] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[0.7520] DEBUG:monk/animations/monk_stand_to_run_90.hkx loaded time cost = 4(MS)
+[0.7520] DEBUG:Loading resource monk/animations/monk_stand_to_run_135.hkx
+[0.7530] DEBUG:loaded animation monk/animations/monk_stand_to_run_135.hkx, length = 1.13, frames = 34
+[0.7540] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_135.hkx ---> monk/animations/monk_stand_to_run_135.json
+[0.7550] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7560] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[0.7560] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[0.7570] DEBUG:monk/animations/monk_stand_to_run_135.hkx loaded time cost = 4(MS)
+[0.7580] DEBUG:Loading resource monk/animations/monk_stand_to_run_180.hkx
+[0.7590] DEBUG:loaded animation monk/animations/monk_stand_to_run_180.hkx, length = 1.13, frames = 34
+[0.7600] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_180.hkx ---> monk/animations/monk_stand_to_run_180.json
+[0.7610] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7620] DEBUG:loaded animation trigger id: RightFoot, time 0.500, type: Beat
+[0.7630] DEBUG:loaded animation trigger id: LeftFoot, time 0.733, type: Beat
+[0.7640] DEBUG:monk/animations/monk_stand_to_run_180.hkx loaded time cost = 5(MS)
+[0.7650] DEBUG:Loading resource monk/animations/monk_run_to_stand.hkx
+[0.7660] DEBUG:loaded animation monk/animations/monk_run_to_stand.hkx, length = 1.13, frames = 34
+[0.7670] DEBUG:ResourceDependency monk/animations/monk_run_to_stand.hkx ---> monk/animations/monk_run_to_stand.json
+[0.7680] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7680] DEBUG:loaded animation trigger id: Continue, time 0.500, type: Event
+[0.7690] DEBUG:monk/animations/monk_run_to_stand.hkx loaded time cost = 3(MS)
+[0.7700] DEBUG:Loading resource monk/animations/monk_walk_0.hkx
+[0.7710] DEBUG:loaded animation monk/animations/monk_walk_0.hkx, length = 0.93, frames = 28
+[0.7720] DEBUG:ResourceDependency monk/animations/monk_walk_0.hkx ---> monk/animations/monk_walk_0.json
+[0.7730] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7730] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
+[0.7740] DEBUG:loaded animation trigger id: RightFoot, time 0.333, type: Beat
+[0.7750] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[0.7760] DEBUG:monk/animations/monk_walk_0.hkx loaded time cost = 5(MS)
+[0.7760] DEBUG:Loading resource monk/animations/monk_stand_to_walk_0.hkx
+[0.7780] DEBUG:loaded animation monk/animations/monk_stand_to_walk_0.hkx, length = 0.93, frames = 28
+[0.7780] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_0.hkx ---> monk/animations/monk_stand_to_walk_0.json
+[0.7810] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7810] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
+[0.7820] DEBUG:loaded animation trigger id: RightFoot, time 0.333, type: Beat
+[0.7830] DEBUG:loaded animation trigger id: LeftFoot, time 0.700, type: Beat
+[0.7830] ERROR:trigger parser time error = 1.03
+[0.7840] ERROR:trigger parser time error = 1.40
+[0.7850] ERROR:trigger parser time error = 1.73
+[0.7850] DEBUG:monk/animations/monk_stand_to_walk_0.hkx loaded time cost = 8(MS)
+[0.7860] DEBUG:Loading resource monk/animations/monk_stand_to_walk_45.hkx
+[0.7880] DEBUG:loaded animation monk/animations/monk_stand_to_walk_45.hkx, length = 2.37, frames = 71
+[0.7880] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_45.hkx ---> monk/animations/monk_stand_to_walk_45.json
+[0.7890] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7900] DEBUG:loaded animation trigger id: RightFoot, time 0.667, type: Beat
+[0.7900] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
+[0.7910] DEBUG:monk/animations/monk_stand_to_walk_45.hkx loaded time cost = 4(MS)
+[0.7920] DEBUG:Loading resource monk/animations/monk_stand_to_walk_90.hkx
+[0.7940] DEBUG:loaded animation monk/animations/monk_stand_to_walk_90.hkx, length = 2.37, frames = 71
+[0.7940] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_90.hkx ---> monk/animations/monk_stand_to_walk_90.json
+[0.7950] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.7950] DEBUG:loaded animation trigger id: RightFoot, time 0.667, type: Beat
+[0.7960] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
+[0.7970] DEBUG:monk/animations/monk_stand_to_walk_90.hkx loaded time cost = 4(MS)
+[0.7980] DEBUG:Loading resource monk/animations/monk_stand_to_walk_135.hkx
+[0.7990] DEBUG:loaded animation monk/animations/monk_stand_to_walk_135.hkx, length = 2.40, frames = 72
+[0.8000] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_135.hkx ---> monk/animations/monk_stand_to_walk_135.json
+[0.8010] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.8010] DEBUG:loaded animation trigger id: RightFoot, time 0.667, type: Beat
+[0.8020] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
+[0.8030] DEBUG:loaded animation trigger id: RightFoot, time 1.800, type: Beat
+[0.8030] DEBUG:monk/animations/monk_stand_to_walk_135.hkx loaded time cost = 4(MS)
+[0.8040] DEBUG:Loading resource monk/animations/monk_stand_to_walk_180.hkx
+[0.8060] DEBUG:loaded animation monk/animations/monk_stand_to_walk_180.hkx, length = 2.40, frames = 72
+[0.8060] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_180.hkx ---> monk/animations/monk_stand_to_walk_180.json
+[0.8070] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.8080] DEBUG:loaded animation trigger id: RightFoot, time 0.533, type: Beat
+[0.8130] DEBUG:loaded animation trigger id: LeftFoot, time 1.133, type: Beat
+[0.8140] DEBUG:loaded animation trigger id: RightFoot, time 1.667, type: Beat
+[0.8150] DEBUG:monk/animations/monk_stand_to_walk_180.hkx loaded time cost = 10(MS)
+[0.8160] DEBUG:Loading resource monk/animations/monk_walk_180.hkx
+[0.8170] DEBUG:loaded animation monk/animations/monk_walk_180.hkx, length = 2.83, frames = 85
+[0.8170] DEBUG:ResourceDependency monk/animations/monk_walk_180.hkx ---> monk/animations/monk_walk_180.json
+[0.8180] WARNING:HavokAnimation:ParseJsonString Error Part
+[0.8190] DEBUG:loaded animation trigger id: Continue, time 1.000, type: Event
+[0.8190] DEBUG:loaded animation trigger id: RightFoot, time 1.000, type: Beat
+[0.8200] DEBUG:loaded animation trigger id: LeftFoot, time 1.600, type: Beat
+[0.8210] DEBUG:loaded animation trigger id: LeftFoot, time 2.200, type: Beat
+[0.8220] DEBUG:monk/animations/monk_walk_180.hkx loaded time cost = 6(MS)
+[0.8230] DEBUG:dummping state layer 0
+[0.8240] DEBUG:state[0] = IdleState
+[0.8250] DEBUG:state[1] = MoveState
+[0.8260] DEBUG:state[2] = RunTurn180State
+[0.8270] DEBUG:state[3] = StandToRunState
+[0.8270] DEBUG:state[4] = RunToStandState
+[0.8280] DEBUG:state[5] = WalkState
+[0.8290] DEBUG:state[6] = StandToWalkState
+[0.8300] DEBUG:state[7] = WalkTurn180State
+[0.8310] DEBUG:Json/Monk_Animation_FSM.json loaded time cost = 126(MS)
+[0.8310] DEBUG:Loading resource Materials/Particle.xml
+[0.8320] DEBUG:Loading resource Techniques/DiffVColAdd.xml
+[0.8330] DEBUG:Techniques/DiffVColAdd.xml loaded time cost = 0(MS)
+[0.8330] DEBUG:Loading resource Textures/Flare.dds
+[0.8340] DEBUG:Textures/Flare.dds loaded time cost = 0(MS)
+[0.8350] DEBUG:Materials/Particle.xml loaded time cost = 3(MS)
+[0.8360] ERROR:Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[0.8500] ERROR:Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[0.8500] ERROR:Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+[0.8530] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_135.hkx]
+[0.8530] DEBUG:loaded animation trigger id: LeftFoot, time 0.433, type: Beat
+[0.8540] DEBUG:loaded animation trigger id: RightFoot, time 0.667, type: Beat
+[0.8550] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_90.hkx]
+[0.8630] DEBUG:loaded animation trigger id: LeftFoot, time 0.433, type: Beat
+[0.8650] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_45.hkx]
+[0.8660] DEBUG:loaded animation trigger id: LeftFoot, time 0.433, type: Beat
+[0.8680] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_135.hkx]
+[0.8680] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[0.8680] DEBUG:loaded animation trigger id: RightFoot, time 1.267, type: Beat
+[0.8690] DEBUG:loaded animation trigger id: LeftFoot, time 1.800, type: Beat
+[0.8700] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_90.hkx]
+[0.8700] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[0.8700] DEBUG:loaded animation trigger id: RightFoot, time 1.267, type: Beat
+[0.8720] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_45.hkx]
+[0.8720] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[0.8720] DEBUG:loaded animation trigger id: RightFoot, time 1.267, type: Beat
+[0.8730] DEBUG:[NULL] ---> [IdleState], t[$Any]
+[0.8930] DEBUG:Reloading shaders
+[0.8930] DEBUG:Loading resource Shaders/HLSL/Stencil.xml
+[0.8940] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Stencil.hlsl
+[0.8940] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Uniforms.hlsl
+[0.8950] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Transform.hlsl
+[0.8950] DEBUG:Shaders/HLSL/Stencil.xml loaded time cost = 1(MS)
+[0.8960] DEBUG:Loading resource Shaders/HLSL/Shadow.xml
+[0.8960] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Shadow.hlsl
+[0.8970] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Uniforms.hlsl
+[0.8970] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Samplers.hlsl
+[0.8980] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Transform.hlsl
+[0.8980] DEBUG:Shaders/HLSL/Shadow.xml loaded time cost = 2(MS)
+[0.8990] DEBUG:Loading resource Shaders/HLSL/LitSolid.xml
+[0.8990] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/LitSolid.hlsl
+[0.9000] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Uniforms.hlsl
+[0.9000] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Samplers.hlsl
+[0.9010] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Transform.hlsl
+[0.9010] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/ScreenPos.hlsl
+[0.9010] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Lighting.hlsl
+[0.9020] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Fog.hlsl
+[0.9040] DEBUG:Shaders/HLSL/LitSolid.xml loaded time cost = 5(MS)
+[0.9080] DEBUG:Loading resource Shaders/HLSL/Unlit.xml
+[0.9080] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Unlit.hlsl
+[0.9090] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Uniforms.hlsl
+[0.9090] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Samplers.hlsl
+[0.9100] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Transform.hlsl
+[0.9100] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Fog.hlsl
+[0.9110] DEBUG:Shaders/HLSL/Unlit.xml loaded time cost = 3(MS)
+[0.9120] DEBUG:Loading resource Shaders/HLSL/Skybox.xml
+[0.9120] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Skybox.hlsl
+[0.9130] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Uniforms.hlsl
+[0.9130] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Samplers.hlsl
+[0.9130] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Transform.hlsl
+[0.9140] DEBUG:Shaders/HLSL/Skybox.xml loaded time cost = 2(MS)
+[0.9150] DEBUG:Created vertex shader Shaders/HLSL/SM3/Shadow.vs3
+[0.9160] DEBUG:Created pixel shader Shaders/HLSL/SM3/Shadow.ps3
+[0.9170] DEBUG:Created vertex shader Shaders/HLSL/SM3/Shadow_Skinned.vs3
+[0.9170] DEBUG:Created pixel shader Shaders/HLSL/SM3/Shadow_AlphaMask.ps3
+[0.9190] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadow.vs3
+[0.9210] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalPackedAmbientDirSpecShadowHW.ps3
+[0.9220] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadow.vs3
+[0.9240] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_AmbientDirSpecShadowHW.ps3
+[0.9260] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowInstanced.vs3
+[0.9280] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadowSkinned.vs3
+[0.9290] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAlphaMaskAmbientDirSpecShadowHW.ps3
+[0.9320] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAmbientDirSpecShadowHW.ps3
+[0.9330] DEBUG:Created vertex shader Shaders/HLSL/SM3/Skybox.vs3
+[0.9340] DEBUG:Created pixel shader Shaders/HLSL/SM3/Skybox.ps3
+[0.9360] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic_VCol.vs3
+[0.9370] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_VCol.ps3
+[0.9390] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic_DiffVCol.vs3
+[0.9400] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_DiffVCol.ps3
+[0.9440] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_AlphaVCol.ps3
+[1.9200] DEBUG:Created vertex shader Shaders/HLSL/SM3/Unlit_VColBillboard.vs3
+[1.9210] DEBUG:Created pixel shader Shaders/HLSL/SM3/Unlit_DiffVCol.ps3
+set animation = monk_stand_to_run_0
+[2.4770] DEBUG:[IdleState] ---> [StandToRunState], t[Go]
+[2.8780] DEBUG:[StandToRunState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_run_90
+[3.3330] DEBUG:[IdleState] ---> [StandToRunState], t[Go]
+[3.7680] DEBUG:[StandToRunState] ---> [MoveState], t[Continue]
+[7.8600] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
+[8.3740] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
+freeze scene update
+[10.6800] DEBUG:[MoveState] ---> [RunToStandState], t[Stop]
+[11.1900] DEBUG:[RunToStandState] ---> [IdleState], t[Continue]
+set animation = monk_stand_to_walk_135
+[11.6460] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[12.3160] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[13.9960] DEBUG:[WalkState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_walk_180
+[14.0820] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[14.6160] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[17.9770] DEBUG:[WalkState] ---> [WalkTurn180State], t[Turn180]
+[19.0090] DEBUG:[WalkTurn180State] ---> [WalkState], t[Continue]
+[24.2020] DEBUG:[WalkState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_walk_180
+[24.6130] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[25.1470] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[26.0130] DEBUG:[WalkState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_walk_90_mirror
+[26.1540] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[26.8230] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[27.4290] DEBUG:[WalkState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_walk_180
+[27.5240] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[28.0590] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[29.1270] DEBUG:[WalkState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_walk_90_mirror
+[29.4520] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[30.1220] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[30.3370] DEBUG:[WalkState] ---> [IdleState], t[Stop]
+set animation = monk_stand_to_walk_180
+[30.5520] DEBUG:[IdleState] ---> [StandToWalkState], t[Walk]
+[31.0900] DEBUG:[StandToWalkState] ---> [WalkState], t[Continue]
+[31.9920] DEBUG:[WalkState] ---> [IdleState], t[Stop]

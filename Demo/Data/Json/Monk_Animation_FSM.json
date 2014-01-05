@@ -15,7 +15,7 @@
 				{
 					"Name":"Go",
 				 	"Dest State Name":"StandToRunState",
-				 	"Motion Blend Type":"ignore source"
+				 	"Motion Blend Type":"ignore source rotation"
 				},
 				{
 					"Name":"Walk",
@@ -26,17 +26,12 @@
 		},
 
 		{
-			"Type":"SwitchAnimationState",
+			"Type":"SimpleAnimationState",
 			"Name":"MoveState",
-			"Parameter Name":"IsRightFootForward",
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_run_fwd.hkx",
-					"Mirrored":true
-				},
-				{
-					"Animation":"monk/animations/monk_run_fwd.hkx"
+					"Animation":"monk/animations/monk_run_0.hkx"
 				}
 			],
 			"Transitions":
@@ -60,7 +55,7 @@
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_run_turn_180.hkx",
+					"Animation":"monk/animations/monk_run_180.hkx",
 					"Looped":false
 				}
 			],
@@ -69,7 +64,8 @@
 				{
 					"Name":"Continue",
 				 	"Dest State Name":"MoveState",
-				 	"Motion Blend Type":"ignore dest"
+				 	"Motion Blend Type":"ignore dest",
+				 	"Sync Point":"RightFoot"
 				}
 			]
 		},
@@ -82,45 +78,45 @@
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_stand_to_run.hkx",
-					"MinimalTime":"$-0.2",
+					"Animation":"monk/animations/monk_stand_to_run_0.hkx",
+					"MinimalFrame":12,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_45.hkx",
-					"MinimalTime":"$-0.1",
+					"Animation":"monk/animations/monk_stand_to_run_45.hkx",
+					"MinimalFrame":13,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_90.hkx",
-					"MinimalTime":"$-0.01",
+					"Animation":"monk/animations/monk_stand_to_run_90.hkx",
+					"MinimalFrame":13,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_135.hkx",
-					"MinimalTime":"$-0.1",
+					"Animation":"monk/animations/monk_stand_to_run_135.hkx",
+					"MinimalFrame":13,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_180.hkx",
-					"MinimalTime":"$-0.25",
+					"Animation":"monk/animations/monk_stand_to_run_180.hkx",
+					"MinimalFrame":15,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_135.hkx",
-					"MinimalTime":"$-0.1",
+					"Animation":"monk/animations/monk_stand_to_run_135.hkx",
+					"MinimalFrame":13,
 					"Looped":false,
 					"Mirrored":true
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_90.hkx",
-					"MinimalTime":"$-0.1",
+					"Animation":"monk/animations/monk_stand_to_run_90.hkx",
+					"MinimalFrame":13,
 					"Looped":false,
 					"Mirrored":true
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_run_turn_45.hkx",
-					"MinimalTime":"$-0.1",
+					"Animation":"monk/animations/monk_stand_to_run_45.hkx",
+					"MinimalFrame":13,
 					"Looped":false,
 					"Mirrored":true
 				}
@@ -129,11 +125,14 @@
 			[
 				{
 					"Name":"Continue",
-				 	"Dest State Name":"MoveState"
+				 	"Dest State Name":"MoveState",
+				 	"Sync Point":"RightFoot",
+				 	"Motion Blend Type":"ignore dest"
 				},
 				{
 					"Name":"Stop",
-				 	"Dest State Name":"IdleState"
+				 	"Dest State Name":"IdleState",
+				 	"Motion Blend Type":"ignore dest rotation"
 				}
 			]
 		},
@@ -159,17 +158,12 @@
 		},
 
 		{
-			"Type":"SwitchAnimationState",
+			"Type":"SimpleAnimationState",
 			"Name":"WalkState",
-			"Parameter Name":"IsRightFootForward",
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_walk_fwd.hkx"
-				},
-				{
-					"Animation":"monk/animations/monk_walk_fwd.hkx",
-					"Mirrored":true
+					"Animation":"monk/animations/monk_walk_0.hkx"
 				}
 			],
 			"Transitions":
@@ -195,45 +189,45 @@
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_stand_to_walk.hkx",
-					"MinimalTime":"$-0.2",
+					"Animation":"monk/animations/monk_stand_to_walk_0.hkx",
+					"MinimalFrame":10,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_45.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_45.hkx",
+					"MinimalFrame":20,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_90.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_90.hkx",
+					"MinimalFrame":20,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_135.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_135.hkx",
+					"MinimalFrame":20,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_180.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_180.hkx",
+					"MinimalFrame":16,
 					"Looped":false
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_135.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_135.hkx",
+					"MinimalFrame":20,
 					"Looped":false,
 					"Mirrored":true
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_90.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_90.hkx",
+					"MinimalFrame":20,
 					"Looped":false,
 					"Mirrored":true
 				},
 				{
-					"Animation":"monk/animations/monk_stand_to_walk_turn_45.hkx",
-					"MinimalTime":"$-0.5",
+					"Animation":"monk/animations/monk_stand_to_walk_45.hkx",
+					"MinimalFrame":20,
 					"Looped":false,
 					"Mirrored":true
 				}
@@ -242,11 +236,14 @@
 			[
 				{
 					"Name":"Continue",
-				 	"Dest State Name":"WalkState"
+				 	"Dest State Name":"WalkState",
+				 	"Sync Point":"RightFoot",
+				 	"Motion Blend Type":"ignore dest"
 				},
 				{
 					"Name":"Stop",
-				 	"Dest State Name":"IdleState"
+				 	"Dest State Name":"IdleState",
+				 	"Motion Blend Type":"ignore dest"
 				}
 			]
 		},
@@ -257,7 +254,7 @@
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_walk_turn_180.hkx",
+					"Animation":"monk/animations/monk_walk_180.hkx",
 					"Looped":false
 				}
 			],
@@ -266,9 +263,10 @@
 				{
 					"Name":"Continue",
 				 	"Dest State Name":"WalkState",
-				 	"Motion Blend Type":"ignore dest"
+				 	"Motion Blend Type":"ignore dest",
+				 	"Sync Point":"RightFoot"
 				}
 			]
-		},
+		}
 	]
 }

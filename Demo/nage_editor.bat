@@ -1,1 +1,1 @@
-NagaGameDemo.exe Scripts/Editor.as %* -w
+NagaGameDemo.exe Scripts/Editor.as %* -w -log debug

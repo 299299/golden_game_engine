@@ -64,6 +64,19 @@ bool ResetScene()
 {
     ui.cursor.shape = CS_BUSY;
 
+    if (messageBoxCallback is null && sceneModified)
+    {
+        MessageBox@ messageBox = MessageBox("Scene has been modified.\nContinue to reset?", "Warning");
+        Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
+        cancelButton.visible = true;
+        cancelButton.focus = true;
+        SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
+        messageBoxCallback = @ResetScene;
+        return false;
+    }
+    else
+        messageBoxCallback = null;
+
     suppressSceneChanges = true;
 
     // Create a scene with default values, these will be overridden when loading scenes
@@ -146,13 +159,16 @@ bool LoadScene(const String&in fileName)
     // Always load the scene from the filesystem, not from resource paths
     if (!fileSystem.FileExists(fileName))
     {
-        log.Error("No such scene: " + fileName);
+        MessageBox("No such scene.\n" + fileName);
         return false;
     }
 
     File file(fileName, FILE_READ);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return false;
+    }
 
     // Add the scene's resource path in case it's necessary
     String newScenePath = GetPath(fileName);
@@ -210,6 +226,8 @@ bool SaveScene(const String&in fileName)
         sceneModified = false;
         UpdateWindowTitle();
     }
+    else
+        MessageBox("Could not save scene successfully!\nSee Urho3D.log for more detail.");
 
     return success;
 }
@@ -277,13 +295,16 @@ void LoadNode(const String&in fileName)
 
     if (!fileSystem.FileExists(fileName))
     {
-        log.Error("No such node file " + fileName);
+        MessageBox("No such node file.\n" + fileName);
         return;
     }
 
     File file(fileName, FILE_READ);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return;
+    }
 
     ui.cursor.shape = CS_BUSY;
 
@@ -321,12 +342,17 @@ bool SaveNode(const String&in fileName)
 
     File file(fileName, FILE_WRITE);
     if (!file.open)
+    {
+        MessageBox("Could not open file.\n" + fileName);
         return false;
+    }
 
     String extension = GetExtension(fileName);
     bool success = (extension != ".xml" ? editNode.Save(file) : editNode.SaveXML(file));
     if (success)
         instantiateFileName = fileName;
+    else
+        MessageBox("Could not save node successfully!\nSee Urho3D.log for more detail.");
 
     return success;
 }
