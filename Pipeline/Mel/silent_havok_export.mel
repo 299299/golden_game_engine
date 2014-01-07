@@ -1,0 +1,29 @@
+global proc silent_havok_export(int $type, string $file_name)
+{
+    string $hko_path = "E:/Code/NagaGame/Pipeline/Havok_HKO_Config/";
+    string $hko_files[] = 
+    { 
+        "monk_rig.hko",
+        "monk_skin_64_bone.hko",
+        "monk_skin_full_bone.hko",
+        "monk_aniamtion_no_rootmotion.hko",
+        "monk_aniamtion_rootmotion_without_rotation.hko",
+        "monk_aniamtion_rootmotion_with_rotation.hko" 
+    };
+    string $temp_hkx = "C:/temp.hkx";
+    string $export_path = "E:/Code/NagaEngine/Urho3D/Bin/Data/";
+
+    string $hko_filename = $hko_files[$type];
+	string $hko_fullpath = $hko_path + $hko_filename;
+    print("export " + $file_name + " using hko = " + $hko_fullpath);
+ 
+    //Export silently using an options file
+    //Always to the same temp file 
+    hkCmdExportScene -o $hko_fullpath -b;
+    
+    //Move the temp file to our real file.
+    $file_name = $export_path +$file_name;
+    string $move_file_cmd = "move " + $temp_hkx + " " + $file_name;
+    print("system command = " + $move_file_cmd);
+    system($move_file_cmd);
+};
