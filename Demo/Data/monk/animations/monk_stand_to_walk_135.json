@@ -2,7 +2,7 @@
 	"Triggers":
 	[
 		{
-			"frame":20,
+			"frame":19,
 			"id":"RightFoot",
 			"type":"Beat"
 		},
@@ -12,7 +12,7 @@
 			"type":"Beat"
 		},
 		{
-			"frame":54,
+			"frame":53,
 			"id":"RightFoot",
 			"type":"Beat"
 		}

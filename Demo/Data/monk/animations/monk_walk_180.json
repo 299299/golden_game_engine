@@ -2,23 +2,23 @@
 	"Triggers":
 	[
 		{
-			"frame":30,
+			"frame":20,
 			"id":"Continue",
 			"type":"Event"
 		},
 		{
-			"frame":30,
+			"frame":20,
 			"id":"RightFoot",
 			"type":"Beat"
 		},
 		{
-			"frame":48,
+			"frame":38,
 			"id":"LeftFoot",
 			"type":"Beat"
 		},
 		{
-			"frame":66,
-			"id":"LeftFoot",
+			"frame":54,
+			"id":"RightFoot",
 			"type":"Beat"
 		}
 	]

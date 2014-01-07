@@ -7,29 +7,13 @@
 			"type":"Beat"
 		},
 		{
-			"frame":10,
+			"frame":12,
 			"id":"RightFoot",
 			"type":"Beat"
 		},
 		{
-			"frame":21,
+			"frame":28,
 			"id":"LeftFoot",
-			"type":"Beat"
-		},
-		{
-			"frame":31,
-			"id":"RightFoot",
-			"type":"Beat"
-		},
-		{
-			"frame":42,
-			"id":"LeftFoot",
-			"type":"Beat"
-		}
-		,
-		{
-			"frame":52,
-			"id":"RightFoot",
 			"type":"Beat"
 		}
 	]
