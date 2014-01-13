@@ -10,7 +10,9 @@ global proc silent_havok_export(int $type, string $file_name)
         "monk_aniamtion_rootmotion_without_rotation.hko",
         "monk_aniamtion_rootmotion_with_rotation.hko",
         "monk_aniamtion_rootmotion_with_rotation_turn.hko",
-        "monk_aniamtion_rootmotion_with_rotation_directional.hko"
+        "monk_aniamtion_rootmotion_with_rotation_directional.hko",
+        "monk_animation_additive_first_frame.hko",
+        "monk_animation_additive_tpose.hko"
     };
     string $temp_hkx = "C:/temp.hkx";
     string $export_path = "E:/Code/NagaEngine/Urho3D/Bin/Data/";
