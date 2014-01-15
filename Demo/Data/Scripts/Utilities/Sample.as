@@ -75,6 +75,8 @@ void CreateConsoleAndDebugHud()
     // Create debug HUD
     DebugHud@ debugHud = engine.CreateDebugHud();
     debugHud.defaultStyle = uiStyle;
+
+    ui.root.defaultStyle = uiStyle;
 }
 
 void HandleKeyDown(StringHash eventType, VariantMap& eventData)

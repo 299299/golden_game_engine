@@ -37,6 +37,11 @@ void Start()
         return;
     }
 
+    if(graphics != null)
+    {
+        graphics.sRGB = true;
+    }
+
     SubscribeToEvent("Update", "HandleUpdate");
 
     // Enable console commands from the editor script
@@ -159,6 +164,10 @@ void LoadConfig()
             if (fileSystem.DirExists(newImportPath))
                 uiImportPath = newImportPath;
         }
+        if (resourcesElem.HasAttribute("recentscenes"))
+        {
+            uiRecentScenes = resourcesElem.GetAttribute("recentscenes").Split(';');
+        }
     }
 
     if (!renderingElem.isNull)
@@ -250,6 +259,7 @@ void SaveConfig()
     resourcesElem.SetBool("rememberresourcepath", rememberResourcePath);
     resourcesElem.SetAttribute("resourcepath", sceneResourcePath);
     resourcesElem.SetAttribute("importpath", uiImportPath);
+    resourcesElem.SetAttribute("recentscenes", Join(uiRecentScenes, ";"));
 
     if (renderer !is null)
     {

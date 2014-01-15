@@ -1,7 +1,7 @@
 #include "Scripts/Utilities/Sample.as"
 #include "Scripts/Input.as"
 
-String sceneToLoad = "Data/Scenes/testScene.xml";
+String sceneToLoad = "Data/Scenes/testScene_blendtree.xml";//"Data/Scenes/testScene.xml";
 Scene@ scene_;
 Node@ cameraNode;
 Node@ characterNode;
@@ -27,11 +27,20 @@ float dumpTime = 0;
 float last_right_foot_z = 0;
 String animationString;
 
+String lastConsoleCommand;
+
 
 GamePad@ g_gamePad = GamePad();
 
 void Start()
 {
+    Print("---------------------- Script Start ----------------------");
+
+    if(graphics != null)
+    {
+        graphics.sRGB = true;
+    }
+
     script.defaultScriptFile = scriptFile;
     // Enable automatic resource reloading
     cache.autoReloadResources = true;
@@ -52,12 +61,16 @@ void Start()
 
 void Stop()
 {
+    Print("---------------------- Script Stop ----------------------");
+    @characterNode = null;
+    @cameraNode = null;
     ui.Clear();
 }
 
 void CreateScene()
 {
     scene_ = Scene();
+
     File loadFile(fileSystem.programDir + sceneToLoad, FILE_READ);
     scene_.LoadXML(loadFile);
     characterNode = scene_.GetChild("monk", true);
@@ -78,6 +91,10 @@ void CreateScene()
 
     animController = characterNode.GetComponent("AnimatorController");
     animator = characterNode.GetComponent("HavokAnimator");
+
+    //CharacterController@ cc = characterNode.GetComponent("CharacterController");
+    //cc.SetRotationOnly(true);
+
     SubscribeToEvent(characterNode, "AnimationStateEnter", "HandleAnimationStateEnter");
 
     /*
@@ -237,9 +254,9 @@ void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
     DebugRenderer@ debug = scene_.debugRenderer;
     debug.AddNode(characterNode, 2.0f, false);
 
-    debug.Add2DLine(Vector2(10,10), Vector2(10, 100), Color(1,0,0));
-    debug.Add2DStar(Vector2(50,50), Color(0,1,0), 20);
-    debug.Add2DSquare(Vector2(100,100), Color(0,0,1), 20);
+    //debug.Add2DLine(Vector2(10,10), Vector2(10, 100), Color(1,0,0));
+    //debug.Add2DStar(Vector2(50,50), Color(0,1,0), 20);
+    //debug.Add2DSquare(Vector2(100,100), Color(0,0,1), 20);
 
 
     if (drawDebugMode == 0)
@@ -310,6 +327,23 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     {
         //engine.DumpMemory();
     }
+
+    else if(key == 'J')
+    {
+        StartRecord();
+    }
+    else if(key == 'K')
+    {
+        StopRecord();
+    }
+    else if(key == 'L')
+    {
+        StartReplay(1.0f);
+    }
+    else if(key == 'M')
+    {
+        StopReplay();
+    }
 }
 
 //-- clamps an angle to the rangle of [-PI, PI]
@@ -322,7 +356,7 @@ float angleDiff( float diff )
     return diff;
 }
 
-int SelectAnimation(float angle, int slice)
+float SelectAnimation(float angle, float slice)
 {
     //as 0 --> [-22.5, 22.5] range
     //we should move it a bit.
@@ -412,7 +446,7 @@ void OnUpdateIdle(float timeStep)
     if (g_gamePad.m_padMagnitude > 0.1f && g_gamePad.isLeftStickStationary())
     {
         float characterDifference = computeDifference();
-        int animIndex = SelectAnimation(characterDifference, 8);
+        float animIndex = SelectAnimation(characterDifference, 8.0f);
         characterNode.vars["StandToRunIndex"] = animIndex;
         
         Array<String> run_animations = 
@@ -517,9 +551,98 @@ void HandleAnimationStateEnter(StringHash eventType, VariantMap& eventData)
     }
 }
 
+
+void HandleCommand(const String& command, bool bSet)
+{
+    if(command == "Dump")
+    {
+        String dumpText;
+        animController.Dump(dumpText);
+        Print(dumpText);
+    }
+    else if(command == "Record")
+    {
+        StartRecord();
+    }
+    else if(command == "StopRecord")
+    {
+        StopRecord();
+    }
+    else if(command == "Replay")
+    {
+        StartReplay(1.0f);
+    }
+    else if(command == "StopReplay")
+    {
+        StopReplay();
+    }
+    else if(command == "DumpTransitions")
+    {
+        Array<String> names = animController.GetTransitionNames();
+        for(uint i=0; i<names.length; ++i)
+        {
+            Print("transition name = " + names[i]);
+        }
+    }
+    else if(command == "DumpParameters")
+    {
+        Array<String> names = animController.GetParameterNames();
+        for(uint i=0; i<names.length; ++i)
+        {
+            Print("parameter name = " + names[i]);
+        }
+    }
+    else
+    {
+        if(!script.Execute(command))
+            return;
+    }
+
+    if(bSet)
+        lastConsoleCommand = command;
+}
+
 void HanldeConsoleInput(const String& inputText)
 {
     if(inputText.length == 0)
         return;
-    script.Execute(inputText);
+
+    if(inputText.length == 3)
+    {
+        uint u1 = inputText.AtUTF8(0);
+        uint u2 = inputText.AtUTF8(1);
+        uint u3 = inputText.AtUTF8(2);
+        if(u1 == 27 && u2 == 91)
+        {
+            if(u3 == 65 && !lastConsoleCommand.empty)
+            {
+                //backward search histroy
+                HandleCommand(lastConsoleCommand, false);
+                return;
+            }
+        }
+    }
+
+    HandleCommand(inputText, true);
+}
+
+void StartRecord()
+{
+    animController.StartRecordSnapShot(30);
+}
+
+void StopRecord()
+{
+    animController.StopRecordSnapShort();
+}
+
+void StartReplay(float speed)
+{
+    animController.SetSnapShortPlaySpeed(speed);
+    animController.PlaySnapShort(true);
+}
+
+void StopReplay()
+{
+    animController.StopPlaySnapShort();
 }

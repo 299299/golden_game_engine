@@ -1,1 +1,1 @@
-NagaGameDemo.exe Scripts/Animation.as %* -w -s -log debug
+NagaGameDemo.exe Scripts/Animation.as -w -s 

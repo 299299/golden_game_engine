@@ -13,7 +13,7 @@ Array<XMLFile@> uiElementCopyBuffer;
 bool suppressUIElementChanges = false;
 
 // Registered UIElement user variable reverse mappings
-VariantMap uiElementVarNames(false);
+VariantMap uiElementVarNames;
 
 const ShortStringHash FILENAME_VAR("FileName");
 const ShortStringHash MODIFIED_VAR("Modified");

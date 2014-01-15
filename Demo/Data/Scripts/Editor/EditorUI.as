@@ -4,6 +4,8 @@ XMLFile@ uiStyle;
 XMLFile@ iconStyle;
 UIElement@ uiMenuBar;
 UIElement@ quickMenu;
+Menu@ recentSceneMenu;
+Window@ mruScenesPopup;
 Array<QuickMenuItem@> quickMenuItems;
 FileSelector@ uiFileSelector;
 
@@ -20,6 +22,8 @@ const ShortStringHash INDENT_MODIFIED_BY_ICON_VAR("IconIndented");
 
 const int SHOW_POPUP_INDICATOR = -1;
 const uint MAX_QUICK_MENU_ITEMS = 10;
+
+const uint maxRecentSceneCount = 5;
 
 Array<String> uiSceneFilters = {"*.xml", "*.bin", "*.*"};
 Array<String> uiElementFilters = {"*.xml"};
@@ -39,6 +43,7 @@ String uiNodePath = fileSystem.programDir + "Data/Objects";
 String uiImportPath;
 String uiScriptPath = fileSystem.programDir + "Data/Scripts";
 String uiParticlePath = fileSystem.programDir + "Data/Particles";
+Array<String> uiRecentScenes;
 
 bool uiFaded = false;
 float uiMinOpacity = 0.3;
@@ -282,6 +287,10 @@ void CreateMenuBar()
         popup.AddChild(CreateMenuItem("Open scene...", @PickFile, 'O', QUAL_CTRL));
         popup.AddChild(CreateMenuItem("Save scene", @SaveSceneWithExistingName, 'S', QUAL_CTRL));
         popup.AddChild(CreateMenuItem("Save scene as...", @PickFile, 'S', QUAL_SHIFT | QUAL_CTRL));
+        recentSceneMenu = CreateMenuItem("Open recent scene", null, SHOW_POPUP_INDICATOR);
+        popup.AddChild(recentSceneMenu);
+        mruScenesPopup = CreatePopup(recentSceneMenu);
+        PopulateMruScenes();
         CreateChildDivider(popup);
 
         Menu@ childMenu = CreateMenuItem("Load node", null, SHOW_POPUP_INDICATOR);
@@ -1376,3 +1385,29 @@ void HandleMessageAcknowledgement(StringHash eventType, VariantMap& eventData)
         messageBoxCallback = null;
 }
 
+void PopulateMruScenes()
+{
+    mruScenesPopup.RemoveAllChildren();
+    if (uiRecentScenes.length > 0)
+    {
+        recentSceneMenu.enabled = true;
+        for (uint i=0; i < uiRecentScenes.length; ++i)
+            mruScenesPopup.AddChild(CreateMenuItem(uiRecentScenes[i], @LoadMostRecentScene, 0, 0, false));
+    }
+    else
+        recentSceneMenu.enabled = false;
+
+}
+
+bool LoadMostRecentScene()
+{
+    Menu@ menu = GetEventSender();
+    if (menu is null)
+        return false;
+
+    Text@ text = menu.GetChildren()[0];
+    if (text is null)
+        return false;
+
+    return LoadScene(text.text);
+}

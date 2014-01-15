@@ -29,6 +29,7 @@ Array<XMLFile@> sceneCopyBuffer;
 
 bool suppressSceneChanges = false;
 bool inSelectionModify = false;
+bool skipMruScene = false;
 
 Array<EditActionGroup> undoStack;
 uint undoStackPos = 0;
@@ -198,6 +199,12 @@ bool LoadScene(const String&in fileName)
 
     suppressSceneChanges = false;
 
+    // global variable to mostly bypass adding mru upon importing tempscene
+    if (!skipMruScene)
+        UpdateSceneMru(fileName);
+
+    skipMruScene = false;
+
     ResetCamera();
     CreateGizmo();
     CreateGrid();
@@ -215,6 +222,16 @@ bool SaveScene(const String&in fileName)
     // Unpause when saving so that the scene will work properly when loaded outside the editor
     editorScene.updateEnabled = true;
 
+    if(fileSystem.FileExists(fileName))
+    {
+        Print("scene " + fileName + " exist, make a back up file.");
+        String fName = fileName;
+        fName.Replace("/", "\\");
+        String cmd = "copy " + fName + " " + fName + ".bak";
+        Print("SystemCommand + " + cmd);
+        fileSystem.SystemCommand(cmd);
+    }
+
     File file(fileName, FILE_WRITE);
     String extension = GetExtension(fileName);
     bool success = (extension != ".xml" ? editorScene.Save(file) : editorScene.SaveXML(file));
@@ -223,6 +240,7 @@ bool SaveScene(const String&in fileName)
 
     if (success)
     {
+        UpdateSceneMru(fileName);
         sceneModified = false;
         UpdateWindowTitle();
     }
@@ -871,4 +889,17 @@ bool SaveParticleData(const String&in fileName)
     }
 
     return false;
+}
+
+void UpdateSceneMru(String filename)
+{
+    while (uiRecentScenes.Find(filename) > -1)
+        uiRecentScenes.Erase(uiRecentScenes.Find(filename));
+
+    uiRecentScenes.Insert(0, filename);
+
+    for(uint i=uiRecentScenes.length-1;i>=maxRecentSceneCount;i--)
+        uiRecentScenes.Erase(i);
+
+    PopulateMruScenes();
 }
