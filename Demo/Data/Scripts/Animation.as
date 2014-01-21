@@ -29,7 +29,7 @@ String animationString;
 
 String lastConsoleCommand;
 bool current_pause = false;
-
+bool lean_left_right = false;
 
 GamePad@ g_gamePad = GamePad();
 
@@ -128,7 +128,7 @@ void CreateInstructions()
     instructionText.horizontalAlignment = HA_CENTER;
     instructionText.verticalAlignment = VA_CENTER;
     instructionText.SetPosition(0, ui.root.height / 4);
-    instructionText.color = Color(0.0f, 0.25, 0.75f);
+    instructionText.color = Color(0.5f, 0.25, 0.45f);
 
     /*Text@ statusText = ui.root.CreateChild("Text", "STS");
     statusText.horizontalAlignment = HA_LEFT;
@@ -164,7 +164,7 @@ void UpdateInstructionText()
     text += ("\nF5 Toggle Dump Animation, F6 Toggle TimeScale");
     text += ("\nE Reset Animation, F Toggle Rotation Only");
     text += ("\nC Toggle RootMotion, Space To Toggle Scene Update");
-    text += ("\nG Toggle Walk");
+    text += ("\nG Toggle Walk, J Toggle Lean Left&Right");
     instructionText.text = text;
 }
 
@@ -348,23 +348,10 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     {
         //engine.DumpMemory();
     }
-
-    else if(key == 'J')
-    {
-        StartRecord();
-    }
-    else if(key == 'K')
-    {
-        StopAnimationDebug();
-    }
-    else if(key == 'L')
-    {
-        StartReplay(1.0f);
-    }
-    else if(key == 'M')
-    {
-        StartReplay(0.0f);
-    }
+	else if(key == 'J')
+	{
+		lean_left_right = !lean_left_right;
+	}
 }
 
 //-- clamps an angle to the rangle of [-PI, PI]
@@ -527,7 +514,7 @@ void OnUpdateMoving(float timeStep)
     }
 
     float turnSeed = 3.0f;
-    characterNode.vars["Direction"] = g_gamePad.m_leftStickX;
+    characterNode.vars["Direction"] = lean_left_right ? g_gamePad.m_leftStickX : 0;
     characterNode.Yaw(characterDifference * turnSeed * timeStep);
 }
 
