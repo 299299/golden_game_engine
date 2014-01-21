@@ -128,7 +128,7 @@ void CreateInstructions()
     instructionText.horizontalAlignment = HA_CENTER;
     instructionText.verticalAlignment = VA_CENTER;
     instructionText.SetPosition(0, ui.root.height / 4);
-    instructionText.color = Color(0.5f, 0.25, 0.45f);
+    instructionText.color = Color(0.0f, 0.0, 0.15f);
 
     /*Text@ statusText = ui.root.CreateChild("Text", "STS");
     statusText.horizontalAlignment = HA_LEFT;

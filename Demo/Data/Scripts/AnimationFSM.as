@@ -23,6 +23,7 @@ uint currentTimeScaleIndex = 0;
 float cam_radius = 20.0f;
 float dumpTime = 0;
 String animationString;
+bool current_pause = false;
 
 Window@ fsmWindow;
 
@@ -109,17 +110,21 @@ void CreateInstructions()
     instructionText.SetPosition(0, ui.root.height / 4);
     instructionText.color = Color(0.0f, 0.25, 0.75f);
 
-    Text@ statusText = ui.root.CreateChild("Text", "STS");
-    statusText.horizontalAlignment = HA_LEFT;
-    statusText.verticalAlignment = VA_TOP;
-    statusText.SetPosition(0, 300);
-    statusText.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 15);
-    statusText.color = Color(1,0,0);
-
     Text@ animation_dump_text = ui.root.CreateChild("Text", "ADT");
     animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 12);
     animation_dump_text.SetPosition(0, 0);
     animation_dump_text.color = Color(0.0f, 0.0f, 1.0f);
+
+    Window@ window = ui.LoadLayout(cache.GetResource("XMLFile", "UI/AnimationControlWindow.xml"));
+    int window_width = 100;
+    ui.root.AddChild(window);
+    window.position = IntVector2(graphics.width - window_width, 0);
+    window.SetFixedSize(window_width, window_width*3);
+
+    SubscribeToEvent(window.GetChild("BUTTON_RECORD", true), "Released", "HandleRecordButton");
+    SubscribeToEvent(window.GetChild("BUTTON_REPLAY", true), "Released", "HandleReplayButton");
+    SubscribeToEvent(window.GetChild("BUTTON_STOP", true), "Released", "HandleStopButton");
+    SubscribeToEvent(window.GetChild("BUTTON_PAUSE", true), "Released", "HandlePauseButton");
 }
 
 void UpdateInstructionText()
@@ -178,6 +183,7 @@ void SubscribeToEvents()
     SubscribeToEvent(scene_, "ScenePostUpdate", "HandleScenePostUpdate");
     SubscribeToEvent("KeyDown", "CustomHandleKeyDown");
     SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
+    SubscribeToEvent("ScreenMode", "HandleScreenMode");
 }
 
 void HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -275,43 +281,6 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
         if(!scene_.updateEnabled)
             scene_.Update(1.0f/60.0f);
     }
-    else if(key == 'J')
-    {
-        StartRecord();
-    }
-    else if(key == 'K')
-    {
-        StopRecord();
-    }
-    else if(key == 'L')
-    {
-        StartReplay(1.0f);
-    }
-    else if(key == 'M')
-    {
-        StopReplay();
-    }
-}
-
-void StartRecord()
-{
-    animController.StartRecordSnapShot(30);
-}
-
-void StopRecord()
-{
-    animController.StopRecordSnapShort();
-}
-
-void StartReplay(float speed)
-{
-    animController.SetSnapShortPlaySpeed(speed);
-    animController.PlaySnapShort(true);
-}
-
-void StopReplay()
-{
-    animController.StopPlaySnapShort();
 }
 
 void CreateFSMWindow()
@@ -319,7 +288,7 @@ void CreateFSMWindow()
     fsmWindow = ui.LoadLayout(cache.GetResource("XMLFile", "UI/FSMWindow.xml"));
     ui.root.AddChild(fsmWindow);
     fsmWindow.SetSize(200, 400);
-    fsmWindow.SetPosition(800, 10);
+    fsmWindow.SetPosition(700, 10);
     fsmWindow.BringToFront();
     fsmWindow.opacity = 0.75f;
 }
@@ -413,4 +382,118 @@ void HandleParamterSlide(StringHash eventType, VariantMap& eventData)
 
     edit.text = String(newValue);
     characterNode.vars[paramName] = newValue;
+}
+
+void StartRecord()
+{
+    animController.StartRecord(30);
+}
+
+void StartReplay(float speed)
+{
+    animController.SetReplaySpeed(speed);
+    animController.StartReplay(true);
+
+    int recordedFrames = animController.GetRecordedFrames();
+    ShowReplayWindow(recordedFrames);
+}
+
+void StopAnimationDebug()
+{
+    animController.StopDebug();
+    HideReplayWindow();
+}
+
+void CreateReplayWindow()
+{
+    Window@ window = ui.root.CreateChild("Window", "REPLAY");
+    window.visible = false;
+    window.SetStyleAuto();
+    int window_height = 50;
+    window.position = IntVector2(0,graphics.height - window_height);
+    window.SetFixedSize(graphics.width, window_height);
+    window.layoutMode = LM_VERTICAL;
+
+    Text@ text = window.CreateChild("Text","REPLAY_TEXT");
+    text.text = "Replay Frame = 0";
+    text.SetStyleAuto();
+
+    Slider@ slider = window.CreateChild("Slider", "REPLAY_SLIDER");
+    slider.SetStyleAuto();
+    SubscribeToEvent(slider, "SliderChanged", "HandleReplaySliderChanged");
+}
+
+void UpdateReplayWindow()
+{
+    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
+
+    if(current_pause)
+        return;
+    slider.value = animController.GetReplayFrame();
+    text.text = "Replay Frame = " + String(slider.value);    
+}
+
+void ShowReplayWindow(float range)
+{
+    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    slider.range = range;
+    Window@ window = ui.root.GetChild("REPLAY", true);
+    window.visible = true;
+}
+
+void HideReplayWindow()
+{
+    if(engine.headless)
+        return;
+    Window@ window = ui.root.GetChild("REPLAY", true);
+    window.visible = false;
+}
+
+void HandleReplaySliderChanged(StringHash eventType, VariantMap& eventData)
+{
+    float newValue = eventData["Value"].GetFloat();
+    int iFrame = newValue;
+    animController.SetReplayFrame(iFrame);
+
+    //Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
+    text.text = "Replay Frame = " + String(iFrame);
+}
+
+void HandleRecordButton()
+{
+    StartRecord();
+    HideReplayWindow();
+}
+
+void HandleReplayButton()
+{
+    StartReplay(1.0);
+}
+
+void HandlePauseButton()
+{
+    current_pause = !current_pause;
+    animController.SetReplaySpeed(current_pause ? 0.0f : 1.0f);
+}
+
+void HandleStopButton()
+{
+    StopAnimationDebug();
+}
+
+void HandleScreenMode()
+{
+    int window_height = 100;
+    Window@ window = ui.root.GetChild("REPLAY", true);
+    window.position = IntVector2(0,graphics.height - window_height);
+    window.SetFixedSize(graphics.width, window_height);
+
+    Window@ window1 = ui.root.GetChild("WINDOW_CONTROL", true);
+    if(window1 is null)
+        return;
+    int window_width = 100;
+    window1.position = IntVector2(graphics.width - window_width, 0);
+    window1.SetFixedSize(window_width, window_width*3);
 }
