@@ -2,8 +2,9 @@
 <element type="Window">
 	<attribute name="Name" value="FSMWindow" />
 	<attribute name="Position" value="415 165" />
-	<attribute name="Size" value="217 26" />
+	<attribute name="Size" value="217 41" />
 	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Is Movable" value="true" />
 	<attribute name="Is Resizable" value="true" />
 	<element type="Text">
 		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
