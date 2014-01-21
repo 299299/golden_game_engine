@@ -7,11 +7,11 @@
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_run_left.hkx",
-					"Looped":false
+					"Animation":"monk/animations/monk_run_0.hkx"
 				},
 				{
-					"Animation":"monk/animations/monk_run_0.hkx"
+					"Animation":"monk/animations/monk_run_left.hkx",
+					"Looped":false
 				},
 				{
 					"Animation":"monk/animations/monk_run_right.hkx",
@@ -38,12 +38,12 @@
 						{
 							"Name": "AdditiveBlendLeft",
 							"Node Type":"Animation Source",
-							"Animation Slot": 0
+							"Animation Slot": 1
 						},
 						{
 							"Name": "BaseFwd",
 							"Node Type":"Animation Source",
-							"Animation Slot": 1
+							"Animation Slot": 0
 						},
 						{
 							"Name": "AdditiveBlendRight",

@@ -1,7 +1,7 @@
 #include "Scripts/Utilities/Sample.as"
 #include "Scripts/Input.as"
 
-String sceneToLoad = "Data/Scenes/testScene_blendtree.xml";//"Data/Scenes/testScene.xml";
+String sceneToLoad = "Data/Scenes/testScene.xml";
 Scene@ scene_;
 Node@ cameraNode;
 Node@ characterNode;
@@ -28,6 +28,7 @@ float last_right_foot_z = 0;
 String animationString;
 
 String lastConsoleCommand;
+bool current_pause = false;
 
 
 GamePad@ g_gamePad = GamePad();
@@ -50,6 +51,7 @@ void Start()
     {
         SampleStart();
         CreateInstructions();
+        CreateReplayWindow();
     }
     CreateScene();
     
@@ -128,17 +130,29 @@ void CreateInstructions()
     instructionText.SetPosition(0, ui.root.height / 4);
     instructionText.color = Color(0.0f, 0.25, 0.75f);
 
-    Text@ statusText = ui.root.CreateChild("Text", "STS");
+    /*Text@ statusText = ui.root.CreateChild("Text", "STS");
     statusText.horizontalAlignment = HA_LEFT;
     statusText.verticalAlignment = VA_TOP;
     statusText.SetPosition(0, 300);
     statusText.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 15);
-    statusText.color = Color(1,0,0);
+    statusText.color = Color(1,0,0);*/
 
     Text@ animation_dump_text = ui.root.CreateChild("Text", "ADT");
     animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/MONACO.TTF"), 12);
     animation_dump_text.SetPosition(0, 0);
     animation_dump_text.color = Color(0.0f, 0.0f, 1.0f);
+
+
+    Window@ window = ui.LoadLayout(cache.GetResource("XMLFile", "UI/AnimationControlWindow.xml"));
+    int window_width = 100;
+    ui.root.AddChild(window);
+    window.position = IntVector2(graphics.width - window_width, 0);
+    window.SetFixedSize(window_width, window_width*3);
+
+    SubscribeToEvent(window.GetChild("BUTTON_RECORD", true), "Released", "HandleRecordButton");
+    SubscribeToEvent(window.GetChild("BUTTON_REPLAY", true), "Released", "HandleReplayButton");
+    SubscribeToEvent(window.GetChild("BUTTON_STOP", true), "Released", "HandleStopButton");
+    SubscribeToEvent(window.GetChild("BUTTON_PAUSE", true), "Released", "HandlePauseButton");
 }
 
 void UpdateInstructionText()
@@ -161,6 +175,7 @@ void SetupViewport()
     // use, but now we just use full screen and default render path configured in the engine command line options
     Viewport@ viewport = Viewport(scene_, cameraNode.GetComponent("Camera"));
     renderer.viewports[0] = viewport;
+    SubscribeToEvent("ScreenMode", "HandleScreenMode");
 }
 
 void MoveCamera(float timeStep)
@@ -219,6 +234,12 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     String consoleInput = GetConsoleInput();
     HanldeConsoleInput(consoleInput);
+
+    //if we are replaying
+    if(animController.GetDebugState() == 2)
+    {
+        UpdateReplayWindow();
+    }
 }
 
 void HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)
@@ -334,7 +355,7 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     }
     else if(key == 'K')
     {
-        StopRecord();
+        StopAnimationDebug();
     }
     else if(key == 'L')
     {
@@ -342,7 +363,7 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     }
     else if(key == 'M')
     {
-        StopReplay();
+        StartReplay(0.0f);
     }
 }
 
@@ -406,8 +427,8 @@ void CheckFootFoward()
 {
     if(animator is null)
         return;
-    int left_bone_id = animator.GetBoneIndex("Character1_LeftLeg"); 
-    int right_bone_id = animator.GetBoneIndex("Character1_RightLeg");
+    int left_bone_id = animator.GetBoneIndex(StringHash("Character1_LeftLeg")); 
+    int right_bone_id = animator.GetBoneIndex(StringHash("Character1_RightLeg"));
     float left_dot = animator.GetDotFromBoneTranslationMS(Vector3(0,0,1), left_bone_id);
     float right_dot = animator.GetDotFromBoneTranslationMS(Vector3(0,0,1), right_bone_id);
     
@@ -478,9 +499,9 @@ void OnUpdateIdle(float timeStep)
             Print("set animation = " + run_animations[animIndex]);
 
         if(bWalk)
-            animController.FireEvent("Walk", 0);
+            animController.FireEvent(ShortStringHash("Walk"), 0);
         else
-            animController.FireEvent("Go", 0);
+            animController.FireEvent(ShortStringHash("Go"), 0);
         return;
     }
 }
@@ -489,32 +510,33 @@ void OnUpdateMoving(float timeStep)
 {
     if(g_gamePad.m_padMagnitude < 0.1f && g_gamePad.hasLeftStickBeenStationary(0.1f))
     {
-        animController.FireEvent("Stop", 0);
+        animController.FireEvent(ShortStringHash("Stop"), 0);
         return;
     }
 
     // don't try to turn if the character is already turning
     // if is in run turn 180 state
-    if(animController.IsStateActive("RunTurn180State", 0))
+    if(animController.IsStateActive(ShortStringHash("RunTurn180State"), 0))
         return;
 
     float characterDifference = computeDifference();
     if(characterDifference > 120 && g_gamePad.isLeftStickStationary()) 
     {
-        animController.FireEvent("Turn180", 0);
+        animController.FireEvent(ShortStringHash("Turn180"), 0);
         return;
     }
 
     float turnSeed = 3.0f;
+    characterNode.vars["Direction"] = g_gamePad.m_leftStickX;
     characterNode.Yaw(characterDifference * turnSeed * timeStep);
 }
 
 void OnUpdateStandToRun(float timeStep)
 {
     if(g_gamePad.m_padMagnitude < 0.5)
-        animController.FireEvent("Stop", 0);
+        animController.FireEvent(ShortStringHash("Stop"), 0);
     else
-        animController.FireEvent("Continue", 0);
+        animController.FireEvent(ShortStringHash("Continue"), 0);
 }
 
 void UpdateCharacter(float timeStep)
@@ -552,54 +574,29 @@ void HandleAnimationStateEnter(StringHash eventType, VariantMap& eventData)
 }
 
 
-void HandleCommand(const String& command, bool bSet)
+void DumpAnimationFSM()
 {
-    if(command == "Dump")
-    {
-        String dumpText;
-        animController.Dump(dumpText);
-        Print(dumpText);
-    }
-    else if(command == "Record")
-    {
-        StartRecord();
-    }
-    else if(command == "StopRecord")
-    {
-        StopRecord();
-    }
-    else if(command == "Replay")
-    {
-        StartReplay(1.0f);
-    }
-    else if(command == "StopReplay")
-    {
-        StopReplay();
-    }
-    else if(command == "DumpTransitions")
-    {
-        Array<String> names = animController.GetTransitionNames();
-        for(uint i=0; i<names.length; ++i)
-        {
-            Print("transition name = " + names[i]);
-        }
-    }
-    else if(command == "DumpParameters")
-    {
-        Array<String> names = animController.GetParameterNames();
-        for(uint i=0; i<names.length; ++i)
-        {
-            Print("parameter name = " + names[i]);
-        }
-    }
-    else
-    {
-        if(!script.Execute(command))
-            return;
-    }
+    String dumpText;
+    animController.Dump(dumpText);
+    Print(dumpText);
+}
 
-    if(bSet)
-        lastConsoleCommand = command;
+void DumpTransitions()
+{
+    Array<String> names = animController.GetTransitionNames();
+    for(uint i=0; i<names.length; ++i)
+    {
+        Print("transition name = " + names[i]);
+    }
+}
+
+void DumpParameters()
+{
+    Array<String> names = animController.GetParameterNames();
+    for(uint i=0; i<names.length; ++i)
+    {
+        Print("parameter name = " + names[i]);
+    }
 }
 
 void HanldeConsoleInput(const String& inputText)
@@ -607,6 +604,7 @@ void HanldeConsoleInput(const String& inputText)
     if(inputText.length == 0)
         return;
 
+    String scriptExecute = inputText;
     if(inputText.length == 3)
     {
         uint u1 = inputText.AtUTF8(0);
@@ -617,32 +615,127 @@ void HanldeConsoleInput(const String& inputText)
             if(u3 == 65 && !lastConsoleCommand.empty)
             {
                 //backward search histroy
-                HandleCommand(lastConsoleCommand, false);
-                return;
+                scriptExecute = lastConsoleCommand;
             }
         }
     }
 
-    HandleCommand(inputText, true);
+    if(script.Execute(scriptExecute))
+    {
+        lastConsoleCommand = scriptExecute;
+    }
 }
 
 void StartRecord()
 {
-    animController.StartRecordSnapShot(30);
-}
-
-void StopRecord()
-{
-    animController.StopRecordSnapShort();
+    animController.StartRecord(30);
 }
 
 void StartReplay(float speed)
 {
-    animController.SetSnapShortPlaySpeed(speed);
-    animController.PlaySnapShort(true);
+    animController.SetReplaySpeed(speed);
+    animController.StartReplay(true);
+
+    int recordedFrames = animController.GetRecordedFrames();
+    ShowReplayWindow(recordedFrames);
 }
 
-void StopReplay()
+void StopAnimationDebug()
 {
-    animController.StopPlaySnapShort();
+    animController.StopDebug();
+    HideReplayWindow();
+}
+
+void CreateReplayWindow()
+{
+    Window@ window = ui.root.CreateChild("Window", "REPLAY");
+    window.visible = false;
+    window.SetStyleAuto();
+    int window_height = 50;
+    window.position = IntVector2(0,graphics.height - window_height);
+    window.SetFixedSize(graphics.width, window_height);
+    window.layoutMode = LM_VERTICAL;
+
+    Text@ text = window.CreateChild("Text","REPLAY_TEXT");
+    text.text = "Replay Frame = 0";
+    text.SetStyleAuto();
+
+    Slider@ slider = window.CreateChild("Slider", "REPLAY_SLIDER");
+    slider.SetStyleAuto();
+    SubscribeToEvent(slider, "SliderChanged", "HandleReplaySliderChanged");
+}
+
+void UpdateReplayWindow()
+{
+    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
+
+    if(current_pause)
+        return;
+    slider.value = animController.GetReplayFrame();
+    text.text = "Replay Frame = " + String(slider.value);    
+}
+
+void ShowReplayWindow(float range)
+{
+    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    slider.range = range;
+    Window@ window = ui.root.GetChild("REPLAY", true);
+    window.visible = true;
+}
+
+void HideReplayWindow()
+{
+    if(engine.headless)
+        return;
+    Window@ window = ui.root.GetChild("REPLAY", true);
+    window.visible = false;
+}
+
+void HandleReplaySliderChanged(StringHash eventType, VariantMap& eventData)
+{
+    float newValue = eventData["Value"].GetFloat();
+    int iFrame = newValue;
+    animController.SetReplayFrame(iFrame);
+
+    //Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
+    text.text = "Replay Frame = " + String(iFrame);
+}
+
+void HandleRecordButton()
+{
+    StartRecord();
+    HideReplayWindow();
+}
+
+void HandleReplayButton()
+{
+    StartReplay(1.0);
+}
+
+void HandlePauseButton()
+{
+    current_pause = !current_pause;
+    animController.SetReplaySpeed(current_pause ? 0.0f : 1.0f);
+}
+
+void HandleStopButton()
+{
+    StopAnimationDebug();
+}
+
+void HandleScreenMode()
+{
+    int window_height = 100;
+    Window@ window = ui.root.GetChild("REPLAY", true);
+    window.position = IntVector2(0,graphics.height - window_height);
+    window.SetFixedSize(graphics.width, window_height);
+
+    Window@ window1 = ui.root.GetChild("WINDOW_CONTROL", true);
+    if(window1 is null)
+        return;
+    int window_width = 100;
+    window1.position = IntVector2(graphics.width - window_width, 0);
+    window1.SetFixedSize(window_width, window_width*3);
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Name" value="WINDOW_CONTROL" />
+	<attribute name="Position" value="512 384" />
+	<attribute name="Size" value="100 300" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<element type="Button">
+		<attribute name="Name" value="BUTTON_RECORD" />
+		<element type="Text">
+			<attribute name="Horiz Alignment" value="Center" />
+			<attribute name="Vert Alignment" value="Center" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Record" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="BUTTON_REPLAY" />
+		<element type="Text">
+			<attribute name="Horiz Alignment" value="Center" />
+			<attribute name="Vert Alignment" value="Center" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Replay" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="BUTTON_STOP" />
+		<element type="Text">
+			<attribute name="Horiz Alignment" value="Center" />
+			<attribute name="Vert Alignment" value="Center" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Stop" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="BUTTON_PAUSE" />
+		<element type="Text">
+			<attribute name="Horiz Alignment" value="Center" />
+			<attribute name="Vert Alignment" value="Center" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Pause" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+</element>

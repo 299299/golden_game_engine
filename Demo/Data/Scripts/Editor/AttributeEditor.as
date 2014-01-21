@@ -137,6 +137,7 @@ UIElement@ CreateStringAttributeEditor(ListView@ list, Array<Serializable@>@ ser
     return parent;
 }
 
+
 UIElement@ CreateBoolAttributeEditor(ListView@ list, Array<Serializable@>@ serializables, const AttributeInfo&in info, uint index, uint subIndex)
 {
     bool isUIElement = cast<UIElement>(serializables[0]) !is null;
@@ -293,7 +294,7 @@ UIElement@ CreateAttributeEditor(ListView@ list, Array<Serializable@>@ serializa
     UIElement@ parent;
 
     VariantType type = info.type;
-    if (type == VAR_STRING || type == VAR_BUFFER)
+    if (type == VAR_STRING || type == VAR_BUFFER || type == VAR_STRINGHASH || type == VAR_SHORTSTRINGHASH)
         parent = CreateStringAttributeEditor(list, serializables, info, index, subIndex);
     else if (type == VAR_BOOL)
         parent = CreateBoolAttributeEditor(list, serializables, info, index, subIndex);
@@ -455,7 +456,7 @@ void LoadAttributeEditor(UIElement@ parent, const Variant&in value, const Attrib
     }
 
     VariantType type = info.type;
-    if (type == VAR_FLOAT || type == VAR_STRING || type == VAR_BUFFER)
+    if (type == VAR_FLOAT || type == VAR_STRING || type == VAR_BUFFER || type == VAR_STRINGHASH || type == VAR_SHORTSTRINGHASH)
         SetEditable(SetValue(parent.children[1], value.ToString(), sameValue), editable && sameValue);
     else if (type == VAR_BOOL)
         SetEditable(SetValue(parent.children[1], value.GetBool(), sameValue), editable && sameValue);
@@ -680,53 +681,83 @@ void SanitizeNumericalValue(VariantType type, String& value)
 void GetEditorValue(UIElement@ parent, VariantType type, Array<String>@ enumNames, uint coordinate, Array<Variant>& values)
 {
     LineEdit@ attrEdit = parent.children[coordinate + 1];
-    if (type == VAR_STRING)
-        FillValue(values, Variant(attrEdit.text.Trimmed()));
-    else if (type == VAR_BOOL)
+    switch(type)
     {
-        CheckBox@ attrEdit = parent.children[1];
-        FillValue(values, Variant(attrEdit.checked));
-    }
-    else if (type == VAR_FLOAT)
+    case VAR_STRING:
+        FillValue(values, Variant(attrEdit.text.Trimmed())); 
+        break;
+
+    case VAR_BOOL:
+        {
+            CheckBox@ attrEdit = parent.children[1];
+            FillValue(values, Variant(attrEdit.checked));
+        }
+        break;
+
+    case VAR_FLOAT:
         FillValue(values, Variant(attrEdit.text.ToFloat()));
-    else if (type == VAR_QUATERNION)
-    {
-        float value = attrEdit.text.ToFloat();
-        for (uint i = 0; i < values.length; ++i)
+        break;
+
+    case VAR_QUATERNION:
         {
-            float[] data = values[i].GetQuaternion().eulerAngles.data;
-            data[coordinate] = value;
-            values[i] = Quaternion(Vector3(data));
+            float value = attrEdit.text.ToFloat();
+            for (uint i = 0; i < values.length; ++i)
+            {
+                float[] data = values[i].GetQuaternion().eulerAngles.data;
+                data[coordinate] = value;
+                values[i] = Quaternion(Vector3(data));
+            }
         }
-    }
-    else if (type == VAR_INT)
-    {
-        if (enumNames is null || enumNames.empty)
-            FillValue(values, Variant(attrEdit.text.ToInt()));
-        else
+        break;
+
+    case VAR_INT:
         {
-            DropDownList@ attrEdit = parent.children[1];
-            FillValue(values, Variant(attrEdit.selection));
+            if (enumNames is null || enumNames.empty)
+                FillValue(values, Variant(attrEdit.text.ToInt()));
+            else
+            {
+                DropDownList@ attrEdit = parent.children[1];
+                FillValue(values, Variant(attrEdit.selection));
+            }
         }
-    }
-    else if (type == VAR_RESOURCEREF)
-    {
-        LineEdit@ attrEdit = parent.children[0];
-        ResourceRef ref;
-        ref.name = attrEdit.text.Trimmed();
-        ref.type = ShortStringHash(attrEdit.vars[TYPE_VAR].GetUInt());
-        FillValue(values, Variant(ref));
-    }
-    else
-    {
-        String value = attrEdit.text;
-        SanitizeNumericalValue(type, value);
-        for (uint i = 0; i < values.length; ++i)
+        break;
+
+    case VAR_RESOURCEREF:
         {
-            String[] data = values[i].ToString().Split(' ');
-            data[coordinate] = value;
-            values[i] = Variant(type, Join(data, " "));
+            LineEdit@ attrEdit = parent.children[0];
+            ResourceRef ref;
+            ref.name = attrEdit.text.Trimmed();
+            ref.type = ShortStringHash(attrEdit.vars[TYPE_VAR].GetUInt());
+            FillValue(values, Variant(ref));
         }
+        break;
+
+    case VAR_STRINGHASH:
+        {
+            StringHash hash(attrEdit.text.Trimmed());
+            FillValue(values, Variant(hash)); 
+        }
+        break;
+
+    case VAR_SHORTSTRINGHASH:
+        {
+            ShortStringHash hash(attrEdit.text.Trimmed());
+            FillValue(values, Variant(hash)); 
+        }
+        break;
+
+    default:
+        {
+            String value = attrEdit.text;
+            SanitizeNumericalValue(type, value);
+            for (uint i = 0; i < values.length; ++i)
+            {
+                String[] data = values[i].ToString().Split(' ');
+                data[coordinate] = value;
+                values[i] = Variant(type, Join(data, " "));
+            }
+        }
+        break;
     }
 }
 
@@ -1212,6 +1243,12 @@ void InitVectorStructs()
         "   NodeID"
     };
     vectorStructs.Push(VectorStruct("StaticModelGroup", "Instance Nodes", staticModelGroupInstanceVariables, 1));
+    
+    Array<String> splineControlPointVariables = {
+        "Control Point Count",
+        "   Point"
+    };
+    vectorStructs.Push(VectorStruct("Spline", "Control Points", splineControlPointVariables, 1));
 }
 
 VectorStruct@ GetVectorStruct(Array<Serializable@>@ serializables, uint index)

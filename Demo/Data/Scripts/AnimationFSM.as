@@ -395,7 +395,7 @@ void HandleGUITransition(StringHash eventType, VariantMap& eventData)
 {
     UIElement@ clicked = eventData["Element"].GetUIElement();
     String transitionName = clicked.vars["TransitionName"].GetString();
-    animController.FireEvent(transitionName);
+    animController.FireEvent(ShortStringHash(transitionName));
 }
 
 void HandleParamterSlide(StringHash eventType, VariantMap& eventData)

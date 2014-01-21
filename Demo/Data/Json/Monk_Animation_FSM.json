@@ -26,12 +26,20 @@
 		},
 
 		{
-			"Type":"SimpleAnimationState",
+			"Type":"ComplexAnimationState",
 			"Name":"MoveState",
 			"Animations":
 			[
 				{
 					"Animation":"monk/animations/monk_run_0.hkx"
+				},
+				{
+					"Animation":"monk/animations/monk_run_left.hkx",
+					"Looped":false
+				},
+				{
+					"Animation":"monk/animations/monk_run_right.hkx",
+					"Looped":false
 				}
 			],
 			"Transitions":
@@ -46,7 +54,44 @@
 				 	"Dest State Name":"RunTurn180State",
 				 	"Motion Blend Type":"ignore source"
 				}
-			]
+			],
+			"BlendTree":
+			{
+				"Root Node":
+				{
+					"Name": "Root",
+					"Node Type":"Additive Blend",
+					"Additive Base":1,
+					"Child Nodes":
+					[
+						{
+							"Name": "AdditiveBlendLeft",
+							"Node Type":"Animation Source",
+							"Animation Slot": 1
+						},
+						{
+							"Name": "BaseFwd",
+							"Node Type":"Animation Source",
+							"Animation Slot": 0
+						},
+						{
+							"Name": "AdditiveBlendRight",
+							"Node Type":"Animation Source",
+							"Animation Slot": 2
+						}
+					],
+					"Parameters":
+					[
+						"Direction"
+					],
+					"Blend Points":
+					[
+						-1,
+						0, 
+						1
+					]
+				}
+			}
 		},
 
 		{
@@ -65,7 +110,8 @@
 					"Name":"Continue",
 				 	"Dest State Name":"MoveState",
 				 	"Motion Blend Type":"ignore dest",
-				 	"Sync Point":"RightFoot"
+				 	"Sync Point":"RightFoot",
+				 	"Mirrored Sync Point":"LeftFoot"
 				}
 			]
 		},
@@ -127,6 +173,7 @@
 					"Name":"Continue",
 				 	"Dest State Name":"MoveState",
 				 	"Sync Point":"RightFoot",
+				 	"Mirrored Sync Point":"LeftFoot",
 				 	"Motion Blend Type":"ignore dest"
 				},
 				{
@@ -238,6 +285,7 @@
 					"Name":"Continue",
 				 	"Dest State Name":"WalkState",
 				 	"Sync Point":"RightFoot",
+				 	"Mirrored Sync Point":"LeftFoot",
 				 	"Motion Blend Type":"ignore dest"
 				},
 				{
@@ -264,9 +312,10 @@
 					"Name":"Continue",
 				 	"Dest State Name":"WalkState",
 				 	"Motion Blend Type":"ignore dest",
-				 	"Sync Point":"RightFoot"
+				 	"Sync Point":"RightFoot",
+				 	"Mirrored Sync Point":"LeftFoot"
 				}
 			]
 		}
 	]
-}
+} 
