@@ -1,37 +1,30 @@
 #include "Scripts/Utilities/Sample.as"
 #include "Scripts/Input.as"
+#include "Scripts/AnimationDebug.as"
 
-String sceneToLoad = "Data/Scenes/testScene_blendtree.xml";//"Data/Scenes/testScene.xml";
+String sceneToLoad = "Data/Scenes/testScene.xml";
 Scene@ scene_;
 Node@ cameraNode;
 Node@ characterNode;
 
-float yaw = 0.0f;
-float pitch = 0.0f;
-
-int cameraMode = 0;
 int drawDebugMode = 0;
 bool dumpAnimation = true;
 
 AnimatorController@ animController;
 HavokAnimator@      animator;
 
-float timeScale = 1.0f;
-Array<float> timeScales = { 0.1f, 0.25f, 0.5f, 0.75f, 1.0f, 2.5f, 5.0f, 10.0f};
-uint currentTimeScaleIndex = 0;
-
 float cam_radius = 20.0f;
 float dumpTime = 0;
 String animationString;
 bool current_pause = false;
 
-Window@ fsmWindow;
+float yaw,pitch;
 
 void Start()
 {
     Print("---------------------- Script Start ----------------------");
 
-    if(graphics != null)
+    if(graphics !is null)
     {
         graphics.sRGB = true;
     }
@@ -43,8 +36,7 @@ void Start()
     if(!engine.headless)
     {
         SampleStart();
-        CreateInstructions();
-        CreateFSMWindow();
+        CreateGUI();
     }
 
     CreateScene();
@@ -69,6 +61,7 @@ void Stop()
 void CreateScene()
 {
     scene_ = Scene();
+    script.defaultScene = scene_;
 
     File loadFile(fileSystem.programDir + sceneToLoad, FILE_READ);
     scene_.LoadXML(loadFile);
@@ -97,7 +90,7 @@ void CreateScene()
     UpdateFSMWindow();
 }
 
-void CreateInstructions()
+void CreateGUI()
 {
     // Construct new Text object, set string to display and font to use
     Text@ instructionText = ui.root.CreateChild("Text", "IN");
@@ -115,16 +108,9 @@ void CreateInstructions()
     animation_dump_text.SetPosition(0, 0);
     animation_dump_text.color = Color(0.0f, 0.0f, 1.0f);
 
-    Window@ window = ui.LoadLayout(cache.GetResource("XMLFile", "UI/AnimationControlWindow.xml"));
-    int window_width = 100;
-    ui.root.AddChild(window);
-    window.position = IntVector2(graphics.width - window_width, 0);
-    window.SetFixedSize(window_width, window_width*3);
-
-    SubscribeToEvent(window.GetChild("BUTTON_RECORD", true), "Released", "HandleRecordButton");
-    SubscribeToEvent(window.GetChild("BUTTON_REPLAY", true), "Released", "HandleReplayButton");
-    SubscribeToEvent(window.GetChild("BUTTON_STOP", true), "Released", "HandleStopButton");
-    SubscribeToEvent(window.GetChild("BUTTON_PAUSE", true), "Released", "HandlePauseButton");
+    CreateAnimationControlWindow();
+    CreateFSMWindow();
+    CreateReplayWindow();
 }
 
 void UpdateInstructionText()
@@ -132,8 +118,8 @@ void UpdateInstructionText()
     Text@ instructionText = ui.root.GetChild("IN");
     String text = "AnimationFSM Viewer ShowCase Of NagaGameEngine timeScale = " + timeScale;
     text += ("\nF1 Toggle Console, F2 Toggle Debug HUD");
-    text += ("\nF3 Toggle Debug Mode, F4 Toggle Camera Mode");
-    text += ("\nF5 Toggle Dump Animation, F6 Toggle TimeScale");
+    text += ("\nF3 Toggle Debug Mode, F4 Toggle Dump Animation");
+    text += ("\nF5 Toggle TimeScale");
     text += ("\nE Reset Animation, F Toggle Rotation Only");
     text += ("\nC Toggle RootMotion, Space To Toggle Scene Update");
     instructionText.text = text;
@@ -141,40 +127,28 @@ void UpdateInstructionText()
 
 void MoveCamera(float timeStep)
 {
-    if(cameraMode == 0)
+    float MOVE_SPEED = 20.0f;
+    const float MOUSE_SENSITIVITY = 0.1f;
+    if(input.keyDown[KEY_LSHIFT])
+        MOVE_SPEED = 200.0f;
+    if (input.mouseButtonDown[MOUSEB_RIGHT])
     {
-        float MOVE_SPEED = 20.0f;
-        const float MOUSE_SENSITIVITY = 0.1f;
-        if(input.keyDown[KEY_LSHIFT])
-            MOVE_SPEED = 200.0f;
-        if (input.mouseButtonDown[MOUSEB_RIGHT])
+        IntVector2 mouseMove = input.mouseMove;
+        if (mouseMove.x != 0 || mouseMove.y != 0)
         {
-            IntVector2 mouseMove = input.mouseMove;
-            if (mouseMove.x != 0 || mouseMove.y != 0)
-            {
-                yaw += mouseMove.x * 0.2f;
-                pitch += mouseMove.y * 0.2f;
-                cameraNode.rotation = Quaternion(pitch, yaw, 0);
-            }
+            yaw += mouseMove.x * 0.2f;
+            pitch += mouseMove.y * 0.2f;
+            cameraNode.rotation = Quaternion(pitch, yaw, 0);
         }
-        if (input.keyDown['W'])
-            cameraNode.TranslateRelative(Vector3(0.0f, 0.0f, 1.0f) * MOVE_SPEED * timeStep);
-        if (input.keyDown['S'])
-            cameraNode.TranslateRelative(Vector3(0.0f, 0.0f, -1.0f) * MOVE_SPEED * timeStep);
-        if (input.keyDown['A'])
-            cameraNode.TranslateRelative(Vector3(-1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
-        if (input.keyDown['D'])
-            cameraNode.TranslateRelative(Vector3(1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
     }
-    //a side way look camera
-    else if(cameraMode == 1)
-    {
-        Vector3 dir = Vector3(7.5f, 2, 0);
-        cameraNode.position = dir + characterNode.position;
-        Vector3 position = characterNode.position;
-        position.y = dir.y;
-        cameraNode.LookAt(position);
-    }
+    if (input.keyDown['W'])
+        cameraNode.TranslateRelative(Vector3(0.0f, 0.0f, 1.0f) * MOVE_SPEED * timeStep);
+    if (input.keyDown['S'])
+        cameraNode.TranslateRelative(Vector3(0.0f, 0.0f, -1.0f) * MOVE_SPEED * timeStep);
+    if (input.keyDown['A'])
+        cameraNode.TranslateRelative(Vector3(-1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
+    if (input.keyDown['D'])
+        cameraNode.TranslateRelative(Vector3(1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
 }
 
 void SubscribeToEvents()
@@ -238,9 +212,13 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
             console.visible = false;
     }
     else if(key == KEY_F1)
-      console.Toggle();
+    {
+        console.Toggle();
+    }
     else if(key == KEY_F2)
+    {
         debugHud.ToggleAll();
+    }
     else if(key == KEY_F3)
     {
         ++drawDebugMode;
@@ -249,19 +227,11 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     }
     else if(key == KEY_F4)
     {
-        cameraMode ++;
-        if(cameraMode > 1)
-            cameraMode = 0;
+        dumpAnimation = !dumpAnimation;
     }
     else if(key == KEY_F5)
-        dumpAnimation = !dumpAnimation;
-    else if(key == KEY_F6)
     {
-         timeScale = timeScales[currentTimeScaleIndex];
-        ++currentTimeScaleIndex;
-        if(currentTimeScaleIndex >= timeScales.length)
-            currentTimeScaleIndex = 0;
-        scene_.timeScale = timeScale;
+        SwitchTimeScale();
         UpdateInstructionText();
     }
     else if(key == 'E')
@@ -285,16 +255,21 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 void CreateFSMWindow()
 {
-    fsmWindow = ui.LoadLayout(cache.GetResource("XMLFile", "UI/FSMWindow.xml"));
+    Window@ fsmWindow = ui.LoadLayout(cache.GetResource("XMLFile", "UI/FSMWindow.xml"));
     ui.root.AddChild(fsmWindow);
-    fsmWindow.SetSize(200, 400);
-    fsmWindow.SetPosition(700, 10);
+    int w = 200, h = 400;
+    fsmWindow.SetSize(w, h);
+    fsmWindow.SetPosition(graphics.width - w, graphics.height - h);
     fsmWindow.BringToFront();
     fsmWindow.opacity = 0.75f;
 }
 
 void UpdateFSMWindow()
 {
+    Window@ fsmWindow = ui.root.GetChild("FSMWindow", false);
+    if(fsmWindow is null)
+        return;
+
     UIElement@ transitionsUI = fsmWindow.GetChild("transitions", true);
     UIElement@ parameterUI = fsmWindow.GetChild("parameters", true);
 
@@ -373,7 +348,7 @@ void HandleParamterSlide(StringHash eventType, VariantMap& eventData)
     float newValue = eventData["Value"].GetFloat();
 
     String paramName = slider.vars["ParameterName"].GetString();
-    LineEdit@ edit = fsmWindow.GetChild(paramName + "_Edit", true);
+    LineEdit@ edit = ui.root.GetChild(paramName + "_Edit", true);
     if(edit is null)
         return;
 
@@ -382,105 +357,6 @@ void HandleParamterSlide(StringHash eventType, VariantMap& eventData)
 
     edit.text = String(newValue);
     characterNode.vars[paramName] = newValue;
-}
-
-void StartRecord()
-{
-    animController.StartRecord(30);
-}
-
-void StartReplay(float speed)
-{
-    animController.SetReplaySpeed(speed);
-    animController.StartReplay(true);
-
-    int recordedFrames = animController.GetRecordedFrames();
-    ShowReplayWindow(recordedFrames);
-}
-
-void StopAnimationDebug()
-{
-    animController.StopDebug();
-    HideReplayWindow();
-}
-
-void CreateReplayWindow()
-{
-    Window@ window = ui.root.CreateChild("Window", "REPLAY");
-    window.visible = false;
-    window.SetStyleAuto();
-    int window_height = 50;
-    window.position = IntVector2(0,graphics.height - window_height);
-    window.SetFixedSize(graphics.width, window_height);
-    window.layoutMode = LM_VERTICAL;
-
-    Text@ text = window.CreateChild("Text","REPLAY_TEXT");
-    text.text = "Replay Frame = 0";
-    text.SetStyleAuto();
-
-    Slider@ slider = window.CreateChild("Slider", "REPLAY_SLIDER");
-    slider.SetStyleAuto();
-    SubscribeToEvent(slider, "SliderChanged", "HandleReplaySliderChanged");
-}
-
-void UpdateReplayWindow()
-{
-    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
-    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
-
-    if(current_pause)
-        return;
-    slider.value = animController.GetReplayFrame();
-    text.text = "Replay Frame = " + String(slider.value);    
-}
-
-void ShowReplayWindow(float range)
-{
-    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
-    slider.range = range;
-    Window@ window = ui.root.GetChild("REPLAY", true);
-    window.visible = true;
-}
-
-void HideReplayWindow()
-{
-    if(engine.headless)
-        return;
-    Window@ window = ui.root.GetChild("REPLAY", true);
-    window.visible = false;
-}
-
-void HandleReplaySliderChanged(StringHash eventType, VariantMap& eventData)
-{
-    float newValue = eventData["Value"].GetFloat();
-    int iFrame = newValue;
-    animController.SetReplayFrame(iFrame);
-
-    //Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
-    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
-    text.text = "Replay Frame = " + String(iFrame);
-}
-
-void HandleRecordButton()
-{
-    StartRecord();
-    HideReplayWindow();
-}
-
-void HandleReplayButton()
-{
-    StartReplay(1.0);
-}
-
-void HandlePauseButton()
-{
-    current_pause = !current_pause;
-    animController.SetReplaySpeed(current_pause ? 0.0f : 1.0f);
-}
-
-void HandleStopButton()
-{
-    StopAnimationDebug();
 }
 
 void HandleScreenMode()
