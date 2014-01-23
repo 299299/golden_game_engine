@@ -9,8 +9,6 @@
 	<attribute name="Next Replicated Component ID" value="58" />
 	<attribute name="Next Local Node ID" value="16777349" />
 	<attribute name="Next Local Component ID" value="16777216" />
-	<attribute name="Variables" />
-	<attribute name="Variable Names" value="Health;LocomotionId;TeamColor" />
 	<component type="Octree" id="1" />
 	<component type="DebugRenderer" id="9" />
 	<component type="HavokPhysicsWorld" id="14" />

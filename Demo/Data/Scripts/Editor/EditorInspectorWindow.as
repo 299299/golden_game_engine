@@ -575,9 +575,6 @@ void CreateNodeVariable(StringHash eventType, VariantMap& eventData)
     if (newName.empty)
         return;
 
-    // Create scene variable
-    editorScene.RegisterVar(newName);
-
     Variant newValue = ExtractVariantType(eventData);
 
     // If we overwrite an existing variable, must recreate the attribute-editor(s) for the correct type
@@ -699,7 +696,7 @@ Variant ExtractVariantType(VariantMap& eventData)
 String GetVariableName(ShortStringHash hash)
 {
     // First try to get it from scene
-    String name = editorScene.GetVarName(hash);
+    String name = ReverseStringHash(hash);
     // Then from the UIElement variable names
     if (name.empty && uiElementVarNames.Contains(hash))
         name = uiElementVarNames[hash].ToString();

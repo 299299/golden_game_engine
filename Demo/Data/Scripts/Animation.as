@@ -29,6 +29,7 @@ Vector3     camera_target_offset(0, 1.5f, 0);
 Vector3     camera_offset(0,0,-10);
 Vector3     camera_last_target;
 Vector2     camera_pitch_range(0, 60);
+float       stand_value = 0.0f;
 
 GamePad@ g_gamePad = GamePad();
 
@@ -90,8 +91,6 @@ void CreateScene()
 
     animController = characterNode.GetComponent("AnimatorController");
     animator = characterNode.GetComponent("HavokAnimator");
-
-    characterNode.vars["BaseTest"] = 1.0f;
 
     //CharacterController@ cc = characterNode.GetComponent("CharacterController");
     //cc.SetRotationOnly(true);
@@ -435,6 +434,7 @@ float computeDifference()
         message += "\ninput dir=" + inputDir.ToString();
         message += "\ndesire dir=" + desire_fwd_dir.ToString();
         message += "\ncharacter dir=" + character_fwd_dir.ToString();
+        message += "\ntand_value=" + stand_value;
         statusText.text = message;
     }
     return diff;
@@ -535,16 +535,21 @@ void UpdateCharacter(float timeStep)
     {
     case 0:
         OnUpdateIdle(timeStep);
+        stand_value += timeStep;
         break;
     case 1:
     case 5:
         OnUpdateMoving(timeStep);
+        stand_value -= timeStep;
         break;
     case 3:
     case 6:
         OnUpdateStandToRun(timeStep);
         break;
     }
+
+    stand_value = Clamp(stand_value, 0.0f, 1.0f);
+    characterNode.vars["Stand_Value"] = stand_value;
 }
 
 

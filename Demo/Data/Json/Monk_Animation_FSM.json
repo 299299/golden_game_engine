@@ -282,7 +282,7 @@
 			"Animations":
 			[
 				{
-					"Animation":"monk/animations/monk_run_left.hkx"
+					"Animation":"monk/animations/monk_stand_additive.hkx"
 				},
 				{
 					"Animation":"monk/animations/monk_run_additive.hkx"
@@ -298,16 +298,16 @@
 					[
 						{
 							"Node Type":"Animation Source",
-							"Animation Slot": 1
+							"Animation Slot": 0
 						},
 						{
 							"Node Type":"Animation Source",
-							"Animation Slot": 0
+							"Animation Slot": 1
 						}
 					],
 					"Parameters":
 					[
-						"BaseTest"
+						"Stand_Value"
 					]
 				}
 			}
