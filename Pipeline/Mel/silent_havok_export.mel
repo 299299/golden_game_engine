@@ -1,6 +1,6 @@
-global proc silent_havok_export(int $type, string $file_name)
+global proc silent_havok_export(int $type, string $file_name, string $export_path)
 {
-    string $hko_path = "E:/Code/NagaGame/Pipeline/Havok_HKO_Config/";
+    string $hko_path = $export_path + "/Pipeline/";
     string $hko_files[] = 
     { 
         "monk_rig.hko",
@@ -15,18 +15,17 @@ global proc silent_havok_export(int $type, string $file_name)
         "monk_animation_additive_tpose.hko"
     };
     string $temp_hkx = "C:/temp.hkx";
-    string $export_path = "E:/Code/NagaEngine/Urho3D/Bin/Data/";
-
     string $hko_filename = $hko_files[$type];
-	string $hko_fullpath = $hko_path + $hko_filename;
-    print("export " + $file_name + " using hko = " + $hko_fullpath);
+    string $hko_fullpath = $hko_path + $hko_filename;
+
+     print("hko file = " + $hko_fullpath);
  
     //Export silently using an options file
     //Always to the same temp file 
     hkCmdExportScene -o $hko_fullpath -b;
     
     //Move the temp file to our real file.
-    $file_name = $export_path +$file_name;
+    $file_name = $export_path + "/" + $file_name;
     string $move_file_cmd = "move " + $temp_hkx + " " + $file_name;
     print("system command = " + $move_file_cmd);
     system($move_file_cmd);

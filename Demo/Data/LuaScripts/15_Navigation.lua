@@ -72,7 +72,7 @@ function CreateScene()
     local light = lightNode:CreateComponent("Light")
     light.lightType = LIGHT_DIRECTIONAL
     light.castShadows = true
-    light.shadowBias = BiasParameters(0.0001, 0.5)
+    light.shadowBias = BiasParameters(0.00025, 0.5)
     -- Set cascade splits at 10, 50 and 200 world units, fade shadows out at 80% of maximum shadow distance
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
 
@@ -227,9 +227,7 @@ function SetPathPoint()
             endPosDefined = true
         end
         
-        if startPosDefined and endPosDefined then
-            RecalculatePath()
-        end
+        RecalculatePath()
     end
 end
 
@@ -271,6 +269,10 @@ function CreateMushroom(pos)
 end
 
 function RecalculatePath()
+    if not startPosDefined or not endPosDefined then
+        return
+    end
+
     local navMesh = scene_:GetComponent("NavigationMesh")
     currentPath = navMesh:FindPath(startPos, endPos)
 end
@@ -326,10 +328,11 @@ function HandlePostRenderUpdate(eventType, eventData)
         debug:AddBoundingBox(BoundingBox(endPos - Vector3(0.1, 0.1, 0.1), endPos + Vector3(0.1, 0.1, 0.1)), Color(1.0, 1.0, 1.0))
     end
     
-    if currentPath ~= nil and currentPath:Size() > 0 then
+    if currentPath ~= nil then
         -- Draw the path with a small upward bias so that it does not clip into the surfaces
         local bias = Vector3(0.0, 0.05, 0.0)
-        for i = 0, currentPath:Size() - 2 do
+        local size = table.maxn(currentPath)
+        for i = 1, size - 1 do
             debug:AddLine(currentPath[i] + bias, currentPath[i + 1] + bias, Color(1.0, 1.0, 1.0))
         end
     end

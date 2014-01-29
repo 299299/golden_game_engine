@@ -696,7 +696,7 @@ Variant ExtractVariantType(VariantMap& eventData)
 String GetVariableName(ShortStringHash hash)
 {
     // First try to get it from scene
-    String name = ReverseStringHash(hash);
+    String name = LookupStringHash(hash);
     // Then from the UIElement variable names
     if (name.empty && uiElementVarNames.Contains(hash))
         name = uiElementVarNames[hash].ToString();

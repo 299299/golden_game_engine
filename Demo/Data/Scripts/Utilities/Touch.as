@@ -1,5 +1,5 @@
 // Mobile framework for Android/iOS
-// Gamepad from Ninja Snow War
+// Gamepad from NinjaSnowWar
 // Gyroscope (activated by default)
 // Touches patterns:
 //     - 1 finger touch  = pick object through raycast
@@ -11,19 +11,25 @@
 // 3 fingers touch & 4 fingers touch could be used to switch gyroscope on/off, activate/deactivate secondary viewport, activate a panel GUI, switch debug HUD/geometry, toggle console, switch the gyroscope...
 
 // Setup:
-// on init, call this script using #include "Scripts/Utilities/Touch.as"
-// subscribe to touch events (Begin, Move, End) using 'SubscribeToTouchEvents()'
-// call the update function 'updateTouches()' from HandleUpdate or equivalent update handler function
+// - On init, call this script using '#include "Scripts/Utilities/Touch.as"' then 'InitTouchInput()' on mobile platforms
+//   -> to detect platform, use 'if (GetPlatform() == "Android" || GetPlatform() == "iOS")'
+// - Subscribe to touch events (Begin, Move, End) using 'SubscribeToTouchEvents()'
+// - Call the update function 'UpdateTouches()' from HandleUpdate or equivalent update handler function
 
+const float TOUCH_SENSITIVITY = 5.0;
+const float GYROSCOPE_THRESHOLD = 0.1;
+const float CAMERA_MIN_DIST = 1.0f;
+const float CAMERA_INITIAL_DIST = 5.0f;
+const float CAMERA_MAX_DIST = 20.0f;
 
-const float touchSensitivity = 5.0;
-const float gyroscopeTreshold = 0.1;
-
-bool touchEnabled = true;
+bool firstPerson = false;
+bool touchEnabled = false;
 bool zoom = false;
-bool cameraMode = false;
-bool debugMode = true;
+bool newFirstPerson = false;
 bool shadowMode = true;
+
+Node@ cameraNode;
+float cameraDistance = CAMERA_INITIAL_DIST;
 
 BorderImage@ moveButton;
 BorderImage@ fireButton;
@@ -32,7 +38,6 @@ int touchButtonBorder = 12;
 int moveTouchID = -1;
 int rotateTouchID = -1;
 int fireTouchID = -1;
-
 
 void InitTouchInput() // Create Gamepad Buttons
 {
@@ -51,6 +56,8 @@ void InitTouchInput() // Create Gamepad Buttons
     fireButton.SetPosition(-touchButtonBorder, -touchButtonBorder);
     fireButton.SetSize(touchButtonSize, touchButtonSize);
     fireButton.opacity = 0.25;
+    
+    touchEnabled = true;
 }
 
 void SubscribeToTouchEvents()
@@ -59,10 +66,8 @@ void SubscribeToTouchEvents()
     SubscribeToEvent("TouchEnd", "HandleTouchEnd");
 }
 
-void updateTouches() // Called from HandleUpdate
+void UpdateTouches(Controls& controls) // Called from HandleUpdate
 {
-	Character@ character = cast<Character>(characterNode.scriptObject);
-    //Controls character.controls = cast<Character>(characterNode.scriptObject).controls;
     Camera@ camera = cameraNode.GetComponent("Camera");
     zoom = false; // reset bool
 
@@ -72,27 +77,31 @@ void updateTouches() // Called from HandleUpdate
         // Zoom in/out
         if (input.numTouches == 2)
         {
-			TouchState@ touch1 = input.touches[0];
-			TouchState@ touch2 = input.touches[1];
+            TouchState@ touch1 = input.touches[0];
+            TouchState@ touch2 = input.touches[1];
 
-            if ((touch1.delta.y > 0 && touch2.delta.y < 0) || (touch1.delta.y < 0 && touch2.delta.y > 0)) // Check for zoom pattern (touches moving in opposite directions)
+            // Check for zoom pattern (touches moving in opposite directions)
+            if ((touch1.delta.y > 0 && touch2.delta.y < 0) || (touch1.delta.y < 0 && touch2.delta.y > 0))
                 zoom = true;
-            else zoom = false;
+            else 
+                zoom = false;
 
             if (zoom)
             {
                 int sens = 0;
-                if (Abs(touch1.position.y - touch2.position.y) > Abs(touch1.lastPosition.y - touch2.lastPosition.y)) // Check for zoom direction (in/out)
+                // Check for zoom direction (in/out)
+                if (Abs(touch1.position.y - touch2.position.y) > Abs(touch1.lastPosition.y - touch2.lastPosition.y))
                     sens = -1;
-                else sens = 1;
-                CAMERA_MAX_DIST += Abs( touch1.delta.y - touch2.delta.y ) * sens * touchSensitivity / 50;
-                CAMERA_MAX_DIST = Clamp(CAMERA_MAX_DIST, CAMERA_MIN_DIST, 20); // Restrict zoom range to [1;20]
+                else
+                    sens = 1;
+                cameraDistance += Abs(touch1.delta.y - touch2.delta.y) * sens * TOUCH_SENSITIVITY / 50;
+                cameraDistance = Clamp(cameraDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST); // Restrict zoom range to [1;20]
             }
         }
 
         // Switch 1st/3rd person mode
         if (input.numTouches == 3)
-            cameraMode = !firstPerson;
+            newFirstPerson = !firstPerson;
 
         // Switch draw debug
         if (input.numTouches == 4)
@@ -107,9 +116,9 @@ void updateTouches() // Called from HandleUpdate
 
                 if (touch.touchID == rotateTouchID)
                 {
-                    character.controls.yaw += touchSensitivity * camera.fov / graphics.height * touch.delta.x;
-                    character.controls.pitch += touchSensitivity * camera.fov / graphics.height * touch.delta.y;
-                    character.controls.pitch = Clamp(character.controls.pitch, -80.0f, 80.0f); // Limit pitch
+                    controls.yaw += TOUCH_SENSITIVITY * camera.fov / graphics.height * touch.delta.x;
+                    controls.pitch += TOUCH_SENSITIVITY * camera.fov / graphics.height * touch.delta.y;
+                    controls.pitch = Clamp(controls.pitch, -80.0f, 80.0f); // Limit pitch
                 }
 
                 if (touch.touchID == moveTouchID)
@@ -117,39 +126,37 @@ void updateTouches() // Called from HandleUpdate
                     int relX = touch.position.x - moveButton.screenPosition.x - touchButtonSize / 2;
                     int relY = touch.position.y - moveButton.screenPosition.y - touchButtonSize / 2;
                     if (relY < 0 && Abs(relX * 3 / 2) < Abs(relY))
-                        character.controls.Set(CTRL_FORWARD, true);
+                        controls.Set(CTRL_FORWARD, true);
                     if (relY > 0 && Abs(relX * 3 / 2) < Abs(relY))
-                        character.controls.Set(CTRL_BACK, true);
+                        controls.Set(CTRL_BACK, true);
                     if (relX < 0 && Abs(relY * 3 / 2) < Abs(relX))
-                        character.controls.Set(CTRL_LEFT, true);
+                        controls.Set(CTRL_LEFT, true);
                     if (relX > 0 && Abs(relY * 3 / 2) < Abs(relX))
-                        character.controls.Set(CTRL_RIGHT, true);
+                        controls.Set(CTRL_RIGHT, true);
                 }
             }
         }
 
         if (fireTouchID >= 0)
-        {
-            character.controls.Set(CTRL_JUMP, true);
-        }
+            controls.Set(CTRL_JUMP, true);
     }
 
-	// Gyroscope (emulated by SDL through a virtual joystick)
+    // Gyroscope (emulated by SDL through a virtual joystick)
     if (input.numJoysticks > 0) // numJoysticks = 1 on iOS & Android
     {
-		JoystickState@ joystick = input.joysticks[0];
+        JoystickState@ joystick = input.joysticks[0];
         if (joystick.numAxes >= 2)
         {
-            if (joystick.axisPosition[0] < -gyroscopeTreshold)
-                character.controls.Set(CTRL_LEFT, true);
-            if (joystick.axisPosition[0] > gyroscopeTreshold)
-                character.controls.Set(CTRL_RIGHT, true);
-            if (joystick.axisPosition[1] < -gyroscopeTreshold)
-                character.controls.Set(CTRL_FORWARD, true);
-            if (joystick.axisPosition[1] > gyroscopeTreshold)
-                character.controls.Set(CTRL_BACK, true);
+            if (joystick.axisPosition[0] < -GYROSCOPE_THRESHOLD)
+                controls.Set(CTRL_LEFT, true);
+            if (joystick.axisPosition[0] > GYROSCOPE_THRESHOLD)
+                controls.Set(CTRL_RIGHT, true);
+            if (joystick.axisPosition[1] < -GYROSCOPE_THRESHOLD)
+                controls.Set(CTRL_FORWARD, true);
+            if (joystick.axisPosition[1] > GYROSCOPE_THRESHOLD)
+                controls.Set(CTRL_BACK, true);
         }
-	}
+    }
 }
 
 void HandleTouchBegin(StringHash eventType, VariantMap& eventData)
@@ -166,19 +173,19 @@ void HandleTouchBegin(StringHash eventType, VariantMap& eventData)
     else
         rotateTouchID = touchID;
 
-    // Init Raycast (for example to aquire a target)
+    // Init Raycast (for example to acquire a target)
     Camera@ camera = cameraNode.GetComponent("Camera");
     Ray cameraRay = camera.GetScreenRay(float(eventData["X"].GetInt()) / graphics.width, float(eventData["Y"].GetInt()) / graphics.height);
 
     // Raycast of RigidBodies
     PhysicsRaycastResult result = scene_.physicsWorld.RaycastSingle(cameraRay, camera.farClip, 2); // NB: here we restrict targets to layer 2
     if (result.body !is null)
-        log.Info(result.body.node.name);
+        log.Info("Physics raycast hit " + result.body.node.name);
 
-    // Raycast of drawable components (for targets with or without physics)
+    // Raycast of drawable components (for targets without physics)
     RayQueryResult result2 = scene_.octree.RaycastSingle(cameraRay, RAY_TRIANGLE, camera.farClip, DRAWABLE_GEOMETRY);
     if (result2.drawable !is null)
-        log.Info(result2.drawable.node.name);
+        log.Info("Drawable raycast hit " + result2.drawable.node.name);
 }
 
 void HandleTouchEnd(StringHash eventType, VariantMap& eventData)
@@ -193,6 +200,6 @@ void HandleTouchEnd(StringHash eventType, VariantMap& eventData)
         fireTouchID = -1;
 
     // On-release Update
-    firstPerson = cameraMode;
+    firstPerson = newFirstPerson;
     renderer.drawShadows = shadowMode;
 }

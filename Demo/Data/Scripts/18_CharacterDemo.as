@@ -23,13 +23,8 @@ const float JUMP_FORCE = 7.0f;
 const float YAW_SENSITIVITY = 0.1f;
 const float INAIR_THRESHOLD_TIME = 0.1f;
 
-const float CAMERA_MIN_DIST = 1.0f;
-float CAMERA_MAX_DIST = 5.0f;
-
 Scene@ scene_;
-Node@ cameraNode;
 Node@ characterNode;
-bool firstPerson = false;
 
 void Start()
 {
@@ -47,7 +42,10 @@ void Start()
 
     // Activate mobile stuff when appropriate
     if (GetPlatform() == "Android" || GetPlatform() == "iOS")
+    {
+        SetLogoVisible(false);
         InitTouchInput();
+    }
 
     // Subscribe to necessary events
     SubscribeToEvents();
@@ -82,7 +80,7 @@ void CreateScene()
     Light@ light = lightNode.CreateComponent("Light");
     light.lightType = LIGHT_DIRECTIONAL;
     light.castShadows = true;
-    light.shadowBias = BiasParameters(0.0001f, 0.5f);
+    light.shadowBias = BiasParameters(0.00025f, 0.5f);
     // Set cascade splits at 10, 50 and 200 world units, fade shadows out at 80% of maximum shadow distance
     light.shadowCascade = CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f);
 
@@ -205,8 +203,8 @@ void SubscribeToEvents()
     // Subscribe to PostUpdate event for updating the camera position after physics simulation
     SubscribeToEvent("PostUpdate", "HandlePostUpdate");
 
-    // Sbscribe to mobile touch events
-    if (GetPlatform() == "Android" || GetPlatform() == "iOS")
+    // Subscribe to mobile touch events
+    if (touchEnabled)
         SubscribeToTouchEvents();
 }
 
@@ -219,16 +217,19 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
     if (character is null)
         return;
 
-    character.controls.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT | CTRL_JUMP, false); // clear previous controls
+    // Clear previous controls
+    character.controls.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT | CTRL_JUMP, false);
 
-    if (GetPlatform() == "Android" || GetPlatform() == "iOS")
-        updateTouches();
-
-    else  // On desktop, get movement controls and assign them to the character logic component
+    if (touchEnabled)
     {
-
+        // Update controls using touch (mobile)
+        UpdateTouches(character.controls);
+    }
+    else
+    {
+        // Update controls using keys (desktop)
         if (ui.focusElement is null)
-       {
+        {
             character.controls.Set(CTRL_FORWARD, input.keyDown['W']);
             character.controls.Set(CTRL_BACK, input.keyDown['S']);
             character.controls.Set(CTRL_LEFT, input.keyDown['A']);
@@ -243,16 +244,16 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
 
             // Switch between 1st and 3rd person
             if (input.keyPress['F'])
-                firstPerson = !firstPerson;
+                firstPerson = newFirstPerson = !firstPerson;
 
             // Check for loading / saving the scene
             if (input.keyPress[KEY_F5])
-           {
+            {
                 File saveFile(fileSystem.programDir + "Data/Scenes/CharacterDemo.xml", FILE_WRITE);
                 scene_.SaveXML(saveFile);
             }
             if (input.keyPress[KEY_F7])
-           {
+            {
                 File loadFile(fileSystem.programDir + "Data/Scenes/CharacterDemo.xml", FILE_READ);
                 scene_.LoadXML(loadFile);
                 // After loading we have to reacquire the character scene node, as it has been recreated
@@ -263,8 +264,6 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
             }
         }
     }
-//    else
-//        character.controls.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT | CTRL_JUMP, false);
 
     // Set rotation already here so that it's updated every rendering frame instead of every physics frame
     characterNode.rotation = Quaternion(character.controls.yaw, Vector3(0.0f, 1.0f, 0.0f));
@@ -306,11 +305,11 @@ void HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 
         // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
         Vector3 rayDir = dir * Vector3(0.0f, 0.0f, -1.0f); // For indoor scenes you can use dir * Vector3(0.0, 0.0, -0.5) to prevent camera from crossing the walls
-        float rayDistance = CAMERA_MAX_DIST;
+        float rayDistance = cameraDistance;
         PhysicsRaycastResult result = scene_.physicsWorld.RaycastSingle(Ray(aimPoint, rayDir), rayDistance, 2);
         if (result.body !is null)
             rayDistance = Min(rayDistance, result.distance);
-        rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+        rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, cameraDistance);
 
         cameraNode.position = aimPoint + rayDir * rayDistance;
         cameraNode.rotation = dir;

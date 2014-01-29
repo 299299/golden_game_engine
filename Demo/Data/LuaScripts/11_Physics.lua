@@ -64,7 +64,7 @@ function CreateScene()
     local light = lightNode:CreateComponent("Light")
     light.lightType = LIGHT_DIRECTIONAL
     light.castShadows = true
-    light.shadowBias = BiasParameters(0.0001, 0.5)
+    light.shadowBias = BiasParameters(0.00025, 0.5)
     -- Set cascade splits at 10, 50 and 200 world units, fade shadows out at 80% of maximum shadow distance
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     
@@ -199,10 +199,10 @@ function MoveCamera(timeStep)
     -- Check for loading/saving the scene. Save the scene to the file Data/Scenes/Physics.xml relative to the executable
     -- directory
     if input:GetKeyPress(KEY_F5) then
-        scene_:SaveXML(fileSystem:GetProgramDir().."Data/Scenes/PhysicsStressTest.xml")
+        scene_:SaveXML(fileSystem:GetProgramDir().."Data/Scenes/Physics.xml")
     end
     if input:GetKeyPress(KEY_F7) then
-        scene_:LoadXML(fileSystem:GetProgramDir().."Data/Scenes/PhysicsStressTest.xml")
+        scene_:LoadXML(fileSystem:GetProgramDir().."Data/Scenes/Physics.xml")
     end
 
     -- Toggle debug geometry with space

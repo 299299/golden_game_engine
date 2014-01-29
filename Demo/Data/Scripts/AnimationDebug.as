@@ -196,4 +196,19 @@ void HandleStopButton()
     StopAnimationDebug();
 }
 
+void StepFrame(int dFrame)
+{
+    int iFrame = animController.GetReplayFrame();
+    iFrame += dFrame;
+    int totalFrames = animController.GetRecordedFrames();
+    if(iFrame < 0)
+        iFrame += totalFrames;
+    if(iFrame >= totalFrames)
+        iFrame -= totalFrames;
+    animController.SetReplayFrame(iFrame);
 
+    Slider@ slider = ui.root.GetChild("REPLAY_SLIDER", true);
+    Text@ text = ui.root.GetChild("REPLAY_TEXT", true);
+    slider.value = iFrame;
+    text.text = "Replay Frame = " + String(iFrame);  
+}

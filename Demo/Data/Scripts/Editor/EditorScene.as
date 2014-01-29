@@ -56,9 +56,6 @@ void CreateScene()
 
     // Always pause the scene, and do updates manually
     editorScene.updateEnabled = false;
-
-    // Camera is not bounded to a scene but still need to be created once here
-    CreateCamera();
 }
 
 bool ResetScene()
@@ -101,6 +98,7 @@ bool ResetScene()
     ResetCamera();
     CreateGizmo();
     CreateGrid();
+    SetActiveViewport(viewports[0]);
 
     return true;
 }
@@ -208,6 +206,7 @@ bool LoadScene(const String&in fileName)
     ResetCamera();
     CreateGizmo();
     CreateGrid();
+    SetActiveViewport(viewports[0]);
 
     return loaded;
 }

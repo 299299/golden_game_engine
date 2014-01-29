@@ -9,7 +9,7 @@ Node@ characterNode;
 
 int cameraMode = 1;
 int drawDebugMode = 0;
-bool dumpAnimation = true;
+bool dumpAnimation = false;
 bool bWalk = false;
 
 AnimatorController@ animController;
@@ -25,11 +25,12 @@ bool freeze_udpate = false;
 
 float       yaw = 0;
 float       pitch = 30;
-Vector3     camera_target_offset(0, 1.5f, 0);
+Vector3     camera_target_offset(0, 2.5f, 0);
 Vector3     camera_offset(0,0,-10);
 Vector3     camera_last_target;
 Vector2     camera_pitch_range(0, 60);
 float       stand_value = 0.0f;
+Vector3     camera_last_position;
 
 GamePad@ g_gamePad = GamePad();
 
@@ -40,6 +41,7 @@ void Start()
     if(graphics !is null)
     {
         graphics.sRGB = true;
+        renderer.hdrRendering = true;
     }
 
     script.defaultScriptFile = scriptFile;
@@ -91,33 +93,17 @@ void CreateScene()
 
     animController = characterNode.GetComponent("AnimatorController");
     animator = characterNode.GetComponent("HavokAnimator");
-
-    //CharacterController@ cc = characterNode.GetComponent("CharacterController");
+    
+    CharacterController@ cc = characterNode.GetComponent("CharacterController");
     //cc.SetRotationOnly(true);
-
-    /*
-    for(uint i=0; i<characterNode.numComponents; ++i)
-    {
-        Component@ comp = characterNode.components[i];
-        String msg;
-        comp.SaveJson(msg, true);
-
-        String fName = comp.typeName + ".json";
-        File jsonFile;
-        jsonFile.Open(fName, FILE_WRITE);
-        jsonFile.WriteLine(msg);
-        jsonFile.Close();
-    }
-
-    engine.Exit();
-    */
+    //cc.SetApplyMotion(false);
 }
 
 void CreateGUI()
 {
     // Construct new Text object, set string to display and font to use
     Text@ instructionText = ui.root.CreateChild("Text", "IN");
-    instructionText.SetFont(cache.GetResource("Font", "Fonts/MesloLGS-Regular.ttf"), 11);
+    instructionText.SetFont(cache.GetResource("Font", "Fonts/ubuntu_mono.fnt"), 9);
     UpdateInstructionText();
 
     // Position the text relative to the screen center
@@ -125,21 +111,23 @@ void CreateGUI()
     instructionText.verticalAlignment = VA_CENTER;
     instructionText.SetPosition(0, ui.root.height / 4);
     instructionText.color = Color(0.0f, 0.0, 0.15f);
+    instructionText.visible = false;
 
     Text@ statusText = ui.root.CreateChild("Text", "STS");
     statusText.horizontalAlignment = HA_LEFT;
     statusText.verticalAlignment = VA_TOP;
-    statusText.SetPosition(320, graphics.height - 100);
-    statusText.SetFont(cache.GetResource("Font", "Fonts/MesloLGS-Regular.ttf"), 11);
+    statusText.SetFont(cache.GetResource("Font", "Fonts/ubuntu_mono.fnt"), 9);
     statusText.color = Color(1,0,0);
 
     Text@ animation_dump_text = ui.root.CreateChild("Text", "ADT");
-    animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/MesloLGS-Regular.ttf"), 11);
+    animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/ubuntu_mono.fnt"), 9);
     animation_dump_text.SetPosition(0, 0);
     animation_dump_text.color = Color(0.0f, 0.0f, 1.0f);
 
     CreateAnimationControlWindow();
     CreateReplayWindow();
+
+    HandleScreenMode();
 }
 
 void UpdateInstructionText()
@@ -161,11 +149,16 @@ void UpdateInstructionText()
 
 void SetupViewport()
 {
-    // Set up a viewport to the Renderer subsystem so that the 3D scene can be seen. We need to define the scene and the camera
-    // at minimum. Additionally we could configure the viewport screen size and the rendering path (eg. forward / deferred) to
-    // use, but now we just use full screen and default render path configured in the engine command line options
     Viewport@ viewport = Viewport(scene_, cameraNode.GetComponent("Camera"));
     renderer.viewports[0] = viewport;
+
+    RenderPath@ effectRenderPath = viewport.renderPath.Clone();
+    //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/AutoExposure.xml"));
+    //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/BloomHDR.xml"));
+    //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/Tonemap.xml"));
+    effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/ColorCorrection.xml"));
+    //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/EdgeFilter.xml"));
+    viewport.renderPath = effectRenderPath;
 }
 
 
@@ -195,7 +188,7 @@ void FPSCamera(float timeStep)
         cameraNode.TranslateRelative(Vector3(1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
 }
 
-void ThirdPersionCamera(float timeStep)
+void ThirdPersonCamera(float timeStep)
 {
     const float camera_follow_speed = 10.0f;
     Vector3 target_pos = characterNode.position + camera_target_offset;
@@ -203,14 +196,13 @@ void ThirdPersionCamera(float timeStep)
     Quaternion rotation(pitch, yaw, 0);
     Vector3 cam_pos = target_pos + rotation * camera_offset;
 
-    /*
-        cameraNode.position = cameraNode.position.Lerp(cam_pos, timeStep * camera_follow_speed);
-        camera_last_target = camera_last_target.Lerp(target_pos, timeStep * camera_follow_speed);
-        cameraNode.LookAt(camera_last_target);
-    */
+    float speed = timeStep * camera_follow_speed;
 
-    cameraNode.position = cam_pos;
-    cameraNode.LookAt(target_pos);
+    camera_last_position = camera_last_position.Lerp(cam_pos, speed);
+    cameraNode.worldPosition = camera_last_position;
+
+    camera_last_target = camera_last_target.Lerp(target_pos, speed);
+    cameraNode.LookAt(camera_last_target);
 
     if(g_gamePad.isRightStickInDeadZone())
         return;
@@ -241,7 +233,7 @@ void MoveCamera(float timeStep)
         break;
 
     case 1:
-        ThirdPersionCamera(timeStep);
+        ThirdPersonCamera(timeStep);
         break;
 
     default:
@@ -269,9 +261,7 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     //if we are replaying
     if(animController.GetDebugState() == 2)
-    {
         UpdateReplayWindow();
-    }
 }
 
 void HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)
@@ -301,16 +291,8 @@ void HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)
 
 void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 {
-    // If draw debug mode is enabled, draw viewport debug geometry, which will show eg. drawable bounding boxes and skeleton
-    // bones. Note that debug geometry has to be separately requested each frame. Disable depth test so that we can see the
-    // bones properly
     DebugRenderer@ debug = scene_.debugRenderer;
     debug.AddNode(characterNode, 2.0f, false);
-
-    //debug.Add2DLine(Vector2(10,10), Vector2(10, 100), Color(1,0,0));
-    //debug.Add2DStar(Vector2(50,50), Color(0,1,0), 20);
-    //debug.Add2DSquare(Vector2(100,100), Color(0,0,1), 20);
-
 
     if (drawDebugMode == 0)
         return;
@@ -384,6 +366,20 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     {
         freeze_udpate = !freeze_udpate;
     }
+    else if(key == KEY_LEFT)
+    {
+        if(animController.GetDebugState() == 2 && current_pause)
+        {
+            StepFrame(-1);
+        }
+    }
+    else if(key == KEY_RIGHT)
+    {
+        if(animController.GetDebugState() == 2 && current_pause)
+        {
+            StepFrame(1);
+        }
+    }
 }
 
 //-- clamps an angle to the rangle of [-PI, PI]
@@ -414,11 +410,6 @@ float computeDifference()
 {
     float inputX = g_gamePad.m_leftStickX;
     float inputY = g_gamePad.m_leftStickY;
-    if(g_gamePad.isLeftStickInDeadZone())
-    {
-        return 0;
-    }
-
     Vector3 inputDir = Vector3(inputX, 0, inputY);
     Vector3 desire_fwd_dir = cameraNode.worldRotation * inputDir;
     desire_fwd_dir.y = 0;
@@ -434,8 +425,14 @@ float computeDifference()
         message += "\ninput dir=" + inputDir.ToString();
         message += "\ndesire dir=" + desire_fwd_dir.ToString();
         message += "\ncharacter dir=" + character_fwd_dir.ToString();
-        message += "\ntand_value=" + stand_value;
+        message += "\nstand_value=" + stand_value;
+        message += "\ninput= " + g_gamePad.m_leftStickX + "," + g_gamePad.m_leftStickY + "," + g_gamePad.m_leftStickHoldTime;
         statusText.text = message;
+    }
+
+    if(g_gamePad.isLeftStickInDeadZone())
+    {
+        return 0;
     }
     return diff;
 }
@@ -524,8 +521,7 @@ void OnUpdateStandToRun(float timeStep)
 
 void UpdateCharacter(float timeStep)
 {
-    if(freeze_udpate)
-        computeDifference();
+    computeDifference();
     g_gamePad.update(timeStep);
     if(freeze_udpate)
         return;
@@ -550,6 +546,8 @@ void UpdateCharacter(float timeStep)
 
     stand_value = Clamp(stand_value, 0.0f, 1.0f);
     characterNode.vars["Stand_Value"] = stand_value;
+
+
 }
 
 
@@ -579,5 +577,5 @@ void HandleScreenMode()
     window1.SetFixedSize(window_width, window_width*3);
 
     Text@ statusText = ui.root.GetChild("STS", true);
-    statusText.SetPosition(320, graphics.height - 100);
+    statusText.SetPosition(320, graphics.height - 125);
 }

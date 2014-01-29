@@ -1,390 +1,418 @@
-[0.0560] INFO:Opened log file Urho3D.log
-[0.0570] INFO:Created 3 worker threads
-[0.0580] INFO:Added resource path E:/Code/NagaEngine/Urho3D/Bin/CoreData/
-[0.0580] INFO:Added resource path E:/Code/NagaEngine/Urho3D/Bin/Data/
-[0.1660] INFO:Created Direct3D9 device
-[0.1750] INFO:Set screen mode 1024x768 windowed resizable
-[0.1760] INFO:Initialized input
-[0.1760] DEBUG:+++++++++++++++++++++++ Loading resource Shaders/HLSL/Basic.xml+++++++++++++++++++++++
-[0.1780] DEBUG:+++++++++++++++++++++++ Shaders/HLSL/Basic.xml loaded, time cost = 1(MS) +++++++++++++++++++++++
-[0.1790] INFO:Initialized user interface
-[0.1790] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Ramp.png+++++++++++++++++++++++
-[0.1800] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Ramp.xml+++++++++++++++++++++++
-[0.1810] DEBUG:+++++++++++++++++++++++ Textures/Ramp.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[0.1810] DEBUG:+++++++++++++++++++++++ Textures/Ramp.png loaded, time cost = 1(MS) +++++++++++++++++++++++
-[0.1820] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Spot.png+++++++++++++++++++++++
-[0.1830] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Spot.xml+++++++++++++++++++++++
-[0.1830] DEBUG:+++++++++++++++++++++++ Textures/Spot.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[0.1840] DEBUG:+++++++++++++++++++++++ Textures/Spot.png loaded, time cost = 2(MS) +++++++++++++++++++++++
-[0.1840] DEBUG:+++++++++++++++++++++++ Loading resource Materials/Default.xml+++++++++++++++++++++++
-[0.1850] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/NoTexture.xml+++++++++++++++++++++++
-[0.1860] DEBUG:+++++++++++++++++++++++ Techniques/NoTexture.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[0.1860] DEBUG:+++++++++++++++++++++++ Materials/Default.xml loaded, time cost = 1(MS) +++++++++++++++++++++++
-[0.1870] DEBUG:+++++++++++++++++++++++ Loading resource RenderPaths/Forward.xml+++++++++++++++++++++++
-[0.1870] DEBUG:+++++++++++++++++++++++ RenderPaths/Forward.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[0.2000] INFO:Initialized renderer
-[0.2630] INFO:Set audio mode 44100 Hz stereo interpolated
-[0.2730] DEBUG:+++++++++++++++++++++++ Loading resource UI/MessageBox.xml+++++++++++++++++++++++
-[0.2730] DEBUG:+++++++++++++++++++++++ UI/MessageBox.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[0.2740] DEBUG:Loading UI layout UI/MessageBox.xml
-[0.9090] DEBUG:+++++++++++++++++++++++ Loading resource Scripts/Animation.as+++++++++++++++++++++++
-[0.9710] INFO:Scripts/AnimationDebug.as:166,1 Compiling void HandleReplaySliderChanged(StringHash, VariantMap&inout)
-[0.9720] WARNING:Scripts/AnimationDebug.as:169,18 Float value truncated in implicit conversion to integer
-[1.0100] INFO:Scripts/Animation.as:444,1 Compiling void OnUpdateIdle(float)
-[1.0110] WARNING:Scripts/Animation.as:477,56 Float value truncated in implicit conversion to integer
-[1.0120] WARNING:Scripts/Animation.as:479,55 Float value truncated in implicit conversion to integer
-[1.0220] INFO:Compiled script module Scripts/Animation.as
-[1.0230] DEBUG:+++++++++++++++++++++++ Scripts/Animation.as loaded, time cost = 113(MS) +++++++++++++++++++++++
+[0.0390] INFO:Opened log file Urho3D.log
+[0.0390] INFO:Created 3 worker threads
+[0.0400] INFO:Added resource path E:/Code/NagaGame/Demo/CoreData/
+[0.0400] INFO:Added resource path E:/Code/NagaGame/Demo/Data/
+[0.1430] INFO:Created Direct3D9 device
+[0.1430] INFO:Set screen mode 1024x768 windowed resizable
+[0.1440] INFO:Initialized input
+[0.1440] DEBUG:#### Loading resource Shaders/HLSL/Basic.xml ####
+[0.1450] DEBUG:#### Shaders/HLSL/Basic.xml loaded, time cost = 1(MS) ####
+[0.1460] INFO:Initialized user interface
+[0.1460] DEBUG:#### Loading resource Textures/Ramp.png ####
+[0.1460] DEBUG:#### Loading resource Textures/Ramp.xml ####
+[0.1460] DEBUG:#### Textures/Ramp.xml loaded, time cost = 0(MS) ####
+[0.1460] DEBUG:#### Textures/Ramp.png loaded, time cost = 0(MS) ####
+[0.1470] DEBUG:#### Loading resource Textures/Spot.png ####
+[0.1480] DEBUG:#### Loading resource Textures/Spot.xml ####
+[0.1480] DEBUG:#### Textures/Spot.xml loaded, time cost = 0(MS) ####
+[0.1480] DEBUG:#### Textures/Spot.png loaded, time cost = 1(MS) ####
+[0.1480] DEBUG:#### Loading resource Materials/Default.xml ####
+[0.1480] DEBUG:#### Loading resource Techniques/NoTexture.xml ####
+[0.1490] DEBUG:#### Techniques/NoTexture.xml loaded, time cost = 0(MS) ####
+[0.1490] DEBUG:#### Materials/Default.xml loaded, time cost = 1(MS) ####
+[0.1490] DEBUG:#### Loading resource RenderPaths/Forward.xml ####
+[0.1490] DEBUG:#### RenderPaths/Forward.xml loaded, time cost = 0(MS) ####
+[0.1590] INFO:Initialized renderer
+[0.2120] INFO:Set audio mode 44100 Hz stereo interpolated
+[0.2160] DEBUG:#### Loading resource UI/MessageBox.xml ####
+[0.2170] DEBUG:#### UI/MessageBox.xml loaded, time cost = 0(MS) ####
+[0.2170] DEBUG:Loading UI layout UI/MessageBox.xml
+[0.7670] DEBUG:#### Loading resource Scripts/Animation.as ####
+[0.8260] INFO:Scripts/AnimationDebug.as:166,1 Compiling void HandleReplaySliderChanged(StringHash, VariantMap&inout)
+[0.8270] WARNING:Scripts/AnimationDebug.as:169,18 Float value truncated in implicit conversion to integer
+[0.8700] INFO:Scripts/Animation.as:441,1 Compiling void OnUpdateIdle(float)
+[0.8700] WARNING:Scripts/Animation.as:474,56 Float value truncated in implicit conversion to integer
+[0.8710] WARNING:Scripts/Animation.as:476,55 Float value truncated in implicit conversion to integer
+[0.8800] INFO:Compiled script module Scripts/Animation.as
+[0.8800] DEBUG:#### Scripts/Animation.as loaded, time cost = 113(MS) ####
 ---------------------- Script Start ----------------------
-[1.0240] DEBUG:Started watching path E:/Code/NagaEngine/Urho3D/Bin/CoreData/
-[1.0250] DEBUG:Started watching path E:/Code/NagaEngine/Urho3D/Bin/Data/
-[1.0260] DEBUG:+++++++++++++++++++++++ Loading resource Textures/LogoLarge.jpg+++++++++++++++++++++++
-[1.2030] DEBUG:+++++++++++++++++++++++ Loading resource Textures/LogoLarge.xml+++++++++++++++++++++++
-[1.2040] DEBUG:+++++++++++++++++++++++ Textures/LogoLarge.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[1.2620] DEBUG:+++++++++++++++++++++++ Textures/LogoLarge.jpg loaded, time cost = 235(MS) +++++++++++++++++++++++
-[1.2650] DEBUG:+++++++++++++++++++++++ Loading resource UI/DefaultStyle.xml+++++++++++++++++++++++
-[1.2680] DEBUG:+++++++++++++++++++++++ UI/DefaultStyle.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[1.2720] DEBUG:+++++++++++++++++++++++ Loading resource Fonts/Anonymous Pro.ttf+++++++++++++++++++++++
-[1.2750] DEBUG:+++++++++++++++++++++++ Fonts/Anonymous Pro.ttf loaded, time cost = 1(MS) +++++++++++++++++++++++
-[1.2780] DEBUG:Font face Anonymous Pro (11pt) has 624 glyphs
-[1.3660] DEBUG:Font face Anonymous Pro (11pt) uses a static page texture of size 512x256
-[1.3890] DEBUG:+++++++++++++++++++++++ Loading resource Textures/UI.png+++++++++++++++++++++++
-[1.3950] DEBUG:+++++++++++++++++++++++ Loading resource Textures/UI.xml+++++++++++++++++++++++
-[1.3980] DEBUG:+++++++++++++++++++++++ Textures/UI.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[1.4010] DEBUG:+++++++++++++++++++++++ Textures/UI.png loaded, time cost = 10(MS) +++++++++++++++++++++++
-[1.4060] DEBUG:+++++++++++++++++++++++ Loading resource Fonts/MesloLGS-Regular.ttf+++++++++++++++++++++++
-[1.4090] DEBUG:+++++++++++++++++++++++ Fonts/MesloLGS-Regular.ttf loaded, time cost = 1(MS) +++++++++++++++++++++++
-[1.4140] DEBUG:Font face MesloLGS-Regular (11pt) has 2687 glyphs
-[2.1210] DEBUG:Font face MesloLGS-Regular (11pt) uses a static page texture of size 1024x512
-[2.1250] DEBUG:+++++++++++++++++++++++ Loading resource UI/AnimationControlWindow.xml+++++++++++++++++++++++
-[2.1270] DEBUG:+++++++++++++++++++++++ UI/AnimationControlWindow.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.1290] DEBUG:Loading UI layout UI/AnimationControlWindow.xml
-[2.1350] INFO:Loading scene from E:/Code/NagaEngine/Urho3D/Bin/Data/Scenes/testScene.xml
-[2.1380] DEBUG:+++++++++++++++++++++++ Loading resource Models/Box.mdl+++++++++++++++++++++++
-[2.1400] DEBUG:+++++++++++++++++++++++ Models/Box.mdl loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.1430] DEBUG:+++++++++++++++++++++++ Loading resource Materials/Skybox.xml+++++++++++++++++++++++
-[2.1450] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/DiffSkybox.xml+++++++++++++++++++++++
-[2.1470] DEBUG:+++++++++++++++++++++++ Techniques/DiffSkybox.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.1500] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Skybox.xml+++++++++++++++++++++++
-[2.1530] DEBUG:+++++++++++++++++++++++ Loading resource Textures/BrightDay1_PosX.dds+++++++++++++++++++++++
-[2.1560] DEBUG:+++++++++++++++++++++++ Textures/BrightDay1_PosX.dds loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.1590] DEBUG:+++++++++++++++++++++++ Loading resource Textures/BrightDay1_NegX.dds+++++++++++++++++++++++
-[2.1610] DEBUG:+++++++++++++++++++++++ Textures/BrightDay1_NegX.dds loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.1640] DEBUG:+++++++++++++++++++++++ Loading resource Textures/BrightDay1_PosY.dds+++++++++++++++++++++++
-[2.1670] DEBUG:+++++++++++++++++++++++ Textures/BrightDay1_PosY.dds loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.1700] DEBUG:+++++++++++++++++++++++ Loading resource Textures/BrightDay1_NegY.dds+++++++++++++++++++++++
-[2.1730] DEBUG:+++++++++++++++++++++++ Textures/BrightDay1_NegY.dds loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.1760] DEBUG:+++++++++++++++++++++++ Loading resource Textures/BrightDay1_PosZ.dds+++++++++++++++++++++++
-[2.1780] DEBUG:+++++++++++++++++++++++ Textures/BrightDay1_PosZ.dds loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.1810] DEBUG:+++++++++++++++++++++++ Loading resource Textures/BrightDay1_NegZ.dds+++++++++++++++++++++++
-[2.1840] DEBUG:+++++++++++++++++++++++ Textures/BrightDay1_NegZ.dds loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.1870] DEBUG:+++++++++++++++++++++++ Textures/Skybox.xml loaded, time cost = 35(MS) +++++++++++++++++++++++
-[2.1900] DEBUG:+++++++++++++++++++++++ Materials/Skybox.xml loaded, time cost = 45(MS) +++++++++++++++++++++++
-[2.1930] DEBUG:+++++++++++++++++++++++ Loading resource Materials/StoneTiled.xml+++++++++++++++++++++++
-[2.1960] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/DiffNormalPacked.xml+++++++++++++++++++++++
-[2.1980] DEBUG:+++++++++++++++++++++++ Techniques/DiffNormalPacked.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.2010] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/Diff.xml+++++++++++++++++++++++
-[2.2030] DEBUG:+++++++++++++++++++++++ Techniques/Diff.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.2060] DEBUG:+++++++++++++++++++++++ Loading resource Textures/StoneDiffuse.dds+++++++++++++++++++++++
-[2.2100] DEBUG:+++++++++++++++++++++++ Textures/StoneDiffuse.dds loaded, time cost = 2(MS) +++++++++++++++++++++++
-[2.2120] DEBUG:+++++++++++++++++++++++ Loading resource Textures/StoneNormal.dds+++++++++++++++++++++++
-[2.2180] DEBUG:+++++++++++++++++++++++ Textures/StoneNormal.dds loaded, time cost = 4(MS) +++++++++++++++++++++++
-[2.2200] DEBUG:+++++++++++++++++++++++ Materials/StoneTiled.xml loaded, time cost = 25(MS) +++++++++++++++++++++++
-[2.2240] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk.mdl+++++++++++++++++++++++
-[2.2300] DEBUG:+++++++++++++++++++++++ monk/monk.mdl loaded, time cost = 5(MS) +++++++++++++++++++++++
-[2.2330] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_rig.hkx+++++++++++++++++++++++
-[2.2360] DEBUG:+++++++++++++++++++++++ monk/monk_rig.hkx loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.2380] INFO:hkaPose::getRequiredMemorySize = 6400
-[2.2400] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_head.xml+++++++++++++++++++++++
-[2.2420] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/DiffNormalSpec.xml+++++++++++++++++++++++
-[2.2450] DEBUG:+++++++++++++++++++++++ Techniques/DiffNormalSpec.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.2470] DEBUG:+++++++++++++++++++++++ Loading resource monk/Monk_Head_D.DDS+++++++++++++++++++++++
-[2.2510] DEBUG:+++++++++++++++++++++++ monk/Monk_Head_D.DDS loaded, time cost = 2(MS) +++++++++++++++++++++++
-[2.2540] DEBUG:+++++++++++++++++++++++ Loading resource monk/Monk_Head_N.DDS+++++++++++++++++++++++
-[2.2580] DEBUG:+++++++++++++++++++++++ monk/Monk_Head_N.DDS loaded, time cost = 2(MS) +++++++++++++++++++++++
-[2.2600] DEBUG:+++++++++++++++++++++++ Loading resource monk/Monk_Head_S.DDS+++++++++++++++++++++++
-[2.2630] DEBUG:+++++++++++++++++++++++ monk/Monk_Head_S.DDS loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.2650] DEBUG:+++++++++++++++++++++++ monk/monk_head.xml loaded, time cost = 23(MS) +++++++++++++++++++++++
-[2.2680] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_hair.xml+++++++++++++++++++++++
-[2.2700] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/DiffNormalSpecAlphaMask.xml+++++++++++++++++++++++
-[2.2730] DEBUG:+++++++++++++++++++++++ Techniques/DiffNormalSpecAlphaMask.xml loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.2750] DEBUG:+++++++++++++++++++++++ Loading resource monk/Monk_Hair_D.DDS+++++++++++++++++++++++
-[2.2790] DEBUG:+++++++++++++++++++++++ monk/Monk_Hair_D.DDS loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.2820] DEBUG:+++++++++++++++++++++++ Loading resource monk/Monk_Hair_N.DDS+++++++++++++++++++++++
-[2.2850] DEBUG:+++++++++++++++++++++++ monk/Monk_Hair_N.DDS loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.2880] DEBUG:+++++++++++++++++++++++ Loading resource monk/Monk_Hair_S.DDS+++++++++++++++++++++++
-[2.2910] DEBUG:+++++++++++++++++++++++ monk/Monk_Hair_S.DDS loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.2940] DEBUG:+++++++++++++++++++++++ monk/monk_hair.xml loaded, time cost = 24(MS) +++++++++++++++++++++++
-[2.2970] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_armor.xml+++++++++++++++++++++++
-[2.2990] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_d.DDS+++++++++++++++++++++++
-[2.3040] DEBUG:+++++++++++++++++++++++ monk/monk_d.DDS loaded, time cost = 3(MS) +++++++++++++++++++++++
-[2.3070] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_n.DDS+++++++++++++++++++++++
-[2.3120] DEBUG:+++++++++++++++++++++++ monk/monk_n.DDS loaded, time cost = 3(MS) +++++++++++++++++++++++
-[2.3140] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_s.DDS+++++++++++++++++++++++
-[2.3170] DEBUG:+++++++++++++++++++++++ monk/monk_s.DDS loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.3200] DEBUG:+++++++++++++++++++++++ monk/monk_armor.xml loaded, time cost = 21(MS) +++++++++++++++++++++++
-[2.3240] DEBUG:+++++++++++++++++++++++ Loading resource monk/monk_body.xml+++++++++++++++++++++++
-[2.3270] DEBUG:+++++++++++++++++++++++ Loading resource monk/MonkBody_D.DDS+++++++++++++++++++++++
-[2.3310] DEBUG:+++++++++++++++++++++++ monk/MonkBody_D.DDS loaded, time cost = 3(MS) +++++++++++++++++++++++
-[2.3340] DEBUG:+++++++++++++++++++++++ Loading resource monk/MonkBody_N.DDS+++++++++++++++++++++++
-[2.3390] DEBUG:+++++++++++++++++++++++ monk/MonkBody_N.DDS loaded, time cost = 3(MS) +++++++++++++++++++++++
-[2.3410] DEBUG:+++++++++++++++++++++++ Loading resource monk/MonkBody_S.DDS+++++++++++++++++++++++
-[2.3440] DEBUG:+++++++++++++++++++++++ monk/MonkBody_S.DDS loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.3470] DEBUG:+++++++++++++++++++++++ monk/monk_body.xml loaded, time cost = 21(MS) +++++++++++++++++++++++
-[2.3490] INFO:hkaPose::getRequiredMemorySize = 6400
-[2.3510] DEBUG:+++++++++++++++++++++++ Loading resource Models/Sphere.mdl+++++++++++++++++++++++
-[2.3540] DEBUG:+++++++++++++++++++++++ Models/Sphere.mdl loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.3570] DEBUG:+++++++++++++++++++++++ Loading resource Json/BoxShape.json+++++++++++++++++++++++
-[2.3590] DEBUG:+++++++++++++++++++++++ Json/BoxShape.json loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.3630] INFO:hkaPose::getRequiredMemorySize = 6400
-[2.3650] DEBUG:+++++++++++++++++++++++ Loading resource Json/CharacerShape.json+++++++++++++++++++++++
-[2.3670] DEBUG:+++++++++++++++++++++++ Json/CharacerShape.json loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.3700] DEBUG:+++++++++++++++++++++++ Loading resource Json/Monk_Animation_FSM.json+++++++++++++++++++++++
-[2.3720] DEBUG:type = 2, state num = 8
-[2.3740] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_idle.hkx+++++++++++++++++++++++
-[2.3770] DEBUG:loaded animation monk/animations/monk_stand_idle.hkx, length = 0.04, frames = 1
-[2.3790] DEBUG:ResourceDependency monk/animations/monk_stand_idle.hkx ---> monk/animations/monk_stand_idle.json
-[2.3820] ERROR:HavokAnimation Zero sized JSON data in monk/animations/monk_stand_idle.json
-[2.3840] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_idle.hkx loaded, time cost = 8(MS) +++++++++++++++++++++++
-[2.3870] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_run_0.hkx+++++++++++++++++++++++
-[2.3910] DEBUG:loaded animation monk/animations/monk_run_0.hkx, length = 0.67, frames = 20
-[2.3930] DEBUG:ResourceDependency monk/animations/monk_run_0.hkx ---> monk/animations/monk_run_0.json
-[2.3950] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
-[2.3970] DEBUG:loaded animation trigger id: RightFoot, time 0.200, type: Beat
-[2.3980] DEBUG:+++++++++++++++++++++++ monk/animations/monk_run_0.hkx loaded, time cost = 9(MS) +++++++++++++++++++++++
-[2.4000] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_run_180.hkx+++++++++++++++++++++++
-[2.4040] DEBUG:loaded animation monk/animations/monk_run_180.hkx, length = 1.00, frames = 30
-[2.4060] DEBUG:ResourceDependency monk/animations/monk_run_180.hkx ---> monk/animations/monk_run_180.json
-[2.4090] DEBUG:loaded animation trigger id: Continue, time 0.500, type: Event
-[2.4100] DEBUG:loaded animation trigger id: RightFoot, time 0.500, type: Beat
-[2.4120] DEBUG:loaded animation trigger id: LeftFoot, time 0.767, type: Beat
-[2.4130] DEBUG:+++++++++++++++++++++++ monk/animations/monk_run_180.hkx loaded, time cost = 10(MS) +++++++++++++++++++++++
-[2.4160] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_run_0.hkx+++++++++++++++++++++++
-[2.4190] DEBUG:loaded animation monk/animations/monk_stand_to_run_0.hkx, length = 0.80, frames = 24
-[2.4230] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_0.hkx ---> monk/animations/monk_stand_to_run_0.json
-[2.4260] DEBUG:loaded animation trigger id: RightFoot, time 0.400, type: Beat
-[2.4270] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_run_0.hkx loaded, time cost = 9(MS) +++++++++++++++++++++++
-[2.4300] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_run_45.hkx+++++++++++++++++++++++
-[2.4330] DEBUG:loaded animation monk/animations/monk_stand_to_run_45.hkx, length = 0.67, frames = 20
-[2.4350] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_45.hkx ---> monk/animations/monk_stand_to_run_45.json
-[2.4380] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
-[2.4400] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_run_45.hkx loaded, time cost = 8(MS) +++++++++++++++++++++++
-[2.4420] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_run_90.hkx+++++++++++++++++++++++
-[2.4460] DEBUG:loaded animation monk/animations/monk_stand_to_run_90.hkx, length = 0.67, frames = 20
-[2.4480] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_90.hkx ---> monk/animations/monk_stand_to_run_90.json
-[2.4510] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
-[2.4520] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_run_90.hkx loaded, time cost = 7(MS) +++++++++++++++++++++++
-[2.4560] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_run_135.hkx+++++++++++++++++++++++
-[2.4600] DEBUG:loaded animation monk/animations/monk_stand_to_run_135.hkx, length = 1.13, frames = 33
-[2.4620] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_135.hkx ---> monk/animations/monk_stand_to_run_135.json
-[2.4650] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
-[2.4660] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
-[2.4670] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_run_135.hkx loaded, time cost = 9(MS) +++++++++++++++++++++++
-[2.4700] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_run_180.hkx+++++++++++++++++++++++
-[2.4740] DEBUG:loaded animation monk/animations/monk_stand_to_run_180.hkx, length = 1.13, frames = 33
-[2.4760] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_180.hkx ---> monk/animations/monk_stand_to_run_180.json
-[2.4780] DEBUG:loaded animation trigger id: RightFoot, time 0.500, type: Beat
-[2.4800] DEBUG:loaded animation trigger id: LeftFoot, time 0.733, type: Beat
-[2.4810] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_run_180.hkx loaded, time cost = 9(MS) +++++++++++++++++++++++
-[2.4840] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_run_to_stand.hkx+++++++++++++++++++++++
-[2.4880] DEBUG:loaded animation monk/animations/monk_run_to_stand.hkx, length = 1.13, frames = 33
-[2.4900] DEBUG:ResourceDependency monk/animations/monk_run_to_stand.hkx ---> monk/animations/monk_run_to_stand.json
-[2.4930] DEBUG:loaded animation trigger id: Continue, time 0.500, type: Event
-[2.4940] DEBUG:+++++++++++++++++++++++ monk/animations/monk_run_to_stand.hkx loaded, time cost = 7(MS) +++++++++++++++++++++++
-[2.4970] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_walk_0.hkx+++++++++++++++++++++++
-[2.5000] DEBUG:loaded animation monk/animations/monk_walk_0.hkx, length = 1.33, frames = 40
-[2.5030] DEBUG:ResourceDependency monk/animations/monk_walk_0.hkx ---> monk/animations/monk_walk_0.json
-[2.5050] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
-[2.5070] DEBUG:loaded animation trigger id: RightFoot, time 0.333, type: Beat
-[2.5080] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
-[2.5090] DEBUG:+++++++++++++++++++++++ monk/animations/monk_walk_0.hkx loaded, time cost = 10(MS) +++++++++++++++++++++++
-[2.5110] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_walk_0.hkx+++++++++++++++++++++++
-[2.5150] DEBUG:loaded animation monk/animations/monk_stand_to_walk_0.hkx, length = 1.33, frames = 40
-[2.5170] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_0.hkx ---> monk/animations/monk_stand_to_walk_0.json
-[2.5200] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
-[2.5210] DEBUG:loaded animation trigger id: RightFoot, time 0.400, type: Beat
-[2.5250] DEBUG:loaded animation trigger id: LeftFoot, time 0.933, type: Beat
-[2.5270] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_walk_0.hkx loaded, time cost = 13(MS) +++++++++++++++++++++++
-[2.5290] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_walk_45.hkx+++++++++++++++++++++++
-[2.5330] DEBUG:loaded animation monk/animations/monk_stand_to_walk_45.hkx, length = 2.37, frames = 70
-[2.5350] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_45.hkx ---> monk/animations/monk_stand_to_walk_45.json
-[2.5380] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
-[2.5390] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
-[2.5400] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_walk_45.hkx loaded, time cost = 9(MS) +++++++++++++++++++++++
-[2.5420] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_walk_90.hkx+++++++++++++++++++++++
-[2.5470] DEBUG:loaded animation monk/animations/monk_stand_to_walk_90.hkx, length = 2.37, frames = 70
-[2.5490] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_90.hkx ---> monk/animations/monk_stand_to_walk_90.json
-[2.5520] DEBUG:loaded animation trigger id: RightFoot, time 0.600, type: Beat
-[2.5530] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
-[2.5550] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_walk_90.hkx loaded, time cost = 10(MS) +++++++++++++++++++++++
-[2.5580] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_walk_135.hkx+++++++++++++++++++++++
-[2.5620] DEBUG:loaded animation monk/animations/monk_stand_to_walk_135.hkx, length = 2.40, frames = 72
-[2.5640] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_135.hkx ---> monk/animations/monk_stand_to_walk_135.json
-[2.5670] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
-[2.5680] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
-[2.5690] DEBUG:loaded animation trigger id: RightFoot, time 1.767, type: Beat
-[2.5710] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_walk_135.hkx loaded, time cost = 11(MS) +++++++++++++++++++++++
-[2.5730] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_to_walk_180.hkx+++++++++++++++++++++++
-[2.5770] DEBUG:loaded animation monk/animations/monk_stand_to_walk_180.hkx, length = 2.40, frames = 72
-[2.5790] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_180.hkx ---> monk/animations/monk_stand_to_walk_180.json
-[2.5820] DEBUG:loaded animation trigger id: RightFoot, time 0.467, type: Beat
-[2.5830] DEBUG:loaded animation trigger id: LeftFoot, time 1.100, type: Beat
-[2.5840] DEBUG:loaded animation trigger id: RightFoot, time 1.667, type: Beat
-[2.5860] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_to_walk_180.hkx loaded, time cost = 11(MS) +++++++++++++++++++++++
-[2.5880] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_walk_180.hkx+++++++++++++++++++++++
-[2.5930] DEBUG:loaded animation monk/animations/monk_walk_180.hkx, length = 2.38, frames = 71
-[2.5950] DEBUG:ResourceDependency monk/animations/monk_walk_180.hkx ---> monk/animations/monk_walk_180.json
-[2.5970] DEBUG:loaded animation trigger id: Continue, time 0.667, type: Event
-[2.5990] DEBUG:loaded animation trigger id: RightFoot, time 0.667, type: Beat
-[2.6000] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
-[2.6020] DEBUG:loaded animation trigger id: RightFoot, time 1.800, type: Beat
-[2.6030] DEBUG:+++++++++++++++++++++++ monk/animations/monk_walk_180.hkx loaded, time cost = 13(MS) +++++++++++++++++++++++
-[2.6050] DEBUG:type = 2, state num = 1
-[2.6070] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_stand_additive.hkx+++++++++++++++++++++++
-[2.6130] DEBUG:loaded animation monk/animations/monk_stand_additive.hkx, length = 5.67, frames = 169
-[2.6150] DEBUG:ResourceDependency monk/animations/monk_stand_additive.hkx ---> monk/animations/monk_stand_additive.json
-[2.6180] WARNING:animation file no json trigger.
-[2.6190] DEBUG:+++++++++++++++++++++++ monk/animations/monk_stand_additive.hkx loaded, time cost = 10(MS) +++++++++++++++++++++++
-[2.6220] DEBUG:+++++++++++++++++++++++ Loading resource monk/animations/monk_run_additive.hkx+++++++++++++++++++++++
-[2.6290] DEBUG:loaded animation monk/animations/monk_run_additive.hkx, length = 8.33, frames = 249
-[2.6310] DEBUG:ResourceDependency monk/animations/monk_run_additive.hkx ---> monk/animations/monk_run_additive.json
-[2.6340] WARNING:animation file no json trigger.
-[2.6360] DEBUG:+++++++++++++++++++++++ monk/animations/monk_run_additive.hkx loaded, time cost = 11(MS) +++++++++++++++++++++++
-[2.6380] DEBUG:blendtree load parentNodeId = -1, name = Root, id = 0
-[2.6390] DEBUG:blendtree load parentNodeId = 0, name = NULL, id = 1
-[2.6410] DEBUG:blendtree load parentNodeId = 0, name = NULL, id = 2
-[2.6420] DEBUG:node type: Binary Blend, child num: 2, blend num: 0, slot: -1
+[0.8810] DEBUG:Started watching path E:/Code/NagaGame/Demo/CoreData/
+[0.8810] DEBUG:Started watching path E:/Code/NagaGame/Demo/Data/
+[0.8820] DEBUG:#### Loading resource Textures/LogoLarge.jpg ####
+[1.0540] DEBUG:#### Loading resource Textures/LogoLarge.xml ####
+[1.0540] DEBUG:#### Textures/LogoLarge.xml loaded, time cost = 0(MS) ####
+[1.1120] DEBUG:#### Textures/LogoLarge.jpg loaded, time cost = 230(MS) ####
+[1.1140] DEBUG:#### Loading resource UI/DefaultStyle.xml ####
+[1.1150] DEBUG:#### UI/DefaultStyle.xml loaded, time cost = 0(MS) ####
+[1.1160] DEBUG:#### Loading resource Fonts/Anonymous Pro.ttf ####
+[1.1170] DEBUG:#### Fonts/Anonymous Pro.ttf loaded, time cost = 0(MS) ####
+[1.1180] DEBUG:Font face Anonymous Pro (11pt) has 624 glyphs
+[1.1960] DEBUG:Font face Anonymous Pro (11pt) uses a static page texture of size 512x256
+[1.2020] DEBUG:#### Loading resource Textures/UI.png ####
+[1.2060] DEBUG:#### Loading resource Textures/UI.xml ####
+[1.2060] DEBUG:#### Textures/UI.xml loaded, time cost = 0(MS) ####
+[1.2080] DEBUG:#### Textures/UI.png loaded, time cost = 6(MS) ####
+[1.2100] DEBUG:#### Loading resource Fonts/ubuntu_mono.fnt ####
+[1.2100] DEBUG:#### Fonts/ubuntu_mono.fnt loaded, time cost = 0(MS) ####
+[1.2150] DEBUG:Bitmap font face ubuntu_mono has 102 glyphs
+[1.2160] DEBUG:#### Loading resource UI/AnimationControlWindow.xml ####
+[1.2170] DEBUG:#### UI/AnimationControlWindow.xml loaded, time cost = 1(MS) ####
+[1.2170] DEBUG:Loading UI layout UI/AnimationControlWindow.xml
+[1.2220] INFO:Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene.xml
+[1.2230] DEBUG:#### Loading resource Models/Box.mdl ####
+[1.2240] DEBUG:#### Models/Box.mdl loaded, time cost = 0(MS) ####
+[1.2250] DEBUG:#### Loading resource Materials/Skybox.xml ####
+[1.2250] DEBUG:#### Loading resource Techniques/DiffSkybox.xml ####
+[1.2260] DEBUG:#### Techniques/DiffSkybox.xml loaded, time cost = 0(MS) ####
+[1.2270] DEBUG:#### Loading resource Textures/Skybox.xml ####
+[1.2270] DEBUG:#### Loading resource Textures/BrightDay1_PosX.dds ####
+[1.2280] DEBUG:#### Textures/BrightDay1_PosX.dds loaded, time cost = 0(MS) ####
+[1.2300] DEBUG:#### Loading resource Textures/BrightDay1_NegX.dds ####
+[1.2310] DEBUG:#### Textures/BrightDay1_NegX.dds loaded, time cost = 1(MS) ####
+[1.2320] DEBUG:#### Loading resource Textures/BrightDay1_PosY.dds ####
+[1.2330] DEBUG:#### Textures/BrightDay1_PosY.dds loaded, time cost = 1(MS) ####
+[1.2340] DEBUG:#### Loading resource Textures/BrightDay1_NegY.dds ####
+[1.2350] DEBUG:#### Textures/BrightDay1_NegY.dds loaded, time cost = 1(MS) ####
+[1.2360] DEBUG:#### Loading resource Textures/BrightDay1_PosZ.dds ####
+[1.2370] DEBUG:#### Textures/BrightDay1_PosZ.dds loaded, time cost = 0(MS) ####
+[1.2380] DEBUG:#### Loading resource Textures/BrightDay1_NegZ.dds ####
+[1.2470] DEBUG:#### Textures/BrightDay1_NegZ.dds loaded, time cost = 0(MS) ####
+[1.2480] DEBUG:#### Textures/Skybox.xml loaded, time cost = 21(MS) ####
+[1.2490] DEBUG:#### Materials/Skybox.xml loaded, time cost = 24(MS) ####
+[1.2500] DEBUG:#### Loading resource Materials/StoneTiled.xml ####
+[1.2510] DEBUG:#### Loading resource Techniques/DiffNormalPacked.xml ####
+[1.2510] DEBUG:#### Techniques/DiffNormalPacked.xml loaded, time cost = 0(MS) ####
+[1.2520] DEBUG:#### Loading resource Techniques/Diff.xml ####
+[1.2530] DEBUG:#### Techniques/Diff.xml loaded, time cost = 1(MS) ####
+[1.2530] DEBUG:#### Loading resource Textures/StoneDiffuse.dds ####
+[1.2570] DEBUG:#### Textures/StoneDiffuse.dds loaded, time cost = 2(MS) ####
+[1.2570] DEBUG:#### Loading resource Textures/StoneNormal.dds ####
+[1.2620] DEBUG:#### Textures/StoneNormal.dds loaded, time cost = 4(MS) ####
+[1.2620] DEBUG:#### Materials/StoneTiled.xml loaded, time cost = 12(MS) ####
+[1.2630] DEBUG:#### Loading resource monk/monk.mdl ####
+[1.2680] DEBUG:#### monk/monk.mdl loaded, time cost = 4(MS) ####
+[1.2680] DEBUG:#### Loading resource monk/monk_rig.hkx ####
+[1.2700] DEBUG:#### monk/monk_rig.hkx loaded, time cost = 1(MS) ####
+[1.2700] INFO:hkaPose::getRequiredMemorySize = 6400
+[1.2710] DEBUG:#### Loading resource monk/monk_head.xml ####
+[1.2720] DEBUG:#### Loading resource Techniques/DiffNormalSpec.xml ####
+[1.2730] DEBUG:#### Techniques/DiffNormalSpec.xml loaded, time cost = 1(MS) ####
+[1.2730] DEBUG:#### Loading resource monk/Monk_Head_D.DDS ####
+[1.2750] DEBUG:#### monk/Monk_Head_D.DDS loaded, time cost = 1(MS) ####
+[1.2760] DEBUG:#### Loading resource monk/Monk_Head_N.DDS ####
+[1.2780] DEBUG:#### monk/Monk_Head_N.DDS loaded, time cost = 2(MS) ####
+[1.2780] DEBUG:#### Loading resource monk/Monk_Head_S.DDS ####
+[1.2790] DEBUG:#### monk/Monk_Head_S.DDS loaded, time cost = 0(MS) ####
+[1.2800] DEBUG:#### monk/monk_head.xml loaded, time cost = 8(MS) ####
+[1.2810] DEBUG:#### Loading resource monk/monk_hair.xml ####
+[1.2810] DEBUG:#### Loading resource Techniques/DiffNormalSpecAlphaMask.xml ####
+[1.2820] DEBUG:#### Techniques/DiffNormalSpecAlphaMask.xml loaded, time cost = 0(MS) ####
+[1.2830] DEBUG:#### Loading resource monk/Monk_Hair_D.DDS ####
+[1.2840] DEBUG:#### monk/Monk_Hair_D.DDS loaded, time cost = 1(MS) ####
+[1.2850] DEBUG:#### Loading resource monk/Monk_Hair_N.DDS ####
+[1.2860] DEBUG:#### monk/Monk_Hair_N.DDS loaded, time cost = 1(MS) ####
+[1.2980] DEBUG:#### Loading resource monk/Monk_Hair_S.DDS ####
+[1.2990] DEBUG:#### monk/Monk_Hair_S.DDS loaded, time cost = 1(MS) ####
+[1.2990] DEBUG:#### monk/monk_hair.xml loaded, time cost = 18(MS) ####
+[1.3000] DEBUG:#### Loading resource monk/monk_armor.xml ####
+[1.3010] DEBUG:#### Loading resource monk/monk_d.DDS ####
+[1.3040] DEBUG:#### monk/monk_d.DDS loaded, time cost = 2(MS) ####
+[1.3050] DEBUG:#### Loading resource monk/monk_n.DDS ####
+[1.3080] DEBUG:#### monk/monk_n.DDS loaded, time cost = 2(MS) ####
+[1.3090] DEBUG:#### Loading resource monk/monk_s.DDS ####
+[1.3100] DEBUG:#### monk/monk_s.DDS loaded, time cost = 0(MS) ####
+[1.3110] DEBUG:#### monk/monk_armor.xml loaded, time cost = 10(MS) ####
+[1.3120] DEBUG:#### Loading resource monk/monk_body.xml ####
+[1.3120] DEBUG:#### Loading resource monk/MonkBody_D.DDS ####
+[1.3160] DEBUG:#### monk/MonkBody_D.DDS loaded, time cost = 3(MS) ####
+[1.3170] DEBUG:#### Loading resource monk/MonkBody_N.DDS ####
+[1.3210] DEBUG:#### monk/MonkBody_N.DDS loaded, time cost = 3(MS) ####
+[1.3220] DEBUG:#### Loading resource monk/MonkBody_S.DDS ####
+[1.3230] DEBUG:#### monk/MonkBody_S.DDS loaded, time cost = 0(MS) ####
+[1.3240] DEBUG:#### monk/monk_body.xml loaded, time cost = 12(MS) ####
+[1.3250] INFO:hkaPose::getRequiredMemorySize = 6400
+[1.3260] DEBUG:#### Loading resource Models/Sphere.mdl ####
+[1.3270] DEBUG:#### Models/Sphere.mdl loaded, time cost = 1(MS) ####
+[1.3270] DEBUG:#### Loading resource Json/BoxShape.json ####
+[1.3280] DEBUG:#### Json/BoxShape.json loaded, time cost = 0(MS) ####
+[1.3290] INFO:hkaPose::getRequiredMemorySize = 6400
+[1.3300] DEBUG:#### Loading resource Json/CharacerShape.json ####
+[1.3310] DEBUG:#### Json/CharacerShape.json loaded, time cost = 0(MS) ####
+[1.3320] DEBUG:#### Loading resource Json/Monk_Animation_FSM.json ####
+[1.3330] DEBUG:type = 2, state num = 8
+[1.3330] DEBUG:#### Loading resource monk/animations/monk_stand_idle.hkx ####
+[1.3350] DEBUG:loaded animation monk/animations/monk_stand_idle.hkx, length = 0.04, frames = 1
+[1.3470] DEBUG:ResourceDependency monk/animations/monk_stand_idle.hkx ---> monk/animations/monk_stand_idle.json
+[1.3490] ERROR:HavokAnimation Zero sized JSON data in monk/animations/monk_stand_idle.json
+[1.3490] DEBUG:#### monk/animations/monk_stand_idle.hkx loaded, time cost = 15(MS) ####
+[1.3500] DEBUG:#### Loading resource monk/animations/monk_run_0.hkx ####
+[1.3520] DEBUG:loaded animation monk/animations/monk_run_0.hkx, length = 0.67, frames = 20
+[1.3520] DEBUG:ResourceDependency monk/animations/monk_run_0.hkx ---> monk/animations/monk_run_0.json
+[1.3530] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
+[1.3540] DEBUG:loaded animation trigger id: RightFoot, time 0.200, type: Beat
+[1.3550] DEBUG:#### monk/animations/monk_run_0.hkx loaded, time cost = 4(MS) ####
+[1.3560] DEBUG:#### Loading resource monk/animations/monk_run_180.hkx ####
+[1.3580] DEBUG:loaded animation monk/animations/monk_run_180.hkx, length = 1.00, frames = 30
+[1.3580] DEBUG:ResourceDependency monk/animations/monk_run_180.hkx ---> monk/animations/monk_run_180.json
+[1.3590] DEBUG:loaded animation trigger id: Continue, time 0.500, type: Event
+[1.3600] DEBUG:loaded animation trigger id: RightFoot, time 0.500, type: Beat
+[1.3600] DEBUG:loaded animation trigger id: LeftFoot, time 0.767, type: Beat
+[1.3610] DEBUG:#### monk/animations/monk_run_180.hkx loaded, time cost = 5(MS) ####
+[1.3620] DEBUG:#### Loading resource monk/animations/monk_stand_to_run_0.hkx ####
+[1.3640] DEBUG:loaded animation monk/animations/monk_stand_to_run_0.hkx, length = 0.80, frames = 24
+[1.3640] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_0.hkx ---> monk/animations/monk_stand_to_run_0.json
+[1.3650] DEBUG:loaded animation trigger id: RightFoot, time 0.400, type: Beat
+[1.3660] DEBUG:#### monk/animations/monk_stand_to_run_0.hkx loaded, time cost = 3(MS) ####
+[1.3670] DEBUG:#### Loading resource monk/animations/monk_stand_to_run_45.hkx ####
+[1.3730] DEBUG:loaded animation monk/animations/monk_stand_to_run_45.hkx, length = 0.67, frames = 20
+[1.3740] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_45.hkx ---> monk/animations/monk_stand_to_run_45.json
+[1.3750] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[1.3790] DEBUG:#### monk/animations/monk_stand_to_run_45.hkx loaded, time cost = 7(MS) ####
+[1.3800] DEBUG:#### Loading resource monk/animations/monk_stand_to_run_90.hkx ####
+[1.3810] DEBUG:loaded animation monk/animations/monk_stand_to_run_90.hkx, length = 0.67, frames = 20
+[1.3820] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_90.hkx ---> monk/animations/monk_stand_to_run_90.json
+[1.3830] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[1.3840] DEBUG:#### monk/animations/monk_stand_to_run_90.hkx loaded, time cost = 4(MS) ####
+[1.3990] DEBUG:#### Loading resource monk/animations/monk_stand_to_run_135.hkx ####
+[1.4000] DEBUG:loaded animation monk/animations/monk_stand_to_run_135.hkx, length = 1.13, frames = 33
+[1.4010] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_135.hkx ---> monk/animations/monk_stand_to_run_135.json
+[1.4020] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[1.4020] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[1.4030] DEBUG:#### monk/animations/monk_stand_to_run_135.hkx loaded, time cost = 4(MS) ####
+[1.4040] DEBUG:#### Loading resource monk/animations/monk_stand_to_run_180.hkx ####
+[1.4060] DEBUG:loaded animation monk/animations/monk_stand_to_run_180.hkx, length = 1.13, frames = 33
+[1.4060] DEBUG:ResourceDependency monk/animations/monk_stand_to_run_180.hkx ---> monk/animations/monk_stand_to_run_180.json
+[1.4070] DEBUG:loaded animation trigger id: RightFoot, time 0.500, type: Beat
+[1.4080] DEBUG:loaded animation trigger id: LeftFoot, time 0.733, type: Beat
+[1.4090] DEBUG:#### monk/animations/monk_stand_to_run_180.hkx loaded, time cost = 4(MS) ####
+[1.4100] DEBUG:#### Loading resource monk/animations/monk_run_to_stand.hkx ####
+[1.4110] DEBUG:loaded animation monk/animations/monk_run_to_stand.hkx, length = 1.13, frames = 33
+[1.4120] DEBUG:ResourceDependency monk/animations/monk_run_to_stand.hkx ---> monk/animations/monk_run_to_stand.json
+[1.4130] DEBUG:loaded animation trigger id: Continue, time 0.500, type: Event
+[1.4130] DEBUG:#### monk/animations/monk_run_to_stand.hkx loaded, time cost = 3(MS) ####
+[1.4140] DEBUG:#### Loading resource monk/animations/monk_walk_0.hkx ####
+[1.4160] DEBUG:loaded animation monk/animations/monk_walk_0.hkx, length = 1.33, frames = 40
+[1.4170] DEBUG:ResourceDependency monk/animations/monk_walk_0.hkx ---> monk/animations/monk_walk_0.json
+[1.4180] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
+[1.4180] DEBUG:loaded animation trigger id: RightFoot, time 0.333, type: Beat
+[1.4190] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[1.4200] DEBUG:#### monk/animations/monk_walk_0.hkx loaded, time cost = 5(MS) ####
+[1.4210] DEBUG:#### Loading resource monk/animations/monk_stand_to_walk_0.hkx ####
+[1.4230] DEBUG:loaded animation monk/animations/monk_stand_to_walk_0.hkx, length = 1.33, frames = 40
+[1.4230] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_0.hkx ---> monk/animations/monk_stand_to_walk_0.json
+[1.4240] DEBUG:loaded animation trigger id: LeftFoot, time 0.000, type: Beat
+[1.4250] DEBUG:loaded animation trigger id: RightFoot, time 0.400, type: Beat
+[1.4260] DEBUG:loaded animation trigger id: LeftFoot, time 0.933, type: Beat
+[1.4260] DEBUG:#### monk/animations/monk_stand_to_walk_0.hkx loaded, time cost = 5(MS) ####
+[1.4280] DEBUG:#### Loading resource monk/animations/monk_stand_to_walk_45.hkx ####
+[1.4300] DEBUG:loaded animation monk/animations/monk_stand_to_walk_45.hkx, length = 2.37, frames = 70
+[1.4300] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_45.hkx ---> monk/animations/monk_stand_to_walk_45.json
+[1.4310] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
+[1.4320] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
+[1.4340] DEBUG:#### monk/animations/monk_stand_to_walk_45.hkx loaded, time cost = 6(MS) ####
+[1.4350] DEBUG:#### Loading resource monk/animations/monk_stand_to_walk_90.hkx ####
+[1.4370] DEBUG:loaded animation monk/animations/monk_stand_to_walk_90.hkx, length = 2.37, frames = 70
+[1.4370] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_90.hkx ---> monk/animations/monk_stand_to_walk_90.json
+[1.4390] DEBUG:loaded animation trigger id: RightFoot, time 0.600, type: Beat
+[1.4390] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
+[1.4400] DEBUG:#### monk/animations/monk_stand_to_walk_90.hkx loaded, time cost = 5(MS) ####
+[1.4410] DEBUG:#### Loading resource monk/animations/monk_stand_to_walk_135.hkx ####
+[1.4430] DEBUG:loaded animation monk/animations/monk_stand_to_walk_135.hkx, length = 2.40, frames = 72
+[1.4430] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_135.hkx ---> monk/animations/monk_stand_to_walk_135.json
+[1.4440] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
+[1.4450] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
+[1.4450] DEBUG:loaded animation trigger id: RightFoot, time 1.767, type: Beat
+[1.4460] DEBUG:#### monk/animations/monk_stand_to_walk_135.hkx loaded, time cost = 5(MS) ####
+[1.4480] DEBUG:#### Loading resource monk/animations/monk_stand_to_walk_180.hkx ####
+[1.4510] DEBUG:loaded animation monk/animations/monk_stand_to_walk_180.hkx, length = 2.40, frames = 72
+[1.4510] DEBUG:ResourceDependency monk/animations/monk_stand_to_walk_180.hkx ---> monk/animations/monk_stand_to_walk_180.json
+[1.4520] DEBUG:loaded animation trigger id: RightFoot, time 0.467, type: Beat
+[1.4530] DEBUG:loaded animation trigger id: LeftFoot, time 1.100, type: Beat
+[1.4540] DEBUG:loaded animation trigger id: RightFoot, time 1.667, type: Beat
+[1.4540] DEBUG:#### monk/animations/monk_stand_to_walk_180.hkx loaded, time cost = 5(MS) ####
+[1.4550] DEBUG:#### Loading resource monk/animations/monk_walk_180.hkx ####
+[1.4580] DEBUG:loaded animation monk/animations/monk_walk_180.hkx, length = 2.38, frames = 71
+[1.4580] DEBUG:ResourceDependency monk/animations/monk_walk_180.hkx ---> monk/animations/monk_walk_180.json
+[1.4590] DEBUG:loaded animation trigger id: Continue, time 0.667, type: Event
+[1.4600] DEBUG:loaded animation trigger id: RightFoot, time 0.667, type: Beat
+[1.4600] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
+[1.4610] DEBUG:loaded animation trigger id: RightFoot, time 1.800, type: Beat
+[1.4620] DEBUG:#### monk/animations/monk_walk_180.hkx loaded, time cost = 6(MS) ####
+[1.4630] DEBUG:type = 2, state num = 1
+[1.4630] DEBUG:#### Loading resource monk/animations/monk_stand_additive.hkx ####
+[1.4670] DEBUG:loaded animation monk/animations/monk_stand_additive.hkx, length = 5.67, frames = 169
+[1.4680] DEBUG:ResourceDependency monk/animations/monk_stand_additive.hkx ---> monk/animations/monk_stand_additive.json
+[1.4690] WARNING:animation file no json trigger.
+[1.4690] DEBUG:#### monk/animations/monk_stand_additive.hkx loaded, time cost = 5(MS) ####
+[1.4700] DEBUG:#### Loading resource monk/animations/monk_run_additive.hkx ####
+[1.4750] DEBUG:loaded animation monk/animations/monk_run_additive.hkx, length = 8.33, frames = 249
+[1.4760] DEBUG:ResourceDependency monk/animations/monk_run_additive.hkx ---> monk/animations/monk_run_additive.json
+[1.4770] WARNING:animation file no json trigger.
+[1.4770] DEBUG:#### monk/animations/monk_run_additive.hkx loaded, time cost = 6(MS) ####
+[1.4780] DEBUG:blendtree load parentNodeId = -1, name = Root, id = 0
+[1.4790] DEBUG:blendtree load parentNodeId = 0, name = NULL, id = 1
+[1.4790] DEBUG:blendtree load parentNodeId = 0, name = NULL, id = 2
+[1.4790] DEBUG:node type: Binary Blend, child num: 2, blend num: 0, slot: -1
 child indices = 1 2 
 node type: Animation Source, child num: 0, blend num: 0, slot: 0
 node type: Animation Source, child num: 0, blend num: 0, slot: 1
 
-[2.6460] DEBUG:dummping state layer 0
-[2.6470] DEBUG:state[0] = IdleState
-[2.6480] DEBUG:state[1] = MoveState
-[2.6500] DEBUG:state[2] = RunTurn180State
-[2.6510] DEBUG:state[3] = StandToRunState
-[2.6520] DEBUG:state[4] = RunToStandState
-[2.6540] DEBUG:state[5] = WalkState
-[2.6550] DEBUG:state[6] = StandToWalkState
-[2.6560] DEBUG:state[7] = WalkTurn180State
-[2.6580] DEBUG:dummping state layer 1
-[2.6590] DEBUG:state[0] = AdditveState
-[2.6610] DEBUG:+++++++++++++++++++++++ Json/Monk_Animation_FSM.json loaded, time cost = 289(MS) +++++++++++++++++++++++
-[2.6640] DEBUG:+++++++++++++++++++++++ Loading resource Materials/JackEnvMap.xml+++++++++++++++++++++++
-[2.6660] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/NoTextureEnvCube.xml+++++++++++++++++++++++
-[2.6680] DEBUG:+++++++++++++++++++++++ Techniques/NoTextureEnvCube.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.6710] DEBUG:+++++++++++++++++++++++ Materials/JackEnvMap.xml loaded, time cost = 6(MS) +++++++++++++++++++++++
-[2.6730] DEBUG:+++++++++++++++++++++++ Loading resource Materials/Particle.xml+++++++++++++++++++++++
-[2.6750] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/DiffVColAdd.xml+++++++++++++++++++++++
-[2.6780] DEBUG:+++++++++++++++++++++++ Techniques/DiffVColAdd.xml loaded, time cost = 1(MS) +++++++++++++++++++++++
-[2.6800] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Flare.dds+++++++++++++++++++++++
-[2.6830] DEBUG:+++++++++++++++++++++++ Textures/Flare.dds loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.6850] DEBUG:+++++++++++++++++++++++ Materials/Particle.xml loaded, time cost = 10(MS) +++++++++++++++++++++++
-[2.6880] DEBUG:+++++++++++++++++++++++ Loading resource Materials/Smoke.xml+++++++++++++++++++++++
-[2.6900] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/DiffVColUnlitAlpha.xml+++++++++++++++++++++++
-[2.6920] DEBUG:+++++++++++++++++++++++ Techniques/DiffVColUnlitAlpha.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.6950] DEBUG:+++++++++++++++++++++++ Loading resource Textures/Smoke.dds+++++++++++++++++++++++
-[2.6970] DEBUG:+++++++++++++++++++++++ Textures/Smoke.dds loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.6990] DEBUG:+++++++++++++++++++++++ Materials/Smoke.xml loaded, time cost = 9(MS) +++++++++++++++++++++++
-[2.7020] DEBUG:+++++++++++++++++++++++ Loading resource Materials/GreenUnlit.xml+++++++++++++++++++++++
-[2.7050] DEBUG:+++++++++++++++++++++++ Loading resource Techniques/NoTextureOverlay.xml+++++++++++++++++++++++
-[2.7070] DEBUG:+++++++++++++++++++++++ Techniques/NoTextureOverlay.xml loaded, time cost = 0(MS) +++++++++++++++++++++++
-[2.7090] DEBUG:+++++++++++++++++++++++ Materials/GreenUnlit.xml loaded, time cost = 5(MS) +++++++++++++++++++++++
-[2.7150] ERROR:Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
-[2.7490] ERROR:Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
-[2.7520] ERROR:Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
-[2.7610] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_135.hkx]
-[2.7620] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
-[2.7640] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
-[2.7700] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_90.hkx]
-[2.7710] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
-[2.7770] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_45.hkx]
-[2.7780] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
-[2.7850] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_135.hkx]
-[2.7860] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
-[2.7870] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
-[2.7890] DEBUG:loaded animation trigger id: RightFoot, time 1.767, type: Beat
-[2.7940] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_90.hkx]
-[2.7960] DEBUG:loaded animation trigger id: RightFoot, time 0.600, type: Beat
-[2.7970] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
-[2.8030] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_45.hkx]
-[2.8040] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
-[2.8060] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
-[2.8080] DEBUG:[NULL] ---> [IdleState], t[$Any]
-[2.8090] DEBUG:[NULL] ---> [AdditveState], t[$Any]
-[2.8240] INFO:Device lost
-[2.8360] DEBUG:Window was resized to 1440x853
-[2.9390] DEBUG:Reloading shaders
-[2.9410] DEBUG:+++++++++++++++++++++++ Loading resource Shaders/HLSL/Stencil.xml+++++++++++++++++++++++
-[2.9430] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Stencil.hlsl
-[2.9450] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Uniforms.hlsl
-[2.9470] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Transform.hlsl
-[2.9490] DEBUG:+++++++++++++++++++++++ Shaders/HLSL/Stencil.xml loaded, time cost = 6(MS) +++++++++++++++++++++++
-[2.9520] ERROR:delete component node = NULL, type = Camera
-[2.9540] ERROR:delete component node = NULL, type = Camera
-[2.9560] ERROR:delete component node = NULL, type = Camera
-[2.9590] DEBUG:+++++++++++++++++++++++ Loading resource Shaders/HLSL/Shadow.xml+++++++++++++++++++++++
-[2.9620] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Shadow.hlsl
-[2.9640] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Uniforms.hlsl
-[2.9670] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Samplers.hlsl
-[2.9690] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Transform.hlsl
-[2.9720] DEBUG:+++++++++++++++++++++++ Shaders/HLSL/Shadow.xml loaded, time cost = 11(MS) +++++++++++++++++++++++
-[2.9750] DEBUG:+++++++++++++++++++++++ Loading resource Shaders/HLSL/LitSolid.xml+++++++++++++++++++++++
-[2.9770] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/LitSolid.hlsl
-[2.9800] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Uniforms.hlsl
-[2.9820] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Samplers.hlsl
-[2.9840] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Transform.hlsl
-[2.9860] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/ScreenPos.hlsl
-[2.9880] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Lighting.hlsl
-[2.9910] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Fog.hlsl
-[2.9970] DEBUG:+++++++++++++++++++++++ Shaders/HLSL/LitSolid.xml loaded, time cost = 20(MS) +++++++++++++++++++++++
-[3.0360] DEBUG:+++++++++++++++++++++++ Loading resource Shaders/HLSL/Skybox.xml+++++++++++++++++++++++
-[3.0410] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Skybox.hlsl
-[3.0440] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Uniforms.hlsl
-[3.0470] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Samplers.hlsl
-[3.0500] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Transform.hlsl
-[3.0540] DEBUG:+++++++++++++++++++++++ Shaders/HLSL/Skybox.xml loaded, time cost = 15(MS) +++++++++++++++++++++++
-[3.0680] DEBUG:Created vertex shader Shaders/HLSL/SM3/Shadow.vs3
-[3.0700] DEBUG:Created pixel shader Shaders/HLSL/SM3/Shadow.ps3
-[3.0750] DEBUG:Created vertex shader Shaders/HLSL/SM3/Shadow_Skinned.vs3
-[3.0790] DEBUG:Created pixel shader Shaders/HLSL/SM3/Shadow_AlphaMask.ps3
-[3.0830] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadow.vs3
-[3.0880] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalPackedAmbientDirSpecShadowHW.ps3
-[3.0960] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowInstanced.vs3
-[3.1020] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_AmbientDirSpecShadowHW.ps3
-[3.1070] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadow.vs3
-[3.1110] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadowSkinned.vs3
-[3.1140] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAlphaMaskAmbientDirSpecShadowHW.ps3
-[3.1190] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAmbientDirSpecShadowHW.ps3
-[3.1320] DEBUG:Created vertex shader Shaders/HLSL/SM3/Skybox.vs3
-[3.1380] DEBUG:Created pixel shader Shaders/HLSL/SM3/Skybox.ps3
-[3.1680] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic_VCol.vs3
-[3.2060] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_VCol.ps3
-[3.2110] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic_DiffVCol.vs3
-[3.2130] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_DiffVCol.ps3
-[3.2160] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_AlphaVCol.ps3
-[3.2190] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_DiffAlphaMaskVCol.ps3
+[1.4800] DEBUG:dummping state layer 0
+[1.4800] DEBUG:state[0] = IdleState
+[1.4810] DEBUG:state[1] = MoveState
+[1.4810] DEBUG:state[2] = RunTurn180State
+[1.4820] DEBUG:state[3] = StandToRunState
+[1.4820] DEBUG:state[4] = RunToStandState
+[1.4820] DEBUG:state[5] = WalkState
+[1.4830] DEBUG:state[6] = StandToWalkState
+[1.4830] DEBUG:state[7] = WalkTurn180State
+[1.4830] DEBUG:dummping state layer 1
+[1.4830] DEBUG:state[0] = AdditveState
+[1.4830] DEBUG:#### Json/Monk_Animation_FSM.json loaded, time cost = 151(MS) ####
+[1.4840] DEBUG:#### Loading resource Materials/JackEnvMap.xml ####
+[1.4840] DEBUG:#### Loading resource Techniques/NoTextureEnvCube.xml ####
+[1.4850] DEBUG:#### Techniques/NoTextureEnvCube.xml loaded, time cost = 0(MS) ####
+[1.4860] DEBUG:#### Materials/JackEnvMap.xml loaded, time cost = 2(MS) ####
+[1.4860] DEBUG:#### Loading resource Materials/Particle.xml ####
+[1.4870] DEBUG:#### Loading resource Techniques/DiffVColAdd.xml ####
+[1.4880] DEBUG:#### Techniques/DiffVColAdd.xml loaded, time cost = 0(MS) ####
+[1.4880] DEBUG:#### Loading resource Textures/Flare.dds ####
+[1.4890] DEBUG:#### Textures/Flare.dds loaded, time cost = 0(MS) ####
+[1.4900] DEBUG:#### Materials/Particle.xml loaded, time cost = 3(MS) ####
+[1.4910] DEBUG:#### Loading resource Materials/Smoke.xml ####
+[1.4910] DEBUG:#### Loading resource Techniques/DiffVColUnlitAlpha.xml ####
+[1.4920] DEBUG:#### Techniques/DiffVColUnlitAlpha.xml loaded, time cost = 0(MS) ####
+[1.4920] DEBUG:#### Loading resource Textures/Smoke.dds ####
+[1.4930] DEBUG:#### Textures/Smoke.dds loaded, time cost = 0(MS) ####
+[1.4940] DEBUG:#### Materials/Smoke.xml loaded, time cost = 3(MS) ####
+[1.4940] DEBUG:#### Loading resource Materials/GreenUnlit.xml ####
+[1.4950] DEBUG:#### Loading resource Techniques/NoTextureOverlay.xml ####
+[1.4950] DEBUG:#### Techniques/NoTextureOverlay.xml loaded, time cost = 0(MS) ####
+[1.4960] DEBUG:#### Materials/GreenUnlit.xml loaded, time cost = 1(MS) ####
+[1.4990] ERROR:Havok_errorReport: hkVisualDebugger.cpp(37): [0x1293ADEF] Report: VDB Server instance has been created
+[1.5170] ERROR:Havok_errorReport: System\Io\Platform\Bsd\hkBsdSocket.cpp(418): [0x1293ADE8] Report: Listening on host[WINDOWS-QJ8L2L2] port 25001
+[1.5170] ERROR:Havok_errorReport: hkVisualDebugger.cpp(111): [0x1293ADE8] Report: Server created and will poll for new client(s) on port 25001 every frame
+[1.5220] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_135.hkx]
+[1.5220] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[1.5230] DEBUG:loaded animation trigger id: LeftFoot, time 0.667, type: Beat
+[1.5270] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_90.hkx]
+[1.5270] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[1.5310] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_run_45.hkx]
+[1.5310] DEBUG:loaded animation trigger id: RightFoot, time 0.433, type: Beat
+[1.5350] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_135.hkx]
+[1.5350] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
+[1.5360] DEBUG:loaded animation trigger id: LeftFoot, time 1.267, type: Beat
+[1.5360] DEBUG:loaded animation trigger id: RightFoot, time 1.767, type: Beat
+[1.5400] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_90.hkx]
+[1.5400] DEBUG:loaded animation trigger id: RightFoot, time 0.600, type: Beat
+[1.5410] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
+[1.5450] DEBUG:Mirroring Animation [monk/animations/monk_stand_to_walk_45.hkx]
+[1.5450] DEBUG:loaded animation trigger id: RightFoot, time 0.633, type: Beat
+[1.5450] DEBUG:loaded animation trigger id: LeftFoot, time 1.233, type: Beat
+[1.5460] DEBUG:[NULL] ---> [IdleState], t[$Any]
+[1.5460] DEBUG:[NULL] ---> [AdditveState], t[$Any]
+[1.5470] DEBUG:#### Loading resource PostProcess/ColorCorrection.xml ####
+[1.5480] DEBUG:#### PostProcess/ColorCorrection.xml loaded, time cost = 0(MS) ####
+[1.5840] INFO:Device lost
+[1.5860] DEBUG:Window was resized to 1440x848
+[1.6730] DEBUG:Reloading shaders
+[1.6740] DEBUG:#### Loading resource Shaders/HLSL/Stencil.xml ####
+[1.6740] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Stencil.hlsl
+[1.6750] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Uniforms.hlsl
+[1.6750] DEBUG:ResourceDependency Shaders/HLSL/Stencil.xml ---> Shaders/HLSL/Transform.hlsl
+[1.6760] DEBUG:#### Shaders/HLSL/Stencil.xml loaded, time cost = 2(MS) ####
+[1.6770] ERROR:delete component node = NULL, type = Camera
+[1.6770] ERROR:delete component node = NULL, type = Camera
+[1.6780] ERROR:delete component node = NULL, type = Camera
+[1.6790] DEBUG:#### Loading resource Shaders/HLSL/Shadow.xml ####
+[1.6790] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Shadow.hlsl
+[1.6800] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Uniforms.hlsl
+[1.6800] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Samplers.hlsl
+[1.6810] DEBUG:ResourceDependency Shaders/HLSL/Shadow.xml ---> Shaders/HLSL/Transform.hlsl
+[1.6820] DEBUG:#### Shaders/HLSL/Shadow.xml loaded, time cost = 3(MS) ####
+[1.6840] DEBUG:#### Loading resource Shaders/HLSL/LitSolid.xml ####
+[1.6840] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/LitSolid.hlsl
+[1.6850] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Uniforms.hlsl
+[1.6850] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Samplers.hlsl
+[1.6860] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Transform.hlsl
+[1.6870] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/ScreenPos.hlsl
+[1.6870] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Lighting.hlsl
+[1.6880] DEBUG:ResourceDependency Shaders/HLSL/LitSolid.xml ---> Shaders/HLSL/Fog.hlsl
+[1.6920] DEBUG:#### Shaders/HLSL/LitSolid.xml loaded, time cost = 8(MS) ####
+[1.7020] DEBUG:#### Loading resource Shaders/HLSL/Unlit.xml ####
+[1.7030] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Unlit.hlsl
+[1.7030] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Uniforms.hlsl
+[1.7040] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Samplers.hlsl
+[1.7040] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Transform.hlsl
+[1.7040] DEBUG:ResourceDependency Shaders/HLSL/Unlit.xml ---> Shaders/HLSL/Fog.hlsl
+[1.7050] DEBUG:#### Shaders/HLSL/Unlit.xml loaded, time cost = 3(MS) ####
+[1.7070] DEBUG:#### Loading resource Shaders/HLSL/Skybox.xml ####
+[1.7070] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Skybox.hlsl
+[1.7080] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Uniforms.hlsl
+[1.7080] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Samplers.hlsl
+[1.7090] DEBUG:ResourceDependency Shaders/HLSL/Skybox.xml ---> Shaders/HLSL/Transform.hlsl
+[1.7100] DEBUG:#### Shaders/HLSL/Skybox.xml loaded, time cost = 3(MS) ####
+[1.7110] DEBUG:Allocated new screen buffer size 1440x848 format 113
+[1.7110] DEBUG:Allocated new screen buffer size 1440x848 format 113
+[1.7120] DEBUG:Created vertex shader Shaders/HLSL/SM3/Shadow.vs3
+[1.7130] DEBUG:Created pixel shader Shaders/HLSL/SM3/Shadow.ps3
+[1.7140] DEBUG:Created vertex shader Shaders/HLSL/SM3/Shadow_Skinned.vs3
+[1.7150] DEBUG:Created pixel shader Shaders/HLSL/SM3/Shadow_AlphaMask.ps3
+[1.7180] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadow.vs3
+[1.7210] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalPackedAmbientDirSpecShadowHW.ps3
+[1.7230] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowInstanced.vs3
+[1.7250] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_AmbientDirSpecShadowHW.ps3
+[1.7260] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_DirSpecShadow.vs3
+[1.7290] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_NormalDirSpecShadowSkinned.vs3
+[1.7320] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAmbientDirSpecShadowHW.ps3
+[1.7350] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DiffNormalSpecMapAlphaMaskAmbientDirSpecShadowHW.ps3
+[1.7490] DEBUG:Created vertex shader Shaders/HLSL/SM3/Skybox.vs3
+[1.7520] DEBUG:Created pixel shader Shaders/HLSL/SM3/Skybox.ps3
+[1.7550] DEBUG:#### Loading resource Textures/LUTIdentity.xml ####
+[1.7560] DEBUG:#### Loading resource Textures/LUTIdentity.xml ####
+[1.7570] DEBUG:#### Textures/LUTIdentity.xml loaded, time cost = 0(MS) ####
+[1.7610] DEBUG:#### Textures/LUTIdentity.xml loaded, time cost = 5(MS) ####
+[1.7620] DEBUG:#### Loading resource Shaders/HLSL/ColorCorrection.xml ####
+[1.7630] DEBUG:ResourceDependency Shaders/HLSL/ColorCorrection.xml ---> Shaders/HLSL/ColorCorrection.hlsl
+[1.7630] DEBUG:ResourceDependency Shaders/HLSL/ColorCorrection.xml ---> Shaders/HLSL/Uniforms.hlsl
+[1.7640] DEBUG:ResourceDependency Shaders/HLSL/ColorCorrection.xml ---> Shaders/HLSL/Transform.hlsl
+[1.7640] DEBUG:ResourceDependency Shaders/HLSL/ColorCorrection.xml ---> Shaders/HLSL/Samplers.hlsl
+[1.7650] DEBUG:ResourceDependency Shaders/HLSL/ColorCorrection.xml ---> Shaders/HLSL/ScreenPos.hlsl
+[1.7660] DEBUG:ResourceDependency Shaders/HLSL/ColorCorrection.xml ---> Shaders/HLSL/PostProcess.hlsl
+[1.7670] DEBUG:#### Shaders/HLSL/ColorCorrection.xml loaded, time cost = 4(MS) ####
+[1.7730] DEBUG:Created vertex shader Shaders/HLSL/SM3/ColorCorrection.vs3
+[1.7740] DEBUG:Created pixel shader Shaders/HLSL/SM3/ColorCorrection.ps3
+[1.7750] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic_VCol.vs3
+[1.7760] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_VCol.ps3
+[1.7770] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic_DiffVCol.vs3
+[1.7770] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_DiffVCol.ps3
+[1.7780] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_DiffAlphaMaskVCol.ps3
+[1.7790] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic_AlphaVCol.ps3
+[3.0330] DEBUG:Created vertex shader Shaders/HLSL/SM3/LitSolid_EnvCube.vs3
+[3.0330] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_EnvCube.ps3
+[3.0350] DEBUG:Created pixel shader Shaders/HLSL/SM3/LitSolid_DirSpecShadowHW.ps3
 set animation = monk_stand_to_run_90
-[5.1660] DEBUG:[IdleState] ---> [StandToRunState], t[Go]
-[5.5960] DEBUG:[StandToRunState] ---> [MoveState], t[Continue]
-[5.6620] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic.vs3
-[5.6630] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic.ps3
-[6.3220] DEBUG:[MoveState] ---> [RunToStandState], t[Stop]
-[6.9570] DEBUG:[RunToStandState] ---> [IdleState], t[Continue]
-set animation = monk_stand_to_run_135_mirror
-[6.9620] DEBUG:[IdleState] ---> [StandToRunState], t[Go]
-[7.3910] DEBUG:[StandToRunState] ---> [MoveState], t[Continue]
-[8.7320] DEBUG:[MoveState] ---> [RunToStandState], t[Stop]
-[9.4300] DEBUG:[RunToStandState] ---> [IdleState], t[Continue]
-set animation = monk_stand_to_run_180
-[9.4360] DEBUG:[IdleState] ---> [StandToRunState], t[Go]
-[9.9430] DEBUG:[StandToRunState] ---> [MoveState], t[Continue]
-[10.9270] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
-[11.5070] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
+[3.3110] DEBUG:[IdleState] ---> [StandToRunState], t[Go]
+[3.7440] DEBUG:[StandToRunState] ---> [MoveState], t[Continue]
+[4.0470] DEBUG:Created vertex shader Shaders/HLSL/SM3/Unlit_VColBillboard.vs3
+[4.0480] DEBUG:Created pixel shader Shaders/HLSL/SM3/Unlit_DiffVCol.ps3
+[5.0720] DEBUG:Created vertex shader Shaders/HLSL/SM3/Basic.vs3
+[5.0730] DEBUG:Created pixel shader Shaders/HLSL/SM3/Basic.ps3
+[5.7800] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
+[6.2900] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
 freeze scene update
-[12.5460] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
-[13.0390] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
+[11.9810] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
+[12.4910] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
 freeze scene update
-[18.2870] DEBUG:[MoveState] ---> [RunToStandState], t[Stop]
-[18.7430] DEBUG:[RunToStandState] ---> [IdleState], t[Continue]
+[22.7920] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
+[23.3110] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
+freeze scene update
+[31.4840] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
+[31.9910] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
+freeze scene update
+[33.0940] DEBUG:[MoveState] ---> [RunTurn180State], t[Turn180]
+[33.6080] DEBUG:[RunTurn180State] ---> [MoveState], t[Continue]
+freeze scene update
+[49.8660] DEBUG:[MoveState] ---> [RunToStandState], t[Stop]
+[50.3760] DEBUG:[RunToStandState] ---> [IdleState], t[Continue]
 ---------------------- Script Stop ----------------------

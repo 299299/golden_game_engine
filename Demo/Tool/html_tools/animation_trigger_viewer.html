@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Animation Trigger Viewer</title>
+
+    <script type="text/javascript" src="timeline.js"></script>
+    <link rel="stylesheet" type="text/css" href="timeline.css">
+
+    <style type="text/css">
+        body {font: 10pt arial;}
+
+        div.timeline-frame {
+            border-color: purple;
+            border-width: 2px;
+        }
+
+        div.timeline-canvas {
+            background-color: #FFF4F7;
+        }
+
+        div.timeline-event {
+            border-color: #F991A3;
+            background-color: pink;
+        }
+        div.timeline-event-selected {
+            border-color: orange;
+            background-color: yellow;
+        }
+        div.timeline-event-box {
+            font-size: 12pt;
+            font-family: purisa, cursive;
+            color: purple;
+            border-width: 3px;
+        }
+        div.timeline-event-line {
+            border-width: 3px;
+        }
+        div.timeline-event-dot {
+            border-width: 8px;
+            border-radius: 8px;
+            -moz-border-radius: 8px;
+        }
+        div.timeline-event-range {
+            font-size: 12pt;
+            font-family:  purisa, cursive;
+            color: purple;
+            border-width: 3px;
+        }
+
+        div.timeline-axis {
+            border-color: purple;
+            border-width: 2px;
+        }
+        div.timeline-axis-grid {
+            border-width: 2px;
+        }
+        div.timeline-axis-grid-minor {
+            border-color: #FFD7DD;
+        }
+        div.timeline-axis-grid-major {
+            border-color: pink;
+        }
+
+        div.timeline-axis-text {
+            font-family:  purisa, cursive;
+            font-size: 15px;
+            color: purple;
+        }
+        div.timeline-axis-text-minor {
+            padding-top: 15px;
+        }
+        div.timeline-axis-text-major {
+            font-weight: bold;
+            padding-top: 5px;
+            padding-bottom: 10px;
+        }
+    </style>
+
+    <script type="text/javascript">
+    
+        var parsedJSON;
+
+        // Called when the Visualization API is loaded.
+        function drawVisualization() {
+
+            var data = [];
+            console.log(parsedJSON);
+
+            var d = new Date();
+            d.setSeconds(0);
+            d.setMilliseconds(0);
+
+            var start = {
+                    'start': new Date(d),
+                    'content': ' start '
+                };
+            data.push(start);
+
+            for (var i = 0, trigger; trigger = parsedJSON.Triggers[i]; i++) {
+
+                var frame = trigger.frame;
+                var msTime = frame * 1000.0 / 30;
+                console.log(msTime);
+
+                var triggerData = {
+                    'start': new Date(d.getTime() + msTime),
+                    'content': ' id : ' + trigger.id + ' type: ' + trigger.type
+                };
+
+                data.push(triggerData);
+            }
+
+
+           // specify options
+            var options = {
+                width:  "100%",
+                height: "400px",
+                editable: true, // make the events draggable
+                eventMargin: 15,
+                showButtonNew: false,
+                style: "box"
+            };
+
+            // Instantiate our timeline object.
+            timeline = new links.Timeline(document.getElementById('mytimeline'));
+
+            // Draw our timeline with the created data and options
+            timeline.draw(data, options);
+        }
+
+        function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        if(files.length == 0)
+            return;
+
+        var output;
+        var f = files[0];
+        
+        output = ('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                      f.size, ' bytes, last modified: ',
+                      f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                      '</li>');
+
+        var reader = new FileReader();
+        // Closure to capture the file information.
+        reader.onload = (function (theFile) {
+            return function (e) {
+                // Render thumbnail.
+                var JsonObj = e.target.result;
+                parsedJSON = JSON.parse(JsonObj);
+
+                console.log("all json read finished, draw");
+                drawVisualization();
+            };
+        })(f);
+
+        // Read in JSON as a data URL.
+        reader.readAsText(f);
+
+        document.getElementById('list').innerHTML = '<ul>' + output + '</ul>';
+      }
+
+
+      function on_load()
+      {
+          document.getElementById('files').addEventListener('change', handleFileSelect, false);
+      }
+
+    </script>
+</head>
+
+<body onload="on_load();">
+<h1>Animation Trigger Viewer</h1>
+<div id="mytimeline"></div>
+<input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+</body>
+</html>

@@ -8,6 +8,7 @@
 --     - Using touch inputs/gyroscope for iOS/Android (implemented through an external file)
 
 require "LuaScripts/Utilities/Sample"
+require "LuaScripts/Utilities/Touch"
 
 -- Variables used by external file are made global in order to be accessed
 
@@ -24,13 +25,8 @@ local JUMP_FORCE = 7.0
 local YAW_SENSITIVITY = 0.1
 local INAIR_THRESHOLD_TIME = 0.1
 
-CAMERA_MIN_DIST = 1.0
-CAMERA_MAX_DIST = 5.0
-
 scene_ = nil
-cameraNode = nil
 characterNode = nil
-firstPerson = false
 
 local context = GetContext()
 
@@ -55,7 +51,10 @@ function Start()
     CreateInstructions()
 
     -- Activate mobile stuff only when appropriate
-    if GetPlatform() == "Android" or GetPlatform() == "iOS" then require "LuaScripts/Utilities/Touch" end
+    if GetPlatform() == "Android" or GetPlatform() == "iOS" then 
+        SetLogoVisible(false)
+        InitTouchInput()
+    end
 
     -- Subscribe to necessary events
     SubscribeToEvents()
@@ -90,7 +89,7 @@ function CreateScene()
     local light = lightNode:CreateComponent("Light")
     light.lightType = LIGHT_DIRECTIONAL
     light.castShadows = true
-    light.shadowBias = BiasParameters(0.0001, 0.5)
+    light.shadowBias = BiasParameters(0.00025, 0.5)
     -- Set cascade splits at 10, 50 and 200 world units, fade shadows out at 80% of maximum shadow distance
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
 
@@ -209,7 +208,9 @@ function SubscribeToEvents()
     SubscribeToEvent("PostUpdate", "HandlePostUpdate")
 
     -- Subscribe to mobile touch events
-    if GetPlatform() == "Android" or GetPlatform() == "iOS" then SubscribeToTouchEvents() end
+    if touchEnabled == true then
+        SubscribeToTouchEvents()
+    end
 end
 
 function HandleUpdate(eventType, eventData)
@@ -222,11 +223,14 @@ function HandleUpdate(eventType, eventData)
         return
     end
 
-    character.controls:Set(CTRL_FORWARD + CTRL_BACK + CTRL_LEFT + CTRL_RIGHT + CTRL_JUMP, false) -- clear previous controls
-    if GetPlatform() == "Android" or GetPlatform() == "iOS" then updateTouches()
+    -- Clear previous controls
+    character.controls:Set(CTRL_FORWARD + CTRL_BACK + CTRL_LEFT + CTRL_RIGHT + CTRL_JUMP, false)
 
-    else -- On desktop, get movement controls and assign them to the character logic component
-
+    if touchEnabled == true then
+        -- Update controls using touch (mobile)
+        updateTouches()
+    else 
+        -- Update controls using keys (desktop)
         if ui.focusElement == nil then
             if input:GetKeyDown(KEY_W) then character.controls:Set(CTRL_FORWARD, true) end
             if input:GetKeyDown(KEY_S) then character.controls:Set(CTRL_BACK, true) end
@@ -243,14 +247,15 @@ function HandleUpdate(eventType, eventData)
             -- Switch between 1st and 3rd person
             if input:GetKeyPress(KEY_F) then
                 firstPerson = not firstPerson
+                newFirstPerson = firstPerson
             end
 
             -- Check for loading / saving the scene
             if input:GetKeyPress(KEY_F5) then
-                scene_:SaveXML(fileSystem:GetProgramDir().."Data/Scenes/PhysicsStressTest.xml")
+                scene_:SaveXML(fileSystem:GetProgramDir().."Data/Scenes/CharacterDemo.xml")
             end
             if input:GetKeyPress(KEY_F7) then
-                scene_:LoadXML(fileSystem:GetProgramDir().."Data/Scenes/PhysicsStressTest.xml")
+                scene_:LoadXML(fileSystem:GetProgramDir().."Data/Scenes/CharacterDemo.xml")
                 -- After loading we have to reacquire the character scene node, as it has been recreated
                 -- Simply find by name as there's only one of them
                 characterNode = scene_:GetChild("Jack", true)
@@ -258,8 +263,8 @@ function HandleUpdate(eventType, eventData)
                     return
                 end
             end
---  	  else
---  	      character.controls:Set(CTRL_FORWARD + CTRL_BACK + CTRL_LEFT + CTRL_RIGHT + CTRL_JUMP, false)
+        else
+            character.controls:Set(CTRL_FORWARD + CTRL_BACK + CTRL_LEFT + CTRL_RIGHT + CTRL_JUMP, false)
         end
     end
 
@@ -302,12 +307,12 @@ function HandlePostUpdate(eventType, eventData)
 
         -- Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
         local rayDir = dir * Vector3(0.0, 0.0, -1.0) -- For indoor scenes you can use dir * Vector3(0.0, 0.0, -0.5) to prevent camera from crossing the walls
-        local rayDistance = CAMERA_MAX_DIST
+        local rayDistance = cameraDistance
         local result = scene_:GetComponent("PhysicsWorld"):RaycastSingle(Ray(aimPoint, rayDir), rayDistance, 2)
         if result.body ~= nil then
             rayDistance = Min(rayDistance, result.distance)
         end
-        rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST)
+        rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, cameraDistance)
 
         cameraNode.position = aimPoint + rayDir * rayDistance
         cameraNode.rotation = dir

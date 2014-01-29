@@ -76,6 +76,7 @@ void CreateUI()
     CreateStatsBar();
     CreateConsole();
     CreateDebugHud();
+    CreateCamera();
 
     SubscribeToEvent("ScreenMode", "ResizeUI");
     SubscribeToEvent("MenuSelected", "HandleMenuSelected");
@@ -460,12 +461,15 @@ bool Exit()
         if (sceneModified || uiLayoutModified)
         {
             MessageBox@ messageBox = MessageBox(message + "Continue to exit?", "Warning");
-            Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
-            cancelButton.visible = true;
-            cancelButton.focus = true;
-            SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
-            messageBoxCallback = @Exit;
-            return false;
+            if (messageBox.window !is null)
+            {
+                Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
+                cancelButton.visible = true;
+                cancelButton.focus = true;
+                SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
+                messageBoxCallback = @Exit;
+                return false;
+            }
         }
     }
     else
@@ -1217,7 +1221,7 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
                 fillMode = FILL_SOLID;
 
             // Update camera fill mode
-            camera.fillMode = fillMode;
+            SetFillMode(fillMode);
         }
         else if (key == KEY_SPACE)
         {

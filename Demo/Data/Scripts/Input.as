@@ -65,16 +65,20 @@ class GamePad
                 leftStick.x += 1;
         }
 
-        m_padMagnitude = Sqrt(leftStick.x*leftStick.x + leftStick.y*leftStick.y);
-        m_leftStickX = Lerp(m_leftStickX, leftStick.x, 0.9f);
-        m_leftStickY = Lerp(m_leftStickY, leftStick.y, 0.9f);
-        m_rightStickX = Lerp(m_rightStickX, rightStick.x, 0.9f);
-        m_rightStickY = Lerp(m_rightStickY, rightStick.y, 0.9f);
+        m_leftStickX = leftStick.x;
+        m_leftStickY = leftStick.y;
+        m_rightStickX = rightStick.x;
+        m_rightStickY = rightStick.y;
+
+        m_padMagnitude = Sqrt(m_leftStickX*m_leftStickX + m_leftStickY*m_leftStickY);
+       
     
-        float diff = (m_previousLeftStickX - m_leftStickX) * (m_previousLeftStickX - m_leftStickX) + (m_previousLeftStickY - m_leftStickY) * (m_previousLeftStickY - m_leftStickY);
+        float dx = m_previousLeftStickX - m_leftStickX;
+        float dy = m_previousLeftStickY - m_leftStickY;
+        float diff = Abs(dx) + Abs(dy);
         if(diff < 0.1f)      
             m_leftStickHoldTime = m_leftStickHoldTime + timestep;
         else        
-            m_leftStickHoldTime = 0; 
+            m_leftStickHoldTime = 0;
     }
 };

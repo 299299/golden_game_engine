@@ -1,0 +1,188 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Animation FSM Viewer</title>
+
+    <style>
+      body {
+        font: 10pt sans; 
+      }
+    </style>
+
+    <script type="text/javascript" src="network.js"></script>
+    
+    <script type="text/javascript">
+
+      var parsedJSON;
+      var nodesTable = null;
+      var linksTable = null;
+      var network = null;
+      
+      // Called when the Visualization API is loaded.
+      function draw() {
+
+        console.log(parsedJSON);
+
+        nodesTable = [];
+        linksTable = [];
+        
+        for (var i = 0; i < parsedJSON.length; i++) {
+            
+            var state = parsedJSON[i];
+            console.log("adding node id = " + i + " name = " + state.Name);
+
+            var stateText = state.Name + ' \n ' + state.Type + '\n';
+            var animations = state.Animations;
+
+            //guess it maybe a direction switch animation ?
+            if(state.Type == 'SwitchAnimationState' && animations.length >= 4)
+            {
+                var animationName = animations[0].Animation;
+                var index = animationName.lastIndexOf('_');
+                animationName = animationName.substring(0, index);
+                stateText += animationName + "*";
+            }
+            else 
+            {
+               for (var k = 0; k < animations.length; ++k) {
+                 var animation = animations[k];
+                 stateText += animation.Animation + '\n';
+               };
+            }
+
+            nodesTable.push({
+              'id': i, 
+              'text': stateText,
+              'group': i
+            });
+            
+            
+            var transitions = state.Transitions;
+            for (var j = 0; j<transitions.length; ++j){
+                var transition = transitions[j];
+                var next_state_id = findStateId(transition['Dest State Name']);
+                if(next_state_id < 0)
+                  continue;
+
+                addlink({
+                  'from': i, 
+                  'to': next_state_id,
+                  'text': transition.Name,
+                  'group': i
+                });
+
+                console.log("from " + i + " to " + next_state_id);
+            };
+        }          
+
+        // specify options
+        var options = {
+          'width': '1000px',
+          'height': '600px',
+          'links': {
+            'length': 200,
+            'style':'arrow-end'
+          },
+          'nodes': {
+            'fontSize':10
+          },
+          'stabilize': true
+        };
+
+        // Instantiate our graph object.
+        network = new links.Network(document.getElementById('mynetwork'));
+
+        // Draw our graph with the created data and options 
+        network.draw(nodesTable, linksTable, options);
+        
+        // Add event listeners
+        links.events.addListener(network, 'select', function(params) {
+          document.getElementById('selection').innerHTML = 
+            'Selection: ' + JSON.stringify(network.getSelection());
+        }); 
+      }
+
+      function comparelink(link_a, link_b)
+      {
+        return (link_a.from == link_b.to && link_a.to == link_b.from)
+      }
+
+      function addlink(link_to_add) {
+        for (var i = 0; i < linksTable.length; ++i) {
+          var link = linksTable[i];
+          if(comparelink(link, link_to_add))
+          {
+             link.text += ' | ' + link_to_add.text;
+             link_to_add.text = '';
+          }
+        };
+        linksTable.push(link_to_add);
+      }
+
+      function findStateId(stateName) {
+        for (var i = 0; i < parsedJSON.length; ++i) {
+          var state = parsedJSON[i];
+          if(state.Name == stateName)
+            return i;
+        }
+        return -1;
+      }
+
+      function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        if(files.length == 0)
+            return;
+
+        var output;
+        var f = files[0];
+        
+        output = ('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                      f.size, ' bytes, last modified: ',
+                      f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                      '</li>');
+
+        var reader = new FileReader();
+        // Closure to capture the file information.
+        reader.onload = (function (theFile) {
+            return function (e) {
+                // Render thumbnail.
+                var JsonObj = e.target.result;
+                parsedJSON = JSON.parse(JsonObj);
+                parsedJSON = parsedJSON.BaseLayer;
+
+                console.log("all json read finished, draw");
+                draw(0);
+            };
+        })(f);
+
+        // Read in JSON as a data URL.
+        reader.readAsText(f);
+
+        document.getElementById('list').innerHTML = '<ul>' + output + '</ul>';
+      }
+
+
+      function on_load() {
+        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+      }
+
+   </script>
+  </head>
+
+  <body onload="on_load();">
+    <p>
+      Animation FSM Viewer
+    </p>
+    
+    <input type="file" id="files" name="files[]" multiple />
+    <output id="list"></output>
+    <br>
+    
+    <div id="mynetwork"></div>
+
+    <p id="selection"></p>
+
+  </body>
+</html>
