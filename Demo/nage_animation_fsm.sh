@@ -1,1 +1,1 @@
-./NagaGameDemo Scripts/AnimationFSM.as -w -s -x 400 -y 300 
+./Urho3DPlayer Scripts/AnimationFSM.as -w -s -x 400 -y 300 

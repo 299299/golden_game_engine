@@ -1,1 +1,1 @@
-NagaGameDemo.exe Scripts/Animation.as -w -s 
+Urho3DPlayer.exe Scripts/Animation.as -w -s 

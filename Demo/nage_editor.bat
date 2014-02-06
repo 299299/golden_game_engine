@@ -1,1 +1,1 @@
-NagaGameDemo.exe Scripts/Editor.as %* -w
+Urho3DPlayer.exe Scripts/Editor.as %* -w

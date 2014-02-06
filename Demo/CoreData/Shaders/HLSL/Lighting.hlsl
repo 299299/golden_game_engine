@@ -1,61 +1,9 @@
 #pragma warning(disable:3571)
 
-float GetDiffuse(float3 normal, float3 lightVec, out float3 lightDir)
-{
-    #ifdef DIRLIGHT
-        #ifdef NORMALMAP
-            // In normal mapped forward lighting, the tangent space light vector needs renormalization
-            lightDir = normalize(lightVec);
-        #else
-            lightDir = lightVec;
-        #endif
-
-        return saturate(dot(normal, lightDir));
-    #else
-        float lightDist = length(lightVec);
-        lightDir = lightVec / lightDist;
-        return saturate(dot(normal, lightDir)) * tex1D(sLightRampMap, lightDist).r;
-    #endif
-}
-
-float GetDiffuseVolumetric(float3 lightVec)
-{
-    #ifdef DIRLIGHT
-        return 1.0;
-    #else
-        float lightDist = length(lightVec);
-        return tex1D(sLightRampMap, lightDist).r;
-    #endif
-}
-
-#define LIGHTING_MODE 1
-
-float GetSpecular(float3 normal, float3 eyeVec, float3 lightDir, float specularPower)
-{
-#if(LIGHTING_MODE == 0)
-    float3 halfVec = normalize(normalize(eyeVec) + lightDir);
-    return pow(dot(normal, halfVec), specularPower);
-#elif(LIGHTING_MODE == 1)
-    float3 halfVec = normalize(normalize(eyeVec) + lightDir);
-    float nl = dot(normal, lightDir);
-    float nh = dot(normal, halfVec);
-    float lh = dot(lightDir, halfVec);
-    float shine = specularPower;
-    float BRDF = ((shine+1.0f) * pow(nh, shine)) / (8 * pow(lh,3));
-    return BRDF * nl;
-#elif(LIGHTING_MODE == 2)
- 
-#endif
-}
-
+#ifdef COMPILEVS
 float3 GetAmbient(float zonePos)
 {
     return cAmbientStartColor + zonePos * cAmbientEndColor;
-}
-
-float GetIntensity(float3 color)
-{
-    return dot(color, float3(0.333, 0.333, 0.333));
 }
 
 #ifdef NUMVERTEXLIGHTS
@@ -136,6 +84,70 @@ void GetShadowPos(float4 projWorldPos, out float4 shadowPos[NUMCASCADES])
         shadowPos[0] = float4(projWorldPos.xyz - cLightPos.xyz, 0.0);
     #endif
 }
+#endif
+#endif
+
+#ifdef COMPILEPS
+float GetDiffuse(float3 normal, float3 lightVec, out float3 lightDir)
+{
+    #ifdef DIRLIGHT
+        #ifdef NORMALMAP
+            // In normal mapped forward lighting, the tangent space light vector needs renormalization
+            lightDir = normalize(lightVec);
+        #else
+            lightDir = lightVec;
+        #endif
+
+        return saturate(dot(normal, lightDir));
+    #else
+        float lightDist = length(lightVec);
+        lightDir = lightVec / lightDist;
+        return saturate(dot(normal, lightDir)) * tex1D(sLightRampMap, lightDist).r;
+    #endif
+}
+
+float GetDiffuseVolumetric(float3 lightVec)
+{
+    #ifdef DIRLIGHT
+        return 1.0;
+    #else
+        float lightDist = length(lightVec);
+        return tex1D(sLightRampMap, lightDist).r;
+    #endif
+}
+
+#define LIGHTING_MODE 1
+
+float GetSpecular(float3 normal, float3 eyeVec, float3 lightDir, float specularPower)
+{
+#if(LIGHTING_MODE == 0)
+    float3 halfVec = normalize(normalize(eyeVec) + lightDir);
+    return pow(dot(normal, halfVec), specularPower);
+#elif(LIGHTING_MODE == 1)
+    float3 halfVec = normalize(normalize(eyeVec) + lightDir);
+    float nl = dot(normal, lightDir);
+    float nh = dot(normal, halfVec);
+    float lh = dot(lightDir, halfVec);
+    float shine = specularPower;
+    float BRDF = ((shine+1.0f) * pow(nh, shine)) / (8 * pow(lh,3));
+    return BRDF * nl;
+#elif(LIGHTING_MODE == 2)
+ 
+#endif
+}
+
+float GetIntensity(float3 color)
+{
+    return dot(color, float3(0.333, 0.333, 0.333));
+}
+
+#ifdef SHADOW
+
+#ifdef DIRLIGHT
+    #define NUMCASCADES 4
+#else
+    #define NUMCASCADES 1
+#endif
 
 float GetShadow(float4 shadowPos)
 {
@@ -270,4 +282,5 @@ float GetShadowDeferred(float4 projWorldPos, float depth)
         return GetPointShadow(shadowPos);
     #endif
 }
+#endif
 #endif

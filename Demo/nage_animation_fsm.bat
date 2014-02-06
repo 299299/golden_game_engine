@@ -1,1 +1,1 @@
-NagaGameDemo.exe Scripts/AnimationFSM.as -w -s 
+Urho3DPlayer.exe Scripts/AnimationFSM.as -w -s 

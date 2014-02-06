@@ -24,9 +24,9 @@ bool lean_left_right = false;
 bool freeze_udpate = false;
 
 float       yaw = 0;
-float       pitch = 30;
+float       pitch = 0;
 Vector3     camera_target_offset(0, 2.5f, 0);
-Vector3     camera_offset(0,0,-10);
+Vector3     camera_offset(0,1.0,-10);
 Vector3     camera_last_target;
 Vector2     camera_pitch_range(0, 60);
 float       stand_value = 0.0f;
@@ -191,7 +191,7 @@ void FPSCamera(float timeStep)
 void ThirdPersonCamera(float timeStep)
 {
     const float camera_follow_speed = 10.0f;
-    Vector3 target_pos = characterNode.position + camera_target_offset;
+    Vector3 target_pos = characterNode.position + characterNode.rotation * camera_target_offset;
 
     Quaternion rotation(pitch, yaw, 0);
     Vector3 cam_pos = target_pos + rotation * camera_offset;

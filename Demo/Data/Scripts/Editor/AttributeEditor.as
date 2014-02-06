@@ -24,6 +24,9 @@ Color nonEditableTextColor(0.7f, 0.7f, 0.7f);
 String sceneResourcePath = AddTrailingSlash(fileSystem.programDir + "Data");
 bool rememberResourcePath = true;
 
+// Exceptions for string attributes that should not be continuously edited
+Array<String> noTextChangedAttrs = {"Class Name", "Script Object Type"};
+
 WeakHandle testAnimState;
 
 UIElement@ SetEditable(UIElement@ element, bool editable)
@@ -131,7 +134,9 @@ UIElement@ CreateStringAttributeEditor(ListView@ list, Array<Serializable@>@ ser
     UIElement@ parent = CreateAttributeEditorParent(list, info.name, index, subIndex);
     LineEdit@ attrEdit = CreateAttributeLineEdit(parent, serializables, index, subIndex);
     attrEdit.dragDropMode = DD_TARGET;
-    SubscribeToEvent(attrEdit, "TextChanged", "EditAttribute");
+    // Do not subscribe to continuous edits of certain attributes (script class names) to prevent unnecessary errors getting printed
+    if (noTextChangedAttrs.Find(info.name) == -1)
+        SubscribeToEvent(attrEdit, "TextChanged", "EditAttribute");
     SubscribeToEvent(attrEdit, "TextFinished", "EditAttribute");
 
     return parent;
@@ -311,6 +316,7 @@ UIElement@ CreateAttributeEditor(ListView@ list, Array<Serializable@>@ serializa
         // Straightly speaking the individual resource reference in the list is not an attribute of the serializable
         // However, the AttributeInfo structure is used here to reduce the number of parameters being passed in the function
         AttributeInfo refInfo;
+        Print("#@##################### set name " + info.name);
         refInfo.name = info.name;
         refInfo.type = VAR_RESOURCEREF;
         for (uint i = 0; i < numRefs; ++i)
@@ -765,10 +771,13 @@ void UpdateAttributes(Array<Serializable@>@ serializables, ListView@ list, bool&
 {
     // If attributes have changed structurally, do a full update
     uint count = GetAttributeEditorCount(serializables);
-    if (fullUpdate == false)
+    if (!fullUpdate)
     {
         if (list.contentElement.numChildren != count)
+        {
+            Print("fullUpdate " + String(list.contentElement.numChildren) + "," + String(count));
             fullUpdate = true;
+        }
     }
 
     // Remember the old scroll position so that a full update does not feel as jarring
