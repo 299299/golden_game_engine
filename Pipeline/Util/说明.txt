@@ -1,6 +1,0 @@
-win7的环境变量需要设置
-MAYA_DIR (安装的Maya路径 比如 D:\Program Files\Autodesk\Maya2014）
-
-//TODO
-//NAGA_DIR ???
-目前在mel中 naga sdk的路径是写死的 以后要改了？？？
