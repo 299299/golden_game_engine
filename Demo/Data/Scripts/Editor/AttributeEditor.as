@@ -823,7 +823,7 @@ void EditAttribute(StringHash eventType, VariantMap& eventData)
     if (inLoadAttributeEditor)
         return;
 
-    UIElement@ attrEdit = eventData["Element"].GetUIElement();
+    UIElement@ attrEdit = eventData["Element"].GetPtr();
     UIElement@ parent = attrEdit.parent;
     Array<Serializable@>@ serializables = GetAttributeEditorTargets(attrEdit);
     if (serializables.empty)
@@ -942,7 +942,7 @@ ResourcePicker@ GetResourcePicker(ShortStringHash resourceType)
 
 void PickResource(StringHash eventType, VariantMap& eventData)
 {
-    UIElement@ button = eventData["Element"].GetUIElement();
+    UIElement@ button = eventData["Element"].GetPtr();
     LineEdit@ attrEdit = button.parent.children[0];
 
     Array<Serializable@>@ targets = GetAttributeEditorTargets(attrEdit);
@@ -1084,7 +1084,7 @@ String GetResourceNameFromFullName(const String&in resourceName)
 
 void OpenResource(StringHash eventType, VariantMap& eventData)
 {
-    UIElement@ button = eventData["Element"].GetUIElement();
+    UIElement@ button = eventData["Element"].GetPtr();
     LineEdit@ attrEdit = button.parent.children[0];
 
     String fileName = attrEdit.text.Trimmed();
@@ -1105,7 +1105,7 @@ void OpenResource(StringHash eventType, VariantMap& eventData)
 
 void EditResource(StringHash eventType, VariantMap& eventData)
 {
-    UIElement@ button = eventData["Element"].GetUIElement();
+    UIElement@ button = eventData["Element"].GetPtr();
     LineEdit@ attrEdit = button.parent.children[0];
 
     String fileName = attrEdit.text.Trimmed();
@@ -1125,68 +1125,17 @@ void EditResource(StringHash eventType, VariantMap& eventData)
 
 void TestResource(StringHash eventType, VariantMap& eventData)
 {
-    UIElement@ button = eventData["Element"].GetUIElement();
+    UIElement@ button = eventData["Element"].GetPtr();
     LineEdit@ attrEdit = button.parent.children[0];
 
     ShortStringHash resourceType(attrEdit.vars[TYPE_VAR].GetUInt());
     
     // For now only Animations can be tested
-    ShortStringHash animType("Animation");
-    if (resourceType == animType)
-        TestAnimation(attrEdit);
+    //ShortStringHash animType("Animation");
+    //if (resourceType == animType)
+        //TestAnimation(attrEdit);
 }
 
-void TestAnimation(UIElement@ attrEdit)
-{
-    // Note: only supports the AnimationState array in AnimatedModel, and if only 1 model selected
-    Array<Serializable@>@ targets = GetAttributeEditorTargets(attrEdit);
-    if (targets.length != 1)
-        return;
-    AnimatedModel@ model = cast<AnimatedModel>(targets[0]);
-    if (model is null)
-        return;
-
-    uint animStateIndex = (attrEdit.vars["SubIndex"].GetUInt() - 1) / 6;
-    if (testAnimState.Get() is null)
-    {
-        testAnimState = model.GetAnimationState(animStateIndex);
-        AnimationState@ animState = testAnimState.Get();
-        if (animState !is null)
-            animState.time = 0; // Start from beginning
-    }
-    else
-        testAnimState = null;
-}
-
-void UpdateTestAnimation(float timeStep)
-{
-    AnimationState@ animState = testAnimState.Get();
-    if (animState !is null)
-    {
-        // If has also an AnimationController, and scene update is enabled, check if it is also driving the animation
-        // and skip in that case (avoid double speed animation)
-        if (runUpdate)
-        {
-            AnimatedModel@ model = animState.model;
-            if (model !is null)
-            {
-                Node@ node = model.node;
-                if (node !is null)
-                {
-                    AnimationController@ ctrl = node.GetComponent("AnimationController");
-                    Animation@ anim = animState.animation;
-                    if (ctrl !is null && anim !is null)
-                    {
-                        if (ctrl.IsPlaying(anim.name))
-                            return;
-                    }
-                }
-            }
-        }
-
-        animState.AddTime(timeStep);
-    }
-}
 
 // VariantVector decoding & editing for certain components
 
@@ -1221,17 +1170,6 @@ void InitVectorStructs()
         "   Is Enabled"
     };
     vectorStructs.Push(VectorStruct("BillboardSet", "Billboards", billboardVariables, 1));
-
-    Array<String> animationStateVariables = {
-        "Anim State Count",
-        "   Animation",
-        "   Start Bone",
-        "   Is Looped",
-        "   Weight",
-        "   Time",
-        "   Layer"
-    };
-    vectorStructs.Push(VectorStruct("AnimatedModel", "Animation States", animationStateVariables, 1));
 
     Array<String> particleColorVariables = {
         "Color Animation Frames",

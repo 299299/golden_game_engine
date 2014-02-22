@@ -26,9 +26,9 @@ uint elementContainerIndex = M_MAX_UNSIGNED;
 
 void InitXMLResources()
 {
-    String[] resources = { "Attribute", "Variable", "Style" };
+    String[] resources = { "UI/EditorInspector_Attribute.xml", "UI/EditorInspector_Variable.xml", "UI/EditorInspector_Style.xml" };
     for (uint i = 0; i < resources.length; ++i)
-        xmlResources.Push(cache.GetResource("XMLFile", "UI/EditorInspector_" + resources[i] + ".xml"));
+        xmlResources.Push(cache.GetResource("XMLFile", resources[i]));
 }
 
 /// Delete all child containers in the inspector list.
@@ -531,7 +531,7 @@ void HandleResetToDefault(StringHash eventType, VariantMap& eventData)
 {
     ui.cursor.shape = CS_BUSY;
 
-    UIElement@ button = eventData["Element"].GetUIElement();
+    UIElement@ button = eventData["Element"].GetPtr();
     Array<Serializable@>@ serializables = GetAttributeEditorTargets(button);
     if (serializables.empty)
         return;
@@ -665,14 +665,14 @@ void DeleteUIElementVariable(StringHash eventType, VariantMap& eventData)
 
 String ExtractVariableName(VariantMap& eventData)
 {
-    UIElement@ element = eventData["Element"].GetUIElement();
+    UIElement@ element = eventData["Element"].GetPtr();
     LineEdit@ nameEdit = element.parent.GetChild("VarNameEdit");
     return nameEdit.text.Trimmed();
 }
 
 Variant ExtractVariantType(VariantMap& eventData)
 {
-    DropDownList@ dropDown = eventData["Element"].GetUIElement();
+    DropDownList@ dropDown = eventData["Element"].GetPtr();
     switch (dropDown.selection)
     {
     case 0:
@@ -738,7 +738,7 @@ void HandleStyleItemSelected(StringHash eventType, VariantMap& eventData)
 
     ui.cursor.shape = CS_BUSY;
 
-    DropDownList@ styleList = eventData["Element"].GetUIElement();
+    DropDownList@ styleList = eventData["Element"].GetPtr();
     Text@ text = cast<Text>(styleList.selectedItem);
     if (text is null)
         return;

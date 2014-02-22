@@ -43,16 +43,20 @@ void Start()
     }
 
     SubscribeToEvent("Update", "HandleUpdate");
+    SubscribeToEvent(input, "ExitRequested", "HandleExitRequested");
 
+    String[] errorEvents = { "LoadFailed", "ResourceNotFound", "UnknownResourceType" };
+    for (uint i = 0; i < errorEvents.length; ++i)
+        SubscribeToEvent(cache, errorEvents[i], "HandleErrorEvent");
+
+    // Disable Editor auto exit, check first if it is OK to exit
+    engine.autoExit = false;
     // Enable console commands from the editor script
     script.defaultScriptFile = scriptFile;
     // Enable automatic resource reloading
     cache.autoReloadResources = true;
     // Use OS mouse without grabbing it
     input.mouseVisible = true;
-    // Disable Editor auto exit, check first if it is OK to exit
-    engine.autoExit = false;
-    SubscribeToEvent(input, "ExitRequested", "HandleExitRequested");
 
     // Create root scene node
     CreateScene();
@@ -98,9 +102,9 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
     float timeStep = eventData["TimeStep"].GetFloat();
 
     UpdateView(timeStep);
+    UpdateViewports(timeStep);
     UpdateStats(timeStep);
     UpdateScene(timeStep);
-    UpdateTestAnimation(timeStep);
     UpdateGizmo();
     UpdateDirtyUI();
 }

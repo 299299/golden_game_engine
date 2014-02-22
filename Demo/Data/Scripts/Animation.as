@@ -1,8 +1,8 @@
 #include "Scripts/Utilities/Sample.as"
-#include "Scripts/Input.as"
-#include "Scripts/AnimationDebug.as"
+#include "Scripts/Utilities/Input.as"
+#include "Scripts/Utilities/AnimationDebug.as"
 
-String sceneToLoad = "Data/Scenes/testScene.xml";
+String sceneToLoad = "Data/Scenes/testScene_1.xml";
 Scene@ scene_;
 Node@ cameraNode;
 Node@ characterNode;
@@ -12,8 +12,9 @@ int drawDebugMode = 0;
 bool dumpAnimation = false;
 bool bWalk = false;
 
-AnimatorController@ animController;
-HavokAnimator@      animator;
+AnimatorController@         animController;
+HavokAnimator@              animator;
+CharacterController@        characterCC;
 
 float cam_radius = 20.0f;
 float dumpTime = 0;
@@ -67,6 +68,7 @@ void Stop()
     Print("---------------------- Script Stop ----------------------");
     @characterNode = null;
     @cameraNode = null;
+    @characterCC = null;
     ui.Clear();
 }
 
@@ -74,6 +76,7 @@ void CreateScene()
 {
     scene_ = Scene();
     script.defaultScene = scene_;
+    SetActiveScene(scene_);
 
     File loadFile(fileSystem.programDir + sceneToLoad, FILE_READ);
     scene_.LoadXML(loadFile);
@@ -81,8 +84,6 @@ void CreateScene()
     if (characterNode is null)
         return;
 
-    characterNode.rotation = Quaternion(0,0,0);
-    characterNode.position = Vector3(0,0,0);
     cameraNode = scene_.CreateChild("Camera");
     cameraNode.CreateComponent("Camera");
 
@@ -93,8 +94,18 @@ void CreateScene()
 
     animController = characterNode.GetComponent("AnimatorController");
     animator = characterNode.GetComponent("HavokAnimator");
+    if(animController is null)
+    {
+        animController = characterNode.children[0].GetComponent("AnimatorController");
+    }
+    if(animator is null)
+    {
+        animator = characterNode.children[0].GetComponent("HavokAnimator");
+        camera_target_offset.y = 0;
+    }
     
-    CharacterController@ cc = characterNode.GetComponent("CharacterController");
+    characterCC = characterNode.GetComponent("CharacterController");
+    characterCC.Transform(Vector3(0,5,0), Quaternion(0,0,0));
     //cc.SetRotationOnly(true);
     //cc.SetApplyMotion(false);
 }
@@ -103,7 +114,7 @@ void CreateGUI()
 {
     // Construct new Text object, set string to display and font to use
     Text@ instructionText = ui.root.CreateChild("Text", "IN");
-    instructionText.SetFont(cache.GetResource("Font", "Fonts/ubuntu_mono.fnt"), 9);
+    instructionText.SetFont(cache.GetResource("Font", "Fonts/font.fnt"), 9);
     UpdateInstructionText();
 
     // Position the text relative to the screen center
@@ -113,14 +124,8 @@ void CreateGUI()
     instructionText.color = Color(0.0f, 0.0, 0.15f);
     instructionText.visible = false;
 
-    Text@ statusText = ui.root.CreateChild("Text", "STS");
-    statusText.horizontalAlignment = HA_LEFT;
-    statusText.verticalAlignment = VA_TOP;
-    statusText.SetFont(cache.GetResource("Font", "Fonts/ubuntu_mono.fnt"), 9);
-    statusText.color = Color(1,0,0);
-
     Text@ animation_dump_text = ui.root.CreateChild("Text", "ADT");
-    animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/ubuntu_mono.fnt"), 9);
+    animation_dump_text.SetFont(cache.GetResource("Font", "Fonts/font.fnt"), 9);
     animation_dump_text.SetPosition(0, 0);
     animation_dump_text.color = Color(0.0f, 0.0f, 1.0f);
 
@@ -157,7 +162,7 @@ void SetupViewport()
     //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/BloomHDR.xml"));
     //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/Tonemap.xml"));
     effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/ColorCorrection.xml"));
-    //effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/EdgeFilter.xml"));
+    effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/EdgeFilter.xml"));
     viewport.renderPath = effectRenderPath;
 }
 
@@ -204,6 +209,14 @@ void ThirdPersonCamera(float timeStep)
     camera_last_target = camera_last_target.Lerp(target_pos, speed);
     cameraNode.LookAt(camera_last_target);
 
+    Camera@ cam = cameraNode.GetComponent("Camera");
+    Vector3 upDir = cameraNode.worldRotation * Vector3(0,1,0);
+
+    VisualDebugCamera(camera_last_position, 
+                      camera_last_target, 
+                      upDir, 
+                      cam.fov);
+
     if(g_gamePad.isRightStickInDeadZone())
         return;
 
@@ -217,9 +230,9 @@ void ThirdPersonCamera(float timeStep)
     if (lookX > joyLookDeadZone)
         yaw += joySensitivity * lookX * lookX;
     if (lookY < -joyLookDeadZone)
-        pitch -= joySensitivity * lookY * lookY;
-    if (lookY > joyLookDeadZone)
         pitch += joySensitivity * lookY * lookY;
+    if (lookY > joyLookDeadZone)
+        pitch -= joySensitivity * lookY * lookY;
 
     pitch = Clamp(pitch, camera_pitch_range.x, camera_pitch_range.y);
 }
@@ -299,7 +312,7 @@ void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
     else if(drawDebugMode == 1)
         renderer.DrawDebugGeometry(false);
     else if(drawDebugMode == 2)
-        scene_.havokPhysicsWorld.DrawDebugGeometry(false);
+        scene_.havokPhysicsWorld.DrawDebugGeometry(debug, false);
 }
 
 void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
@@ -411,30 +424,38 @@ float computeDifference()
     float inputX = g_gamePad.m_leftStickX;
     float inputY = g_gamePad.m_leftStickY;
     Vector3 inputDir = Vector3(inputX, 0, inputY);
+    
     Vector3 desire_fwd_dir = cameraNode.worldRotation * inputDir;
     desire_fwd_dir.y = 0;
+
+    Vector3 cam_fwd_dir = cameraNode.worldRotation * Vector3(0,0,1);
+    cam_fwd_dir.y = 0;
+
     Vector3 character_fwd_dir = characterNode.worldRotation * Vector3(0,0,1);
+
     float desireAngle = Atan2(desire_fwd_dir.z, desire_fwd_dir.x);
     float characterAngle = Atan2(character_fwd_dir.z, character_fwd_dir.x);
 
-    float diff = -angleDiff(desireAngle - characterAngle);
-    Text@ statusText = ui.root.GetChild("STS", true);
-    if(statusText !is null)
-    {
-        String message = "diff=" + diff + " desire=" + desireAngle + " character=" + characterAngle;
-        message += "\ninput dir=" + inputDir.ToString();
-        message += "\ndesire dir=" + desire_fwd_dir.ToString();
-        message += "\ncharacter dir=" + character_fwd_dir.ToString();
-        message += "\nstand_value=" + stand_value;
-        message += "\ninput= " + g_gamePad.m_leftStickX + "," + g_gamePad.m_leftStickY + "," + g_gamePad.m_leftStickHoldTime;
-        statusText.text = message;
-    }
+    //Draw Debugs
+    Vector3 pos = characterNode.position;
+    pos.y = 2.5f;
+    DebugRenderer@ debug = scene_.debugRenderer;
+    float debugLen = 1;
+
+    character_fwd_dir.Normalize();
+    inputDir.Normalize();
+    cam_fwd_dir.Normalize();
+    
+    debug.AddLine(pos,  character_fwd_dir * debugLen + pos, Color(0,1,0));
+    debug.AddLine(pos,  inputDir * debugLen + pos, Color(1,0,0));
+    debug.AddLine(pos,  cam_fwd_dir * debugLen + pos, Color(0,0,1));
 
     if(g_gamePad.isLeftStickInDeadZone())
     {
         return 0;
     }
-    return diff;
+
+    return -angleDiff(desireAngle - characterAngle);
 }
 
 
@@ -506,7 +527,7 @@ void OnUpdateMoving(float timeStep)
 
     float turnSeed = 3.0f;
     characterNode.vars["Direction"] = lean_left_right ? g_gamePad.m_leftStickX : 0;
-    characterNode.Yaw(characterDifference * turnSeed * timeStep);
+    characterCC.Yaw(characterDifference * turnSeed * timeStep);
 }
 
 //logic ran while the character is in the idle to run state
@@ -526,6 +547,8 @@ void UpdateCharacter(float timeStep)
     if(freeze_udpate)
         return;
 
+    characterCC.SetLocomotionState(LOCOMOTION_STAND);
+
     int stateId = animController.GetCurStateId(0);
     switch(stateId)
     {
@@ -535,19 +558,21 @@ void UpdateCharacter(float timeStep)
         break;
     case 1:
     case 5:
+        characterCC.SetLocomotionState(LOCOMOTION_MOVE);
         OnUpdateMoving(timeStep);
         stand_value -= timeStep;
         break;
     case 3:
     case 6:
+        characterCC.SetLocomotionState(LOCOMOTION_MOVE);
         OnUpdateStandToRun(timeStep);
+        break;
+    default:
         break;
     }
 
     stand_value = Clamp(stand_value, 0.0f, 1.0f);
     characterNode.vars["Stand_Value"] = stand_value;
-
-
 }
 
 
@@ -555,7 +580,7 @@ void HandleAnimationStateEnter(StringHash eventType, VariantMap& eventData)
 {
     int nextStateId = eventData["NextState"].GetInt();
     int lastStateId = eventData["LastState"].GetInt();
-    if(lastStateId == 2)
+    if(lastStateId == 3)
     {
         Print("freeze scene update");
         //scene_.updateEnabled = false;
@@ -575,7 +600,4 @@ void HandleScreenMode()
     int window_width = 100;
     window1.position = IntVector2(graphics.width - window_width, 0);
     window1.SetFixedSize(window_width, window_width*3);
-
-    Text@ statusText = ui.root.GetChild("STS", true);
-    statusText.SetPosition(320, graphics.height - 125);
 }

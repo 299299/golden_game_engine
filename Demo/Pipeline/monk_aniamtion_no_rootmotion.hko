@@ -100,7 +100,7 @@
 		<hkparam name="hasOptions">true</hkparam>
 	</hkobject>
 	<hkobject name="Write to Platform" class="hctPlatformWriterOptions">
-		<hkparam name="filename">c:\temp.hkx</hkparam>
+		<hkparam name="filename">c:/temp.hkx</hkparam>
 		<hkparam name="tagfile">false</hkparam>
 		<hkparam name="preset">MSVC_WIN32</hkparam>
 		<hkparam name="bytesInPointer">4</hkparam>

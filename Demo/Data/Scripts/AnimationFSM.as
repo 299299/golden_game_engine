@@ -1,6 +1,6 @@
 #include "Scripts/Utilities/Sample.as"
-#include "Scripts/Input.as"
-#include "Scripts/AnimationDebug.as"
+#include "Scripts/Utilities/Input.as"
+#include "Scripts/Utilities/AnimationDebug.as"
 
 String sceneToLoad = "Data/Scenes/testScene.xml";
 Scene@ scene_;
@@ -86,6 +86,8 @@ void CreateScene()
 
     CharacterController@ cc = characterNode.GetComponent("CharacterController");
     cc.SetRotationOnly(true);
+
+    SetActiveScene(scene_);
 
     UpdateFSMWindow();
 }

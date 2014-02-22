@@ -33,7 +33,7 @@ void SetLogoVisible(bool enable)
 void CreateLogo()
 {
     // Get logo texture
-    Texture2D@ logoTexture = cache.GetResource("Texture2D", "Textures/LogoLarge.jpg");
+    Texture2D@ logoTexture = cache.GetResource("Texture2D", "Textures/LogoLarge.png");
     if (logoTexture is null)
         return;
 
@@ -67,7 +67,7 @@ void CreateLogo()
 
 void SetWindowTitleAndIcon()
 {
-    Image@ icon = cache.GetResource("Image", "Textures/LogoLarge.png");
+    Image@ icon = cache.GetResource("Image", "Textures/UrhoIcon.png");
     graphics.windowIcon = icon;
     graphics.windowTitle = "Urho3D Sample";
 }

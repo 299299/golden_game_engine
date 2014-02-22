@@ -1,317 +1,219 @@
 {
-	"BaseLayer" :
+	"AnimationPath":"monk/animations/",
+	"Animations":
 	[
-		{
-			"Type":"SimpleAnimationState",
-			"Name":"IdleState",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_stand_idle.hkx"
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Go",
-				 	"Dest State Name":"StandToRunState",
-				 	"Motion Blend Type":"ignore source rotation"
-				},
-				{
-					"Name":"Walk",
-				 	"Dest State Name":"StandToWalkState",
-				 	"Motion Blend Type":"ignore source"
-				}
-			]
-		},
-
-		{
-			"Type":"SimpleAnimationState",
-			"Name":"MoveState",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_run_0.hkx"
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Stop",
-				 	"Dest State Name":"RunToStandState",
-				 	"Motion Blend Type":"ignore source"
-				},
-				{
-					"Name":"Turn180",
-				 	"Dest State Name":"RunTurn180State",
-				 	"Motion Blend Type":"ignore source"
-				}
-			]
-		},
-
-		{
-			"Type":"SimpleAnimationState",
-			"Name":"RunTurn180State",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_run_180.hkx",
-					"Looped":false
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Continue",
-				 	"Dest State Name":"MoveState",
-				 	"Motion Blend Type":"ignore dest",
-				 	"Sync Point":"RightFoot",
-				 	"Mirrored Sync Point":"LeftFoot"
-				}
-			]
-		},
-
-		{
-			"Type":"SwitchAnimationState",
-			"Name":"StandToRunState",
-			"Full Timed":true,
-			"Parameter Name":"StandToRunIndex",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_stand_to_run_0.hkx",
-					"MinimalFrame":12,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_45.hkx",
-					"MinimalFrame":13,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_90.hkx",
-					"MinimalFrame":13,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_135.hkx",
-					"MinimalFrame":13,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_180.hkx",
-					"MinimalFrame":15,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_135.hkx",
-					"MinimalFrame":13,
-					"Looped":false,
-					"Mirrored":true
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_90.hkx",
-					"MinimalFrame":13,
-					"Looped":false,
-					"Mirrored":true
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_run_45.hkx",
-					"MinimalFrame":13,
-					"Looped":false,
-					"Mirrored":true
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Continue",
-				 	"Dest State Name":"MoveState",
-				 	"Sync Point":"RightFoot",
-				 	"Mirrored Sync Point":"LeftFoot",
-				 	"Motion Blend Type":"ignore dest"
-				},
-				{
-					"Name":"Stop",
-				 	"Dest State Name":"IdleState",
-				 	"Motion Blend Type":"ignore dest rotation"
-				}
-			]
-		},
-
-		{
-			"Type":"SimpleAnimationState",
-			"Name":"RunToStandState",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_run_to_stand.hkx",
-					"Looped":false
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Continue",
-				 	"Dest State Name":"IdleState",
-				 	"Motion Blend Type":"ignore dest"
-				}
-			]
-		},
-
-		{
-			"Type":"SimpleAnimationState",
-			"Name":"WalkState",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_walk_0.hkx"
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Stop",
-				 	"Dest State Name":"IdleState",
-				 	"Motion Blend Type":"ignore source"
-				},
-				{
-					"Name":"Turn180",
-				 	"Dest State Name":"WalkTurn180State",
-				 	"Motion Blend Type":"ignore source"
-				}
-			]
-		},
-
-		{
-			"Type":"SwitchAnimationState",
-			"Name":"StandToWalkState",
-			"Full Timed":true,
-			"Parameter Name":"StandToRunIndex",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_0.hkx",
-					"MinimalFrame":10,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_45.hkx",
-					"MinimalFrame":20,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_90.hkx",
-					"MinimalFrame":20,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_135.hkx",
-					"MinimalFrame":20,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_180.hkx",
-					"MinimalFrame":16,
-					"Looped":false
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_135.hkx",
-					"MinimalFrame":20,
-					"Looped":false,
-					"Mirrored":true
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_90.hkx",
-					"MinimalFrame":20,
-					"Looped":false,
-					"Mirrored":true
-				},
-				{
-					"Animation":"monk/animations/monk_stand_to_walk_45.hkx",
-					"MinimalFrame":20,
-					"Looped":false,
-					"Mirrored":true
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Continue",
-				 	"Dest State Name":"WalkState",
-				 	"Sync Point":"RightFoot",
-				 	"Mirrored Sync Point":"LeftFoot",
-				 	"Motion Blend Type":"ignore dest"
-				},
-				{
-					"Name":"Stop",
-				 	"Dest State Name":"IdleState",
-				 	"Motion Blend Type":"ignore dest"
-				}
-			]
-		},
-
-		{
-			"Type":"SimpleAnimationState",
-			"Name":"WalkTurn180State",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_walk_180.hkx",
-					"Looped":false
-				}
-			],
-			"Transitions":
-			[
-				{
-					"Name":"Continue",
-				 	"Dest State Name":"WalkState",
-				 	"Motion Blend Type":"ignore dest",
-				 	"Sync Point":"RightFoot",
-				 	"Mirrored Sync Point":"LeftFoot"
-				}
-			]
-		}
+		{"Animation":"monk_stand_idle.hkx" },
+		{"Animation":"monk_run_0.hkx" },
+		{"Animation":"monk_run_180.hkx", "Looped":false},
+		{"Animation":"monk_stand_to_run_0.hkx","MinimalFrame":12,"Looped":false},
+		{"Animation":"monk_stand_to_run_45.hkx","MinimalFrame":13,"Looped":false},
+		{"Animation":"monk_stand_to_run_90.hkx","MinimalFrame":13,"Looped":false},
+		{"Animation":"monk_stand_to_run_135.hkx","MinimalFrame":13,"Looped":false},
+		{"Animation":"monk_stand_to_run_180.hkx","MinimalFrame":15,"Looped":false, "Speed":2.0},
+		{"Animation":"monk_stand_to_run_135.hkx","MinimalFrame":13,"Looped":false,"Mirrored":true},
+		{"Animation":"monk_stand_to_run_90.hkx","MinimalFrame":13,"Looped":false,"Mirrored":true},
+		{"Animation":"monk_stand_to_run_45.hkx","MinimalFrame":13,"Looped":false,"Mirrored":true},
+		{"Animation":"monk_run_to_stand.hkx","Looped":false},
+		{"Animation":"monk_walk_0.hkx"},
+		{"Animation":"monk_stand_to_walk_0.hkx","MinimalFrame":10,"Looped":false},
+		{"Animation":"monk_stand_to_walk_45.hkx","MinimalFrame":20,"Looped":false},
+		{"Animation":"monk_stand_to_walk_90.hkx","MinimalFrame":20,"Looped":false},
+		{"Animation":"monk_stand_to_walk_135.hkx","MinimalFrame":20,"Looped":false},
+		{"Animation":"monk_stand_to_walk_180.hkx","MinimalFrame":16,"Looped":false},
+		{"Animation":"monk_stand_to_walk_135.hkx","MinimalFrame":20,"Looped":false,"Mirrored":true},
+		{"Animation":"monk_stand_to_walk_90.hkx","MinimalFrame":20,"Looped":false,"Mirrored":true},
+		{"Animation":"monk_stand_to_walk_45.hkx","MinimalFrame":20,"Looped":false,"Mirrored":true},
+		{"Animation":"monk_walk_180.hkx","Looped":false},
+		{"Animation":"monk_stand_additive.hkx"},
+		{"Animation":"monk_run_additive.hkx"}
 	],
 
-	"AdditiveLayer" :
-	[
-		{
-			"Type":"ComplexAnimationState",
-			"Name":"AdditveState",
-			"Animations":
-			[
-				{
-					"Animation":"monk/animations/monk_stand_additive.hkx"
-				},
-				{
-					"Animation":"monk/animations/monk_run_additive.hkx"
-				}
-			],
-			"BlendTree":
+	"Layers":
+	{
+		"$BaseLayer" :
+		[
 			{
-				"Root Node":
+				"Type":"Simple",
+				"Name":"IdleState",
+				"Animations": [0],
+				"Transitions":
+				[
+					{
+						"Name":"Go",
+					 	"Dest State Name":"StandToRunState",
+					 	"Motion Blend Type":"ignore source rotation"
+					},
+					{
+						"Name":"Walk",
+					 	"Dest State Name":"StandToWalkState",
+					 	"Motion Blend Type":"ignore source"
+					}
+				]
+			},
+
+			{
+				"Type":"Simple",
+				"Name":"MoveState",
+				"Animations": [1],
+				"Transitions":
+				[
+					{
+						"Name":"Stop",
+					 	"Dest State Name":"RunToStandState",
+					 	"Motion Blend Type":"ignore source"
+					},
+					{
+						"Name":"Turn180",
+					 	"Dest State Name":"RunTurn180State",
+					 	"Motion Blend Type":"ignore source"
+					}
+				]
+			},
+
+			{
+				"Type":"Simple",
+				"Name":"RunTurn180State",
+				"Animations": [2],
+				"Transitions":
+				[
+					{
+						"Name":"Continue",
+					 	"Dest State Name":"MoveState",
+					 	"Motion Blend Type":"ignore dest",
+					 	"Sync Point":"RightFoot",
+					 	"Mirrored Sync Point":"LeftFoot"
+					}
+				]
+			},
+
+			{
+				"Type":"Switch",
+				"Name":"StandToRunState",
+				"Full Timed":true,
+				"Parameter Name":"StandToRunIndex",
+				"Animations": [3,4,5,6,7,8,9,10],
+				"Transitions":
+				[
+					{
+						"Name":"Continue",
+					 	"Dest State Name":"MoveState",
+					 	"Sync Point":"RightFoot",
+					 	"Mirrored Sync Point":"LeftFoot",
+					 	"Motion Blend Type":"ignore dest"
+					},
+					{
+						"Name":"Stop",
+					 	"Dest State Name":"IdleState",
+					 	"Motion Blend Type":"ignore dest rotation"
+					}
+				]
+			},
+
+			{
+				"Type":"Simple",
+				"Name":"RunToStandState",
+				"Animations": [11],
+				"Transitions":
+				[
+					{
+						"Name":"Continue",
+					 	"Dest State Name":"IdleState",
+					 	"Motion Blend Type":"ignore dest"
+					}
+				]
+			},
+
+			{
+				"Type":"Simple",
+				"Name":"WalkState",
+				"Animations": [12],
+				"Transitions":
+				[
+					{
+						"Name":"Stop",
+					 	"Dest State Name":"IdleState",
+					 	"Motion Blend Type":"ignore source"
+					},
+					{
+						"Name":"Turn180",
+					 	"Dest State Name":"WalkTurn180State",
+					 	"Motion Blend Type":"ignore source"
+					}
+				]
+			},
+
+			{
+				"Type":"Switch",
+				"Name":"StandToWalkState",
+				"Full Timed":true,
+				"Parameter Name":"StandToRunIndex",
+				"Animations": [13,14,15,16,17,18,19,20],
+				"Transitions":
+				[
+					{
+						"Name":"Continue",
+					 	"Dest State Name":"WalkState",
+					 	"Sync Point":"RightFoot",
+					 	"Mirrored Sync Point":"LeftFoot",
+					 	"Motion Blend Type":"ignore dest"
+					},
+					{
+						"Name":"Stop",
+					 	"Dest State Name":"IdleState",
+					 	"Motion Blend Type":"ignore dest"
+					}
+				]
+			},
+
+			{
+				"Type":"Simple",
+				"Name":"WalkTurn180State",
+				"Animations": [21],
+				"Transitions":
+				[
+					{
+						"Name":"Continue",
+					 	"Dest State Name":"WalkState",
+					 	"Motion Blend Type":"ignore dest",
+					 	"Sync Point":"RightFoot",
+					 	"Mirrored Sync Point":"LeftFoot"
+					}
+				]
+			}
+		],
+
+		"$AdditiveLayer" :
+		[
+			{
+				"Type":"Complex",
+				"Name":"AdditveState",
+				"Animations": [22, 23],
+				"BlendTree":
 				{
-					"Name": "Root",
-					"Node Type":"Binary Blend",
-					"Child Nodes":
-					[
-						{
-							"Node Type":"Animation Source",
-							"Animation Slot": 0
-						},
-						{
-							"Node Type":"Animation Source",
-							"Animation Slot": 1
-						}
-					],
-					"Parameters":
-					[
-						"Stand_Value"
-					]
+					"Root Node":
+					{
+						"Name": "Root",
+						"Node Type":"Binary Blend",
+						"Child Nodes":
+						[
+							{
+								"Node Type":"Animation Source",
+								"Animation Slot": 0
+							},
+							{
+								"Node Type":"Animation Source",
+								"Animation Slot": 1
+							}
+						],
+						"Parameters":
+						[
+							"Stand_Value"
+						]
+					}
 				}
 			}
-		}
-	]
+		]
+	}
+	
 }
 
