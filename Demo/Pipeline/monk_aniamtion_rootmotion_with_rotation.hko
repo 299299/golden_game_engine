@@ -32,7 +32,7 @@
 		<hkparam name="moveToOrigin">true</hkparam>
 		<hkparam name="automatic">false</hkparam>
 		<hkparam name="rigNodes"></hkparam>
-		<hkparam name="rigFile">C:/Users/Administrator/Documents/maya/scripts/naga_pipeline/monk_rig.txt</hkparam>
+		<hkparam name="rigFile">output_rig.txt</hkparam>
 		<hkparam name="selected">false</hkparam>
 		<hkparam name="skinBindings">false</hkparam>
 		<hkparam name="floatSlots"></hkparam>
@@ -61,7 +61,7 @@
 		<hkparam name="manual">false</hkparam>
 		<hkparam name="rigFilename">&#9216;</hkparam>
 		<hkparam name="partialAnimationNodes"></hkparam>
-		<hkparam name="nameAnimationTracks">true</hkparam>
+		<hkparam name="nameAnimationTracks">false</hkparam>
 		<hkparam name="previewColor">4286545791</hkparam>
 		<hkparam name="floatTracks"></hkparam>
 	</hkobject>
@@ -100,7 +100,7 @@
 		<hkparam name="pruneAnimationData">false</hkparam>
 		<hkparam name="customClasses"></hkparam>
 		<hkparam name="pruneAllSceneData">true</hkparam>
-		<hkparam name="pruneEnvironmentData">true</hkparam>
+		<hkparam name="pruneEnvironmentData">false</hkparam>
 		<hkparam name="pruneResourceData">true</hkparam>
 		<hkparam name="pruneDestructionData">false</hkparam>
 		<hkparam name="pruneAnimationTracks">false</hkparam>
@@ -123,7 +123,7 @@
 		<hkparam name="hasOptions">true</hkparam>
 	</hkobject>
 	<hkobject name="Write to Platform" class="hctPlatformWriterOptions">
-		<hkparam name="filename">c:/temp.hkx</hkparam>
+		<hkparam name="filename">$(HK_OUTPUT)</hkparam>
 		<hkparam name="tagfile">false</hkparam>
 		<hkparam name="preset">MSVC_WIN32</hkparam>
 		<hkparam name="bytesInPointer">4</hkparam>
@@ -132,7 +132,7 @@
 		<hkparam name="emptyBaseClassOptimized">1</hkparam>
 		<hkparam name="removeMetadata">false</hkparam>
 		<hkparam name="userTag">0</hkparam>
-		<hkparam name="saveEnvironmentData">false</hkparam>
+		<hkparam name="saveEnvironmentData">true</hkparam>
 		<hkparam name="xmlFormat">false</hkparam>
 	</hkobject>
 </hkoptions>

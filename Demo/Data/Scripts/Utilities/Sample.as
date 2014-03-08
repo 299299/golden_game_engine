@@ -185,3 +185,15 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
         }
     }
 }
+
+
+void DebugDrawNode(Node@ node, DebugRenderer@ debug, bool bDepth, float nodeScale)
+{
+    if(nodeScale > 0.0f)
+        debug.AddNode(node, nodeScale, bDepth);
+    for(uint i=0; i<node.numComponents; ++i)
+    {
+        Component@ component = node.components[i];
+        component.DrawDebugGeometry(debug, bDepth);
+    }
+}

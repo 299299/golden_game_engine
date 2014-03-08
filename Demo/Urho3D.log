@@ -1,27 +1,23 @@
-[0.0430] INFO:Opened log file Urho3D.log
-[0.0440] INFO:Created 3 worker threads
-[0.0440] INFO:Added resource path E:/Code/NagaGame/Demo/CoreData/
-[0.0440] INFO:Added resource path E:/Code/NagaGame/Demo/Data/
-[0.1410] INFO:Created Direct3D9 device
-[0.1560] INFO:Set screen mode 1024x768 windowed resizable
-[0.1560] INFO:Initialized input
-[0.1560] INFO:Initialized user interface
-[0.1610] INFO:Initialized renderer
-[0.2110] INFO:Set audio mode 44100 Hz stereo interpolated
-[0.3110] INFO:Scripts/Utilities/AnimationDebug.as:166,1 Compiling void HandleReplaySliderChanged(StringHash, VariantMap&inout)
-[0.3110] WARNING:Scripts/Utilities/AnimationDebug.as:169,18 Float value truncated in implicit conversion to integer
-[0.3180] INFO:Scripts/Animation.as:462,1 Compiling void OnUpdateIdle(float)
-[0.3180] WARNING:Scripts/Animation.as:495,56 Float value truncated in implicit conversion to integer
-[0.3180] WARNING:Scripts/Animation.as:497,55 Float value truncated in implicit conversion to integer
-[0.3200] INFO:Compiled script module Scripts/Animation.as
+[0.0520] INFO:Opened log file Urho3D.log
+[0.0520] INFO:Created 3 worker threads
+[0.0520] INFO:Added resource path C:/Project/NagaGame/Demo/CoreData/
+[0.0520] INFO:Added resource path C:/Project/NagaGame/Demo/Data/
+[0.1280] INFO:Created Direct3D9 device
+[0.1290] INFO:Set screen mode 800x600 windowed resizable
+[0.1290] INFO:Initialized input
+[0.1430] INFO:Initialized user interface
+[0.1480] INFO:Initialized renderer
+[0.1800] INFO:Set audio mode 44100 HZ stereo interpolated
+[0.2870] INFO:Scripts/Utilities/AnimationDebug.as:166,1 Compiling void HandleReplaySliderChanged(StringHash, VariantMap&inout)
+[0.2870] WARNING:Scripts/Utilities/AnimationDebug.as:169,18 Float value truncated in implicit conversion to integer
+[0.2970] INFO:Compiled script module Scripts/Animation.as
 ---------------------- Script Start ----------------------
-[0.3840] INFO:Loading scene from E:/Code/NagaGame/Demo/Data/Scenes/testScene_1.xml
-[0.4000] INFO:hkaPose::getRequiredMemorySize = 6400
-[0.4170] INFO:hkaPose::getRequiredMemorySize = 6400
-[0.4180] INFO:hkaPose::getRequiredMemorySize = 6400
-[0.4190] ERROR:HavokAnimation Zero sized JSON data in monk/animations/monk_stand_idle.json
-[0.4320] WARNING:animation file no json trigger.
-[0.4340] WARNING:animation file no json trigger.
-[0.4580] INFO:Device lost
-set animation = monk_stand_to_run_0
+[0.3500] INFO:Loading scene from C:/Project/NagaGame/Demo/Data/Scenes/testScene_1.xml
+[0.3690] INFO:hkaPose::getRequiredMemorySize = 6400
+[0.3880] INFO:hkaPose::getRequiredMemorySize = 6400
+[0.3900] ERROR:HavokAnimation Zero sized JSON data in monk/animations/monk_stand_idle.json
+[0.4050] WARNING:animation file no json trigger.
+[0.4060] WARNING:animation file no json trigger.
+[0.4070] INFO:hkaPose::getRequiredMemorySize = 6400
+[7.9020] INFO:Device lost
 ---------------------- Script Stop ----------------------

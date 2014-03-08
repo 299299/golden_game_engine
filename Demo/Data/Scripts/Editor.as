@@ -55,6 +55,8 @@ void Start()
     script.defaultScriptFile = scriptFile;
     // Enable automatic resource reloading
     cache.autoReloadResources = true;
+    // Return resources which exist but failed to load due to error, so that we will not lose resource refs
+    cache.returnFailedResources = true;
     // Use OS mouse without grabbing it
     input.mouseVisible = true;
 
@@ -153,6 +155,8 @@ void LoadConfig()
         if (objectElem.HasAttribute("applymateriallist")) applyMaterialList = objectElem.GetBool("applymateriallist");
         if (objectElem.HasAttribute("importoptions")) importOptions = objectElem.GetAttribute("importoptions");
         if (objectElem.HasAttribute("pickmode")) pickMode = objectElem.GetInt("pickmode");
+        if (objectElem.HasAttribute("axismode")) axisMode = AxisMode(objectElem.GetInt("axismode"));
+        if (objectElem.HasAttribute("revertonpause")) revertOnPause = objectElem.GetBool("revertonpause");
     }
 
     if (!resourcesElem.isNull)
@@ -258,6 +262,8 @@ void SaveConfig()
     objectElem.SetBool("applymateriallist", applyMaterialList);
     objectElem.SetAttribute("importoptions", importOptions);
     objectElem.SetInt("pickmode", pickMode);
+    objectElem.SetInt("axismode", axisMode);
+    objectElem.SetBool("revertonpause", revertOnPause);
 
     resourcesElem.SetBool("rememberresourcepath", rememberResourcePath);
     resourcesElem.SetAttribute("resourcepath", sceneResourcePath);

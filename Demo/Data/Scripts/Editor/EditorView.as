@@ -1,5 +1,6 @@
 // Urho3D editor view & camera functions
 
+WeakHandle previewCamera;
 Node@ cameraNode;
 Camera@ camera;
 
@@ -81,6 +82,17 @@ class ViewportContext
     UIElement@ statusBar;
     Text@ cameraPosText;
 
+    Window@ settingsWindow;
+    LineEdit@ cameraPosX;
+    LineEdit@ cameraPosY;
+    LineEdit@ cameraPosZ;
+    LineEdit@ cameraRotX;
+    LineEdit@ cameraRotY;
+    LineEdit@ cameraRotZ;
+    LineEdit@ cameraZoom;
+    LineEdit@ cameraOrthoSize;
+    CheckBox@ cameraOrthographic;
+
     ViewportContext(IntRect viewRect, uint index_, uint viewportId_)
     {
         cameraNode = Node();
@@ -99,6 +111,7 @@ class ViewportContext
         // Look at the origin so user can see the scene.
         cameraNode.rotation = Quaternion(Vector3(0, 0, 1), -cameraNode.position);
         ReacquireCameraYawPitch();
+        UpdateSettingsUI();
     }
 
     void ReacquireCameraYawPitch()
@@ -126,6 +139,9 @@ class ViewportContext
         statusBar.layoutSpacing = 4;
         statusBar.opacity = uiMaxOpacity;
 
+        Button@ settingsButton = CreateSmallToolBarButton("Settings");
+        statusBar.AddChild(settingsButton);
+
         cameraPosText = Text();
         statusBar.AddChild(cameraPosText);
 
@@ -134,6 +150,35 @@ class ViewportContext
         cameraPosText.textEffect = TE_SHADOW;
         cameraPosText.priority = -100;
 
+        settingsWindow = ui.LoadLayout(cache.GetResource("XMLFile", "UI/EditorViewport.xml"));
+        settingsWindow.opacity = uiMaxOpacity;
+        settingsWindow.visible = false;
+        viewportContextUI.AddChild(settingsWindow);
+
+        cameraPosX = settingsWindow.GetChild("PositionX", true);
+        cameraPosY = settingsWindow.GetChild("PositionY", true);
+        cameraPosZ = settingsWindow.GetChild("PositionZ", true);
+        cameraRotX = settingsWindow.GetChild("RotationX", true);
+        cameraRotY = settingsWindow.GetChild("RotationY", true);
+        cameraRotZ = settingsWindow.GetChild("RotationZ", true);
+        cameraOrthographic = settingsWindow.GetChild("Orthographic", true);
+        cameraZoom = settingsWindow.GetChild("Zoom", true);
+        cameraOrthoSize = settingsWindow.GetChild("OrthoSize", true);
+
+        SubscribeToEvent(cameraPosX, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraPosY, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraPosZ, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraRotX, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraRotY, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraRotZ, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraZoom, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraOrthoSize, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraOrthographic, "Toggled", "HandleOrthographicToggled");
+
+        SubscribeToEvent(settingsButton, "Released", "ToggleViewportSettingsWindow");
+        SubscribeToEvent(settingsWindow.GetChild("ResetCamera", true), "Released", "ResetCamera");
+        SubscribeToEvent(settingsWindow.GetChild("CloseButton", true), "Released", "CloseViewportSettingsWindow");
+        SubscribeToEvent(settingsWindow.GetChild("Refresh", true), "Released", "UpdateSettingsUI");
         HandleResize();
     }
 
@@ -142,9 +187,19 @@ class ViewportContext
         viewportContextUI.SetPosition(viewport.rect.left, viewport.rect.top);
         viewportContextUI.SetFixedSize(viewport.rect.width, viewport.rect.height);
         if (viewport.rect.left < 34)
+        {
             statusBar.layoutBorder = IntRect(34 - viewport.rect.left, 4, 4, 8);
+            IntVector2 pos = settingsWindow.position;
+            pos.x = 32 - viewport.rect.left;
+            settingsWindow.position = pos;
+        }
         else
+        {
             statusBar.layoutBorder = IntRect(8, 4, 4, 8);
+            IntVector2 pos = settingsWindow.position;
+            pos.x = 5;
+            settingsWindow.position = pos;
+        }
 
         statusBar.SetFixedSize(viewport.rect.width, 22);
     }
@@ -156,10 +211,12 @@ class ViewportContext
 
     void SetOrthographic(bool orthographic)
     {
-        if (orthographic)
-            camera.orthoSize = (cameraNode.position - GetScreenCollision(IntVector2(viewport.rect.width, viewport.rect.height))).length;
+        // This doesn't work that great
+        /* if (orthographic) */
+        /*     camera.orthoSize = (cameraNode.position - GetScreenCollision(IntVector2(viewport.rect.width, viewport.rect.height))).length; */
 
         camera.orthographic = orthographic;
+        UpdateSettingsUI();
     }
 
     void Update(float timeStep)
@@ -177,6 +234,80 @@ class ViewportContext
             " Zoom: " + camera.zoom);
 
         cameraPosText.size = cameraPosText.minSize;
+    }
+
+    void ToggleViewportSettingsWindow()
+    {
+        if (settingsWindow.visible)
+            CloseViewportSettingsWindow();
+        else
+            OpenViewportSettingsWindow();
+    }
+
+    void OpenViewportSettingsWindow()
+    {
+        UpdateSettingsUI();
+        /* settingsWindow.position = */ 
+        settingsWindow.visible = true;
+    }
+
+    void CloseViewportSettingsWindow()
+    {
+        settingsWindow.visible = false;
+    }
+
+    void UpdateSettingsUI()
+    {
+        cameraPosX.text = Floor(cameraNode.position.x * 1000) / 1000;
+        cameraPosY.text = Floor(cameraNode.position.y * 1000) / 1000;
+        cameraPosZ.text = Floor(cameraNode.position.z * 1000) / 1000;
+        cameraRotX.text = Floor(cameraNode.rotation.pitch * 1000) / 1000;
+        cameraRotY.text = Floor(cameraNode.rotation.yaw * 1000) / 1000;
+        cameraRotZ.text = Floor(cameraNode.rotation.roll * 1000) / 1000;
+        cameraZoom.text = Floor(camera.zoom * 1000) / 1000;
+        cameraOrthoSize.text = Floor(camera.orthoSize * 1000) / 1000;
+        cameraOrthographic.checked = camera.orthographic;
+    }
+
+    void HandleOrthographicToggled(StringHash eventType, VariantMap& eventData)
+    {
+        SetOrthographic(cameraOrthographic.checked);
+    }
+
+    void HandleSettingsLineEditTextChange(StringHash eventType, VariantMap& eventData)
+    {
+        LineEdit@ element = eventData["Element"].GetPtr();
+        if (element.text == "")
+            return;
+
+        if (element is cameraRotX ||  element is cameraRotY || element is cameraRotZ)
+        {
+            Vector3 euler = cameraNode.rotation.eulerAngles;
+            if (element is cameraRotX)
+                euler.x = element.text.ToFloat();
+            else if (element is cameraRotY)
+                euler.y = element.text.ToFloat();
+            else if (element is cameraRotZ)
+                euler.z = element.text.ToFloat();
+
+            cameraNode.rotation = Quaternion(euler);
+        }
+        else if (element is cameraPosX ||  element is cameraPosY || element is cameraPosZ)
+        {
+            Vector3 pos = cameraNode.position;
+            if (element is cameraPosX)
+                pos.x = element.text.ToFloat();
+            else if (element is cameraPosY)
+                pos.y = element.text.ToFloat();
+            else if (element is cameraPosZ)
+                pos.z = element.text.ToFloat();
+
+            cameraNode.position = pos;
+        }
+        else if (element is cameraZoom)
+            camera.zoom = element.text.ToFloat();
+        else if (element is cameraOrthoSize)
+            camera.orthoSize = element.text.ToFloat();
     }
 }
 
@@ -270,6 +401,10 @@ void CreateCamera()
     SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
     SubscribeToEvent("UIMouseClick", "ViewMouseClick");
     SubscribeToEvent("MouseMove", "ViewMouseMove");
+    SubscribeToEvent("BeginViewUpdate", "HandleBeginViewUpdate");
+    SubscribeToEvent("EndViewUpdate", "HandleEndViewUpdate");
+    SubscribeToEvent("BeginViewRender", "HandleBeginViewRender");
+    SubscribeToEvent("EndViewRender", "HandleEndViewRender");
 }
 
 // Create any UI associated with changing the editor viewports
@@ -483,7 +618,58 @@ void SetViewportMode(uint mode = VIEWPORT_SINGLE)
 
     ReacquireCameraYawPitch();
     UpdateViewParameters();
+    UpdateCameraPreview();
     CreateViewportUI();
+}
+
+// Create a preview viewport if a camera component is selected
+void UpdateCameraPreview()
+{
+    previewCamera = null;
+    ShortStringHash cameraType("Camera");
+
+    for (uint i = 0; i < selectedComponents.length; ++i)
+    {
+        if (selectedComponents[i].type == cameraType)
+        {
+            // Take the first encountered camera
+            previewCamera = selectedComponents[i];
+            break;
+        }
+    }
+    // Also try nodes if not found from components
+    if (previewCamera.Get() is null)
+    {
+        for (uint i = 0; i < selectedNodes.length; ++i)
+        {
+            previewCamera = selectedNodes[i].GetComponent("Camera");
+            if (previewCamera.Get() !is null)
+                break;
+        }
+    }
+
+    // Remove extra viewport if it exists and no camera is selected
+    if (previewCamera.Get() is null)
+    {
+        if (renderer.numViewports > viewports.length)
+            renderer.numViewports = viewports.length;
+    }
+    else
+    {
+        if (renderer.numViewports < viewports.length + 1)
+            renderer.numViewports = viewports.length + 1;
+
+        int previewWidth = graphics.width / 4;
+        int previewHeight = previewWidth * 9 / 16;
+        int previewX = graphics.width - 10 - previewWidth;
+        int previewY = graphics.height - 30 - previewHeight;
+
+        Viewport@ previewView = Viewport();
+        previewView.scene = editorScene;
+        previewView.camera = previewCamera.Get();
+        previewView.rect = IntRect(previewX, previewY, previewX + previewWidth, previewY + previewHeight);
+        renderer.viewports[viewports.length] = previewView;
+    }
 }
 
 void HandleViewportBorderDragMove(StringHash eventType, VariantMap& eventData)
@@ -1387,10 +1573,10 @@ Vector3 GetScreenCollision(IntVector2 pos)
     bool physicsFound = false;
     //@TODO
     //Make it use havok physics.
-    /*if (editorScene.physicsWorld !is null)
+    if (editorScene.physicsWorld !is null)
     {
-        if (!runUpdate)
-            editorScene.physicsWorld.UpdateCollisions();
+        //if (!runUpdate)
+            //editorScene.physicsWorld.UpdateCollisions();
 
         PhysicsRaycastResult result = editorScene.physicsWorld.RaycastSingle(cameraRay, camera.farClip);
 
@@ -1399,7 +1585,7 @@ Vector3 GetScreenCollision(IntVector2 pos)
             physicsFound = true;
             result.position;
         }
-    }*/
+    }
 
     if (editorScene.octree is null)
         return res;
@@ -1417,5 +1603,63 @@ Vector3 GetScreenCollision(IntVector2 pos)
     }
 
     return res;
+}
+
+
+void HandleBeginViewUpdate(StringHash eventType, VariantMap& eventData)
+{
+    // Hide gizmo and grid from preview camera
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        if (gizmo !is null)
+            gizmo.viewMask = 0;
+        if (grid !is null)
+            grid.viewMask = 0;
+    }
+}
+
+void HandleEndViewUpdate(StringHash eventType, VariantMap& eventData)
+{
+    // Restore gizmo and grid after preview view update
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        if (gizmo !is null)
+            gizmo.viewMask = 0x80000000;
+        if (grid !is null)
+            grid.viewMask = 0x80000000;
+    }
+}
+
+bool debugWasEnabled = true;
+
+void HandleBeginViewRender(StringHash eventType, VariantMap& eventData)
+{
+    // Hide debug geometry from preview camera
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        DebugRenderer@ debug = editorScene.GetComponent("DebugRenderer");
+        if (debug !is null)
+        {
+            suppressSceneChanges = true; // Do not want UI update now
+            debugWasEnabled = debug.enabled;
+            debug.enabled = false;
+            suppressSceneChanges = false;
+        }
+    }
+}
+
+void HandleEndViewRender(StringHash eventType, VariantMap& eventData)
+{
+    // Restore debug geometry after preview camera render
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        DebugRenderer@ debug = editorScene.GetComponent("DebugRenderer");
+        if (debug !is null)
+        {
+            suppressSceneChanges = true; // Do not want UI update now
+            debug.enabled = debugWasEnabled;
+            suppressSceneChanges = false;
+        }
+    }
 }
 
