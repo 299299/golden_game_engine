@@ -48,4 +48,4 @@ configure*
 *.log
 *.bak
 
-.mayaSwatches
+.mayaSwatches/
