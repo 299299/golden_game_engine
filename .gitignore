@@ -31,15 +31,6 @@ Docs/minimal-*
 Source/.*project
 Source/.settings
 
-# Android in-the-source project settings
-Source/Android/project.properties
-Source/Android/local.properties
-Source/Android/proguard-project.txt
-
-# Android in-the-source build and output directories
-Source/Android/Engine
-Source/Android/ThirdParty
-Source/Android/libs
 
 # Android in-the-source CMake build files
 CMakeCache.txt
@@ -56,3 +47,5 @@ configure*
 .DS_Store
 *.log
 *.bak
+
+.mayaSwatches/

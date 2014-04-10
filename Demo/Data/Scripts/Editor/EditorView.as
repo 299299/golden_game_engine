@@ -1,5 +1,6 @@
 // Urho3D editor view & camera functions
 
+WeakHandle previewCamera;
 Node@ cameraNode;
 Camera@ camera;
 
@@ -77,6 +78,20 @@ class ViewportContext
     bool enabled = false;
     uint index = 0;
     uint viewportId = 0;
+    UIElement@ viewportContextUI;
+    UIElement@ statusBar;
+    Text@ cameraPosText;
+
+    Window@ settingsWindow;
+    LineEdit@ cameraPosX;
+    LineEdit@ cameraPosY;
+    LineEdit@ cameraPosZ;
+    LineEdit@ cameraRotX;
+    LineEdit@ cameraRotY;
+    LineEdit@ cameraRotZ;
+    LineEdit@ cameraZoom;
+    LineEdit@ cameraOrthoSize;
+    CheckBox@ cameraOrthographic;
 
     ViewportContext(IntRect viewRect, uint index_, uint viewportId_)
     {
@@ -87,7 +102,7 @@ class ViewportContext
         viewport = Viewport(editorScene, camera, viewRect);
         index = index_;
         viewportId = viewportId_;
-        camera.viewMask = 0x80000000 + (1 << index); // It's easier to only have 1 gizmo active this viewport is shared with the gizmo
+        camera.viewMask = 0x80000000 + (uint(1) << index); // It's easier to only have 1 gizmo active this viewport is shared with the gizmo
     }
 
     void ResetCamera()
@@ -96,12 +111,203 @@ class ViewportContext
         // Look at the origin so user can see the scene.
         cameraNode.rotation = Quaternion(Vector3(0, 0, 1), -cameraNode.position);
         ReacquireCameraYawPitch();
+        UpdateSettingsUI();
     }
 
     void ReacquireCameraYawPitch()
     {
         cameraYaw = cameraNode.rotation.yaw;
         cameraPitch = cameraNode.rotation.pitch;
+    }
+
+    void CreateViewportContextUI()
+    {
+        Font@ font = cache.GetResource("Font", "Fonts/Anonymous Pro.ttf");
+
+        viewportContextUI = UIElement();
+        viewportUI.AddChild(viewportContextUI);
+        viewportContextUI.SetPosition(viewport.rect.left, viewport.rect.top);
+        viewportContextUI.SetFixedSize(viewport.rect.width, viewport.rect.height);
+        viewportContextUI.clipChildren = true;
+
+        statusBar = BorderImage("ToolBar");
+        statusBar.style = "EditorToolBar";
+        viewportContextUI.AddChild(statusBar);
+
+        statusBar.SetLayout(LM_HORIZONTAL);
+        statusBar.SetAlignment(HA_LEFT, VA_BOTTOM);
+        statusBar.layoutSpacing = 4;
+        statusBar.opacity = uiMaxOpacity;
+
+        Button@ settingsButton = CreateSmallToolBarButton("Settings");
+        statusBar.AddChild(settingsButton);
+
+        cameraPosText = Text();
+        statusBar.AddChild(cameraPosText);
+
+        cameraPosText.SetFont(font, 11);
+        cameraPosText.color = Color(1, 1, 0);
+        cameraPosText.textEffect = TE_SHADOW;
+        cameraPosText.priority = -100;
+
+        settingsWindow = ui.LoadLayout(cache.GetResource("XMLFile", "UI/EditorViewport.xml"));
+        settingsWindow.opacity = uiMaxOpacity;
+        settingsWindow.visible = false;
+        viewportContextUI.AddChild(settingsWindow);
+
+        cameraPosX = settingsWindow.GetChild("PositionX", true);
+        cameraPosY = settingsWindow.GetChild("PositionY", true);
+        cameraPosZ = settingsWindow.GetChild("PositionZ", true);
+        cameraRotX = settingsWindow.GetChild("RotationX", true);
+        cameraRotY = settingsWindow.GetChild("RotationY", true);
+        cameraRotZ = settingsWindow.GetChild("RotationZ", true);
+        cameraOrthographic = settingsWindow.GetChild("Orthographic", true);
+        cameraZoom = settingsWindow.GetChild("Zoom", true);
+        cameraOrthoSize = settingsWindow.GetChild("OrthoSize", true);
+
+        SubscribeToEvent(cameraPosX, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraPosY, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraPosZ, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraRotX, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraRotY, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraRotZ, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraZoom, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraOrthoSize, "TextChanged", "HandleSettingsLineEditTextChange");
+        SubscribeToEvent(cameraOrthographic, "Toggled", "HandleOrthographicToggled");
+
+        SubscribeToEvent(settingsButton, "Released", "ToggleViewportSettingsWindow");
+        SubscribeToEvent(settingsWindow.GetChild("ResetCamera", true), "Released", "ResetCamera");
+        SubscribeToEvent(settingsWindow.GetChild("CloseButton", true), "Released", "CloseViewportSettingsWindow");
+        SubscribeToEvent(settingsWindow.GetChild("Refresh", true), "Released", "UpdateSettingsUI");
+        HandleResize();
+    }
+
+    void HandleResize()
+    {
+        viewportContextUI.SetPosition(viewport.rect.left, viewport.rect.top);
+        viewportContextUI.SetFixedSize(viewport.rect.width, viewport.rect.height);
+        if (viewport.rect.left < 34)
+        {
+            statusBar.layoutBorder = IntRect(34 - viewport.rect.left, 4, 4, 8);
+            IntVector2 pos = settingsWindow.position;
+            pos.x = 32 - viewport.rect.left;
+            settingsWindow.position = pos;
+        }
+        else
+        {
+            statusBar.layoutBorder = IntRect(8, 4, 4, 8);
+            IntVector2 pos = settingsWindow.position;
+            pos.x = 5;
+            settingsWindow.position = pos;
+        }
+
+        statusBar.SetFixedSize(viewport.rect.width, 22);
+    }
+
+    void ToggleOrthographic()
+    {
+        SetOrthographic(!camera.orthographic);
+    }
+
+    void SetOrthographic(bool orthographic)
+    {
+        // This doesn't work that great
+        /* if (orthographic) */
+        /*     camera.orthoSize = (cameraNode.position - GetScreenCollision(IntVector2(viewport.rect.width, viewport.rect.height))).length; */
+
+        camera.orthographic = orthographic;
+        UpdateSettingsUI();
+    }
+
+    void Update(float timeStep)
+    {
+        Vector3 cameraPos = cameraNode.position;
+        String xText(cameraPos.x);
+        String yText(cameraPos.y);
+        String zText(cameraPos.z);
+        xText.Resize(8);
+        yText.Resize(8);
+        zText.Resize(8);
+
+        cameraPosText.text = String(
+            "Pos: " + xText + " " + yText + " " + zText +
+            " Zoom: " + camera.zoom);
+
+        cameraPosText.size = cameraPosText.minSize;
+    }
+
+    void ToggleViewportSettingsWindow()
+    {
+        if (settingsWindow.visible)
+            CloseViewportSettingsWindow();
+        else
+            OpenViewportSettingsWindow();
+    }
+
+    void OpenViewportSettingsWindow()
+    {
+        UpdateSettingsUI();
+        /* settingsWindow.position = */ 
+        settingsWindow.visible = true;
+    }
+
+    void CloseViewportSettingsWindow()
+    {
+        settingsWindow.visible = false;
+    }
+
+    void UpdateSettingsUI()
+    {
+        cameraPosX.text = Floor(cameraNode.position.x * 1000) / 1000;
+        cameraPosY.text = Floor(cameraNode.position.y * 1000) / 1000;
+        cameraPosZ.text = Floor(cameraNode.position.z * 1000) / 1000;
+        cameraRotX.text = Floor(cameraNode.rotation.pitch * 1000) / 1000;
+        cameraRotY.text = Floor(cameraNode.rotation.yaw * 1000) / 1000;
+        cameraRotZ.text = Floor(cameraNode.rotation.roll * 1000) / 1000;
+        cameraZoom.text = Floor(camera.zoom * 1000) / 1000;
+        cameraOrthoSize.text = Floor(camera.orthoSize * 1000) / 1000;
+        cameraOrthographic.checked = camera.orthographic;
+    }
+
+    void HandleOrthographicToggled(StringHash eventType, VariantMap& eventData)
+    {
+        SetOrthographic(cameraOrthographic.checked);
+    }
+
+    void HandleSettingsLineEditTextChange(StringHash eventType, VariantMap& eventData)
+    {
+        LineEdit@ element = eventData["Element"].GetPtr();
+        if (element.text == "")
+            return;
+
+        if (element is cameraRotX ||  element is cameraRotY || element is cameraRotZ)
+        {
+            Vector3 euler = cameraNode.rotation.eulerAngles;
+            if (element is cameraRotX)
+                euler.x = element.text.ToFloat();
+            else if (element is cameraRotY)
+                euler.y = element.text.ToFloat();
+            else if (element is cameraRotZ)
+                euler.z = element.text.ToFloat();
+
+            cameraNode.rotation = Quaternion(euler);
+        }
+        else if (element is cameraPosX ||  element is cameraPosY || element is cameraPosZ)
+        {
+            Vector3 pos = cameraNode.position;
+            if (element is cameraPosX)
+                pos.x = element.text.ToFloat();
+            else if (element is cameraPosY)
+                pos.y = element.text.ToFloat();
+            else if (element is cameraPosZ)
+                pos.z = element.text.ToFloat();
+
+            cameraNode.position = pos;
+        }
+        else if (element is cameraZoom)
+            camera.zoom = element.text.ToFloat();
+        else if (element is cameraOrthoSize)
+            camera.orthoSize = element.text.ToFloat();
     }
 }
 
@@ -110,7 +316,6 @@ ViewportContext@ activeViewport;
 
 Text@ editorModeText;
 Text@ renderStatsText;
-Text@ cameraPosText;
 
 EditMode editMode = EDIT_MOVE;
 AxisMode axisMode = AXIS_WORLD;
@@ -186,7 +391,7 @@ void CreateCamera()
 {
     // Set the initial viewport rect
     viewportArea = IntRect(0, 0, graphics.width, graphics.height);
-    
+
     SetViewportMode(viewportMode);
     SetActiveViewport(viewports[0]);
 
@@ -196,6 +401,10 @@ void CreateCamera()
     SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
     SubscribeToEvent("UIMouseClick", "ViewMouseClick");
     SubscribeToEvent("MouseMove", "ViewMouseMove");
+    SubscribeToEvent("BeginViewUpdate", "HandleBeginViewUpdate");
+    SubscribeToEvent("EndViewUpdate", "HandleEndViewUpdate");
+    SubscribeToEvent("BeginViewRender", "HandleBeginViewRender");
+    SubscribeToEvent("EndViewRender", "HandleEndViewRender");
 }
 
 // Create any UI associated with changing the editor viewports
@@ -206,12 +415,13 @@ void CreateViewportUI()
         viewportUI = UIElement();
         ui.root.AddChild(viewportUI);
     }
-        
+
     viewportUI.SetFixedSize(viewportArea.width, viewportArea.height);
     viewportUI.position = IntVector2(viewportArea.top, viewportArea.left);
     viewportUI.clipChildren = true;
     viewportUI.clipBorder = viewportUIClipBorder;
     viewportUI.RemoveAllChildren();
+    viewportUI.priority = -2000;
 
     Array<BorderImage@> borders;
 
@@ -227,6 +437,8 @@ void CreateViewportUI()
     for (uint i = 0; i < viewports.length; ++i)
     {
         ViewportContext@ vc = viewports[i];
+        vc.CreateViewportContextUI();
+
         if (vc.viewportId & VIEWPORT_TOP > 0)
             top = vc.viewport.rect;
         else if (vc.viewportId & VIEWPORT_BOTTOM > 0)
@@ -403,23 +615,73 @@ void SetViewportMode(uint mode = VIEWPORT_SINGLE)
             viewports[i].cameraNode.rotation = cameraRotations[src];
         }
     }
-    
+
     ReacquireCameraYawPitch();
     UpdateViewParameters();
+    UpdateCameraPreview();
     CreateViewportUI();
+}
+
+// Create a preview viewport if a camera component is selected
+void UpdateCameraPreview()
+{
+    previewCamera = null;
+    ShortStringHash cameraType("Camera");
+
+    for (uint i = 0; i < selectedComponents.length; ++i)
+    {
+        if (selectedComponents[i].type == cameraType)
+        {
+            // Take the first encountered camera
+            previewCamera = selectedComponents[i];
+            break;
+        }
+    }
+    // Also try nodes if not found from components
+    if (previewCamera.Get() is null)
+    {
+        for (uint i = 0; i < selectedNodes.length; ++i)
+        {
+            previewCamera = selectedNodes[i].GetComponent("Camera");
+            if (previewCamera.Get() !is null)
+                break;
+        }
+    }
+
+    // Remove extra viewport if it exists and no camera is selected
+    if (previewCamera.Get() is null)
+    {
+        if (renderer.numViewports > viewports.length)
+            renderer.numViewports = viewports.length;
+    }
+    else
+    {
+        if (renderer.numViewports < viewports.length + 1)
+            renderer.numViewports = viewports.length + 1;
+
+        int previewWidth = graphics.width / 4;
+        int previewHeight = previewWidth * 9 / 16;
+        int previewX = graphics.width - 10 - previewWidth;
+        int previewY = graphics.height - 30 - previewHeight;
+
+        Viewport@ previewView = Viewport();
+        previewView.scene = editorScene;
+        previewView.camera = previewCamera.Get();
+        previewView.rect = IntRect(previewX, previewY, previewX + previewWidth, previewY + previewHeight);
+        renderer.viewports[viewports.length] = previewView;
+    }
 }
 
 void HandleViewportBorderDragMove(StringHash eventType, VariantMap& eventData)
 {
-
-    UIElement@ dragBorder = eventData["Element"].GetUIElement();
+    UIElement@ dragBorder = eventData["Element"].GetPtr();
     if (dragBorder is null)
         return;
 
     uint hPos;
     uint vPos;
 
-    // moves border to new cursor position, restricts motion to 1 axis, and keeps borders within view area
+    // Moves border to new cursor position, restricts motion to 1 axis, and keeps borders within view area
     if (resizingBorder & VIEWPORT_BORDER_V_ANY > 0)
     {
         hPos = Clamp(ui.cursorPosition.x, 150, viewportArea.width-150);
@@ -433,7 +695,7 @@ void HandleViewportBorderDragMove(StringHash eventType, VariantMap& eventData)
         dragBorder.position = IntVector2(hPos, vPos);
     }
 
-    // move all dependent borders
+    // Move all dependent borders
     Array<UIElement@> borders = viewportUI.GetChildren();
     for (uint i = 0; i < borders.length; ++i)
     {
@@ -472,7 +734,6 @@ void HandleViewportBorderDragMove(StringHash eventType, VariantMap& eventData)
 void HandleViewportBorderDragEnd(StringHash eventType, VariantMap& eventData)
 {
     // Sets the new viewports by checking all the dependencies
-
     Array<UIElement@> children = viewportUI.GetChildren();
     Array<BorderImage@> borders;
 
@@ -620,6 +881,7 @@ void HandleViewportBorderDragEnd(StringHash eventType, VariantMap& eventData)
             vc.viewport.rect = bottomLeft;
         else if (vc.viewportId & VIEWPORT_BOTTOM_RIGHT > 0)
             vc.viewport.rect = bottomRight;
+        vc.HandleResize();
     }
 
     // End drag state
@@ -770,8 +1032,6 @@ void CreateStatsBar()
     ui.root.AddChild(editorModeText);
     renderStatsText = Text();
     ui.root.AddChild(renderStatsText);
-    cameraPosText = Text();
-    ui.root.AddChild(cameraPosText);
 
     if (ui.root.width >= 1200)
     {
@@ -783,8 +1043,6 @@ void CreateStatsBar()
         SetupStatsBarText(editorModeText, font, 35, 64, HA_LEFT, VA_TOP);
         SetupStatsBarText(renderStatsText, font, 35, 78, HA_LEFT, VA_TOP);
     }
-
-    SetupStatsBarText(cameraPosText, font, 35, -2, HA_LEFT, VA_BOTTOM);
 }
 
 void SetupStatsBarText(Text@ text, Font@ font, int x, int y, HorizontalAlignment hAlign, VerticalAlignment vAlign)
@@ -814,20 +1072,17 @@ void UpdateStats(float timeStep)
         "  Shadowmaps: " + renderer.numShadowMaps[true] +
         "  Occluders: " + renderer.numOccluders[true]);
 
-    Vector3 cameraPos = cameraNode.position;
-    String xText(cameraPos.x);
-    String yText(cameraPos.y);
-    String zText(cameraPos.z);
-    xText.Resize(8);
-    yText.Resize(8);
-    zText.Resize(8);
-
-    cameraPosText.text = String(
-        "Pos: " + xText + " " + yText + " " + zText);
-
     editorModeText.size = editorModeText.minSize;
     renderStatsText.size = renderStatsText.minSize;
-    cameraPosText.size = cameraPosText.minSize;
+}
+
+void UpdateViewports(float timeStep)
+{
+    for(uint i = 0; i < viewports.length; i++)
+    {
+        ViewportContext@ viewportContext = viewports[i];
+        viewportContext.Update(timeStep);
+    }
 }
 
 void UpdateView(float timeStep)
@@ -880,7 +1135,10 @@ void UpdateView(float timeStep)
             FadeUI();
         }
         if (input.mouseMoveWheel != 0 && ui.GetElementAt(ui.cursor.position) is null)
-            cameraNode.TranslateRelative(Vector3(0, 0, -cameraBaseSpeed) * -input.mouseMoveWheel*20 * timeStep * speedMultiplier);
+        {
+            float zoom = camera.zoom + -input.mouseMoveWheel *.1 * speedMultiplier;
+            camera.zoom = Clamp(zoom, .1, 30);
+        }
     }
 
     // Rotate/orbit camera
@@ -904,7 +1162,7 @@ void UpdateView(float timeStep)
                 cameraNode.worldPosition = centerPoint - q * Vector3(0.0, 0.0, d.length);
                 orbiting = true;
             }
-            
+
             FadeUI();
         }
     }
@@ -1152,7 +1410,7 @@ void ViewRaycast(bool mouseClick)
         float(pos.y - view.top) / view.height);
     Component@ selectedComponent;
 
-    if (pickMode != PICK_RIGIDBODIES)
+    if (pickMode < PICK_RIGIDBODIES)
     {
         if (editorScene.octree is null)
             return;
@@ -1305,5 +1563,103 @@ Vector3 SelectedNodesCenterPoint()
         return centerPoint / count;
     else
         return centerPoint;
+}
+
+Vector3 GetScreenCollision(IntVector2 pos)
+{
+    Ray cameraRay = camera.GetScreenRay(float(pos.x) / activeViewport.viewport.rect.width, float(pos.y) / activeViewport.viewport.rect.height);
+    Vector3 res = cameraNode.position + cameraRay.direction * Vector3(0, 0, newNodeDistance);
+
+    bool physicsFound = false;
+    //@TODO
+    //Make it use havok physics.
+    if (editorScene.physicsWorld !is null)
+    {
+        //if (!runUpdate)
+            //editorScene.physicsWorld.UpdateCollisions();
+
+        PhysicsRaycastResult result = editorScene.physicsWorld.RaycastSingle(cameraRay, camera.farClip);
+
+        if (result.body !is null)
+        {
+            physicsFound = true;
+            result.position;
+        }
+    }
+
+    if (editorScene.octree is null)
+        return res;
+
+    RayQueryResult result = editorScene.octree.RaycastSingle(cameraRay, RAY_TRIANGLE, camera.farClip,
+        DRAWABLE_GEOMETRY, 0x7fffffff);
+
+    if (result.drawable !is null)
+    {
+        // take the closer of the results
+        if (physicsFound && (cameraNode.position - res).length < (cameraNode.position - result.position).length)
+            return res;
+        else
+            return result.position;
+    }
+
+    return res;
+}
+
+
+void HandleBeginViewUpdate(StringHash eventType, VariantMap& eventData)
+{
+    // Hide gizmo and grid from preview camera
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        if (gizmo !is null)
+            gizmo.viewMask = 0;
+        if (grid !is null)
+            grid.viewMask = 0;
+    }
+}
+
+void HandleEndViewUpdate(StringHash eventType, VariantMap& eventData)
+{
+    // Restore gizmo and grid after preview view update
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        if (gizmo !is null)
+            gizmo.viewMask = 0x80000000;
+        if (grid !is null)
+            grid.viewMask = 0x80000000;
+    }
+}
+
+bool debugWasEnabled = true;
+
+void HandleBeginViewRender(StringHash eventType, VariantMap& eventData)
+{
+    // Hide debug geometry from preview camera
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        DebugRenderer@ debug = editorScene.GetComponent("DebugRenderer");
+        if (debug !is null)
+        {
+            suppressSceneChanges = true; // Do not want UI update now
+            debugWasEnabled = debug.enabled;
+            debug.enabled = false;
+            suppressSceneChanges = false;
+        }
+    }
+}
+
+void HandleEndViewRender(StringHash eventType, VariantMap& eventData)
+{
+    // Restore debug geometry after preview camera render
+    if (eventData["Camera"].GetPtr() is previewCamera.Get())
+    {
+        DebugRenderer@ debug = editorScene.GetComponent("DebugRenderer");
+        if (debug !is null)
+        {
+            suppressSceneChanges = true; // Do not want UI update now
+            debug.enabled = debugWasEnabled;
+            suppressSceneChanges = false;
+        }
+    }
 }
 

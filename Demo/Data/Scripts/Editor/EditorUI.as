@@ -155,7 +155,7 @@ MENU_CALLBACK@ messageBoxCallback;
 
 void HandleQuickSearchChange(StringHash eventType, VariantMap& eventData)
 {
-    LineEdit@ search = eventData["Element"].GetUIElement();
+    LineEdit@ search = eventData["Element"].GetPtr();
     if (search is null)
         return;
 
@@ -180,7 +180,7 @@ void PerformQuickMenuSearch(const String&in query)
         Array<QuickMenuItem@> filtered;
         {
             QuickMenuItem@ qi;
-            for(uint x=0; x < quickMenuItems.length; x++)
+            for (uint x=0; x < quickMenuItems.length; x++)
             {
                 @qi = quickMenuItems[x];
                 int find = qi.action.Find(query, 0, false);
@@ -192,28 +192,12 @@ void PerformQuickMenuSearch(const String&in query)
             }
         }
 
-        {
-            QuickMenuItem@ a;
-            QuickMenuItem@ b;
-            for(uint x=0; x < filtered.length; x++)
-            {
-                for(uint y=0; y < filtered.length-1; y++)
-                {
-                    @a = filtered[y];
-                    @b = filtered[y+1];
-                    if(a.sortScore > b.sortScore)
-                    {
-                        @filtered[y+1] = a;
-                        @filtered[y] = b;
-                    }
-                }
-            }
-        }
+        filtered.Sort();
 
         {
             QuickMenuItem@ qi;
             limit = filtered.length > MAX_QUICK_MENU_ITEMS ? MAX_QUICK_MENU_ITEMS : filtered.length;
-            for(uint x=0; x < limit; x++)
+            for (uint x=0; x < limit; x++)
             {
                 @qi = filtered[x];
                 Menu@ item = CreateMenuItem(qi.action, qi.callback);
@@ -239,6 +223,10 @@ class QuickMenuItem
     {
         this.action = action;
         this.callback = callback;
+    }
+    int opCmp(QuickMenuItem@ b)
+    {
+        return sortScore - b.sortScore;
     }
 }
 
@@ -692,7 +680,7 @@ String GetActionName(const String&in name)
 
 void HandleMenuSelected(StringHash eventType, VariantMap& eventData)
 {
-    Menu@ menu = eventData["Element"].GetUIElement();
+    Menu@ menu = eventData["Element"].GetPtr();
     if (menu is null)
         return;
 
@@ -977,7 +965,7 @@ void HandlePopup(Menu@ menu)
         if (menuParent is null)
             break;
 
-        Menu@ nextMenu = menuParent.vars["Origin"].GetUIElement();
+        Menu@ nextMenu = menuParent.vars["Origin"].GetPtr();
         if (nextMenu is null)
             break;
         else
@@ -1187,6 +1175,11 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
         cameraNode.position = pos;
         cameraNode.direction = Vector3(0, -viewDirection, 0);
         ReacquireCameraYawPitch();
+    }
+
+    else if (key == KEY_NUMPAD5 && ui.focusElement is null)
+    {
+        activeViewport.ToggleOrthographic();
     }
 
     else if (eventData["Qualifiers"].GetInt() == QUAL_CTRL)
@@ -1421,4 +1414,11 @@ bool LoadMostRecentScene()
         return false;
 
     return LoadScene(text.text);
+}
+
+void HandleErrorEvent(StringHash eventType, VariantMap& eventData)
+{
+    // Open console if it not yet open
+    if (!console.visible)
+        console.visible = true;
 }

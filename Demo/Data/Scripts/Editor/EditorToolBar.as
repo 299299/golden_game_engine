@@ -20,6 +20,7 @@ void CreateToolBar()
     UIElement@ runUpdateGroup = CreateGroup("RunUpdateGroup", LM_HORIZONTAL);
     runUpdateGroup.AddChild(CreateToolBarToggle("RunUpdatePlay"));
     runUpdateGroup.AddChild(CreateToolBarToggle("RunUpdatePause"));
+    runUpdateGroup.AddChild(CreateToolBarToggle("RevertOnPause"));
     FinalizeGroupHorizontal(runUpdateGroup, "ToolBarToggle");
     toolBar.AddChild(runUpdateGroup);
 
@@ -174,7 +175,7 @@ UIElement@ CreateToolTip(UIElement@ parent, const String&in title, const IntVect
 
 void ToolBarRunUpdatePlay(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         StartSceneUpdate();
     toolBarDirty = true;
@@ -182,15 +183,22 @@ void ToolBarRunUpdatePlay(StringHash eventType, VariantMap& eventData)
 
 void ToolBarRunUpdatePause(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         StopSceneUpdate();
     toolBarDirty = true;
 }
 
+void ToolBarRevertOnPause(StringHash eventType, VariantMap& eventData)
+{
+    CheckBox@ edit = eventData["Element"].GetPtr();
+    revertOnPause = edit.checked;
+    toolBarDirty = true;
+}
+
 void ToolBarEditModeMove(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         editMode = EDIT_MOVE;
     toolBarDirty = true;
@@ -198,7 +206,7 @@ void ToolBarEditModeMove(StringHash eventType, VariantMap& eventData)
 
 void ToolBarEditModeRotate(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         editMode = EDIT_ROTATE;
     toolBarDirty = true;
@@ -206,7 +214,7 @@ void ToolBarEditModeRotate(StringHash eventType, VariantMap& eventData)
 
 void ToolBarEditModeScale(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         editMode = EDIT_SCALE;
     toolBarDirty = true;
@@ -214,7 +222,7 @@ void ToolBarEditModeScale(StringHash eventType, VariantMap& eventData)
 
 void ToolBarEditModeSelect(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         editMode = EDIT_SELECT;
     toolBarDirty = true;
@@ -222,7 +230,7 @@ void ToolBarEditModeSelect(StringHash eventType, VariantMap& eventData)
 
 void ToolBarAxisModeWorld(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         axisMode = AXIS_WORLD;
     toolBarDirty = true;
@@ -230,7 +238,7 @@ void ToolBarAxisModeWorld(StringHash eventType, VariantMap& eventData)
 
 void ToolBarAxisModeLocal(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         axisMode = AXIS_LOCAL;
     toolBarDirty = true;
@@ -238,28 +246,28 @@ void ToolBarAxisModeLocal(StringHash eventType, VariantMap& eventData)
 
 void ToolBarMoveSnap(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     moveSnap = edit.checked;
     toolBarDirty = true;
 }
 
 void ToolBarRotateSnap(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     rotateSnap = edit.checked;
     toolBarDirty = true;
 }
 
 void ToolBarScaleSnap(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     scaleSnap = edit.checked;
     toolBarDirty = true;
 }
 
 void ToolBarSnapScaleModeHalf(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
     {
         snapScaleMode = SNAP_SCALE_HALF;
@@ -275,7 +283,7 @@ void ToolBarSnapScaleModeHalf(StringHash eventType, VariantMap& eventData)
 
 void ToolBarSnapScaleModeQuarter(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
     {
         snapScaleMode = SNAP_SCALE_QUARTER;
@@ -291,7 +299,7 @@ void ToolBarSnapScaleModeQuarter(StringHash eventType, VariantMap& eventData)
 
 void ToolBarPickModeGeometries(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         pickMode = PICK_GEOMETRIES;
     toolBarDirty = true;
@@ -299,7 +307,7 @@ void ToolBarPickModeGeometries(StringHash eventType, VariantMap& eventData)
 
 void ToolBarPickModeLights(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         pickMode = PICK_LIGHTS;
     toolBarDirty = true;
@@ -307,7 +315,7 @@ void ToolBarPickModeLights(StringHash eventType, VariantMap& eventData)
 
 void ToolBarPickModeZones(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         pickMode = PICK_ZONES;
     toolBarDirty = true;
@@ -315,7 +323,7 @@ void ToolBarPickModeZones(StringHash eventType, VariantMap& eventData)
 
 void ToolBarPickModeRigidBodies(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         pickMode = PICK_RIGIDBODIES;
     toolBarDirty = true;
@@ -323,7 +331,7 @@ void ToolBarPickModeRigidBodies(StringHash eventType, VariantMap& eventData)
 
 void ToolBarPickModeUIElements(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
         pickMode = PICK_UI_ELEMENTS;
     toolBarDirty = true;
@@ -331,7 +339,7 @@ void ToolBarPickModeUIElements(StringHash eventType, VariantMap& eventData)
 
 void ToolBarFillModePoint(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
     {
         fillMode = FILL_POINT;
@@ -342,7 +350,7 @@ void ToolBarFillModePoint(StringHash eventType, VariantMap& eventData)
 
 void ToolBarFillModeWireFrame(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
     {
         fillMode = FILL_WIREFRAME;
@@ -353,7 +361,7 @@ void ToolBarFillModeWireFrame(StringHash eventType, VariantMap& eventData)
 
 void ToolBarFillModeSolid(StringHash eventType, VariantMap& eventData)
 {
-    CheckBox@ edit = eventData["Element"].GetUIElement();
+    CheckBox@ edit = eventData["Element"].GetPtr();
     if (edit.checked)
     {
         fillMode = FILL_SOLID;
@@ -364,7 +372,7 @@ void ToolBarFillModeSolid(StringHash eventType, VariantMap& eventData)
 
 void ToolBarSetViewportMode(StringHash eventType, VariantMap& eventData)
 {
-    DropDownList@ dropDown = eventData["Element"].GetUIElement();
+    DropDownList@ dropDown = eventData["Element"].GetPtr();
     UIElement@ selected = dropDown.selectedItem;
     dropDown.focus = false;     // Lose the focus so the RMB dragging, immediately followed after changing viewport setup, behaves as expected
     uint mode = selected.vars[VIEW_MODE].GetUInt();
@@ -383,6 +391,10 @@ void UpdateDirtyToolBar()
     CheckBox@ runUpdatePauseToggle = toolBar.GetChild("RunUpdatePause", true);
     if (runUpdatePauseToggle.checked != (runUpdate == false))
         runUpdatePauseToggle.checked = runUpdate == false;
+
+    CheckBox@ revertOnPauseToggle = toolBar.GetChild("RevertOnPause", true);
+    if (revertOnPauseToggle.checked != revertOnPause)
+        revertOnPauseToggle.checked = revertOnPause;
 
     CheckBox@ editMoveToggle = toolBar.GetChild("EditMove", true);
     if (editMoveToggle.checked != (editMode == EDIT_MOVE))
@@ -464,6 +476,7 @@ void UpdateDirtyToolBar()
     {
         SubscribeToEvent(runUpdatePlayToggle, "Toggled", "ToolBarRunUpdatePlay");
         SubscribeToEvent(runUpdatePauseToggle, "Toggled", "ToolBarRunUpdatePause");
+        SubscribeToEvent(revertOnPauseToggle, "Toggled", "ToolBarRevertOnPause");
         SubscribeToEvent(editMoveToggle, "Toggled", "ToolBarEditModeMove");
         SubscribeToEvent(editRotateToggle, "Toggled", "ToolBarEditModeRotate");
         SubscribeToEvent(editScaleToggle, "Toggled", "ToolBarEditModeScale");

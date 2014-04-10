@@ -1,6 +1,6 @@
 #include "Scripts/Utilities/Sample.as"
-#include "Scripts/Input.as"
-#include "Scripts/AnimationDebug.as"
+#include "Scripts/Utilities/Input.as"
+#include "Scripts/Utilities/AnimationDebug.as"
 
 String sceneToLoad = "Data/Scenes/testScene.xml";
 Scene@ scene_;
@@ -11,7 +11,6 @@ int drawDebugMode = 0;
 bool dumpAnimation = true;
 
 AnimatorController@ animController;
-HavokAnimator@      animator;
 
 float cam_radius = 20.0f;
 float dumpTime = 0;
@@ -82,10 +81,11 @@ void CreateScene()
     cameraNode.LookAt(characterNode.position);
 
     animController = characterNode.GetComponent("AnimatorController");
-    animator = characterNode.GetComponent("HavokAnimator");
+    LocomotionController@ lc = characterNode.GetComponent("LocomotionController");
+    if(lc !is null)
+        lc.SetRotationOnly(true);
 
-    CharacterController@ cc = characterNode.GetComponent("CharacterController");
-    cc.SetRotationOnly(true);
+    SetActiveScene(scene_);
 
     UpdateFSMWindow();
 }
@@ -198,7 +198,7 @@ void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
     else if(drawDebugMode == 1)
         renderer.DrawDebugGeometry(false);
     else if(drawDebugMode == 2)
-        scene_.havokPhysicsWorld.DrawDebugGeometry(false);
+        scene_.physicsWorld.DrawDebugGeometry(debug, false);
 }
 
 void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
@@ -241,7 +241,7 @@ void CustomHandleKeyDown(StringHash eventType, VariantMap& eventData)
     }
     else if(key == 'F')
     {
-        CharacterController@ cc = characterNode.GetComponent("CharacterController");
+        LocomotionController@ cc = characterNode.GetComponent("LocomotionController");
         cc.SetRotationOnly(!cc.IsRotationOnly());
     }
     else if(key == KEY_SPACE)

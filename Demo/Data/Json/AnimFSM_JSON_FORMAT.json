@@ -1,0 +1,80 @@
+{
+	"AnimationPath":"animations/",
+	"Animations":
+	[
+		{
+			"Animation":"sample.hkx",
+			"MinimalFrame":15,
+			"MinimalTime":0.5,
+			"Looped":false, 
+			"Speed":2.0,
+			"Mirrored":false,
+			"CropStartTime":0,
+			"CropEndTime":0
+		},
+	],
+
+	"Layers":
+	{
+		"The First Base Layer" :
+		[
+			{
+				"Type":"Simple",
+				"Name":"Test Simple State",
+				"Animations": [0],
+				"Transitions":
+				[
+					{
+						"Name":"sample Transition",
+						"Dest State Name":"Sample State",
+						"Sync Point":"Left Foot",
+						"Mirrored Sync Point":"Right Foot",
+						"Duration":0.25,
+						"Motion Blend Type":"default|ignore source|ignore dest|ignore source rotation|ignore dest rotation",
+						"Blend Curve":"smooth|fast|linear",
+						"CrossFade Type":"smooth|frozen"
+					}
+				]
+			},
+
+			{
+				"Type":"Complex",
+				"Name":"Test BlendTree State",
+				"Animations": [22, 23],
+				"BlendTree":
+				{
+					"Root Node":
+					{
+						"Name": "Root",
+						"Node Type":"Binary Blend",
+						"Additive Base":0,
+						"Parameters":
+						[
+							"Sample Value"
+						],
+						"Blend Points":
+						[
+							[0,0],
+							[10,10]
+						],
+
+						"Child Nodes":
+						[
+							{
+								"Node Type":"Animation Source",
+								"Animation Slot": 0
+							},
+							{
+								"Node Type":"Animation Source",
+								"Animation Slot": 1
+							}
+						]
+					}
+				}
+			}
+
+		],
+
+		"$Second layer name" :[]
+	}
+}

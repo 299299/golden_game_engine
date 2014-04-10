@@ -34,6 +34,9 @@ bool skipMruScene = false;
 Array<EditActionGroup> undoStack;
 uint undoStackPos = 0;
 
+bool revertOnPause = false;
+XMLFile@ revertData;
+
 void ClearSceneSelection()
 {
     selectedNodes.Clear();
@@ -56,6 +59,8 @@ void CreateScene()
 
     // Always pause the scene, and do updates manually
     editorScene.updateEnabled = false;
+
+    SetActiveScene(editorScene);
 }
 
 bool ResetScene()
@@ -65,12 +70,15 @@ bool ResetScene()
     if (messageBoxCallback is null && sceneModified)
     {
         MessageBox@ messageBox = MessageBox("Scene has been modified.\nContinue to reset?", "Warning");
-        Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
-        cancelButton.visible = true;
-        cancelButton.focus = true;
-        SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
-        messageBoxCallback = @ResetScene;
-        return false;
+        if (messageBox.window !is null)
+        {
+            Button@ cancelButton = messageBox.window.GetChild("CancelButton", true);
+            cancelButton.visible = true;
+            cancelButton.focus = true;
+            SubscribeToEvent(messageBox, "MessageACK", "HandleMessageAcknowledgement");
+            messageBoxCallback = @ResetScene;
+            return false;
+        }
     }
     else
         messageBoxCallback = null;
@@ -87,6 +95,7 @@ bool ResetScene()
     cache.ReleaseAllResources(false);
 
     sceneModified = false;
+    revertData = null;
     StopSceneUpdate();
 
     UpdateWindowTitle();
@@ -180,6 +189,7 @@ bool LoadScene(const String&in fileName)
 
     suppressSceneChanges = true;
     sceneModified = false;
+    revertData = null;
     StopSceneUpdate();
 
     String extension = GetExtension(fileName);
@@ -389,6 +399,19 @@ void StopSceneUpdate()
     runUpdate = false;
     audio.Stop();
     toolBarDirty = true;
+    
+    // If scene should revert on update stop, load saved data now
+    if (revertOnPause && revertData !is null)
+    {
+        suppressSceneChanges = true;
+        editorScene.Clear();
+        editorScene.LoadXML(revertData.GetRoot());
+        UpdateHierarchyItem(editorScene, true);
+        ClearEditActions();
+        suppressSceneChanges = false;
+    }
+    
+    revertData = null;
 }
 
 void StartSceneUpdate()
@@ -398,6 +421,16 @@ void StartSceneUpdate()
     // paused (similar to physics)
     audio.Play();
     toolBarDirty = true;
+    
+    // Save scene data for reverting if enabled
+    if (revertOnPause)
+    {
+        revertData = XMLFile();
+        XMLElement root = revertData.CreateRoot("scene");
+        editorScene.SaveXML(root);
+    }
+    else
+        revertData = null;
 }
 
 bool ToggleSceneUpdate()

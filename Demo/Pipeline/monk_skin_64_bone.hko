@@ -31,8 +31,8 @@
 	<hkobject name="Create Skeletons" class="hctCreateSkeletonOptions">
 		<hkparam name="moveToOrigin">true</hkparam>
 		<hkparam name="automatic">false</hkparam>
-		<hkparam name="rigNodes">Character1_HipsTranslation;Character1_Hips;Character1_LeftUpLeg;Character1_LeftLeg;Character1_LeftFoot;Character1_LeftToeBase;Character1_RightUpLeg;Character1_RightLeg;Character1_RightFoot;Character1_RightToeBase;Character1_Spine;Character1_Spine1;Character1_Spine2;Character1_Spine3;Character1_LeftShoulder;Character1_LeftArm;Character1_LeftForeArm;Character1_LeftHand;Character1_LeftHandIndex1;Character1_LeftHandIndex2;Character1_LeftHandIndex3;Character1_LeftHandIndex4;Character1_LeftHandMiddle1;Character1_LeftHandMiddle2;Character1_LeftHandMiddle3;Character1_LeftHandMiddle4;Character1_LeftHandPinky1;Character1_LeftHandPinky2;Character1_LeftHandPinky3;Character1_LeftHandPinky4;Character1_LeftHandRing1;Character1_LeftHandRing2;Character1_LeftHandRing3;Character1_LeftHandRing4;Character1_LeftHandThumb1;Character1_LeftHandThumb2;Character1_LeftHandThumb3;Character1_LeftHandThumb4;Character1_Neck;Character1_Head;Character1_RightShoulder;Character1_RightArm;Character1_RightForeArm;Character1_RightHand;Character1_RightHandIndex1;Character1_RightHandIndex2;Character1_RightHandIndex3;Character1_RightHandIndex4;Character1_RightHandMiddle1;Character1_RightHandMiddle2;Character1_RightHandMiddle3;Character1_RightHandMiddle4;Character1_RightHandPinky1;Character1_RightHandPinky2;Character1_RightHandPinky3;Character1_RightHandPinky4;Character1_RightHandRing1;Character1_RightHandRing2;Character1_RightHandRing3;Character1_RightHandRing4;Character1_RightHandThumb1;Character1_RightHandThumb2;Character1_RightHandThumb3;Character1_RightHandThumb4;</hkparam>
-		<hkparam name="rigFile">&#9216;</hkparam>
+		<hkparam name="rigNodes"></hkparam>
+		<hkparam name="rigFile">output_rig.txt</hkparam>
 		<hkparam name="selected">false</hkparam>
 		<hkparam name="skinBindings">false</hkparam>
 		<hkparam name="floatSlots"></hkparam>
@@ -51,7 +51,7 @@
 	</hkobject>
 	<hkobject name="Create Skins" class="hctCreateSkinOptions">
 		<hkparam name="simplifyBindings">true</hkparam>
-		<hkparam name="moveMeshesToSkeletonSpace">false</hkparam>
+		<hkparam name="moveMeshesToSkeletonSpace">true</hkparam>
 		<hkparam name="boneLimit">64</hkparam>
 		<hkparam name="ignoreBonesInSkin">true</hkparam>
 	</hkobject>
@@ -63,11 +63,11 @@
 	<hkobject name="Prune Types" class="hctPruneTypesOptions">
 		<hkparam name="pruneSceneData">true</hkparam>
 		<hkparam name="pruneMeshData">false</hkparam>
-		<hkparam name="pruneSkeletonData">true</hkparam>
+		<hkparam name="pruneSkeletonData">false</hkparam>
 		<hkparam name="pruneAnimationData">true</hkparam>
 		<hkparam name="customClasses"></hkparam>
 		<hkparam name="pruneAllSceneData">false</hkparam>
-		<hkparam name="pruneEnvironmentData">true</hkparam>
+		<hkparam name="pruneEnvironmentData">false</hkparam>
 		<hkparam name="pruneResourceData">true</hkparam>
 		<hkparam name="pruneDestructionData">false</hkparam>
 		<hkparam name="pruneAnimationTracks">false</hkparam>
@@ -76,7 +76,7 @@
 		<hkparam name="pruneQuantizedBindings">false</hkparam>
 		<hkparam name="pruneAttributes">false</hkparam>
 		<hkparam name="pruneMeshUserChannels">false</hkparam>
-		<hkparam name="pruneAttachments">true</hkparam>
+		<hkparam name="pruneAttachments">false</hkparam>
 		<hkparam name="pruneSelectionSets">false</hkparam>
 		<hkparam name="selectionSets"></hkparam>
 		<hkparam name="selectionDeletionMode">HK_SELECTION_DELETE_SELECTED</hkparam>
@@ -90,7 +90,7 @@
 		<hkparam name="hasOptions">true</hkparam>
 	</hkobject>
 	<hkobject name="Write to Platform" class="hctPlatformWriterOptions">
-		<hkparam name="filename">c:\temp.hkx</hkparam>
+		<hkparam name="filename">$(HK_OUTPUT)</hkparam>
 		<hkparam name="tagfile">false</hkparam>
 		<hkparam name="preset">MSVC_WIN32</hkparam>
 		<hkparam name="bytesInPointer">4</hkparam>
@@ -99,7 +99,7 @@
 		<hkparam name="emptyBaseClassOptimized">1</hkparam>
 		<hkparam name="removeMetadata">false</hkparam>
 		<hkparam name="userTag">0</hkparam>
-		<hkparam name="saveEnvironmentData">false</hkparam>
+		<hkparam name="saveEnvironmentData">true</hkparam>
 		<hkparam name="xmlFormat">false</hkparam>
 	</hkobject>
 </hkoptions>

@@ -43,16 +43,22 @@ void Start()
     }
 
     SubscribeToEvent("Update", "HandleUpdate");
+    SubscribeToEvent(input, "ExitRequested", "HandleExitRequested");
 
+    String[] errorEvents = { "LoadFailed", "ResourceNotFound", "UnknownResourceType" };
+    for (uint i = 0; i < errorEvents.length; ++i)
+        SubscribeToEvent(cache, errorEvents[i], "HandleErrorEvent");
+
+    // Disable Editor auto exit, check first if it is OK to exit
+    engine.autoExit = false;
     // Enable console commands from the editor script
     script.defaultScriptFile = scriptFile;
     // Enable automatic resource reloading
     cache.autoReloadResources = true;
+    // Return resources which exist but failed to load due to error, so that we will not lose resource refs
+    cache.returnFailedResources = true;
     // Use OS mouse without grabbing it
     input.mouseVisible = true;
-    // Disable Editor auto exit, check first if it is OK to exit
-    engine.autoExit = false;
-    SubscribeToEvent(input, "ExitRequested", "HandleExitRequested");
 
     // Create root scene node
     CreateScene();
@@ -98,9 +104,9 @@ void HandleUpdate(StringHash eventType, VariantMap& eventData)
     float timeStep = eventData["TimeStep"].GetFloat();
 
     UpdateView(timeStep);
+    UpdateViewports(timeStep);
     UpdateStats(timeStep);
     UpdateScene(timeStep);
-    UpdateTestAnimation(timeStep);
     UpdateGizmo();
     UpdateDirtyUI();
 }
@@ -149,6 +155,8 @@ void LoadConfig()
         if (objectElem.HasAttribute("applymateriallist")) applyMaterialList = objectElem.GetBool("applymateriallist");
         if (objectElem.HasAttribute("importoptions")) importOptions = objectElem.GetAttribute("importoptions");
         if (objectElem.HasAttribute("pickmode")) pickMode = objectElem.GetInt("pickmode");
+        if (objectElem.HasAttribute("axismode")) axisMode = AxisMode(objectElem.GetInt("axismode"));
+        if (objectElem.HasAttribute("revertonpause")) revertOnPause = objectElem.GetBool("revertonpause");
     }
 
     if (!resourcesElem.isNull)
@@ -254,6 +262,8 @@ void SaveConfig()
     objectElem.SetBool("applymateriallist", applyMaterialList);
     objectElem.SetAttribute("importoptions", importOptions);
     objectElem.SetInt("pickmode", pickMode);
+    objectElem.SetInt("axismode", axisMode);
+    objectElem.SetBool("revertonpause", revertOnPause);
 
     resourcesElem.SetBool("rememberresourcepath", rememberResourcePath);
     resourcesElem.SetAttribute("resourcepath", sceneResourcePath);

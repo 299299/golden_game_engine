@@ -33,7 +33,7 @@ void SetLogoVisible(bool enable)
 void CreateLogo()
 {
     // Get logo texture
-    Texture2D@ logoTexture = cache.GetResource("Texture2D", "Textures/LogoLarge.jpg");
+    Texture2D@ logoTexture = cache.GetResource("Texture2D", "Textures/LogoLarge.png");
     if (logoTexture is null)
         return;
 
@@ -67,7 +67,7 @@ void CreateLogo()
 
 void SetWindowTitleAndIcon()
 {
-    Image@ icon = cache.GetResource("Image", "Textures/LogoLarge.png");
+    Image@ icon = cache.GetResource("Image", "Textures/UrhoIcon.png");
     graphics.windowIcon = icon;
     graphics.windowTitle = "Urho3D Sample";
 }
@@ -183,5 +183,17 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
             screenshot.SavePNG(fileSystem.programDir + "Data/Screenshot_" +
                 time.timeStamp.Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_') + ".png");
         }
+    }
+}
+
+
+void DebugDrawNode(Node@ node, DebugRenderer@ debug, bool bDepth, float nodeScale)
+{
+    if(nodeScale > 0.0f)
+        debug.AddNode(node, nodeScale, bDepth);
+    for(uint i=0; i<node.numComponents; ++i)
+    {
+        Component@ component = node.components[i];
+        component.DrawDebugGeometry(debug, bDepth);
     }
 }
