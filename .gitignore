@@ -13,33 +13,6 @@ Bin/*.app.dSYM/
 Lib/
 *-Lib/
 
-# Compiled shaders
-*.vs2
-*.vs3
-*.ps2
-*.ps3
-
-# Compiled AngelScript
-*.asc
-
-# Generated documentation
-Docs/html/
-Docs/Doxyfile
-Docs/minimal-*
-
-# Eclipse project settings
-Source/.*project
-Source/.settings
-
-
-# Android in-the-source CMake build files
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-Makefile
-cmake_install.cmake
-install_manifest.txt
-
 # Misc.
 configure*
 *~
@@ -49,3 +22,7 @@ configure*
 *.bak
 
 .mayaSwatches/
+obj/
+Debug/
+Release/
+*.manifest
