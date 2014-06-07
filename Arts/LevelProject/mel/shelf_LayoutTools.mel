@@ -1,0 +1,276 @@
+global proc shelf_LayoutTools () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Launch LayoutTools2012 UI" 
+        -enableBackground 0
+        -align "center" 
+        -label "Maya LayoutTools2012" 
+        -labelOffset 0
+        -font "tinyBoldLabelFont" 
+        -overlayLabelColor 0 0 0 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "LT_shelfIcon.png" 
+        -image1 "LT_shelfIcon.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "if (`layout -ex LT_form` == 0)  \n    optionVar -intValue LT_RebuildUI 1; \nelse\n    optionVar -intValue LT_RebuildUI 0; \nLT_UI;\n" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Open LayoutTools2012 Documentation" 
+        -enableBackground 0
+        -align "center" 
+        -label "Maya LayoutTools2012 Help" 
+        -labelOffset 0
+        -font "tinyBoldLabelFont" 
+        -overlayLabelColor 0 0 0 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "LThelp_shelfIcon.png" 
+        -image1 "LThelp_shelfIcon.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "source LT_generalProcs.mel; LT_help;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/Bridge/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Bridge" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/Bridge/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/Gotham/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Gotham" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/Gotham/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/Gotham2/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Gotham2" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/Gotham2/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/Statue/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "statue" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/Statue/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/OBJ/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "OBJ" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/OBJ/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/ARCH/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Arch" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/ARCH/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/Police/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Police" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/Police/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "LT: Folder Prefix = AD : Location = D:/Naga/Arts/LevelProject/LevelData/Statue/" 
+        -enableBackground 0
+        -align "center" 
+        -label "LT : AD" 
+        -labelOffset 0
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Statue" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.2 
+        -image "commandButton.png" 
+        -image1 "commandButton.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "optionVar -sv LT_importPrefix AD; optionVar -sv LT_userImportPath \"D:/Naga/Arts/LevelProject/LevelData/Statue/\"; optionVar -intValue LT_RebuildUI 1; LT_UI;" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+
+} 
