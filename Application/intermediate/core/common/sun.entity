@@ -1,0 +1,11 @@
+{
+    "name":"sun-light",
+    "class":"static-environment",
+    "components":
+    [
+        {
+            "type":"light",
+            "name":"core/common/sun"
+        }
+    ]
+}

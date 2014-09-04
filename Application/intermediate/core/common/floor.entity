@@ -1,0 +1,17 @@
+{
+    "class": "prop",
+    "components": [
+        {
+            "name": "core/common/floor",
+            "type": "model",
+            "packed": true,
+            "materials": [
+                "core/common/default_tile" 
+            ],
+            "mesh": "core/common/cube" 
+        }
+    ],
+    "data": [
+    ],
+    "name": "floor"
+} 

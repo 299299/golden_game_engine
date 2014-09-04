@@ -1,0 +1,5 @@
+{
+	"flags": 0,
+	"input": "intermediate/core/common/lut_identity.png",
+	"type":"lut3d"
+} 

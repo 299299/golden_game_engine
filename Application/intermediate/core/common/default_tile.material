@@ -1,0 +1,18 @@
+{
+    "shader": "diff_norm",
+    "shadow-shader": "shadow",
+    "uv-offset":[0,0],
+    "uv-repeat":[100,100],
+    "samplers":
+    [
+        {
+            "name": "u_texColor",
+            "texture": "core/common/default_diffuse"
+        },
+
+        {
+            "name": "u_texNormal",
+            "texture": "core/common/default_normal"
+        }
+    ]
+} 
