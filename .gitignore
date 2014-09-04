@@ -25,4 +25,5 @@ configure*
 obj/
 Debug/
 Release/
+Keyboard/
 *.manifest
