@@ -1,4 +1,4 @@
-#include "gmThread.h"
+#include <gamemonkey/gmThread.h>
 
 void onGmExceptionTriggered()
 {
