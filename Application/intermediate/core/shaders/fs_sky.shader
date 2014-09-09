@@ -1,13 +1,10 @@
-$input v_wpos
+$input v_texcoord0
 //[def=intermediate/core/shaders/sky.def]
 #include "common.sc"
-
-uniform vec3 u_ambientSkyColor;
-uniform vec3 u_ambientGroundColor;
+SAMPLER2D(u_texColor, TEX_COLOR_SLOT);
 
 void main()
 {
-    float blend = (v_wpos.y * 0.5) + 0.5;
-    vec3 color = mix(u_ambientGroundColor, u_ambientSkyColor, blend);
-    gl_FragColor = vec4(color, 1);
+    gl_FragColor = toLinear(texture2D(u_texColor, v_texcoord0) );
+    //gl_FragColor = vec4(1,0,0,1);
 }

@@ -9,7 +9,8 @@ mayaPath_posix = '/usr/autodesk/maya/bin/mayapy'
 scriptPath_posix = '/home/lixin/maya/2014-x64/scripts/MayaBatchExport.py'
 
 mayaPath_windows = 'c:/program files/autodesk/maya2014/bin/mayapy.exe'
-scriptPath_windows = 'c:/users/Administrator/documents/maya/scripts/MayaBatchExport.py'
+scriptPath_windows = 'c:/users/Administrator/documents/maya/\
+                     scripts/MayaBatchExport.py'
 
 
 def main(argv):

@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{14F1BE2C-FE43-4602-BE7C-31DF8247F8DD}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>DataCompiler</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\Application</OutDir>
+    <IntDir>..\Obj\DC\Debug</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\Application</OutDir>
+    <IntDir>..\Obj\DC\Release</IntDir>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;NDEBUG;HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{d799c22f-9898-4977-9231-c66da71ff22e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Shared\CommonUtils.h" />
+    <ClInclude Include="AnimationCompiler.h" />
+    <ClInclude Include="AnimFSMCompiler.h" />
+    <ClInclude Include="AnimRigCompiler.h" />
+    <ClInclude Include="BaseCompiler.h" />
+    <ClInclude Include="CopyCompiler.h" />
+    <ClInclude Include="DC_Utils.h" />
+    <ClInclude Include="EntityCompiler.h" />
+    <ClInclude Include="IKCompiler.h" />
+    <ClInclude Include="jsmn.h" />
+    <ClInclude Include="JsonParser.h" />
+    <ClInclude Include="LevelCompiler.h" />
+    <ClInclude Include="LightCompiler.h" />
+    <ClInclude Include="MaterialCompiler.h" />
+    <ClInclude Include="ModelCompiler.h" />
+    <ClInclude Include="PackageCompiler.h" />
+    <ClInclude Include="PhysicsCompiler.h" />
+    <ClInclude Include="ProxyCompiler.h" />
+    <ClInclude Include="RagdollCompiler.h" />
+    <ClInclude Include="ShaderCompiler.h" />
+    <ClInclude Include="ShadingEnviromentCompiler.h" />
+    <ClInclude Include="SharedInc.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TextureCompiler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Shared\CommonUtils.cpp" />
+    <ClCompile Include="AnimationCompiler.cpp" />
+    <ClCompile Include="AnimFSMCompiler.cpp" />
+    <ClCompile Include="AnimRigCompiler.cpp" />
+    <ClCompile Include="BaseCompiler.cpp" />
+    <ClCompile Include="CopyCompiler.cpp" />
+    <ClCompile Include="DataCompiler.cpp" />
+    <ClCompile Include="DC_Utils.cpp" />
+    <ClCompile Include="EntityCompiler.cpp" />
+    <ClCompile Include="IKCompiler.cpp" />
+    <ClCompile Include="jsmn.cpp" />
+    <ClCompile Include="JsonParser.cpp" />
+    <ClCompile Include="LevelCompiler.cpp" />
+    <ClCompile Include="LightCompiler.cpp" />
+    <ClCompile Include="MaterialCompiler.cpp" />
+    <ClCompile Include="ModelCompiler.cpp" />
+    <ClCompile Include="PackageCompiler.cpp" />
+    <ClCompile Include="PhysicsCompiler.cpp" />
+    <ClCompile Include="ProxyCompiler.cpp" />
+    <ClCompile Include="RagdollCompiler.cpp" />
+    <ClCompile Include="ShaderCompiler.cpp" />
+    <ClCompile Include="ShadingEnviromentCompiler.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="TextureCompiler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="path.cfg" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

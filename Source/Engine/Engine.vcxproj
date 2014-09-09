@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D799C22F-9898-4977-9231-C66DA71FF22E}</ProjectGuid>
+    <RootNamespace>Engine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\Lib</OutDir>
+    <IntDir>..\Obj\Engine\Debug</IntDir>
+    <TargetName>$(ProjectName)_Debug</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Lib</OutDir>
+    <IntDir>..\Obj\Engine\Release</IntDir>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Project\hk2013_1_0_r1\Source;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;__STDC_FORMAT_MACROS;BGFX_CONFIG_DEBUG=1;BGFX_CONFIG_RENDERER_DIRECT3D11=1;BGFX_CONFIG_RENDERER_NULL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;NDEBUG;__STDC_FORMAT_MACROS;BGFX_CONFIG_RENDERER_DIRECT3D11=1;BGFX_CONFIG_RENDERER_NULL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\ThirdParty\bx\bx\float4_swizzle.inl" />
+    <None Include="Graphics\ShaderInc.h" />
+    <None Include="path.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\ThirdParty\bgfx\bgfx.cpp" />
+    <ClCompile Include="..\ThirdParty\bgfx\image.cpp" />
+    <ClCompile Include="..\ThirdParty\bgfx\renderer_d3d11.cpp" />
+    <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp" />
+    <ClCompile Include="..\ThirdParty\bgfx\vertexdecl.cpp" />
+    <ClCompile Include="..\ThirdParty\entry\dbg.cpp" />
+    <ClCompile Include="..\ThirdParty\imgui\imgui.cpp" />
+    <ClCompile Include="..\ThirdParty\nanovg\nanovg.cpp" />
+    <ClCompile Include="..\ThirdParty\nanovg\nanovg_bgfx.cpp" />
+    <ClCompile Include="..\ThirdParty\stb_image\stb_image_.cpp" />
+    <ClCompile Include="..\ThirdParty\stb_image\stb_image.h" />
+    <ClCompile Include="Animation\Animation.cpp" />
+    <ClCompile Include="Animation\AnimationSystem.cpp" />
+    <ClCompile Include="Animation\AnimFSM.cpp" />
+    <ClCompile Include="Animation\AnimRaycast.cpp" />
+    <ClCompile Include="Animation\AnimRig.cpp" />
+    <ClCompile Include="Animation\IK.cpp" />
+    <ClCompile Include="Animation\Ragdoll.cpp" />
+    <ClCompile Include="Core\Log.cpp" />
+    <ClCompile Include="Core\MathDefs.cpp" />
+    <ClCompile Include="Core\Memory.cpp" />
+    <ClCompile Include="Core\Profiler.cpp" />
+    <ClCompile Include="Core\Resource.cpp" />
+    <ClCompile Include="Core\StringId.cpp" />
+    <ClCompile Include="Core\Thread.cpp" />
+    <ClCompile Include="Core\Utils.cpp" />
+    <ClCompile Include="Engine\DataDef.cpp" />
+    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Entity.cpp" />
+    <ClCompile Include="Engine\EntityManager.cpp" />
+    <ClCompile Include="Engine\Level.cpp" />
+    <ClCompile Include="Engine\Win32Context.cpp" />
+    <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\DebugDraw.cpp" />
+    <ClCompile Include="Graphics\Gui.cpp" />
+    <ClCompile Include="Graphics\Light.cpp" />
+    <ClCompile Include="Graphics\Material.cpp" />
+    <ClCompile Include="Graphics\Mesh.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\Scene.cpp" />
+    <ClCompile Include="Graphics\Shader.cpp" />
+    <ClCompile Include="Graphics\ShadingEnviroment.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Input\XBoxInput.cpp" />
+    <ClCompile Include="Logic\Character.cpp" />
+    <ClCompile Include="Logic\GameFSM.cpp" />
+    <ClCompile Include="Logic\GameState.cpp" />
+    <ClCompile Include="Logic\LevelGeometry.cpp" />
+    <ClCompile Include="Logic\Locomotion.cpp" />
+    <ClCompile Include="Logic\Prop.cpp" />
+    <ClCompile Include="Network\gamedevwebtools.cpp" />
+    <ClCompile Include="Network\WebServerTool.cpp" />
+    <ClCompile Include="Physics\ProxyInstance.cpp" />
+    <ClCompile Include="Physics\PhysicsAutoLock.cpp" />
+    <ClCompile Include="Physics\PhysicsInstance.cpp" />
+    <ClCompile Include="Physics\PhysicsWorld.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmArrayLib.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmArraySimple.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmByteCode.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmByteCodeGen.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmCall.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmCodeGen.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmCodeGenHooks.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmCodeTree.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmCrc.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmDebug.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmDebugger.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmFunctionObject.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmGCRoot.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmGCRootUtil.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmHash.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmHelpers.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmIncGC.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmLibHooks.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmListDouble.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmLog.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMachine.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMachineLib.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMathLib.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMem.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMemChain.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMemFixed.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmMemFixedSet.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmOperators.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmParser.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmScanner.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmStream.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmStreamBuffer.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmStringLib.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmStringObject.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmSystemLib.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmTableObject.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmThread.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmUserObject.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmUtil.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmVariable.cpp" />
+    <ClCompile Include="Script\GameMonkey\gmVector3Lib.cpp" />
+    <ClCompile Include="Script\ScriptAPI.cpp" />
+    <ClCompile Include="Script\ScriptSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx.c99.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxdefines.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.c99.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx_p.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\charset.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\config.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear0.bin.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear1.bin.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear2.bin.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear3.bin.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\fs_debugfont.bin.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\image.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d11.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\vs_clear.bin.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\vs_debugfont.bin.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\allocator.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\blockalloc.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\bx.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\cl.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\commandline.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\cpu.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\debug.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\endian.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\float4x4_t.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_neon.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_ni.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_ref.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_sse.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_t.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\foreach.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\fpumath.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\handlealloc.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\hash.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\macros.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\maputil.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\mutex.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\os.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\platform.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\radixsort.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\readerwriter.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\ringbuffer.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\rng.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\sem.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\spscqueue.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\string.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\thread.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\timer.h" />
+    <ClInclude Include="..\ThirdParty\bx\bx\uint32_t.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\allocator.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\buffer.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\hash.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\hash_base.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\new.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\stddef.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\string.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\traits.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_map.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_set.h" />
+    <ClInclude Include="..\ThirdParty\bx\tinystl\vector.h" />
+    <ClInclude Include="..\ThirdParty\entry\dbg.h" />
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_color.bin.h" />
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image.bin.h" />
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image_swizz.bin.h" />
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_texture.bin.h" />
+    <ClInclude Include="..\ThirdParty\imgui\imgui.h" />
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_color.bin.h" />
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h" />
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_texture.bin.h" />
+    <ClInclude Include="..\ThirdParty\nanovg\fontstash.h" />
+    <ClInclude Include="..\ThirdParty\nanovg\fs_nanovg_fill.bin.h" />
+    <ClInclude Include="..\ThirdParty\nanovg\nanovg.h" />
+    <ClInclude Include="..\ThirdParty\nanovg\vs_nanovg_fill.bin.h" />
+    <ClInclude Include="..\ThirdParty\stb_truetype\stb_truetype.h" />
+    <ClInclude Include="Animation\Animation.h" />
+    <ClInclude Include="Animation\AnimationSystem.h" />
+    <ClInclude Include="Animation\AnimFSM.h" />
+    <ClInclude Include="Animation\AnimRaycast.h" />
+    <ClInclude Include="Animation\AnimRig.h" />
+    <ClInclude Include="Animation\IK.h" />
+    <ClInclude Include="Animation\Ragdoll.h" />
+    <ClInclude Include="BaseTypes.h" />
+    <ClInclude Include="Core\Log.h" />
+    <ClInclude Include="Core\MathDefs.h" />
+    <ClInclude Include="Core\Memory.h" />
+    <ClInclude Include="Core\MemoryPool.h" />
+    <ClInclude Include="Core\Profiler.h" />
+    <ClInclude Include="Core\Resource.h" />
+    <ClInclude Include="Core\StringId.h" />
+    <ClInclude Include="Core\Thread.h" />
+    <ClInclude Include="Core\Utils.h" />
+    <ClInclude Include="Core\Variant.h" />
+    <ClInclude Include="Engine\Component.h" />
+    <ClInclude Include="Engine\DataDef.h" />
+    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Entity.h" />
+    <ClInclude Include="Engine\EntityManager.h" />
+    <ClInclude Include="Engine\Level.h" />
+    <ClInclude Include="Engine\Win32Context.h" />
+    <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\DebugDraw.h" />
+    <ClInclude Include="Graphics\droidsans.ttf.h" />
+    <ClInclude Include="Graphics\Gui.h" />
+    <ClInclude Include="Graphics\Light.h" />
+    <ClInclude Include="Graphics\Material.h" />
+    <ClInclude Include="Graphics\Mesh.h" />
+    <ClInclude Include="Graphics\Model.h" />
+    <ClInclude Include="Graphics\Scene.h" />
+    <ClInclude Include="Graphics\Shader.h" />
+    <ClInclude Include="Graphics\ShadingEnviroment.h" />
+    <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Input\XBoxInput.h" />
+    <ClInclude Include="Logic\Character.h" />
+    <ClInclude Include="Logic\GameFSM.h" />
+    <ClInclude Include="Logic\GameState.h" />
+    <ClInclude Include="Logic\LevelGeometry.h" />
+    <ClInclude Include="Logic\Locomotion.h" />
+    <ClInclude Include="Logic\Prop.h" />
+    <ClInclude Include="Network\gamedevwebtools.h" />
+    <ClInclude Include="Network\WebServerTool.h" />
+    <ClInclude Include="Physics\ProxyInstance.h" />
+    <ClInclude Include="Physics\PhysicsAutoLock.h" />
+    <ClInclude Include="Physics\PhysicsInstance.h" />
+    <ClInclude Include="Physics\PhysicsWorld.h" />
+    <ClInclude Include="Prerequisites.h" />
+    <ClInclude Include="Script\GameMonkey\gmArrayLib.h" />
+    <ClInclude Include="Script\GameMonkey\gmArraySimple.h" />
+    <ClInclude Include="Script\GameMonkey\gmBind.h" />
+    <ClInclude Include="Script\GameMonkey\gmBindFuncGen.h" />
+    <ClInclude Include="Script\GameMonkey\gmBindHeader.h" />
+    <ClInclude Include="Script\GameMonkey\gmBindHelper.h" />
+    <ClInclude Include="Script\GameMonkey\gmByteCode.h" />
+    <ClInclude Include="Script\GameMonkey\gmByteCodeGen.h" />
+    <ClInclude Include="Script\GameMonkey\gmCall.h" />
+    <ClInclude Include="Script\GameMonkey\gmCodeGen.h" />
+    <ClInclude Include="Script\GameMonkey\gmCodeGenHooks.h" />
+    <ClInclude Include="Script\GameMonkey\gmCodeTree.h" />
+    <ClInclude Include="Script\GameMonkey\gmConfig.h" />
+    <ClInclude Include="Script\GameMonkey\gmConfig_p.h" />
+    <ClInclude Include="Script\GameMonkey\gmCrc.h" />
+    <ClInclude Include="Script\GameMonkey\gmDebug.h" />
+    <ClInclude Include="Script\GameMonkey\gmDebugger.h" />
+    <ClInclude Include="Script\GameMonkey\gmFunctionObject.h" />
+    <ClInclude Include="Script\GameMonkey\gmGCRoot.h" />
+    <ClInclude Include="Script\GameMonkey\gmGCRootUtil.h" />
+    <ClInclude Include="Script\GameMonkey\gmHash.h" />
+    <ClInclude Include="Script\GameMonkey\gmHelpers.h" />
+    <ClInclude Include="Script\GameMonkey\gmIncGC.h" />
+    <ClInclude Include="Script\GameMonkey\gmIterator.h" />
+    <ClInclude Include="Script\GameMonkey\gmLibHooks.h" />
+    <ClInclude Include="Script\GameMonkey\gmListDouble.h" />
+    <ClInclude Include="Script\GameMonkey\gmLog.h" />
+    <ClInclude Include="Script\GameMonkey\gmMachine.h" />
+    <ClInclude Include="Script\GameMonkey\gmMachineLib.h" />
+    <ClInclude Include="Script\GameMonkey\gmMathLib.h" />
+    <ClInclude Include="Script\GameMonkey\gmMem.h" />
+    <ClInclude Include="Script\GameMonkey\gmMemChain.h" />
+    <ClInclude Include="Script\GameMonkey\gmMemFixed.h" />
+    <ClInclude Include="Script\GameMonkey\gmMemFixedSet.h" />
+    <ClInclude Include="Script\GameMonkey\gmOperators.h" />
+    <ClInclude Include="Script\GameMonkey\gmParser.cpp.h" />
+    <ClInclude Include="Script\GameMonkey\gmScanner.h" />
+    <ClInclude Include="Script\GameMonkey\gmStream.h" />
+    <ClInclude Include="Script\GameMonkey\gmStreamBuffer.h" />
+    <ClInclude Include="Script\GameMonkey\gmStringLib.h" />
+    <ClInclude Include="Script\GameMonkey\gmStringObject.h" />
+    <ClInclude Include="Script\GameMonkey\gmSystemLib.h" />
+    <ClInclude Include="Script\GameMonkey\gmTableObject.h" />
+    <ClInclude Include="Script\GameMonkey\gmThread.h" />
+    <ClInclude Include="Script\GameMonkey\gmUserObject.h" />
+    <ClInclude Include="Script\GameMonkey\gmUtil.h" />
+    <ClInclude Include="Script\GameMonkey\gmVariable.h" />
+    <ClInclude Include="Script\GameMonkey\gmVector3Lib.h" />
+    <ClInclude Include="Script\ScriptSystem.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

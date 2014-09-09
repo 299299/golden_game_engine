@@ -19,12 +19,10 @@ void main()
     float exposure = u_bloomParams.x;
     float bloomThreshold = u_bloomParams.y;
 
-    color = min(texture2D(u_texColor,  v_texcoord0 + offsets[0] * u_viewTexel), color);
-    color = min(texture2D(u_texColor,  v_texcoord0 + offsets[1] * u_viewTexel), color);
-    color = min(texture2D(u_texColor,  v_texcoord0 + offsets[2] * u_viewTexel), color);
-    color = min(texture2D(u_texColor,  v_texcoord0 + offsets[3] * u_viewTexel), color);
-    color = min(texture2D(u_texColor,  v_texcoord0 + offsets[4] * u_viewTexel), color);
+    for (int i = 0; i < 5; i++) 
+        color = min(texture2D(u_texColor,  v_texcoord0 + offsets[i] * u_viewTexel), color);
     color.rgb *= exposure;
-
-    gl_FragColor =  float4(max(color.rgb - bloomThreshold / (1.0 - bloomThreshold), 0.0), 1.0);
+    color.rgb = max(color.rgb - bloomThreshold / (1.0 - bloomThreshold), 0.0);
+    //color.rgb = min(color.rgb, 1.0);
+    gl_FragColor = float4(color.rgb, color.a);
 }

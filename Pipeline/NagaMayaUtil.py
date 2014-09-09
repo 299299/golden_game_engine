@@ -333,11 +333,12 @@ class NagaMayaUtil(object):
             cmds.addAttr(sn='ht', ln='hkType', dt='string')
             cmds.setAttr(
                 nodeName + '.hkType', 'engineAttributes', type='string')
-            cmds.addAttr(sn='et', ln='entityType', dt='string')
+            cmds.addAttr(sn='tp', ln='type', dt='string')
+            resourceName = packageName + '/entity/' + entityType
             cmds.setAttr(
-                nodeName + '.entityType', entityType, type='string')
-            cmds.addAttr(sn='en', ln='entityName', dt='string')
-            cmds.setAttr(nodeName + '.entityName', ad_node, type='string')
+                nodeName + '.type', resourceName, type='string')
+            cmds.addAttr(sn='na', ln='name', dt='string')
+            cmds.setAttr(nodeName + '.name', ad_node, type='string')
             #
             #
             cmds.addAttr(sn='lk', ln='linkNode', dt='string')

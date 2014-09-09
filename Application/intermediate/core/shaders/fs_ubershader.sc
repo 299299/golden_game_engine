@@ -640,12 +640,12 @@ void main()
     //**************************************************************
     //NORMAL MAP
     vec3 T = v_tangent;
-    vec3 Bn = v_binormal;//cross(N, T); 
-    //Bn *= v_tangent.w;
+    vec3 Bn = v_binormal;//cross(N, T);
     mat3 tbn = mat3(v_tangent, v_binormal, N);
     vec3 normalMap;
-    normalMap.xy = texture2D(u_texNormal, v_texcoord0).xy * 2.0 - 1.0;
-    normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy) );
+    normalMap = texture2D(u_texNormal, v_texcoord0).xyz;
+    //normalMap.xy = normalMap.xy * 2.0 - 1.0;
+    //normalMap.z = sqrt(1.0 - dot(normalMap.xy, normalMap.xy) );
     normalMap.xy *= u_matParams1.y; 
     normalMap = mul(normalMap.xyz, tbn);
     N = normalize(normalMap.rgb);

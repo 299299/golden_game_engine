@@ -1,0 +1,914 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="path.cfg" />
+    <None Include="..\ThirdParty\bx\bx\float4_swizzle.inl">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </None>
+    <None Include="Graphics\ShaderInc.h">
+      <Filter>Graphics</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{c6f82033-9040-43e2-853e-d4952be7589a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{5582a54b-fca5-4405-a6cb-b5793d2f6803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{0745dd0b-7569-43e4-a125-930b43dfa2ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{29acb58c-4fed-42ae-98ac-25dac00ba422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{0fe34359-73e6-401b-ba83-6084ccad6174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{07943436-c1c3-49aa-9899-b69521009aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{a598df45-1bd9-4f5c-93f9-98eca7b6d45d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{afcb3359-6821-4060-b941-db617744aba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{089c8644-62fc-41ac-9ec0-b326a6abd98f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logic">
+      <UniqueIdentifier>{e84addef-421e-4af8-9d0e-73f3965cf001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{7cf7d848-f780-4a99-8ab8-27036b428c02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bx">
+      <UniqueIdentifier>{909732b3-a004-4d48-9eb2-99f08fe14d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bgfx">
+      <UniqueIdentifier>{d72f4fc0-2356-4011-87c6-6da5ae9c88c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bx\bx">
+      <UniqueIdentifier>{ad793507-7f12-4ba7-afe9-c7aa087b17e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bx\tinystl">
+      <UniqueIdentifier>{b3376f4a-e768-4302-afe4-d1ae4100f3a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\imgui">
+      <UniqueIdentifier>{e327288b-9ad5-4427-b6e5-8b50c5e83ee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\nanovg">
+      <UniqueIdentifier>{ee884d03-b39c-42c8-ac2a-2703c7cb2cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\stb_truetype">
+      <UniqueIdentifier>{bfff3c6c-5086-485c-9f76-f8db694c6e00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\stb_image">
+      <UniqueIdentifier>{8e9e2208-58f8-4a28-bba3-a371a865417f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\entry">
+      <UniqueIdentifier>{600413b2-53b5-4312-8546-696bf1b05f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{2f1fb340-9dec-44d5-8181-615e86112279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\GameMonkey">
+      <UniqueIdentifier>{f062aac6-e652-47ce-8e60-7c8f0ebcc021}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\Log.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Thread.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\StringId.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MathDefs.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsWorld.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsAutoLock.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimationSystem.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\XBoxInput.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Animation.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsInstance.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimRaycast.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Resource.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimRig.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\IK.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Ragdoll.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Graphics.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\bgfx.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\image.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\renderer_d3d11.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\vertexdecl.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Material.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Mesh.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Light.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Model.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\imgui\imgui.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\nanovg\nanovg.cpp">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\nanovg\nanovg_bgfx.cpp">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\entry\dbg.cpp">
+      <Filter>ThirdParty\entry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\stb_image\stb_image.h">
+      <Filter>ThirdParty\stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Scene.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DebugDraw.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\ProxyInstance.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ShadingEnviroment.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimFSM.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\gamedevwebtools.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\WebServerTool.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Character.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GameFSM.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GameState.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\LevelGeometry.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Locomotion.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Prop.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DataDef.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Entity.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EntityManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Level.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Win32Context.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Gui.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmArrayLib.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmArraySimple.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmByteCode.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmByteCodeGen.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmCall.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmCodeGen.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmCodeGenHooks.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmCodeTree.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmCrc.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmDebug.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmDebugger.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmFunctionObject.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmGCRoot.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmGCRootUtil.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmHash.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmHelpers.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmIncGC.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmLibHooks.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmListDouble.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmLog.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMachine.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMachineLib.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMathLib.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMem.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMemChain.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMemFixed.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmMemFixedSet.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmOperators.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmParser.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmScanner.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmStream.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmStreamBuffer.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmStringLib.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmStringObject.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmSystemLib.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmTableObject.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmThread.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmUserObject.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmUtil.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmVariable.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\GameMonkey\gmVector3Lib.cpp">
+      <Filter>Script\GameMonkey</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\stb_image\stb_image_.cpp">
+      <Filter>ThirdParty\stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ScriptSystem.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ScriptAPI.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Log.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Prerequisites.h" />
+    <ClInclude Include="Core\Memory.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Thread.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\StringId.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\MathDefs.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsWorld.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsAutoLock.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimationSystem.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\XBoxInput.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\Animation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\MemoryPool.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsInstance.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseTypes.h" />
+    <ClInclude Include="Animation\AnimRaycast.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Resource.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimRig.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\IK.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\Ragdoll.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxdefines.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\allocator.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\buffer.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\hash.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\hash_base.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\new.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\stddef.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\string.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\traits.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_map.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_set.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\vector.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\blockalloc.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\bx.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\cl.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\commandline.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\cpu.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\debug.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\endian.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_neon.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_ni.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_ref.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_sse.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_t.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4x4_t.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\foreach.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\fpumath.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\handlealloc.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\hash.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\macros.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\maputil.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\mutex.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\os.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\platform.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\radixsort.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\readerwriter.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\ringbuffer.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\rng.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\sem.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\spscqueue.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\string.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\thread.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\timer.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\uint32_t.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Graphics.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx_p.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\charset.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\config.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear0.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear1.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear2.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear3.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_debugfont.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\image.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d11.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\vs_clear.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\vs_debugfont.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx.c99.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.c99.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Material.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Mesh.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\allocator.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Light.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Model.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_color.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_texture.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\imgui.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_color.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_texture.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\fontstash.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\fs_nanovg_fill.bin.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\nanovg.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\vs_nanovg_fill.bin.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\stb_truetype\stb_truetype.h">
+      <Filter>ThirdParty\stb_truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\entry\dbg.h">
+      <Filter>ThirdParty\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Scene.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DebugDraw.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\ProxyInstance.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\droidsans.ttf.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ShadingEnviroment.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image_swizz.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimFSM.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\gamedevwebtools.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\WebServerTool.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Character.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GameFSM.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GameState.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\LevelGeometry.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Locomotion.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Prop.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Component.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DataDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Entity.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EntityManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Level.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Win32Context.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Variant.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Gui.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmArrayLib.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmArraySimple.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmByteCode.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmByteCodeGen.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmCall.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmCodeGen.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmCodeGenHooks.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmCodeTree.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmConfig.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmConfig_p.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmCrc.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmDebug.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmDebugger.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmFunctionObject.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmGCRoot.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmGCRootUtil.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmHash.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmHelpers.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmIncGC.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmIterator.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmLibHooks.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmListDouble.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmLog.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMachine.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMachineLib.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMathLib.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMem.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMemChain.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMemFixed.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmMemFixedSet.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmOperators.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmParser.cpp.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmScanner.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmStream.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmStreamBuffer.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmStringLib.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmStringObject.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmSystemLib.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmTableObject.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmThread.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmUserObject.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmUtil.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmVariable.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmVector3Lib.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmBind.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmBindFuncGen.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmBindHeader.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\GameMonkey\gmBindHelper.h">
+      <Filter>Script\GameMonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\ScriptSystem.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
