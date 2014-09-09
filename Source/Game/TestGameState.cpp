@@ -56,8 +56,7 @@ static void gameKeyCallback(uint32_t key, bool down)
         }
         break;
     case VK_F2: g_engine.setUpdate(!g_engine.isUpdating()); break;
-    case VK_F3: g_physicsWorld.m_update = !g_physicsWorld.m_update; break;
-    case VK_F4: g_entityMgr.setBucketUpdate(kProp, !g_entityMgr.isBucketUpdate(kProp));
+    case VK_F3: g_entityMgr.setBucketUpdate(kProp, !g_entityMgr.isBucketUpdate(kProp));
     default:
         break;
     }

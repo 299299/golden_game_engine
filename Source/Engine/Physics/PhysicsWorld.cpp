@@ -10,6 +10,7 @@
 #include "MathDefs.h"
 #include "DebugDraw.h"
 #include "Component.h"
+#include "Resource.h"
 //===========================================
 //          COMPONENTS
 #include "PhysicsInstance.h"
@@ -99,7 +100,7 @@ static DynamicObjectComponentFactory<ProxyInstance>   g_proxyInstances(ProxyReso
 
 void PhysicsWorld::init()
 {
-    m_update = true;
+    m_config = 0;
     m_world = 0;
     m_postCallback = 0;
     m_status = 0;
@@ -123,7 +124,6 @@ void PhysicsWorld::frameStart()
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     g_collisionEvtMap.clear();
-    if(!m_update) return;
     m_collisionEvents = FRAME_ALLOC(CollisionEvent*, g_physicsInstances.m_objects.getSize());
     m_raycasts = FRAME_ALLOC(RaycastJob, MAX_RAYCAST_PERFRAME);
 }
@@ -284,7 +284,6 @@ void PhysicsWorld::checkStatus()
 
 void PhysicsWorld::kickInJobs( float timeStep )
 {
-    if(!m_update) return;
     PROFILE(Physics_KickInJobs);
     m_status = kTickProcessing;
     kickInRaycastJob();
@@ -293,7 +292,6 @@ void PhysicsWorld::kickInJobs( float timeStep )
 
 void PhysicsWorld::tickFinishJobs( float timeStep )
 {
-    if(!m_update) return;
     PROFILE(Physics_TickFinishJobs);
     m_status = kTickFinishedJobs;
     m_world->finishMtStep(g_threadMgr.getJobQueue(), g_threadMgr.getThreadPool());
@@ -433,4 +431,27 @@ void PhysicsWorld::kickInRaycastJob()
     g_threadMgr.getJobQueue()->addJob(*worldRayCastJob, hkJobQueue::JOB_LOW_PRIORITY);
 }
 
+void PhysicsWorld::postInit()
+{
+    m_config = FIND_RESOURCE(PhysicsConfig, StringId("core/global"));
+}
 
+
+int PhysicsWorld::getFilterIndex(const StringId& name) const
+{
+    //if not found default filter is 0.
+    if(!m_config) return 0;
+    for(uint32_t i=0; i<m_config->m_numFilters; ++i)
+    {
+        if(m_config->m_filters[i].m_name == name)
+            return i;
+    }
+    return 0;
+}
+
+void* load_resource_physics_config(const char* data, uint32_t size)
+{
+    PhysicsConfig* cfg = (PhysicsConfig*)data;
+    cfg->m_filters = (CollisionFilter*)(data + sizeof(PhysicsConfig));
+    return cfg;
+}

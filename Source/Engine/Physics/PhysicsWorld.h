@@ -19,7 +19,6 @@ class   hkSemaphore;
 
 struct CollisionEvent
 {
-    //uint64_t                    m_key;
     PhysicsInstance*            m_objects[2];
     float                       m_normal[3];
     float                       m_position[3];
@@ -35,6 +34,20 @@ struct RaycastJob
     hkpWorldRayCastCommand*     m_command;
 };
 
+struct CollisionFilter
+{
+    StringId                    m_name;
+    uint32_t                    m_mask;
+};
+
+struct PhysicsConfig
+{
+    DECLARE_RESOURCE(physics_config);
+    
+    CollisionFilter*            m_filters;
+    uint32_t                    m_numFilters;
+};
+
 struct PhysicsWorld
 {
     void init();
@@ -46,12 +59,11 @@ struct PhysicsWorld
 
     void createWorld(float worldSize, const hkVector4& gravity, bool bPlane);
     void destroyWorld();
-    inline hkpWorld* getWorld() const { return m_world;};
     void clearWorld();
+    inline hkpWorld* getWorld() const { return m_world;};
+
     void postSimulationCallback();
-    int  getContactingRigidBodies(const hkpRigidBody* body, 
-                                  hkpRigidBody** contactingBodies, 
-                                  int maxLen = 100);
+    int  getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen = 100);
 
     void addToWorld(PhysicsInstance* instance);
     void removeFromWorld(PhysicsInstance* instance);
@@ -59,6 +71,9 @@ struct PhysicsWorld
     void addCollisionEvent(uint64_t key, const CollisionEvent& evt);
     int addRaycastJob(const float* from, const float* to, int32_t filterInfo = -1);
     RaycastJob* getRaycastJob(int handle) const;
+
+    int getFilterIndex(const StringId& name) const;
+    void postInit();
 
 private:
     void setupGroupFilter( hkpGroupFilter* filter );
@@ -75,7 +90,10 @@ public:
     uint32_t                                m_numCollisionEvents;
     uint32_t                                m_numRaycasts;
     int                                     m_status;
-    bool                                    m_update;
+    //======================================================================
+    PhysicsConfig*                          m_config;
 };
 
 extern PhysicsWorld g_physicsWorld;
+
+void* load_resource_physics_config(const char* data, uint32_t size);

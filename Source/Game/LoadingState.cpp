@@ -39,6 +39,7 @@ void LoadingState::preStep(float timeStep)
         if(!bPostInited)
         {
             Graphics::postInit();
+            g_physicsWorld.postInit();
             bPostInited = true;
         }
         m_nextStateName = m_finishStateName;

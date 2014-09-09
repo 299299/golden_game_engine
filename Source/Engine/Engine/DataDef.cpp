@@ -159,6 +159,7 @@ static ResourceFactory g_resourceFactories[] =
     {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::getName()},
     {0, 0, 0, 0, 0, LightResource::getName()},
     {load_resource_model, 0, lookup_resource_model, 0, 0, ModelResource::getName()},
+    {load_resource_physics_config, 0, 0, 0, 0, PhysicsConfig::getName()},
     {load_resource_physics, destroy_resource_physics, 0, 0, 0, PhysicsResource::getName()},
     {load_resource_proxy, destroy_resource_proxy, 0, 0, 0, ProxyResource::getName()},
     {load_resource_ragdoll, destroy_resource_ragdoll, 0, 0, 0, RagdollResource::getName()},
