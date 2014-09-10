@@ -2,6 +2,7 @@
 #include "HC_Utils.h"
 #include "ModelConverter.h"
 #include "LightConverter.h"
+#include "HC_Utils.h"
 #include <Common/Base/Math/Matrix/hkMatrixDecomposition.h>
 
 void matrix_to_transform(const hkMatrix4& m, hkQsTransform& t)

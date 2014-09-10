@@ -1,4 +1,6 @@
 #include "AnimationCompiler.h"
+#include "DC_Utils.h"
+#include "AnimRig.h"
 
 AnimationCompiler::AnimationCompiler()
 {

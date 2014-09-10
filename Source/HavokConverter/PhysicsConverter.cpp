@@ -1,6 +1,7 @@
 #include "PhysicsConverter.h"
 #include "EntityConverter.h"
 #include "Utils.h"
+#include "HC_Utils.h"
 #include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
 
 static const char*  physics_type_names[] = 

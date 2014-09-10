@@ -1,5 +1,7 @@
 #include "ModelCompiler.h"
 #include "MaterialCompiler.h"
+#include "Mesh.h"
+#include "DC_Utils.h"
 
 ModelCompiler::ModelCompiler()
 {

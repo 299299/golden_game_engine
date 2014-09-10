@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Material.h"
 
 class MaterialCompiler : public BaseCompiler
 {

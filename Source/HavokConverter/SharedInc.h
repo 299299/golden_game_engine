@@ -25,7 +25,7 @@
 #include <Common/Base/Monitor/hkMonitorStream.h>
 #include <Common/Base/Memory/System/hkMemorySystem.h>
 #include <Common/Base/Container/LocalArray/hkLocalBuffer.h>
-#include <Common/Base/Thread/Job/ThreadPool/Cpu/hkCpuJobThreadPool.h>
+#include <Common/Base/Thread/Pool/hkCpuThreadPool.h>
 #include <Common/Base/Thread/JobQueue/hkJobQueue.h>
 #include <Common/Serialize/Util/hkLoader.h>
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
@@ -71,7 +71,7 @@
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
 #include <Physics2012/Dynamics/World/BroadPhaseBorder/hkpBroadPhaseBorder.h>
 #include <Physics2012/Collide/Dispatch/hkpAgentRegisterUtil.h>
-#include <Common/Base/Thread/Job/ThreadPool/hkJobThreadPool.h>
+#include <Common/Base/Thread/Pool/hkCpuThreadPool.h>
 #include <Physics2012/Collide/Shape/Convex/Box/hkpBoxShape.h>
 #include <Physics2012/Utilities/CharacterControl/CharacterRigidBody/hkpCharacterRigidBody.h>
 #include <Physics2012/Collide/Shape/Convex/Capsule/hkpCapsuleShape.h>

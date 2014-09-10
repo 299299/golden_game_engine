@@ -2,6 +2,7 @@
 #include "SamplerConverter.h"
 #include "EntityConverter.h"
 #include "ModelConverter.h"
+#include "HC_Utils.h"
 
 MaterialConverter::MaterialConverter(EntityConverter* ownner)
 :ComponentConverter(ownner)

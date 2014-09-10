@@ -1,4 +1,5 @@
 #include "CharacterConverter.h"
+#include "HC_Utils.h"
 #include "ModelConverter.h"
 #include "AnimRigConverter.h"
 

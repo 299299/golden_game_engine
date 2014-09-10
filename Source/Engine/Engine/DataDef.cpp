@@ -138,6 +138,7 @@ const char* g_modelFlagNames[] =
 #include "AnimFSM.h"
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
+#include "PhysicsWorld.h"
 #include "Material.h"
 #include "IK.h"
 #include "Ragdoll.h"

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "AnimRig.h"
 
 class AnimRigCompiler : public BaseCompiler
 {

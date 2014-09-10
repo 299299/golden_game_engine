@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "DC_Utils.h"
+#include "Mesh.h"
 //=================================================================
 #include "AnimationCompiler.h"
 #include "AnimRigCompiler.h"
@@ -7,7 +9,6 @@
 #include "LightCompiler.h"
 #include "MaterialCompiler.h"
 #include "PhysicsCompiler.h"
-#include "ProxyCompiler.h"
 #include "RagdollCompiler.h"
 #include "ShaderCompiler.h"
 #include "TextureCompiler.h"

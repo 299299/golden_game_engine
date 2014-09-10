@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Light.h"
 
 class LightCompiler : public BaseCompiler
 {

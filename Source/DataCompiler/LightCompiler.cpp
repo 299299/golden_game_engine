@@ -1,4 +1,5 @@
 #include "LightCompiler.h"
+#include "DC_Utils.h"
 
 LightCompiler::LightCompiler()
 {

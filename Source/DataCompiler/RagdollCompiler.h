@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
-
+#include "Ragdoll.h"
 
 class RagdollCompiler : public BaseCompiler
 {

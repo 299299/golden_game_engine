@@ -3,6 +3,7 @@
 #include "LightCompiler.h"
 #include "Model.h"
 #include "Light.h"
+#include "DC_Utils.h"
 
 void json_transform(const JsonValue& jValue, float* t, float* r, float* s)
 {

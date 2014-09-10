@@ -36,9 +36,6 @@
     <ClInclude Include="PhysicsCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
-    <ClInclude Include="ProxyCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
     <ClInclude Include="RagdollCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
@@ -98,9 +95,6 @@
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="ProxyCompiler.cpp">
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="RagdollCompiler.cpp">

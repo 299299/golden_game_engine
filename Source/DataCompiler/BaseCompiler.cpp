@@ -1,5 +1,7 @@
 #include "BaseCompiler.h"
 #include "LevelCompiler.h"
+#include "DC_Utils.h"
+#include "stdafx.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 
 extern std::vector<class LevelCompiler*>        g_levels;

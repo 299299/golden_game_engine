@@ -43,8 +43,8 @@ public:
 #endif // _RETAIL
         g_memoryMgr.free(kMemoryCategoryHavok, p, numBytes);
     }
-    virtual void getMemoryStatistics( MemoryStatistics& u ) { u = m_memStats;}
-    virtual int getAllocatedSize(const void* obj, int numBytes) { return numBytes; }
+    virtual void getMemoryStatistics( MemoryStatistics& u ) const { u = m_memStats;}
+    virtual int getAllocatedSize(const void* obj, int numBytes) const { return numBytes; }
 private:
     MemoryStatistics m_memStats;
 };

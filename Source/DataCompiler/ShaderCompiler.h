@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "CommonUtils.h"
+#include "Shader.h"
 
 class ShaderCompiler : public BaseCompiler
 {

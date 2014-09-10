@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Model.h"
 
 class ModelCompiler : public BaseCompiler
 {

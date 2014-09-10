@@ -7,6 +7,7 @@
 #include "ShadingEnviroment.h"
 #include "Engine.h"
 #include "Win32Context.h"
+#include "PhysicsWorld.h"
 #include <imgui/imgui.h>
 
 void LoadingState::setLoadingPackage(const char* packageName)

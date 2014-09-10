@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "CommonUtils.h"
 
 void dumpNodeRec(hkxNode* theNode);
 void findNodesRec(hkxNode* theNode, const hkClass* theClass, std::vector<hkxNode*>& outNodes);

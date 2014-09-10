@@ -1,4 +1,6 @@
 #include "ShadingEnviromentCompiler.h"
+#include "DC_Utils.h"
+#include "Texture.h"
 
 ShadingEnviromentCompiler::ShadingEnviromentCompiler()
 {

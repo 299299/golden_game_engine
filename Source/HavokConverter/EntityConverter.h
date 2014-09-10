@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include "CommonUtils.h"
+#include "jsonxx.h"
 
 class ComponentConverter;
 class EntityConverter : public hkReferencedObject

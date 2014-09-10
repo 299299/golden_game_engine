@@ -1,5 +1,6 @@
 #include "ComponentConverter.h"
 #include "EntityConverter.h"
+#include "HC_Utils.h"
 
 ComponentConverter::ComponentConverter(EntityConverter* ownner)
 :m_ownner(ownner)

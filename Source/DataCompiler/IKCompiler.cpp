@@ -1,4 +1,6 @@
 #include "IKCompiler.h"
+#include "DC_Utils.h"
+#include "AnimRig.h"
 
 static const char* raycast_type_names[] =
 {

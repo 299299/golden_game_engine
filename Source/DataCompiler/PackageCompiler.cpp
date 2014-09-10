@@ -1,5 +1,7 @@
 #include "PackageCompiler.h"
+#include "DC_Utils.h"
 #include "stdafx.h"
+#include <Common/Base/Algorithm/Sort/hkSort.h>
 
 PackageCompiler::PackageCompiler()
 {

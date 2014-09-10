@@ -1,8 +1,9 @@
 #include "Thread.h"
 #include "Profiler.h"
 #include <Common/Base/System/hkBaseSystem.h>
-#include <Common/Base/Thread/Job/ThreadPool/Cpu/hkCpuJobThreadPool.h>
+#include <Common/Base/Thread/Pool/hkCpuThreadPool.h>
 #include <Common/Visualize/hkVisualDebugger.h>
+#include <Common/Base/System/Hardware/hkHardwareInfo.h>
 #include <Physics2012/Utilities/VisualDebugger/hkpPhysicsContext.h>
 
 ThreadSystem g_threadMgr;
@@ -28,17 +29,15 @@ void ThreadSystem::init(bool bCreateVDB)
     mMainThreadId = ::GetCurrentThreadId();
 
     // Get the number of physical threads available on the system
-    hkHardwareInfo hwInfo;
-    hkGetHardwareInfo(hwInfo);
-    int totalNumThreadsUsed = hwInfo.m_numThreads;
+    int totalNumThreadsUsed = hkHardwareInfo::getNumHardwareThreads();
 
     // We use one less than this for our thread pool, because we must also use this thread for our simulation
-    hkCpuJobThreadPoolCinfo threadPoolCinfo;
+    hkCpuThreadPoolCinfo threadPoolCinfo;
     threadPoolCinfo.m_numThreads = totalNumThreadsUsed - 2;
 
     // This line enables timers collection, by allocating 200kb per thread.
     threadPoolCinfo.m_timerBufferPerThreadAllocation = 200 * 1024;
-    mThreadPool = new hkCpuJobThreadPool( threadPoolCinfo );
+    mThreadPool = new hkCpuThreadPool( threadPoolCinfo );
 
     hkJobQueueCinfo info;
     info.m_jobQueueHwSetup.m_numCpuThreads = totalNumThreadsUsed;
@@ -71,7 +70,7 @@ void ThreadSystem::quit()
 void ThreadSystem::processAllJobs()
 {
     PROFILE(Thread_Process);
-    mThreadPool->processAllJobs( mJobQueue );
+    mThreadPool->processJobQueue( mJobQueue );
     mJobQueue->processAllJobs( );
 }
 

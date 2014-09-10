@@ -1,5 +1,7 @@
 #include "MaterialCompiler.h"
 #include "TextureCompiler.h"
+#include "DC_Utils.h"
+#include "Shader.h"
 
 //material
 MaterialCompiler::MaterialCompiler()

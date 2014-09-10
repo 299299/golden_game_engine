@@ -118,7 +118,6 @@
     <ClInclude Include="ModelCompiler.h" />
     <ClInclude Include="PackageCompiler.h" />
     <ClInclude Include="PhysicsCompiler.h" />
-    <ClInclude Include="ProxyCompiler.h" />
     <ClInclude Include="RagdollCompiler.h" />
     <ClInclude Include="ShaderCompiler.h" />
     <ClInclude Include="ShadingEnviromentCompiler.h" />
@@ -145,7 +144,6 @@
     <ClCompile Include="ModelCompiler.cpp" />
     <ClCompile Include="PackageCompiler.cpp" />
     <ClCompile Include="PhysicsCompiler.cpp" />
-    <ClCompile Include="ProxyCompiler.cpp" />
     <ClCompile Include="RagdollCompiler.cpp" />
     <ClCompile Include="ShaderCompiler.cpp" />
     <ClCompile Include="ShadingEnviromentCompiler.cpp" />

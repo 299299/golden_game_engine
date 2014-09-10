@@ -1,5 +1,6 @@
 #include "EntityConverter.h"
 #include "ComponentConverter.h"
+#include "HC_Utils.h"
 
 EntityConverter::EntityConverter()
 {

@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
-#include "DC_Utils.h"
+#include <vector>
+#include <string>
+#include "JsonParser.h"
 
 struct ResourceDependency
 {

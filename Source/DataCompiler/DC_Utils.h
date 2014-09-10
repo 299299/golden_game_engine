@@ -1,7 +1,7 @@
 #pragma once
-#include "stdafx.h"
 #include "CommonUtils.h"
 
+class JsonParser;
 void        nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt);
 void        texconv_compress(const std::string& src, const std::string& folder, const std::string& fmt);
 void        lut2d_to_3d(const uint8_t* inData, uint8_t* outData);

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Entity.h"
 
 class EntityCompiler : public BaseCompiler
 {

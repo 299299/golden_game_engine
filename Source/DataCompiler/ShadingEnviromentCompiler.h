@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "ShadingEnviroment.h"
 
 class ShadingEnviromentCompiler : public BaseCompiler
 {

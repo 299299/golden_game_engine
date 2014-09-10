@@ -1,11 +1,5 @@
-// stdafx.cpp : 只包括标准包含文件的源文件
-// Game.pch 将作为预编译头
-// stdafx.obj 将包含预编译类型信息
+#include "Prerequisites.h"
 
-#include "stdafx.h"
-
-// TODO: 在 STDAFX.H 中
-// 引用任何所需的附加头文件，而不是在此文件中引用
 #ifdef _DEBUG
 #pragma comment(lib, "../Lib/Engine_Debug.lib")
 #else
@@ -32,9 +26,9 @@
 
 //start of havok link config
 #ifdef _DEBUG
-#define HAVOK_LIB_PATH "C:\\Project\\hk2013_1_0_r1\\Lib\\win32_vs2010\\debug_dll\\"
+#define HAVOK_LIB_PATH "C:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\debug\\"
 #else
-#define HAVOK_LIB_PATH "C:\\Project\\hk2013_1_0_r1\\Lib\\win32_vs2010\\release_dll\\"
+#define HAVOK_LIB_PATH "C:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\release\\"
 #endif
 
 #pragma comment(lib, HAVOK_LIB_PATH"hkBase.lib")

@@ -2,6 +2,7 @@
 #include "MaterialConverter.h"
 #include "MeshConverter.h"
 #include "EntityConverter.h"
+#include "HC_Utils.h"
 
 ModelConverter::ModelConverter(EntityConverter* ownner)
 :ComponentConverter(ownner)

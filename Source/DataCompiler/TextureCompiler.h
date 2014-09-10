@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Texture.h"
 
 class TextureCompiler : public BaseCompiler
 {

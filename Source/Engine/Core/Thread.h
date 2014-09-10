@@ -2,7 +2,7 @@
 #include "Prerequisites.h"
 
 class hkJobQueue;
-class hkJobThreadPool;
+class hkThreadPool;
 class hkpPhysicsContext;
 class hkVisualDebugger;
 class hkpWorld;
@@ -16,7 +16,7 @@ public:
     void quit();
     
     hkJobQueue* getJobQueue() const { return mJobQueue;};
-    hkJobThreadPool* getThreadPool() const { return mThreadPool;};
+    hkThreadPool* getThreadPool() const { return mThreadPool;};
     uint32_t getMainThreadId() const { return mMainThreadId; };
     bool checkMainThread() const;
 
@@ -28,8 +28,7 @@ public:
     void updateVDB(float timeStep);
 private:
     hkJobQueue*                                     mJobQueue;
-    hkJobThreadPool*                                mThreadPool;
-
+    hkThreadPool*                                   mThreadPool;
     hkpPhysicsContext*                              mPhysicsCtx;
     hkVisualDebugger*                               mVDB;
     uint32_t                                        mMainThreadId;

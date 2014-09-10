@@ -1,4 +1,5 @@
 #include "LightConverter.h"
+#include "HC_Utils.h"
 
 LightConverter::LightConverter(EntityConverter* ownner)
 :ComponentConverter(ownner)

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "AnimFSM.h"
 
 class AnimFSMCompiler : public BaseCompiler
 {

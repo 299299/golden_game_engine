@@ -1,4 +1,5 @@
 #include "EntityCompiler.h"
+#include "DC_Utils.h"
 
 EntityCompiler::EntityCompiler()
 {

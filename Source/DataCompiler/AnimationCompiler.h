@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Animation.h"
 
 class AnimationCompiler : public BaseCompiler
 {

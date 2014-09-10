@@ -1,5 +1,6 @@
 #include "SamplerConverter.h"
 #include "EntityConverter.h"
+#include "HC_Utils.h"
 
 SamplerConverter::SamplerConverter(EntityConverter* ownner)
 :ComponentConverter(ownner)

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "Level.h"
 #include <bx/tinystl/allocator.h>
 #include <bx/tinystl/unordered_map.h>
 

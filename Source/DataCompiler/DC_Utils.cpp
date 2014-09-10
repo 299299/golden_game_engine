@@ -4,6 +4,7 @@
 #include "LevelCompiler.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #include <Common/Base/Container/Array/hkArray.h>
+#include <Common/Base/Algorithm/Sort/hkSort.h>
 
 static hkCriticalSection g_jsonCS;
 static hkCriticalSection g_childCS;

@@ -1,4 +1,6 @@
 #include "AnimFSMCompiler.h"
+#include "DC_Utils.h"
+#include "Animation.h"
 
 static const char* motion_blend_names[] = 
 {

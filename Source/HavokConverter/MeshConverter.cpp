@@ -4,6 +4,7 @@
 #include "MaterialConverter.h"
 #include "forsythtriangleorderoptimizer.h"
 #include "EntityConverter.h"
+#include "HC_Utils.h"
 #include <bgfx/vertexdecl.h>
 
 //#define FLOAT_WEIGHT

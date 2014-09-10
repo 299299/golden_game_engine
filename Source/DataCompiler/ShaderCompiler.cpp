@@ -1,4 +1,5 @@
 #include "ShaderCompiler.h"
+#include "DC_Utils.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 
 static std::vector<std::string> g_shaderProcessed;

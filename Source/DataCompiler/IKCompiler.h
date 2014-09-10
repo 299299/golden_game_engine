@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseCompiler.h"
+#include "IK.h"
 
 class LookIKCompiler : public BaseCompiler
 {
