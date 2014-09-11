@@ -1,22 +1,6 @@
 #pragma once
 #include "ShaderInc.h"
 
-enum CollisonLayer
-{
-    kLayerCollideAll = 0,
-    kLayerLandScape,
-    kLayerCharacterProxy,
-    kLayerDebris,
-    kLayerMovableEnviroment,
-    kLayerRagdollKeyframed,
-    kLayerRaycast,
-    kLayerRagdollDyanmic,
-    kLayerPicking,
-
-
-    kLayerMaxNum
-};
-
 enum EntityClasss
 {
     kLevelGeometry,

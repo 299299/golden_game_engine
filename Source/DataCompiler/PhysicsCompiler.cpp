@@ -91,11 +91,11 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
     JsonValue filtersValue = root.GetValue("collision_filters");
     if(filtersValue.IsValid()) numOfFilters = filtersValue.GetElementsCount();
 
-    uint32_t memSize = sizeof(PhysicsConfig) + numOfFilters * sizeof(CollisionFilter);
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    PhysicsConfig* cfg = (PhysicsConfig*)p;
-    cfg->m_numFilters = numOfFilters;
+    HK_ASSERT(0, numOfFilters <= 32);
+    
+    PhysicsConfig cfg;
+    memset(&cfg, 0x00, sizeof(cfg));
+    cfg.m_numFilterLayers = numOfFilters;
 
     for(uint32_t i=0; i<numOfFilters; ++i)
     {
@@ -103,29 +103,16 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
         m_filterNames.push_back(JSON_GetString(filterValue.GetValue("name")));
     }
 
-
     for(uint32_t i=0; i<numOfFilters; ++i)
     {
         JsonValue filterValue = filtersValue[i];
         JsonValue colValue = filterValue.GetValue("collides_with");
-        JsonValue notColValue = filterValue.GetValue("not_collides_with");
-        CollisionFilter& filter = cfg->m_filters[i];
-
-        uint32_t mask = 0;
-        
-        if(colValue.IsValid())
+        if(!colValue.IsValid()) continue;
+        CollisionFilter& filter = cfg.m_filters[i];
+        uint32_t mask = 0;        
+        for(uint32_t i=0; i<colValue.GetElementsCount(); ++i)
         {
-            for(uint32_t i=0; i<colValue.GetElementsCount(); ++i)
-            {
-                mask |= (1 << findFilterIndex(JSON_GetString(colValue[i])));
-            }
-        }
-        if(notColValue.IsValid())
-        {
-            for(uint32_t i=0; i<notColValue.GetElementsCount(); ++i)
-            {
-                mask &= ~(1 << findFilterIndex(JSON_GetString(colValue[i])));
-            }
+            mask |= (1 << findFilterIndex(colName));
         }
         filter.m_mask = mask;
     }

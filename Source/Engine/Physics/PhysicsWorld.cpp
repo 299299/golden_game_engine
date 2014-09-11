@@ -162,10 +162,18 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     m_world->addWorldPostSimulationListener(m_postCallback);
     g_threadMgr.vdbAddWorld(m_world);
 
-    hkpGroupFilter* filter = new hkpGroupFilter();
-    setupGroupFilter(filter);
-    m_world->setCollisionFilter(filter);
-    filter->removeReference();
+    hkpGroupFilter* pGroupFilter = new hkpGroupFilter();
+    // first disable collisions between all groups (group 0 should not be disabled, see docs)
+    pGroupFilter->disableCollisionsUsingBitfield(0xfffffffe, 0xfffffffe);
+    if(m_config)
+    {
+        for (int i=1;i<m_config->m_numFilters;i++)
+        {
+            pGroupFilter->enableCollisionsUsingBitfield(1 << i, m_config->m_filters[i].m_mask);
+        }
+    }
+    m_world->setCollisionFilter(pGroupFilter);
+    pGroupFilter->removeReference();
 
     m_contactListener = new HavokContactListener();
     m_world->addContactListener( m_contactListener );
@@ -188,25 +196,6 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
         m_world->addEntity(boxRigidBody);
         boxRigidBody->removeReference();
     }
-}
-
-void PhysicsWorld::setupGroupFilter( hkpGroupFilter* groupFilter )
-{
-    // We disable collisions between different layers to determine what behaviour we want
-    // For example, by disabling collisions between RAYCAST (used by foot ik) and DEBRIS, we make
-    // sure the feet are never placed on top of debris objects.
-    groupFilter->disableCollisionsBetween(kLayerLandScape, kLayerRagdollKeyframed);
-    groupFilter->disableCollisionsBetween(kLayerCharacterProxy, kLayerDebris);
-    groupFilter->disableCollisionsBetween(kLayerCharacterProxy, kLayerRagdollKeyframed);
-    groupFilter->disableCollisionsBetween(kLayerCharacterProxy, kLayerRaycast);
-    groupFilter->disableCollisionsBetween(kLayerCharacterProxy, kLayerRagdollDyanmic);
-    groupFilter->disableCollisionsBetween(kLayerDebris, kLayerRaycast);
-    groupFilter->disableCollisionsBetween(kLayerMovableEnviroment, kLayerRagdollKeyframed);
-    groupFilter->disableCollisionsBetween(kLayerRagdollKeyframed, kLayerRaycast);
-    groupFilter->disableCollisionsBetween(kLayerRaycast, kLayerRagdollDyanmic);
-    groupFilter->disableCollisionsBetween(kLayerPicking, kLayerLandScape);
-    groupFilter->disableCollisionsBetween(kLayerPicking, kLayerCharacterProxy);
-    groupFilter->disableCollisionsBetween(kLayerPicking, kLayerRagdollKeyframed);
 }
 
 void PhysicsWorld::postSimulationCallback()
@@ -447,11 +436,4 @@ int PhysicsWorld::getFilterIndex(const StringId& name) const
             return i;
     }
     return 0;
-}
-
-void* load_resource_physics_config(const char* data, uint32_t size)
-{
-    PhysicsConfig* cfg = (PhysicsConfig*)data;
-    cfg->m_filters = (CollisionFilter*)(data + sizeof(PhysicsConfig));
-    return cfg;
 }

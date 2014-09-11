@@ -44,8 +44,8 @@ struct PhysicsConfig
 {
     DECLARE_RESOURCE(physics_config);
     
-    CollisionFilter*            m_filters;
-    uint32_t                    m_numFilters;
+    CollisionFilter             m_filters[32];
+    uint32_t                    m_numFilterLayers;
 };
 
 struct PhysicsWorld
@@ -76,7 +76,6 @@ struct PhysicsWorld
     void postInit();
 
 private:
-    void setupGroupFilter( hkpGroupFilter* filter );
     void updateVDB(float dt);
     void checkStatus();
     void kickInRaycastJob();
@@ -95,5 +94,3 @@ public:
 };
 
 extern PhysicsWorld g_physicsWorld;
-
-void* load_resource_physics_config(const char* data, uint32_t size);
