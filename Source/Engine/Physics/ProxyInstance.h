@@ -25,10 +25,9 @@ ENGINE_NATIVE_ALIGN struct ProxyResource
     float                       m_horizontalGain;
     float                       m_maxVerticalSeparation;
     float                       m_maxHorizontalSeparation;
+    StringId                    m_layerName;
     bool                        m_pushIfFootInAir;
     char                        m_padding[3];
-
-    
 };
 
 struct ProxyInstance

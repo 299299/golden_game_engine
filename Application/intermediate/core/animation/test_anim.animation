@@ -1,6 +1,0 @@
-{
-    "name":"test",
-    "looped":true,
-    "havok-file":"intermediate/core/animation/test_anim.havok",
-    "triggers":[]
-}

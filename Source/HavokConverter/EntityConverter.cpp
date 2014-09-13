@@ -72,10 +72,10 @@ jsonxx::Object EntityConverter::serializeToJsonSplit() const
 
     std::string srcFile = m_config->m_input;
     string_replace(srcFile, "\\", "/");
-    rootObject << "source-file" << srcFile;
+    rootObject << "source_file" << srcFile;
     srcFile = m_config->m_assetPath;
     string_replace(srcFile, "\\", "/");
-    rootObject << "asset-path" << srcFile;
+    rootObject << "asset_path" << srcFile;
 
     jsonxx::Array compsObject;
     for(size_t i=0; i<m_components.size(); ++i)

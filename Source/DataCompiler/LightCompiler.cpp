@@ -29,8 +29,8 @@ bool LightCompiler::readJSON( const JsonValue& root )
     light.m_type = JSON_GetEnum(root.GetValue("type"), g_lightTypeNames);
     light.m_fallOff = JSON_GetFloat(root.GetValue("falloff"), 0.7f);
     light.m_intensity = JSON_GetFloat(root.GetValue("intensity"), 1.0f);
-    light.m_coneAngle = JSON_GetFloat(root.GetValue("cone-angle"), 0.46f);
-    light.m_attenScale = JSON_GetFloat(root.GetValue("atten-scale"), 0.0);
+    light.m_coneAngle = JSON_GetFloat(root.GetValue("cone_angle"), 0.46f);
+    light.m_attenScale = JSON_GetFloat(root.GetValue("atten_scale"), 0.0);
     light.m_hasShadow = JSON_GetBool(root.GetValue("shadow"));
     
     if(!write_file(m_output, &light, sizeof(light)))

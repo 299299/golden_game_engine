@@ -34,7 +34,7 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     memSize = HK_NEXT_MULTIPLE_OF(16, memSize);
     uint32_t havokOffset = memSize;
 
-    std::string havokFile = JSON_GetString(root.GetValue("havok-file"));
+    std::string havokFile = JSON_GetString(root.GetValue("havok_file"));
     char* havokData = 0;
     uint32_t havokFileSize = read_file(havokFile.c_str(), &havokData);
     if(havokFileSize < 16)
@@ -57,7 +57,7 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     AnimRig* rig = (AnimRig*)p;
     rig->m_havokDataOffset = havokOffset;
     rig->m_havokDataSize = havokFileSize;
-    rig->m_jointNum = JSON_GetInt(root.GetValue("joint-num"));
+    rig->m_jointNum = JSON_GetInt(root.GetValue("joint_num"));
     rig->m_mirrored = JSON_GetBool(root.GetValue("mirrored"));
     offset += sizeof(AnimRig);
     rig->m_jointNames = (StringId*)(offset);
@@ -65,7 +65,7 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     {
         rig->m_jointNames[i] = JSON_GetStringId(jointsValue[i]);
     }
-    JsonValue humanPartValue = root.GetValue("human-body");
+    JsonValue humanPartValue = root.GetValue("human_body");
     if(humanPartValue.IsValid())
     {
         extern const char*  g_humanBodyNames[];

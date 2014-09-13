@@ -8,8 +8,6 @@ enum MemoryAllocCategory
     kMemoryCategoryCommon,
     kMemoryCategoryFrame,
     kMemoryCategoryStatic,
-    kMemoryCategoryHavok,
-    kMemoryCategoryBgfx,
 #ifndef _RETAIL   
     kMemoryCategoryDebug,
 #endif

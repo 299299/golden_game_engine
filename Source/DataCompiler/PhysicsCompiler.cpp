@@ -2,18 +2,13 @@
 #include "PhysicsWorld.h"
 #include "DC_Utils.h"
 
-static const char*   physics_type_names[] = 
-{
-    "rigidbody-only", "ragdoll", "trigger", "complex", 0
-};
-
 bool PhysicsCompiler::readJSON(const JsonValue& root)
 {
     __super::readJSON(root);
     uint32_t havokOffset = sizeof(PhysicsResource);
     havokOffset = HK_NEXT_MULTIPLE_OF(16, havokOffset);
     
-    std::string havokFile = JSON_GetString(root.GetValue("havok-file"));
+    std::string havokFile = JSON_GetString(root.GetValue("havok_file"));
     char* havokData = 0;
     uint32_t havokFileSize = read_file(havokFile.c_str(), &havokData);
     if(havokFileSize < 16)
@@ -27,7 +22,8 @@ bool PhysicsCompiler::readJSON(const JsonValue& root)
     char* p = (char*)malloc(memSize);
     memset(p, 0x00, memSize);
     PhysicsResource* physics = (PhysicsResource*)p;
-    physics->m_systemType = JSON_GetEnum(root.GetValue("physics-type"), physics_type_names);
+    extern const char* physics_type_names[];
+    physics->m_systemType = JSON_GetEnum(root.GetValue("physics_type"), physics_type_names);
     physics->m_havokDataOffset = havokOffset;
     physics->m_havokDataSize = havokFileSize;
     memcpy(p + havokOffset, havokData, havokFileSize);
@@ -45,15 +41,17 @@ bool ProxyCompiler::readJSON(const JsonValue& root)
 
     vec3Make(proxy.m_gravity, 0, -9.8f, 0);
     proxy.m_radius = JSON_GetFloat(root.GetValue("radius"), 0.5f);
-    proxy.m_standHeight = JSON_GetFloat(root.GetValue("stand-height"), 2.0f);
+    proxy.m_standHeight = JSON_GetFloat(root.GetValue("stand_height"), 2.0f);
     proxy.m_friction = JSON_GetFloat(root.GetValue("friction"), 0.9f);
     proxy.m_strength = JSON_GetFloat(root.GetValue("strength"), 1.0f);
-    proxy.m_verticalGain = JSON_GetFloat(root.GetValue("vertical-gain"), 0.2f);
-    proxy.m_horizontalGain = JSON_GetFloat(root.GetValue("horizontal-gain"), 0.8f);
-    proxy.m_maxVerticalSeparation = JSON_GetFloat(root.GetValue("max-vertical-separation"), 5.0f);
-    proxy.m_maxHorizontalSeparation = JSON_GetFloat(root.GetValue("max-horizontal-separation"), 0.15f);
-    proxy.m_pushIfFootInAir = JSON_GetBool(root.GetValue("push-foot-in-air"));
+    proxy.m_verticalGain = JSON_GetFloat(root.GetValue("vertical_gain"), 0.2f);
+    proxy.m_horizontalGain = JSON_GetFloat(root.GetValue("horizontal_gain"), 0.8f);
+    proxy.m_maxVerticalSeparation = JSON_GetFloat(root.GetValue("max_vertical_separation"), 5.0f);
+    proxy.m_maxHorizontalSeparation = JSON_GetFloat(root.GetValue("max_horizontal_separation"), 0.15f);
+    proxy.m_pushIfFootInAir = JSON_GetBool(root.GetValue("push_foot_in_air"));
     proxy.m_offset = JSON_GetFloat(root.GetValue("offset"), proxy.m_standHeight/2);
+    proxy.m_layerName = JSON_GetStringId(root.GetValue("collision_layer"), StringId("character_proxy"));
+
     JSON_GetFloats(root.GetValue("gravity"), proxy.m_gravity, 3);
 
     if(!write_file(m_output, &proxy, sizeof(proxy)))
@@ -107,12 +105,23 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
     {
         JsonValue filterValue = filtersValue[i];
         JsonValue colValue = filterValue.GetValue("collides_with");
-        if(!colValue.IsValid()) continue;
+        JsonValue colExceptValue = filterValue.GetValue("collides_with_all_except");
         CollisionFilter& filter = cfg.m_filters[i];
-        uint32_t mask = 0;        
-        for(uint32_t i=0; i<colValue.GetElementsCount(); ++i)
+        uint32_t mask = 0;
+        if(colValue.IsValid())
         {
-            mask |= (1 << findFilterIndex(colName));
+            for(uint32_t i=0; i<colValue.GetElementsCount(); ++i)
+            {
+                ADD_BITS(mask, 1 << findFilterIndex(JSON_GetString(colValue)));
+            }
+        }
+        else if(colExceptValue.IsValid())
+        {
+            mask = 0xffffffff;
+            for(uint32_t i=0; i<colExceptValue.GetElementsCount(); ++i)
+            {
+                REMOVE_BITS(mask, 1 << findFilterIndex(JSON_GetString(colValue)));
+            }
         }
         filter.m_mask = mask;
     }

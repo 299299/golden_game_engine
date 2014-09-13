@@ -4,11 +4,6 @@
 #include "HC_Utils.h"
 #include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
 
-static const char*  physics_type_names[] = 
-{
-    "rigidbody-only", "ragdoll", "trigger", "complex", 0
-};
-
 PhysicsConverter::PhysicsConverter(EntityConverter* ownner)
 :ComponentConverter(ownner)
 ,m_physics(0)
@@ -76,8 +71,9 @@ void PhysicsConverter::postProcess()
 jsonxx::Object PhysicsConverter::serializeToJson() const
 {
     jsonxx::Object phyObject;
-    phyObject << "physics-type" << std::string(physics_type_names[m_type]);
-    phyObject << "havok-file" << m_phyFileName;
+    extern const char* physics_type_names[];
+    phyObject << "physics_type" << std::string(physics_type_names[m_type]);
+    phyObject << "havok_file" << m_phyFileName;
     phyObject << "name" << getResourceName();
     phyObject << "type" << getTypeName();
     return phyObject;

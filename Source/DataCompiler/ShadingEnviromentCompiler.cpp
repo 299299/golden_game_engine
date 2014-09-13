@@ -55,12 +55,12 @@ bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
     {
         shading.m_dofParams[0] = JSON_GetFloat(dofValue.GetValue("focusDistance"), 1.0f);
         shading.m_dofParams[1] = JSON_GetFloat(dofValue.GetValue("focusRange"), 2.0f);
-        shading.m_dofParams[2] = JSON_GetFloat(dofValue.GetValue("dof-blur-width"), 2.5f);
+        shading.m_dofParams[2] = JSON_GetFloat(dofValue.GetValue("dof_blur_width"), 2.5f);
         shading.m_dofParams[3] = JSON_GetFloat(dofValue.GetValue("focusFalloff"), 10.0f);
     }
 
-    JSON_GetFloats(root.GetValue("ambient-sky-color"), shading.m_ambientSkyColor, 3);
-    JSON_GetFloats(root.GetValue("ambient-ground-color"), shading.m_ambientGroundColor, 3);
+    JSON_GetFloats(root.GetValue("ambient_sky_color"), shading.m_ambientSkyColor, 3);
+    JSON_GetFloats(root.GetValue("ambient_ground_color"), shading.m_ambientGroundColor, 3);
 
     JsonValue shadowValue = root.GetValue("shadow");
     if(shadowValue.IsValid())
@@ -72,9 +72,9 @@ bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
     }
 
     shading.m_ppParams[2] = JSON_GetFloat(root.GetValue("defocus"), 0.2f);
-    shading.m_ppParams[3] = JSON_GetFloat(root.GetValue("film-gain-noise"), 0.25f);
+    shading.m_ppParams[3] = JSON_GetFloat(root.GetValue("film_gain_noise"), 0.25f);
 
-    JsonValue colorGradingValue = root.GetValue("color-grading");
+    JsonValue colorGradingValue = root.GetValue("color_grading");
     if(colorGradingValue.IsValid())
     {
         JsonValue texturesValue = colorGradingValue.GetValue("textures");
@@ -83,9 +83,9 @@ bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
         {
             std::string lutTexture = JSON_GetString(texturesValue[i]);
             shading.m_colorgradingTextureNames[i] = StringId(lutTexture.c_str());
-            addDependency("color-grading-texture", name_to_file_path(lutTexture.c_str(), Raw3DTexture::getName()));
+            addDependency("color_grading_texture", name_to_file_path(lutTexture.c_str(), Raw3DTexture::getName()));
         }
-        shading.m_colorGradingIndex = JSON_GetInt(colorGradingValue.GetValue("grading-index"));
+        shading.m_colorGradingIndex = JSON_GetInt(colorGradingValue.GetValue("grading_index"));
     }
 
     if(!write_file(m_output, &shading, sizeof(shading)))

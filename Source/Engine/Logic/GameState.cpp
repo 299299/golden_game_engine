@@ -79,7 +79,6 @@ void GameState::dbgPrintfEngineStatus( bool bDumpProfiler)
     DBG_TEX_PRINTF(0x6f, "memory static=%d[KB], frame=%d[KB], havok=%d[KB], debug=%d[KB]", 
         g_memoryMgr.allocedSize(kMemoryCategoryStatic)/1000, 
         g_memoryMgr.allocedSize(kMemoryCategoryFrame)/1000,
-        g_memoryMgr.allocedSize(kMemoryCategoryHavok)/1000,
         g_memoryMgr.allocedSize(kMemoryCategoryDebug)/1000);
     if(bDumpProfiler) g_profiler.Dump();
 }

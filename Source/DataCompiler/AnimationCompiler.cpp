@@ -30,7 +30,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     }
 
     
-    std::string havokFile = JSON_GetString(root.GetValue("havok-file"));
+    std::string havokFile = JSON_GetString(root.GetValue("havok_file"));
     char* havokData = 0;
     uint32_t havokFileSize = read_file(havokFile.c_str(), &havokData);
     if(havokFileSize < 16)
@@ -51,12 +51,12 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     free(havokData);
 
     Animation* anim = (Animation*)p;
-    JsonValue mirrorValue = root.GetValue("mirrored-from");
+    JsonValue mirrorValue = root.GetValue("mirrored_from");
     if(mirrorValue.IsValid())
     {
-        std::string mirrorFile = JSON_GetString(root.GetValue("mirrored-from"));
+        std::string mirrorFile = JSON_GetString(root.GetValue("mirrored_from"));
         anim->m_mirroredFrom = StringId(mirrorFile.c_str());
-        addDependency("mirror-animation", name_to_file_path(mirrorFile, Animation::getName()));
+        addDependency("mirror animation", name_to_file_path(mirrorFile, Animation::getName()));
 
         std::string rigFile = JSON_GetString(root.GetValue("rig"));
         anim->m_rigName = StringId(rigFile.c_str());

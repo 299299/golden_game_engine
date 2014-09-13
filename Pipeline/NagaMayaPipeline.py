@@ -19,18 +19,6 @@ def nameToNode(name):
     return node
 
 
-def attrChangedCallback(msg, mplug, otherMplug, pipe):
-    if not (msg & OM.MNodeMessage.kAttributeSet):
-        return
-    if not pipe.isRemoteSync():
-        return
-    nodeName, attrName = mplug.name().split('.')
-    if nodeName == 'persp':
-        pipe.remoteSyncCamera()
-    else:
-        pipe.remoteSyncTransform(nodeName)
-
-
 PREVIEW_PACK = 'preview'
 GAME_APP = 'Game_Debug'
 UI_NAME = 'Naga_UI'
@@ -57,16 +45,12 @@ class NagaPipeline(object):
         self.connect_to_game_server()
         self.created = True
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
-                       event=('SelectionChanged', self.onSelectionChanged))
-        cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
                        event=('SceneOpened', self.onSceneChanged))
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
                        event=('SceneSaved', self.onSceneChanged))
-        self._addAttCallback('persp')
         # print("########### NagaPipeline::create end ##################")
 
     def destroy(self):
-        self._clearAttCallbacks()
         if not self.created:
             return
         if cmds.window(UI_NAME, exists=True):
@@ -105,37 +89,9 @@ class NagaPipeline(object):
             f.write(line)
         f.close()
 
-    def _addAttCallback(self, name):
-        callbackId = OM.MNodeMessage.addAttributeChangedCallback(
-            nameToNode(name), attrChangedCallback, self)
-        self.callbacks.append(callbackId)
-        print("add callback" + str(callbackId))
-
-    def _clearAttCallbacks(self):
-        for cb in self.callbacks:
-            print("remove callback" + str(cb))
-            OM.MMessage.removeCallback(cb)
-        self.callbacks = []
-        if self.lastSyncCallback:
-            OM.MMessage.removeCallback(self.lastSyncCallback)
-            self.lastSyncCallback = None
-
     #
     # Callbacks
     #
-    def onSelectionChanged(self):
-        sel = mel.eval('ls -sl')
-        nodeName = sel[0]
-        if self.lastSyncCallback:
-            print('remove callback ' + str(self.lastSyncCallback))
-            OM.MMessage.removeCallback(self.lastSyncCallback)
-            self.lastSyncCallback = None
-        if not nodeName.startswith('AD_'):
-            return
-        self.lastSyncCallback = OM.MNodeMessage.addAttributeChangedCallback(
-            nameToNode(nodeName), attrChangedCallback, self)
-        print('add callback ' + str(self.lastSyncCallback))
-
     def onSceneChanged(self):
         displayName = '*** %s ***' % NAGA.getSceneName()
         cmds.text(self.nameText, e=1, label=displayName)
@@ -159,10 +115,7 @@ class NagaPipeline(object):
         cmds.setParent('..')
 
         cmds.frameLayout(l="Parameters", cll=1, h=50)
-        cmds.rowLayout(numberOfColumns=2)
         self.selectCheck = cmds.checkBox(label='Export Select Only', v=False)
-        self.remoteCheck = cmds.checkBox(label='Remote Sync', v=True)
-        cmds.setParent('..')
         cmds.setParent('..')
 
         cmds.frameLayout(l="Engine Parameters", cll=1, h=50)
@@ -219,9 +172,6 @@ class NagaPipeline(object):
 
     def isSelectOnly(self):
         return cmds.checkBox(self.selectCheck, q=1, v=1)
-
-    def isRemoteSync(self):
-        return cmds.checkBox(self.remoteCheck, q=1, v=1)
 
     def onOpenARClicked(self, *arg):
         self.lastMayaScene = cmds.file(q=True, sn=True)
@@ -311,47 +261,6 @@ class NagaPipeline(object):
             time.sleep(0.2)
         else:
             self.reloadCompileResult()
-
-    def remoteSyncTransform(self, nodeName, minTime=0.05):
-        curTime = time.time()
-        dt = curTime - self.lastSyncTime
-        if(dt < minTime):
-            return
-        self.lastSyncTime = curTime
-        matrix = cmds.xform(nodeName, q=True, m=True, ws=True)
-        senddata = '%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g' %\
-            (matrix[0], matrix[1], matrix[2], matrix[3],
-             matrix[4], matrix[5], matrix[6], matrix[7],
-             matrix[8], matrix[9], matrix[10], matrix[11],
-             matrix[12], matrix[13], matrix[14], matrix[15])
-        # print(senddata)
-        self.webSock.sendmayacommand("object_transform", nodeName, senddata)
-
-    def remoteSyncCamera(self, minTime=0.05):
-        curTime = time.time()
-        dt = curTime - self.lastSyncTime
-        if(dt < minTime):
-            return
-        self.lastSyncTime = curTime
-        self.doSyncRemoteCamera()
-
-    def doSyncRemoteCamera(self):
-        nodeName = 'persp'
-        translate = cmds.getAttr(nodeName + '.translate')[0]
-        lookAt = cmds.camera(nodeName, q=True, wci=True)
-        #rotate = cmds.getAttr(nodeName + '.rotate')[0]
-        #matrix = cmds.xform(nodeName, q=True, m=True, ws=True)
-        fov = NAGA.getCameraFov()
-        senddata = '%g,%g,%g,%g,%g,%g,%g'\
-            % (fov,
-               translate[0] * -self.engineScale,
-               translate[1] * self.engineScale,
-               translate[2] * self.engineScale,
-               lookAt[0] * -self.engineScale,
-               lookAt[1] * self.engineScale,
-               lookAt[2] * self.engineScale)
-        # print(senddata)
-        self.webSock.sendmayacommand("camera_transform", senddata)
 
     def lunchEngine(self, packageName):
         sceneName = NAGA.getSceneName()

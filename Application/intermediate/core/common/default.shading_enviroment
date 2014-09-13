@@ -16,20 +16,20 @@
     },
     
     "defocus":0.2,
-    "film-gain-noise":0.25,
+    "film_gain_noise":0.25,
     
     "dof":
     {
         "focusDistance":1.0,
         "focusRange":100.0,
-        "dof-blur-width":2.5,
+        "dof_blur_width":2.5,
         "focusFalloff":10.0
     },
 
-    "ambient-sky-color": [0.37, 0.55, 0.66],
-    "ambient-ground-color":[0, 0, 0],
+    "ambient_sky_color": [0.37, 0.55, 0.66],
+    "ambient_ground_color":[0, 0, 0],
     
-    "color-grading":
+    "color_grading":
     {
         "textures":
         [

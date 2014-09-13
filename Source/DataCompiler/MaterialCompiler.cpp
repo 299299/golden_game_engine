@@ -47,12 +47,12 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
         addError("material[%s] with a null shader name", m_input.c_str());
     }
    
-    programFile = JSON_GetString(root.GetValue("shadow-shader"));
+    programFile = JSON_GetString(root.GetValue("shadow_shader"));
     if(!programFile.empty())
     {
         sprintf_s(programName, PROGRAM_PATH"%s", programFile.c_str());
         m->m_shadowShaderName = StringId(programName);
-        addDependency("shadow-shader", name_to_file_path(programName, ShaderProgram::getName()));
+        addDependency("shadow shader", name_to_file_path(programName, ShaderProgram::getName()));
     }
 
     uint64_t renderState = BGFX_STATE_RGB_WRITE 
@@ -64,9 +64,9 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
 
 
     JSON_GetFloats(root.GetValue("diffuse"), m->m_diffuse, 3);
-    m->m_diffuse[3] = JSON_GetFloat(root.GetValue("diffuse-alpha"), 1.0f);
+    m->m_diffuse[3] = JSON_GetFloat(root.GetValue("diffuse_alpha"), 1.0f);
     JSON_GetFloats(root.GetValue("specular"), m->m_specular, 3);
-    m->m_specular[3] = JSON_GetFloat(root.GetValue("specular-power"), 20.0f);
+    m->m_specular[3] = JSON_GetFloat(root.GetValue("specular_power"), 20.0f);
 
     //convert all color 255 to 1 range.
     for(uint32_t i=0; i<3; ++i)
@@ -83,12 +83,12 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     m->m_offsetAndRepeat[2] = 1;
     m->m_offsetAndRepeat[3] = 1;
     
-    JSON_GetFloats(root.GetValue("uv-offset"), m->m_offsetAndRepeat, 2);
-    JSON_GetFloats(root.GetValue("uv-repeat"), m->m_offsetAndRepeat + 2, 2);
+    JSON_GetFloats(root.GetValue("uv_offset"), m->m_offsetAndRepeat, 2);
+    JSON_GetFloats(root.GetValue("uv_repeat"), m->m_offsetAndRepeat + 2, 2);
 
-    m->m_params1[0] = JSON_GetFloat(root.GetValue("blend-normal"), 0.4f);
-    m->m_params1[1] = JSON_GetFloat(root.GetValue("normal-height"), 1.0f);
-    m->m_params1[2] = JSON_GetFloat(root.GetValue("emissive-intensity"), 1.0f);
+    m->m_params1[0] = JSON_GetFloat(root.GetValue("blend_normal"), 0.4f);
+    m->m_params1[1] = JSON_GetFloat(root.GetValue("normal_height"), 1.0f);
+    m->m_params1[2] = JSON_GetFloat(root.GetValue("emissive_intensity"), 1.0f);
 
     extern const char*  g_textureNames[];
     extern const char* g_textureFlagNames[];
@@ -137,16 +137,16 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
         }
     }
 
-    JsonValue rsValue = root.GetValue("render-state");
+    JsonValue rsValue = root.GetValue("render_state");
     if(rsValue.IsValid())
     {
         //@TODO only cull mode now.
-        if(JSON_GetBool(rsValue.GetValue("cull-none")))
+        if(JSON_GetBool(rsValue.GetValue("cull_none")))
         {
             renderState &= ~BGFX_STATE_CULL_CW;
             renderState &= ~BGFX_STATE_CULL_CCW;
         }
-        if(JSON_GetBool(rsValue.GetValue("alpha-blending")))
+        if(JSON_GetBool(rsValue.GetValue("alpha_blending")))
         {
             renderState |= BGFX_STATE_BLEND_ADD;
             renderState |= BGFX_STATE_BLEND_ALPHA;
@@ -180,9 +180,9 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
                     vec3Make(translucency.m_rampOuterColor, 1.0f, 0.64f, 0.25f);
                     vec3Make(translucency.m_rampMediumColor, 1.0f, 0.21f, 0.14f);
                     vec3Make(translucency.m_rampInnerColor, 0.25f, 0.05f, 0.02f);
-                    JSON_GetFloats(flagValue.GetValue("ramp-outer-color"),translucency.m_rampOuterColor, 3);
-                    JSON_GetFloats(flagValue.GetValue("ramp-medium-color"),translucency.m_rampMediumColor, 3);
-                    JSON_GetFloats(flagValue.GetValue("ramp-inner-color"),translucency.m_rampInnerColor, 3);
+                    JSON_GetFloats(flagValue.GetValue("ramp_outer_color"),translucency.m_rampOuterColor, 3);
+                    JSON_GetFloats(flagValue.GetValue("ramp_medium_color"),translucency.m_rampMediumColor, 3);
+                    JSON_GetFloats(flagValue.GetValue("ramp_inner_color"),translucency.m_rampInnerColor, 3);
                     translucency.m_info[0] = JSON_GetFloat(flagValue.GetValue("distortion"), 0.2f);
                     translucency.m_info[1] = JSON_GetFloat(flagValue.GetValue("power"), 3.0f);
                     translucency.m_info[2] = JSON_GetFloat(flagValue.GetValue("scale"), 1.0f);
@@ -192,8 +192,8 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
             case kFlagOpacity:
                 {
                     m->m_opacityParams[0] = JSON_GetFloat(flagValue.GetValue("opacity"), 1.0f);
-                    m->m_opacityParams[1] = JSON_GetFloat(flagValue.GetValue("fresnel-min"), 0.0f);
-                    m->m_opacityParams[2] = JSON_GetFloat(flagValue.GetValue("fresnel-max"), 0.0f);
+                    m->m_opacityParams[1] = JSON_GetFloat(flagValue.GetValue("fresnel_min"), 0.0f);
+                    m->m_opacityParams[2] = JSON_GetFloat(flagValue.GetValue("fresnel_max"), 0.0f);
 
                     //if opacity is on
                     //default to alpha blending render state.

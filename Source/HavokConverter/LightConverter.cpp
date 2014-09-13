@@ -49,7 +49,7 @@ jsonxx::Object LightConverter::serializeToJson() const
     dirObject << dir[1];
     dirObject << dir[2];
     lightObject << "direction" << dirObject;
-    lightObject << "cone-angle" << m_light->m_angle;
+    lightObject << "cone_angle" << m_light->m_angle;
     lightObject << "falloff" << m_light->m_range;
     lightObject << "name" << getResourceName();
     lightObject << "type" << getTypeName();

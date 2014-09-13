@@ -19,41 +19,8 @@ static void errorReport(const char* msg, void* userArgGivenToInit)
     LOGHAVOK(msg);
 }
 
-class hkEngineAllocator : public hkMemoryAllocator
-{
-public:
-    virtual void* blockAlloc( int numBytes ) 
-    { 
-#ifndef _RETAIL
-        m_memStats.m_allocated += memAlignedSize(numBytes, 16);
-        if ( m_memStats.m_allocated > m_memStats.m_peakInUse )
-        {
-            m_memStats.m_peakInUse = m_memStats.m_allocated;
-        }
-
-#endif //_RETAIL
-        return g_memoryMgr.alloc(kMemoryCategoryHavok, numBytes, 16); // Consider the worst overhead by hkMemoryRoundUp.
-    }
-    virtual void blockFree( void* p, int numBytes ) 
-    {
-        if(!p) return;
-        int nAllocated = numBytes + reinterpret_cast<int*>(p)[-1];
-#ifndef _RETAIL
-        m_memStats.m_allocated -= nAllocated;
-#endif // _RETAIL
-        g_memoryMgr.free(kMemoryCategoryHavok, p, numBytes);
-    }
-    virtual void getMemoryStatistics( MemoryStatistics& u ) const { u = m_memStats;}
-    virtual int getAllocatedSize(const void* obj, int numBytes) const { return numBytes; }
-private:
-    MemoryStatistics m_memStats;
-};
-
-class hkEngineAllocator s_SystemAllocator;
-
 MemorySystem    g_memoryMgr;
-
-static MallocAllocator g_commonAllocator("common-memory");
+static MallocAllocator g_commonAllocator("common_memory");
 
 MemorySystem::MemorySystem()
 {
@@ -67,8 +34,8 @@ MemorySystem::~MemorySystem()
 
 void MemorySystem::init(bool bCheckMem)
 {
-    if(bCheckMem) m_memRouter = hkMemoryInitUtil::initChecking( &s_SystemAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
-    else m_memRouter = hkMemoryInitUtil::initDefault( &s_SystemAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
+    if(bCheckMem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
+    else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
     hkBaseSystem::init( m_memRouter, errorReport );
     hkMonitorStream::getInstance().resize( MONITOR_FRAME_SIZE  );
     registerAllocator(kMemoryCategoryCommon, &g_commonAllocator);

@@ -5,6 +5,7 @@
 #include "Resource.h"
 #include "DataDef.h"
 #include "Log.h"
+#include "PhysicsWorld.h"
 //============================================================
 #include <Animation/Animation/Rig/hkaSkeleton.h>
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
@@ -288,10 +289,10 @@ void  FootInstance::doFootIK(   bool isStanding,
     footPlacementInput.m_onOffGain = res->m_footOnOffGain;
     footPlacementInput.m_footPlacementOn = footIkOn;
 
-    int collisionLayer = res->m_raycastCollisionLayer;
-    if(collisionLayer >= 0)
+    int index = g_physicsWorld.getFilterLayer(res->m_raycastCollisionLayer);
+    if(index)
     {
-        footPlacementInput.m_collisionFilterInfo  = hkpGroupFilter::calcFilterInfo(collisionLayer);
+        footPlacementInput.m_collisionFilterInfo  = hkpGroupFilter::calcFilterInfo(index);
         footPlacementInput.m_useCollisionFilterInfo = true;
     }
 

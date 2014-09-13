@@ -1,0 +1,47 @@
+{
+    "collision_filters" : 
+    [
+        {
+            "name":"default"
+        },
+        {
+            "name":"non_collider"
+        },
+        {
+            "name":"level_geometry",
+            "collides_with_all_except":["ragdoll_keyframe"]
+        },
+        {
+            "name":"character_proxy",
+            "collides_with_all_except":
+            [
+                "debris", "ragdoll_keyframe", "raycast", "ragdoll_dynamic"
+            ]
+        },
+        {
+            "name":"debris",
+            "collides_with_all_except": [ "raycast" ]
+        },
+        {
+            "name":"movable_enviroment",
+            "collides_with_all_except": [ "ragdoll_keyframe" ]
+        },
+        {
+            "name":"ragdoll_keyframe",
+            "collides_with_all_except": [ "raycast" ]
+        },
+        {
+            "name":"raycast",
+            "collides_with_all_except": [ "ragdoll_dynamic" ]
+        },
+        {
+            "name":"picking",
+            "collides_with_all_except": 
+            [ 
+                "level_geometry",
+                "character_proxy",
+                "ragdoll_keyframe"
+            ]
+        }
+    ]
+}

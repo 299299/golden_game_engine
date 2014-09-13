@@ -52,17 +52,17 @@ bool ReachIKCompiler::readJSON( const JsonValue& root )
     memset(&reach, 0x00, sizeof(reach));
 
     vec3Make(reach.m_elbowAxis, 0, 1, 0);
-    JSON_GetFloats(root.GetValue("elbow-axis"), reach.m_elbowAxis, 3);
+    JSON_GetFloats(root.GetValue("elbow_axis"), reach.m_elbowAxis, 3);
 
     reach.m_hingeLimitAngle[0] = 0;
     reach.m_hingeLimitAngle[1] = 180;
 
-    JSON_GetFloats(root.GetValue("hinge-limit-angle"), reach.m_hingeLimitAngle, 2);
+    JSON_GetFloats(root.GetValue("hinge_limit_angle"), reach.m_hingeLimitAngle, 2);
 
-    reach.m_reachGain = JSON_GetFloat(root.GetValue("reach-gain"),  0.3f);
-    reach.m_leaveGain = JSON_GetFloat(root.GetValue("leave-gain"), 0.19f);
-    reach.m_moveGain = JSON_GetFloat(root.GetValue("move-gain"), 0.085f);
-    reach.m_targetGain = JSON_GetFloat(root.GetValue("target-gain"),  0.2f);
+    reach.m_reachGain = JSON_GetFloat(root.GetValue("reach_gain"),  0.3f);
+    reach.m_leaveGain = JSON_GetFloat(root.GetValue("leave_gain"), 0.19f);
+    reach.m_moveGain = JSON_GetFloat(root.GetValue("move_gain"), 0.085f);
+    reach.m_targetGain = JSON_GetFloat(root.GetValue("target_gain"),  0.2f);
     reach.m_index = JSON_GetEnum(root.GetValue("hand"), left_right_names);
 
     std::string rigFile = JSON_GetString(root.GetValue("rig"));
@@ -96,30 +96,30 @@ bool FootIKCompiler::readJSON( const JsonValue& root )
     vec3Make(foot.m_rightKneeAxisLS, 0, 0, 1);
     vec3Make(foot.m_footEndLS, 0, 0, 0.2f);
 
-    JSON_GetFloats(root.GetValue("left-knee-axis"), foot.m_leftKneeAxisLS, 3);
-    JSON_GetFloats(root.GetValue("right-knee-axis"), foot.m_rightKneeAxisLS, 3);
-    JSON_GetFloats(root.GetValue("foot-end-ls"), foot.m_footEndLS, 3);
+    JSON_GetFloats(root.GetValue("left_knee_axis"), foot.m_leftKneeAxisLS, 3);
+    JSON_GetFloats(root.GetValue("right_knee_axis"), foot.m_rightKneeAxisLS, 3);
+    JSON_GetFloats(root.GetValue("foot_end_ls"), foot.m_footEndLS, 3);
 
-    foot.m_orignalGroundHeightMS = JSON_GetFloat(root.GetValue("orginal-ground-height-ms"));
-    foot.m_minAnkleHeightMS = JSON_GetFloat(root.GetValue("min-ankle-height-ms"));
-    foot.m_maxAnkleHeightMS = JSON_GetFloat(root.GetValue("max-ankle-height-ms"));
-    foot.m_footPlantedAnkleHeightMS = JSON_GetFloat(root.GetValue("foot-planted-ankle-height-ms"));
-    foot.m_footRaisedAnkleHeightMS = JSON_GetFloat(root.GetValue("foot-raised-ankle-height-ms"));
-    foot.m_cosineMaxKneeAngle = JSON_GetFloat(root.GetValue("max-consine-knee-angle"), 180);
-    foot.m_cosineMinKneeAngle = JSON_GetFloat(root.GetValue("min-consine-knee-angle"), 0);
-    foot.m_raycastDistanceUp = JSON_GetFloat(root.GetValue("raycast-dis-up"), 0.5f);
-    foot.m_raycastDistanceDown = JSON_GetFloat(root.GetValue("raycast-dis-down"), 0.8f);
-    foot.m_raycastCollisionLayer = JSON_GetInt(root.GetValue("raycast-layer"), -1);
-    foot.m_groundAscendingGain = JSON_GetFloat(root.GetValue("ground-ascending-gain"), 0.35f);
-    foot.m_groundDescendingGain = JSON_GetFloat(root.GetValue("ground-descending-gain"), 0.6f);
-    foot.m_standAscendingGain = JSON_GetFloat(root.GetValue("ground-ascending-gain"), 0.6f);
-    foot.m_footPlantedGain = JSON_GetFloat(root.GetValue("foot-planted-gain"), 1.0f);
-    foot.m_footRaisedGain = JSON_GetFloat(root.GetValue("foot-raised-gain"), 0.85f);
-    foot.m_footOnOffGain = JSON_GetFloat(root.GetValue("foot-onoff-gain"), 0.2f);
-    foot.m_footUnLockGain = JSON_GetFloat(root.GetValue("foot-unlock-gain"), 0.85f);
-    foot.m_pelvisFeedback = JSON_GetFloat(root.GetValue("pelvis-feedback"), 0.1f);
-    foot.m_pelvisUpDownBias = JSON_GetFloat(root.GetValue("pelvis-updown-bias"), 0.95f);
-    foot.m_raycastType = JSON_GetEnum(root.GetValue("raycast-type"), raycast_type_names);
+    foot.m_orignalGroundHeightMS = JSON_GetFloat(root.GetValue("orginal_ground_height_ms"));
+    foot.m_minAnkleHeightMS = JSON_GetFloat(root.GetValue("min_ankle_height_ms"));
+    foot.m_maxAnkleHeightMS = JSON_GetFloat(root.GetValue("max_ankle_height_ms"));
+    foot.m_footPlantedAnkleHeightMS = JSON_GetFloat(root.GetValue("foot_planted_ankle_height_ms"));
+    foot.m_footRaisedAnkleHeightMS = JSON_GetFloat(root.GetValue("foot_raised_ankle_height_ms"));
+    foot.m_cosineMaxKneeAngle = JSON_GetFloat(root.GetValue("max_consine_knee_angle"), 180);
+    foot.m_cosineMinKneeAngle = JSON_GetFloat(root.GetValue("min_consine_knee_angle"), 0);
+    foot.m_raycastDistanceUp = JSON_GetFloat(root.GetValue("raycast_dis_up"), 0.5f);
+    foot.m_raycastDistanceDown = JSON_GetFloat(root.GetValue("raycast_dis_down"), 0.8f);
+    foot.m_raycastCollisionLayer = JSON_GetStringId(root.GetValue("raycast_layer"), StringId("raycast"));
+    foot.m_groundAscendingGain = JSON_GetFloat(root.GetValue("ground_ascending_gain"), 0.35f);
+    foot.m_groundDescendingGain = JSON_GetFloat(root.GetValue("ground_descending_gain"), 0.6f);
+    foot.m_standAscendingGain = JSON_GetFloat(root.GetValue("ground_ascending_gain"), 0.6f);
+    foot.m_footPlantedGain = JSON_GetFloat(root.GetValue("foot_planted_gain"), 1.0f);
+    foot.m_footRaisedGain = JSON_GetFloat(root.GetValue("foot_raised_gain"), 0.85f);
+    foot.m_footOnOffGain = JSON_GetFloat(root.GetValue("foot_onoff_gain"), 0.2f);
+    foot.m_footUnLockGain = JSON_GetFloat(root.GetValue("foot_unlock_gain"), 0.85f);
+    foot.m_pelvisFeedback = JSON_GetFloat(root.GetValue("pelvis_feedback"), 0.1f);
+    foot.m_pelvisUpDownBias = JSON_GetFloat(root.GetValue("pelvis_updown_bias"), 0.95f);
+    foot.m_raycastType = JSON_GetEnum(root.GetValue("raycast_type"), raycast_type_names);
 
     std::string rigFile = JSON_GetString(root.GetValue("rig"));
     foot.m_rigName = StringId(rigFile.c_str());

@@ -25,21 +25,21 @@ const char* g_humanBodyNames[] =
 {
     "head", 
     "neck", 
-    "left-shoulder", 
-    "left-arm", 
-    "left-fore-arm",
-    "left-hand",
-    "right-shoulder", 
-    "right-arm", 
-    "right-fore-arm",
-    "right-hand",
+    "left_shoulder", 
+    "left_arm", 
+    "left_fore_arm",
+    "left_hand",
+    "right_shoulder", 
+    "right_arm", 
+    "right_fore_arm",
+    "right_hand",
     "hip",
-    "left-up-leg", 
-    "left-leg", 
-    "left-foot",
-    "right-up-leg", 
-    "right-leg", 
-    "right-foot", 
+    "left_up_leg", 
+    "left_leg", 
+    "left_foot",
+    "right_up_leg", 
+    "right_leg", 
+    "right_foot", 
     0
 };
 
@@ -58,24 +58,44 @@ const char* g_defaultTextureNames[] =
 
 const char* g_lightTypeNames[] =
 {
-    "directional", "spot", "point", 0
+    "directional", 
+    "spot", 
+    "point", 
+    0
 };
 
 
 const char* g_beatTypeNames[] =
 {
-    "left-foot-down", "right-foot-down", 0,
+    "left_foot_down", 
+    "right_foot_down", 
+    0,
 };
 
 const char* g_matFlagNames[] = 
 {
-    "skinning", "alpha-mask", "rim-color", "translucency", "opacity", 0
+    "skinning", 
+    "alpha_mask", 
+    "rim_color", 
+    "translucency", 
+    "opacity", 
+    0
 };
 
 const char* g_textureFlagNames[] = 
 {
-    "u-mirror","u-clamp","v-mirror","v-clamp","w-mirror","w-clamp",
-    "min-point","min-anisotropic","mag-point","mag-anisotropic", "min-point", 0
+    "u_mirror",
+    "u_clamp",
+    "v_mirror",
+    "v_clamp",
+    "w_mirror",
+    "w_clamp",
+    "min_point",
+    "min_anisotropic",
+    "mag-point",
+    "mag_anisotropic", 
+    "min_point", 
+    0
 };
 uint32_t g_textureFlags[] = 
 {
@@ -101,7 +121,7 @@ uint8_t g_uniformNums[] =
 
 const char* g_entityClassNames[] =
 {
-    "level-geometry",
+    "level_geometry",
     "prop",
     "character",
     0
@@ -120,9 +140,18 @@ const char* g_viewGroupNames[] =
 const char* g_modelFlagNames[] =
 {
     "invisible",
-    "transform-dirty",
-    "no-shadow",
+    "transform_dirty",
+    "no_shadow",
     0,
+};
+
+const char*   physics_type_names[] = 
+{
+    "rigidbody_only", 
+    "ragdoll", 
+    "trigger", 
+    "complex", 
+    0
 };
 
 

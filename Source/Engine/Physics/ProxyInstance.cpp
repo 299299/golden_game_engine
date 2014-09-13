@@ -101,9 +101,8 @@ void ProxyInstance::init(const void* resource)
 {
     m_resource = (const ProxyResource*)resource;
     hkpWorld* world = g_physicsWorld.getWorld();
-    hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape, 
-                                    hkTransform::getIdentity(), 
-                                    hkpGroupFilter::calcFilterInfo(kLayerCharacterProxy,0) );
+    int layerId = g_physicsWorld.getFilterLayer(m_resource->m_layerName);
+    hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape, hkTransform::getIdentity(), hkpGroupFilter::calcFilterInfo(layerId,0));
     hkpCharacterProxyCinfo cpci;
     cpci.m_staticFriction = 0.0f;
     cpci.m_dynamicFriction = 1.0f;

@@ -210,6 +210,7 @@ ModelConverter::serializeToJson() const
     for(size_t i=0; i<m_meshes.size(); ++i)
     {
         MaterialConverter* m = m_meshes[i]->getMaterial();
+        if(!m) continue;
         if(m->isUsingCommon()) matObject << m->getResourceName();
         else matObject << m->serializeToJson();
     }
@@ -218,9 +219,9 @@ ModelConverter::serializeToJson() const
     if(m_type == kModelSky)
     {
         extern const char* g_viewGroupNames[];
-        modelObject << "view-group" << std::string(g_viewGroupNames[kBackgroundViewId]);
+        modelObject << "view_group" << std::string(g_viewGroupNames[kBackgroundViewId]);
         jsonxx::Array flagsObject;
-        flagsObject << "no-shadow";
+        flagsObject << "no_shadow";
         modelObject << "flags" << flagsObject;
     }
     return modelObject;

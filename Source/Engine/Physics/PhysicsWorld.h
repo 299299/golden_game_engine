@@ -72,7 +72,7 @@ struct PhysicsWorld
     int addRaycastJob(const float* from, const float* to, int32_t filterInfo = -1);
     RaycastJob* getRaycastJob(int handle) const;
 
-    int getFilterIndex(const StringId& name) const;
+    int getFilterLayer(const StringId& name) const;
     void postInit();
 
 private:

@@ -167,7 +167,7 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     pGroupFilter->disableCollisionsUsingBitfield(0xfffffffe, 0xfffffffe);
     if(m_config)
     {
-        for (int i=1;i<m_config->m_numFilters;i++)
+        for (int i=1;i<m_config->m_numFilterLayers;i++)
         {
             pGroupFilter->enableCollisionsUsingBitfield(1 << i, m_config->m_filters[i].m_mask);
         }
@@ -426,11 +426,11 @@ void PhysicsWorld::postInit()
 }
 
 
-int PhysicsWorld::getFilterIndex(const StringId& name) const
+int PhysicsWorld::getFilterLayer(const StringId& name) const
 {
     //if not found default filter is 0.
     if(!m_config) return 0;
-    for(uint32_t i=0; i<m_config->m_numFilters; ++i)
+    for(uint32_t i=0; i<m_config->m_numFilterLayers; ++i)
     {
         if(m_config->m_filters[i].m_name == name)
             return i;

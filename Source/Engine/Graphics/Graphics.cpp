@@ -37,74 +37,6 @@ struct bgfxCallback : public bgfx::CallbackI
     virtual void captureEnd() {};
     virtual void captureFrame(const void* _data, uint32_t _size) {};
 };
-class BgfxAllocator : public bx::ReallocatorI , public MallocAllocator
-{
-public:
-    BgfxAllocator()
-        : MallocAllocator("bgfx") 
-        , m_numBlocks(0)
-        , m_maxBlocks(0)
-    {
-    }
-
-    virtual ~BgfxAllocator()
-    {
-    }
-
-    virtual void* alloc(size_t _size, size_t _align, const char* _file, uint32_t _line) BX_OVERRIDE
-    {
-        if (BX_CONFIG_ALLOCATOR_NATURAL_ALIGNMENT >= _align)
-        {
-            void* ptr = ::malloc(_size);
-            ++m_numBlocks;
-            ++m_allocCount;
-            m_alreadyAlloced += _size;
-            m_maxBlocks = bx::uint32_max(m_maxBlocks, m_numBlocks);
-            return ptr;
-        }
-        return MallocAllocator::alloc(_size, _align);
-    }
-
-    virtual void free(void* _ptr, size_t _align, const char* _file, uint32_t _line) BX_OVERRIDE
-    {
-        if (!_ptr) return;
-        if (BX_CONFIG_ALLOCATOR_NATURAL_ALIGNMENT >= _align)
-        {
-            ::free(_ptr);
-            --m_numBlocks;
-            ++m_freeCount;
-        }
-        else
-        {
-            MallocAllocator::free(_ptr);
-        }
-    }
-
-    virtual void* realloc(void* _ptr, size_t _size, size_t _align, const char* _file, uint32_t _line) BX_OVERRIDE
-    {
-        if (BX_CONFIG_ALLOCATOR_NATURAL_ALIGNMENT >= _align)
-        {
-            void* ptr = ::realloc(_ptr, _size);
-            if (NULL == _ptr)
-            {
-                ++m_numBlocks;
-                m_maxBlocks = bx::uint32_max(m_maxBlocks, m_numBlocks);
-            }
-            return ptr;
-        }
-        return bx::alignedRealloc(this, _ptr, _size, _align, _file, _line);
-    }
-
-    virtual void dump() const
-    {
-        LOGI("%s allocated = %d(B),%d(KB) alloc-num=%d, free-num=%d, num blocks %d (peak: %d)", 
-            m_name, m_alreadyAlloced, m_alreadyAlloced/1024, m_allocCount, m_freeCount, m_numBlocks, m_maxBlocks);
-    }
-
-private:
-    uint32_t m_numBlocks;
-    uint32_t m_maxBlocks;
-};
 
 struct PosTexCoord0Vertex
 {
@@ -140,7 +72,6 @@ int                         g_dbgTexIndex = 0;
 //      INNER GLOBAL VARIABLES
 //==============================================================
 static bgfxCallback         g_bgfxCallback;
-static BgfxAllocator        g_bgfxAllocator;
 static uint32_t             g_resetFlag = BGFX_RESET_VSYNC|BGFX_RESET_MSAA_X4;
 static bgfx::UniformHandle* g_engineUniforms;
 static uint32_t             g_numEngineUniforms = 0;
@@ -237,9 +168,8 @@ void createUniforms()
 void Graphics::init(void* hwnd, bool bFullScreen)
 {
     TIMELOG("Graphics::Init");
-    g_memoryMgr.registerAllocator(kMemoryCategoryBgfx, &g_bgfxAllocator);
     bgfx::winSetHwnd((HWND)hwnd);
-    bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null, &g_bgfxCallback, &g_bgfxAllocator);
+    bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null, &g_bgfxCallback);
     const bgfx::Caps* caps = bgfx::getCaps();
     bool shadowSamplerSupported = 0 != (caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);
     LOGD("support shadow sampler = %d", shadowSamplerSupported);

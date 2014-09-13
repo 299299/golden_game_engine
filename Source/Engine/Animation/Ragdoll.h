@@ -45,6 +45,9 @@ ENGINE_NATIVE_ALIGN struct RagdollResource
     StringId                                m_leftLeg;
     StringId                                m_rightLeg;
 
+    StringId                                m_keyframeLayer;
+    StringId                                m_dynamicLayer;
+
     uint32_t                                m_havokDataOffset;
     uint32_t                                m_havokDataSize;
 

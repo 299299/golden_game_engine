@@ -1,8 +1,8 @@
 {
     "shader": "diff_norm",
-    "shadow-shader": "shadow",
-    "uv-offset":[0,0],
-    "uv-repeat":[10,10],
+    "shadow_shader": "shadow",
+    "uv_offset":[0,0],
+    "uv_repeat":[10,10],
     "samplers":
     [
         {

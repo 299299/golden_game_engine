@@ -97,9 +97,16 @@ void MeshConverter::process(void* pData, int hint)
     processVertexBuffer(m_mesh->m_vertexBuffer);
     HK_ASSERT(0, m_mesh->m_indexBuffers.getSize() < 2);
     processIndexBuffer(m_mesh->m_indexBuffers[0]);
-    m_material = new MaterialConverter(m_ownner);
-    m_material->m_model = m_model;
-    m_material->process(m_mesh->m_material, 0);
+    if(m_mesh->m_material)
+    {
+        m_material = new MaterialConverter(m_ownner);
+        m_material->m_model = m_model;
+        m_material->process(m_mesh->m_material, 0);
+    }
+    else
+    {
+        LOGW("no material in current mesh [%s] !", m_ownner->m_name.c_str());
+    }
 }
 
 jsonxx::Object MeshConverter::serializeToJson() const

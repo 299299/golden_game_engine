@@ -29,8 +29,8 @@ static const char* transition_mode_names[] =
 
 static const char* state_flag_names[] = 
 {
-    "in-air",
-    "no-adjust-to-ground",
+    "in_air",
+    "no_adjust_to_ground",
     0
 };
 
@@ -125,8 +125,8 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
                 Transition* t = new Transition;
                 t->m_event = JSON_GetStringId(transitionValue.GetValue("event"));
                 t->m_duration = JSON_GetFloat(transitionValue.GetValue("duration"), 0.2f);
-                t->m_motionBlendType = JSON_GetEnum(transitionValue.GetValue("motion-blend-type"), motion_blend_names);
-                t->m_blendCurve = JSON_GetEnum(transitionValue.GetValue("blend-curve"), blend_curve_names);
+                t->m_motionBlendType = JSON_GetEnum(transitionValue.GetValue("motion_blend_type"), motion_blend_names);
+                t->m_blendCurve = JSON_GetEnum(transitionValue.GetValue("blend_curve"), blend_curve_names);
                 t->m_mode = JSON_GetEnum(transitionValue.GetValue("mode"), transition_mode_names);
                 t->m_beat = JSON_GetStringId(transitionValue.GetValue("beat"));
                 state.m_transitions.push_back(t);

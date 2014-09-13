@@ -73,7 +73,7 @@ ENGINE_NATIVE_ALIGN struct  FootResource
     float                                   m_heightError;
     float                                   m_pelvisUpDownBias;
     int                                     m_raycastType;
-    int                                     m_raycastCollisionLayer;
+    StringId                                m_raycastCollisionLayer;
     
     const AnimRig*                          m_rig;
     StringId                                m_rigName;

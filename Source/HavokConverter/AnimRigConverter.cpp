@@ -94,8 +94,8 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
     jsonxx::Object obj;
     obj << "name" << getResourceName();
     obj << "type" << getTypeName();
-    obj << "havok-file" << m_rigFileName;
-    obj << "joint-num" << m_boneNames.size();
+    obj << "havok_file" << m_rigFileName;
+    obj << "joint_num" << m_boneNames.size();
     jsonxx::Array joints;
     for (size_t i=0; i<m_boneNames.size(); ++i)
     {
@@ -114,7 +114,7 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
             body << bodyName << boneName;
         }
     }
-    obj << "human-body" << body;
+    obj << "human_body" << body;
 
     jsonxx::Array attachments;
     float m[16];
