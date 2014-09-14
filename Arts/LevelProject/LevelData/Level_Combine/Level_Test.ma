@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: Level_Test.ma
-//Last modified: Sun, Sep 14, 2014 06:26:12 PM
+//Last modified: Sun, Sep 14, 2014 06:37:23 PM
 //Codeset: 936
 requires maya "2015";
 requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType "mentalrayGlobals"
@@ -14,13 +14,13 @@ fileInfo "cutIdentifier" "201402282131-909040";
 fileInfo "osv" "Microsoft Windows 7 Ultimate Edition, 64-bit Windows 7 Service Pack 1 (Build 7601)\n";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 3259.3006797239286 2081.7871909435821 -1246.6559351282795 ;
-	setAttr ".r" -type "double3" -19.521846620637085 -2043.8000000000159 0 ;
+	setAttr ".t" -type "double3" -2648.7601950865237 2301.6785954177449 2434.88259726773 ;
+	setAttr ".r" -type "double3" -23.121846620642373 -2212.1999999999643 2.5946468249179149e-015 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
 	setAttr ".fcp" 990000;
-	setAttr ".coi" 3757.4431491816308;
+	setAttr ".coi" 3757.4431491822284;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -599,7 +599,7 @@ createNode transform -n "Proxy_AD_OZ_Gotham_GroundFloor_Shop_OldA_03" -p "Proxy"
 	setAttr ".lk" -type "string" "AD_OZ_Gotham_GroundFloor_Shop_OldA_03";
 createNode transform -n "sun_light";
 	setAttr ".t" -type "double3" 0 1085.7540651415889 -2.4868995751603507e-014 ;
-	setAttr ".r" -type "double3" -154.99891208835245 -22.242607491364595 103.74276019177343 ;
+	setAttr ".r" -type "double3" -150.04039409139904 -40.16694099861062 92.634470203581998 ;
 	setAttr ".s" -type "double3" 323.93682138016857 522.80899775650823 323.93682138016857 ;
 createNode directionalLight -n "sun_lightShape" -p "sun_light";
 	setAttr -k off ".v";
