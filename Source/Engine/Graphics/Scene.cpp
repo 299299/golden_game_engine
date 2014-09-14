@@ -123,14 +123,7 @@ void SceneManager::cullShadows(float shadowArea, float shadowSize, const float* 
 
 void SceneManager::update(float dt)
 {
-    DynamicObjectArray<LightInstance>& lightList = g_lightList.m_objects;
     DynamicObjectArray<ModelInstance>& modelList = g_modelList.m_objects;
-    
-    for(uint32_t i=0; i<lightList.getSize(); ++i)
-    {
-        lightList[i].update();
-    }
-
     for(uint32_t i=0; i<modelList.getSize(); ++i)
     {
         modelList[i].update();

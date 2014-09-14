@@ -1,6 +1,6 @@
 #pragma once
-#include "Prerequisites.h"
-
+#include "BaseTypes.h"
+#include "Assert.h"
 
 /// Packed array of objects with lookup table.
 ///
@@ -63,7 +63,7 @@ namespace id_array
 	template <uint32_t MAX, typename T>
 	inline Id create(IdArray<MAX, T>& a, const T& object)
 	{
-		HK_ASSERT2(0, a.m_size < MAX, "Object list full");
+		ENGINE_ASSERT(a.m_size < MAX, "Object list full");
 
 		// Obtain a new id
 		Id id;
@@ -93,7 +93,7 @@ namespace id_array
 	template <uint32_t MAX, typename T>
 	inline void destroy(IdArray<MAX, T>& a, Id id)
 	{
-		HK_ASSERT2(0, has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
+		ENGINE_ASSERT(has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
 		a.m_sparse[id.index].id = INVALID_ID;
 		a.m_sparse[id.index].index = a.m_freelist;
@@ -101,7 +101,7 @@ namespace id_array
 
 		// Swap with last element
 		const uint32_t last = a.m_size - 1;
-		HK_ASSERT2(0, last >= a.m_sparse_to_dense[id.index], "Swapping with previous item");
+		ENGINE_ASSERT(last >= a.m_sparse_to_dense[id.index], "Swapping with previous item");
 		a.m_objects[a.m_sparse_to_dense[id.index]] = a.m_objects[last];
 
 		// Update tables
@@ -116,7 +116,7 @@ namespace id_array
 	template <uint32_t MAX, typename T>
 	inline T& get(IdArray<MAX, T>& a, const Id& id)
 	{
-		HK_ASSERT2(0, has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
+		ENGINE_ASSERT(has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
 		return a.m_objects[a.m_sparse_to_dense[id.index]];
 	}
@@ -181,7 +181,7 @@ inline IdArray<MAX, T>::IdArray()
 template <uint32_t MAX, typename T>
 inline T& IdArray<MAX, T>::operator[](uint32_t i)
 {
-	HK_ASSERT2(0, i < m_size, "Index out of bounds");
+	ENGINE_ASSERT(i < m_size, "Index out of bounds");
 	return m_objects[i];
 }
 
@@ -189,7 +189,7 @@ inline T& IdArray<MAX, T>::operator[](uint32_t i)
 template <uint32_t MAX, typename T>
 inline const T& IdArray<MAX, T>::operator[](uint32_t i) const
 {
-	HK_ASSERT2(0, i < m_size, "Index out of bounds");
+	ENGINE_ASSERT(i < m_size, "Index out of bounds");
 	return m_objects[i];
 }
 

@@ -149,6 +149,7 @@
     <ClCompile Include="Animation\AnimRig.cpp" />
     <ClCompile Include="Animation\IK.cpp" />
     <ClCompile Include="Animation\Ragdoll.cpp" />
+    <ClCompile Include="Core\Assert.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Core\MathDefs.cpp" />
     <ClCompile Include="Core\Memory.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Animation\IK.h" />
     <ClInclude Include="Animation\Ragdoll.h" />
     <ClInclude Include="BaseTypes.h" />
+    <ClInclude Include="Core\Assert.h" />
     <ClInclude Include="Core\id_array.h" />
     <ClInclude Include="Core\id_table.h" />
     <ClInclude Include="Core\Log.h" />

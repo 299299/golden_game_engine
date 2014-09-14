@@ -378,6 +378,9 @@
     <ClCompile Include="..\ThirdParty\gamemonkey\gmVector3Lib.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Assert.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Log.h">
@@ -918,6 +921,9 @@
     </ClInclude>
     <ClInclude Include="Engine\ComponentManager.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Assert.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

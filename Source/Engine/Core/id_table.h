@@ -1,5 +1,6 @@
 #pragma once
-#include "Prerequisites.h"
+#include "BaseTypes.h"
+#include "Assert.h"
 
 /// Table of Ids.
 ///
@@ -75,7 +76,7 @@ namespace id_table
 	template <uint32_t MAX>
 	inline void destroy(IdTable<MAX>& a, Id id)
 	{
-		HK_ASSERT2(0, has(a, id), "IdTable does not have ID: %d,%d", id.id, id.index);
+		ENGINE_ASSERT(has(a, id), "IdTable does not have ID: %d,%d", id.id, id.index);
 
 		a.m_ids[id.index].id = INVALID_ID;
 		a.m_ids[id.index].index = a.m_freelist;
