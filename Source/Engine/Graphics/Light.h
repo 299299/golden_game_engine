@@ -1,9 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
 #include "StringId.h"
-#include <bgfx.h>
-
-struct ResourcePackage;
+#include "ShaderI"
 
 enum LightType
 {
@@ -12,7 +10,6 @@ enum LightType
     kLightPoint,
     kLightCount
 };
-
 
 struct Material;
 ENGINE_NATIVE_ALIGN struct LightResource
@@ -29,8 +26,6 @@ ENGINE_NATIVE_ALIGN struct LightResource
     bool                    m_hasShadow;
     uint8_t                 m_type;
     char                    m_padding[2];
-
-    void lookup();
 };
 
 struct LightInstance
@@ -54,3 +49,15 @@ struct LightInstance
     inline void addFlag(uint32_t flag) { ADD_BITS(m_flag, flag); };
     inline void removeFlag(uint32_t flag) { REMOVE_BITS(m_flag, flag); };
 };
+
+
+struct LightManager
+{
+    void update();
+    void draw();
+
+    LightInstance**             m_drawLights;
+    uint32_t                    m_numLightsToDraw;
+};
+
+extern LightManager g_lightMgr;

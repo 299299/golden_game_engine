@@ -12,7 +12,7 @@
 #include "Profiler.h"
 #include "ShaderInc.h"
 #include "Resource.h"
-#include "Component.h"
+#include "ComponentManager.h"
 #include "ShadingEnviroment.h"
 
 SceneManager g_sceneMgr;

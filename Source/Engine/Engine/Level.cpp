@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Model.h"
 #include "Light.h"
-#include "Component.h"
+#include "ComponentManager.h"
 #include "Log.h"
 
 void transform_object(hkQsTransform& m, const float* t, const float* r, const float* s)

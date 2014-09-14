@@ -2,8 +2,8 @@
 #include "DataDef.h"
 #include "Log.h"
 #include "Resource.h"
-#include "Component.h"
 #include "Memory.h"
+#include "ComponentManager.h"
 
 ComponentManager g_componentMgr;
 

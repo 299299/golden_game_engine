@@ -36,3 +36,13 @@ void LightInstance::update()
     REMOVE_BITS(m_flag, kNodeTransformDirty);
 }
 
+LightManager g_lightMgr;
+void LightManager::update()
+{
+
+}
+
+void LightManager::draw()
+{
+
+}

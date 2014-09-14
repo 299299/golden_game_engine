@@ -3,53 +3,6 @@
 #include "Log.h"
 
 template<typename T>
-struct StaticObjectPool
-{
-    T*              m_objects;
-    uint16_t        m_num;
-    uint16_t        m_capacity;
-
-    inline void setCapacity(uint16_t cap)
-    {
-        m_capacity = cap;
-    }
-
-    inline unsigned getRequireMem() const
-    {
-        return sizeof(T) * m_capacity;
-    }
-
-    inline void init(char* p)
-    {
-        m_num = 0;
-        m_objects = (T*)p;
-    }
-
-    inline T*       allocObject(uint16_t num)
-    {
-        uint16_t totalNum = m_num + num;
-        HK_ASSERT(0, totalNum <= m_capacity);
-        T* ret = m_objects + m_num;
-        m_num += num;
-        return ret;
-    }
-
-    inline uint16_t getSize() const { return m_num; };
-    inline T&       getObject(uint16_t i) { return m_objects[i];};
-
-    inline void     pushObject(const T& object) 
-    {
-        HK_ASSERT(0, m_num < m_capacity);
-        m_objects[m_num++] = object;
-    }
-
-    inline void     clear() { m_num = 0;};
-    inline T&       back() { return m_objects[m_num]; };
-    inline T*       begin() { return m_objects;};
-    inline T&       operator[] (uint16_t i)  { return m_objects[i]; };
-};
-
-template<typename T>
 struct DynamicObjectArray
 {
     T*                                  m_objects;

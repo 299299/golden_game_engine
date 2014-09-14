@@ -325,6 +325,8 @@
     <ClInclude Include="Animation\IK.h" />
     <ClInclude Include="Animation\Ragdoll.h" />
     <ClInclude Include="BaseTypes.h" />
+    <ClInclude Include="Core\id_array.h" />
+    <ClInclude Include="Core\id_table.h" />
     <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Core\MathDefs.h" />
     <ClInclude Include="Core\Memory.h" />
@@ -336,6 +338,7 @@
     <ClInclude Include="Core\Utils.h" />
     <ClInclude Include="Core\Variant.h" />
     <ClInclude Include="Engine\Component.h" />
+    <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DataDef.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Entity.h" />

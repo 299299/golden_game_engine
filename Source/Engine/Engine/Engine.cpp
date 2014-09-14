@@ -12,7 +12,7 @@
 #include "Profiler.h"
 #include "EntityManager.h"
 #include "GameFSM.h"
-#include "Component.h"
+#include "ComponentManager.h"
 #include "ScriptSystem.h"
 //=================================================================
 #include "Log.h"

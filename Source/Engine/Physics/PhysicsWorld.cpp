@@ -9,7 +9,7 @@
 #include "Log.h"
 #include "MathDefs.h"
 #include "DebugDraw.h"
-#include "Component.h"
+#include "ComponentManager.h"
 #include "Resource.h"
 //===========================================
 //          COMPONENTS
@@ -167,7 +167,7 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     pGroupFilter->disableCollisionsUsingBitfield(0xfffffffe, 0xfffffffe);
     if(m_config)
     {
-        for (int i=1;i<m_config->m_numFilterLayers;i++)
+        for (uint32_t i=1;i<m_config->m_numFilterLayers;i++)
         {
             pGroupFilter->enableCollisionsUsingBitfield(1 << i, m_config->m_filters[i].m_mask);
         }

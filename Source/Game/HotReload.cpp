@@ -10,7 +10,7 @@
 #include "ShadingEnviroment.h"
 #include "AnimRig.h"
 #include "Animation.h"
-#include "Component.h"
+#include "ComponentManager.h"
 #include "Graphics.h"
 #include "Model.h"
 #include "Shader.h"

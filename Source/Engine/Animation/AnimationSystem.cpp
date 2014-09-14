@@ -6,7 +6,7 @@
 #include "Profiler.h"
 #include "Log.h"
 #include "DebugDraw.h"
-#include "Component.h"
+#include "ComponentManager.h"
 //===================================
 // RESOURCES
 #include "Resource.h"

@@ -910,5 +910,14 @@
     <ClInclude Include="..\ThirdParty\gamemonkey\gmVector3Lib.h">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClInclude>
+    <ClInclude Include="Core\id_array.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\id_table.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ComponentManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
