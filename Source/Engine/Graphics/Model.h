@@ -1,11 +1,11 @@
 #pragma once
-#include "Prerequisites.h"
+#include "BaseTypes.h"
 #include "StringId.h"
-#include "MathDefs.h"
-#include <bgfx.h>
+#include "id_array.h"
 
 struct Material;
 struct Mesh;
+struct Frustum;
 
 #define MAX_MATERIAL_NUM        (8)
 
@@ -22,9 +22,6 @@ ENGINE_NATIVE_ALIGN struct ModelResource
     uint8_t                        m_viewId;
     uint8_t                        m_flag;
     char                           m_padding[1];
-
-    void lookup();
-    void dump();
 };
 
 struct ModelInstance
@@ -32,10 +29,7 @@ struct ModelInstance
     float                           m_transform[16];
     Aabb                            m_aabb;
     Material*                       m_materials[MAX_MATERIAL_NUM];
-    ID                              m_id;
     float*                          m_skinMatrix;
-    const Mesh*                     m_mesh;
-    
     const ModelResource*            m_resource;
     
     uint8_t                         m_numMaterials;
@@ -43,22 +37,11 @@ struct ModelInstance
     uint8_t                         m_viewId;
     bool                            m_visibleThisFrame;
 
-    //=====================================================================
     void init(const void* resource);
-    void destroy() {};
-    void setTransform(const hkQsTransform& t);
-    void setTransform(const hkTransform& t);
-    void setEnabled(bool bEnable);
-    //======================================================================
-
     void submit();
     void submitShadow();
 
     void update();
-
-    inline void addFlag(uint32_t flag) { ADD_BITS(m_flag, flag); };
-    inline void removeFlag(uint32_t flag) { REMOVE_BITS(m_flag, flag); };
-
     void allocSkinningMat();
     bool checkIntersection( const float* rayOrig, 
                             const float* rayDir, 
@@ -66,5 +49,28 @@ struct ModelInstance
                             float* outNormal ) const;
 };
 
-void* load_resource_model(const char* data, uint32_t size);
-void  lookup_resource_model(void * resource);
+typedef Id ModelId;
+struct ModelWorld
+{
+    ModelWorld(uint32_t max_num_models);
+    ~ModelWorld();
+
+    void                    update(float dt);
+    void                    sumibt_models();
+    void                    submit_shadows();
+    ModelId                 create_model(const ModelResource* modelResource);
+    void                    destroy_model(ModelId id);
+    ModelInstance*          get_model(ModelId id);
+
+    void                    cull_models(const Frustum& frust);
+    void                    cull_shadows(const Frustum& lightFrust);
+
+    IdArray<ModelInstance>  m_models;
+    ModelInstance**         m_modelsToDraw;
+    uint32_t                m_numModels;
+    ModelInstance**         m_shadowsToDraw;
+    uint32_t                m_numShadows;
+
+private:
+    void                    reset();
+};

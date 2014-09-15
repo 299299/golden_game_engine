@@ -1,7 +1,7 @@
 #pragma once
-#include "Prerequisites.h"
+#include "BaseTypes.h"
 #include "StringId.h"
-#include "Component.h"
+#include "MathDefs.h"
 #include "id_array.h"
 
 enum LightType
@@ -28,29 +28,40 @@ ENGINE_NATIVE_ALIGN struct LightResource
     char                    m_padding[2];
 };
 
-struct LightInstance
+ENGINE_NATIVE_ALIGN struct LightInstance
 {
-    float                       m_color[3];
-    float                       m_vec[3];
-    ID                          m_id;
-    const LightResource*        m_resource;
-    uint8_t                     m_flag;
-    char                        m_padding[3];
+    float                   m_color[3];
+    float                   m_vec[3];
+    const LightResource*    m_resource;
+    uint8_t                 m_flag;
+    char                    m_padding[3];
 };
 
-struct LightManager : public IdComponentSystem<100, LightInstance>
+
+typedef Id LightId;
+struct LightWorld
 {
-    virtual const char*         getName() const { return LightResource::getName(); };
-    virtual void                update(float dt);
-    virtual void                transformComponent(ComponentId id, const hkQsTransform& t);
-    virtual void                enableComponent(ComponentId id, bool bEnable);
-    void                        draw();
+    LightWorld(uint32_t max_num_light);
+    ~LightWorld();
 
-    LightInstance**             m_drawLights;
-    uint32_t                    m_numLightsToDraw;
+    void                    update(float dt);
+    void                    sumibt_lights();
+    LightId                 create_light(const LightResource* lightResource);
+    void                    destroy_light(LightId id);
+    LightInstance*          get_light(LightId id);
+    void                    update_shadow(float shadowArea, 
+                                          float shadowSize, 
+                                          const float* camPos);
 
-protected:
-    virtual void initComponent(LightInstance* inst, const void* resource);
+    IdArray<LightInstance>  m_lights;
+    LightInstance*          m_drawLights;
+    uint32_t                m_numLightsToDraw;
+
+    LightInstance*          m_shadowLight;
+    Frustum                 m_shadowFrustum;
+    float                   m_shadowView[16];
+    float                   m_shadowProj[16];
+
+private:
+    void                    reset();
 };
-
-extern LightManager g_lightMgr;

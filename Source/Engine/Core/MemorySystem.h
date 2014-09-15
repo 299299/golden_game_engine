@@ -7,7 +7,6 @@ enum MemoryAllocCategory
 {
     kMemoryCategoryCommon,
     kMemoryCategoryFrame,
-    kMemoryCategoryStatic,
 #ifndef _RETAIL   
     kMemoryCategoryDebug,
 #endif
@@ -31,7 +30,8 @@ struct MemorySystem
     void            deallocate(uint32_t category, void* p);
     uint32_t        allocedSize(uint32_t category);
     void            clear(uint32_t category);
-    void            registerAllocator(uint32_t category, Allocator* allocator);
+    void            register_allocator(uint32_t category, Allocator* allocator);
+    Allocator*      get_allocator(uint32_t category) { return m_allocators[i]; };
     //=====================================================
 
     hkMemoryRouter*                 m_memRouter;
@@ -41,6 +41,5 @@ extern MemorySystem g_memoryMgr;
 
 #define COMMON_ALLOC(type, num)         (type*)g_memoryMgr.alloc(kMemoryCategoryCommon, sizeof(type)*num)
 #define COMMON_DEALLOC(p)               g_memoryMgr.deallocate(kMemoryCategoryCommon, p)
-#define STATIC_ALLOC(type, num)         (type*)g_memoryMgr.alloc(kMemoryCategoryStatic, sizeof(type)*num)
 #define FRAME_ALLOC(type, num)          (type*)g_memoryMgr.alloc(kMemoryCategoryFrame, sizeof(type)*num)
 #define DEBUG_ALLOC(type, num)          (type*)g_memoryMgr.alloc(kMemoryCategoryDebug, sizeof(type)*num)

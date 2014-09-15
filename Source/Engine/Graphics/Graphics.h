@@ -96,7 +96,6 @@ struct Graphics
     static void init(void* hwnd, bool bFullScreen = false);
     static void postInit();
     static void quit();
-    static void cull(float shadowArea, float shadowSize);
     static void draw(ShadingEnviroment* env);
     static void update(float dt);
     static void frameStart();

@@ -69,7 +69,7 @@ void MemorySystem::clear(uint32_t category)
     (LinearAllocator*)m_allocators[category]->clear();
 }
 
-void MemorySystem::registerAllocator(uint32_t category, Allocator* allocator)
+void MemorySystem::register_allocator(uint32_t category, Allocator* allocator)
 {
     m_allocators[category] = allocator;
 }

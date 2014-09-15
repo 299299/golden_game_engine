@@ -5,7 +5,6 @@
 #include "Profiler.h"
 //============================================
 #include "Camera.h"
-#include "Scene.h"
 #include "DebugDraw.h"
 #include "ShadingEnviroment.h"
 #include "Material.h"
@@ -185,7 +184,6 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     postProcessInit();
 
     g_camera.init();
-    g_sceneMgr.init();
     g_debugDrawMgr.init();
     g_guiMgr.init();
 
@@ -267,7 +265,6 @@ void postProcessInit()
 
 void Graphics::quit()
 {
-    g_sceneMgr.quit();
     for (uint32_t i=0;i<g_numFrameBuffers;++i)
     {
         bgfx::destroyFrameBuffer(g_frameBuffers[i].m_handle);
@@ -343,7 +340,6 @@ void Graphics::draw(ShadingEnviroment* env)
     submitShadowUniforms(env);
 
     if(env) env->submit();
-    g_sceneMgr.submit();
     g_debugDrawMgr.draw();
     postProcessSubmit(env);
 
@@ -527,12 +523,6 @@ void Graphics::screenSpaceQuad(float _textureWidth, float _textureHeight, float 
     vertex[2].m_v = maxv;
 
     bgfx::setVertexBuffer(&vb);
-}
-
-void Graphics::cull( float shadowArea, float shadowSize )
-{
-    PROFILE(Scene_Cull);
-    g_sceneMgr.preCulling(g_camera.m_frustum, g_camera.m_eye, shadowArea, shadowSize);
 }
 
 //I don`t want gl&d3d9 support, but I don`t want to modify bgfx.cpp either

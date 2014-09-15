@@ -7,67 +7,28 @@
 #include "DataDef.h"
 #include "MathDefs.h"
 #include "Graphics.h"
-
-
-void ModelResource::dump()
-{
-    LOGI("model ---- dump");
-    LOGI("model num of material = %d, mesh name = %s", m_numMaterials, stringid_lookup(m_meshName));
-    for (uint32_t i=0; i<m_numMaterials; ++i)
-    {
-        LOGI("material name = %s", stringid_lookup(m_materialNames[i]));
-    }
-}
-
-void ModelResource::lookup()
-{
-    m_mesh = FIND_RESOURCE(Mesh,  m_meshName);
-    for(uint32_t i=0; i<m_numMaterials;++i) 
-    {
-        m_materials[i] = FIND_RESOURCE(Material, m_materialNames[i]);
-        HK_ASSERT(0, m_materials[i]);
-    }
-}
+#include "Light.h"
+#include <bgfx.h>
 
 void ModelInstance::init(const void* resource)
 {
-    //LOGI("init model instance resource = 0x%x old = 0x%x", resource, m_resource);
     m_visibleThisFrame = true;
     m_resource = (const ModelResource*)resource;
     m_viewId = m_resource->m_viewId;
-    m_mesh = m_resource->m_mesh;
     m_flag = m_resource->m_flag;
     m_numMaterials = m_resource->m_numMaterials;
     memcpy(m_materials, m_resource->m_materials, m_resource->m_numMaterials*sizeof(void*));
-    addFlag(kNodeTransformDirty);
+    ADD_BITS(m_flag, kNodeTransformDirty);
 	bx::mtxIdentity(m_transform);
 }
 
-void ModelInstance::setTransform(const hkQsTransform& t)
-{
-    transform_matrix(m_transform, t);
-    addFlag(kNodeTransformDirty);
-}
-
-void ModelInstance::setTransform(const hkTransform& t)
-{
-    transform_matrix(m_transform, t);
-    addFlag(kNodeTransformDirty);
-}
-
-void ModelInstance::setEnabled(bool bEnable)
-{
-    if(bEnable) removeFlag(kNodeInvisible);
-    else addFlag(kNodeInvisible);
-}
-
-
 void ModelInstance::submit()
 {
-    const SubMesh* submeshes = m_mesh->m_submeshes;
-    bool bSkinning = m_mesh->m_numJoints > 0;
+    const Mesh* mesh = m_resource->m_mesh;
+    const SubMesh* submeshes = mesh->m_submeshes;
+    bool bSkinning = mesh->m_numJoints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
-    int num = bSkinning ? m_mesh->m_numJoints : 1;
+    int num = bSkinning ? mesh->m_numJoints : 1;
     uint8_t viewId = m_viewId;
 
     for (uint32_t i=0; i<m_numMaterials; ++i)
@@ -81,10 +42,11 @@ void ModelInstance::submit()
 
 void ModelInstance::submitShadow()
 {
-    const SubMesh* submeshes = m_mesh->m_submeshes;
-    bool bSkinning = m_mesh->m_numJoints > 0;
+    const Mesh* mesh = m_resource->m_mesh;
+    const SubMesh* submeshes = mesh->m_submeshes;
+    bool bSkinning = mesh->m_numJoints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
-    int num = bSkinning ? m_mesh->m_numJoints : 1;
+    int num = bSkinning ? mesh->m_numJoints : 1;
 
     for (uint32_t i=0; i<m_numMaterials; ++i)
     {
@@ -98,14 +60,15 @@ void ModelInstance::submitShadow()
 void ModelInstance::update()
 {
 	if(!HAS_BITS(m_flag, kNodeTransformDirty)) return;
-	const Aabb& modelAabb = m_mesh->m_aabb;
+    const Mesh* mesh = m_resource->m_mesh;
+	const Aabb& modelAabb = mesh->m_aabb;
 	transformAabb(m_aabb.m_min, m_aabb.m_max, m_transform, modelAabb.m_min, modelAabb.m_max);
 	REMOVE_BITS(m_flag, kNodeTransformDirty);
 }
 
 void ModelInstance::allocSkinningMat()
 {
-    m_skinMatrix = FRAME_ALLOC(float, m_mesh->m_numJoints * 16);
+    m_skinMatrix = FRAME_ALLOC(float, m_resource->m_mesh->m_numJoints * 16);
 }
 
 bool ModelInstance::checkIntersection( 
@@ -117,9 +80,10 @@ bool ModelInstance::checkIntersection(
     if(!rayAABBIntersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max)) 
         return false;
 
-    if(!m_mesh) return false;
+    const Mesh* mesh = m_resource->m_mesh;
+    if(!mesh) return false;
 
-    const bgfx::VertexDecl& decl = m_mesh->m_decl;
+    const bgfx::VertexDecl& decl = mesh->m_decl;
 
     // Transform ray to local space
     float invm[16];
@@ -139,12 +103,12 @@ bool ModelInstance::checkIntersection(
     uint16_t posOffset = decl.getOffset(bgfx::Attrib::Position);
     uint32_t posSize = sizeof(float) * 3;
 
-    for(uint32_t i=0; i<m_mesh->m_numSubMeshes; ++i)
+    for(uint32_t i=0; i<mesh->m_numSubMeshes; ++i)
     {
-        const char* vertData = (const char*)m_mesh->getVertexData(i);
-        uint32_t vertNum = m_mesh->getVertexNum(i);
-        const uint16_t* indexData = m_mesh->getIndexData(i);
-        uint32_t indexNum = m_mesh->getIndexNum(i);
+        const char* vertData = (const char*)mesh->getVertexData(i);
+        uint32_t vertNum = mesh->getVertexNum(i);
+        const uint16_t* indexData = mesh->getIndexData(i);
+        uint32_t indexNum = mesh->getIndexNum(i);
         for( uint32_t j = 0; j < indexNum; j += 3 )
         {
             uint16_t index0 = indexData[j + 0];
@@ -178,16 +142,118 @@ bool ModelInstance::checkIntersection(
 void* load_resource_model(const char* data, uint32_t size)
 {
     ModelResource* model = (ModelResource*)data;
-    //LOGI("load resource model = 0x%x", data);
-    HK_ASSERT(0, model->m_numMaterials < MAX_MATERIAL_NUM);
-#ifdef DUMP_RESOURCE
-    model->dump();
-#endif
+    ENGINE_ASSERT(model->m_numMaterials < MAX_MATERIAL_NUM, 
+        "Material num = %d > %d", model->m_numMaterials, MAX_MATERIAL_NUM);
     return model;
 }
 
 void lookup_resource_model( void * resource )
 {
     ModelResource* model = (ModelResource*)resource;
-    model->lookup();
+    model->m_mesh = FIND_RESOURCE(Mesh,  model->m_meshName);
+    for(uint32_t i=0; i<model->m_numMaterials;++i) 
+    {
+        model->m_materials[i] = FIND_RESOURCE(Material, m_materialNames[i]);
+    }
+}
+
+ModelWorld::ModelWorld(uint32_t max_num_models)
+:m_models(max_num_models)
+{
+    reset();
+}
+
+ModelWorld::~ModelWorld()
+{
+
+}
+
+void ModelWorld::reset()
+{
+    m_modelsToDraw = 0;
+    m_numModels = 0;
+    m_shadowsToDraw = 0;
+    m_numShadows = 0;
+}
+
+void ModelWorld::update(float dt)
+{
+    uint32_t numModels = id_array::size(m_models);
+    ModelInstance* begin = id_array::begin(m_models);
+    for(uint32_t i=0; i<numModels; ++i)
+    {
+        begin[i].update();
+    }
+}
+
+void ModelWorld::sumibt_models()
+{
+    for(uint32_t i=0; i<m_numModels; ++i)
+    {
+        m_modelsToDraw[i]->submit();
+    }
+}
+
+void ModelWorld::submit_shadows()
+{
+    for(uint32_t i=0; i<m_numShadows; ++i)
+    {
+        m_shadowsToDraw[i]->submitShadow();
+    }
+}
+
+ModelId ModelWorld::create_model(const ModelResource* modelResource)
+{
+    ModelInstance inst;
+    inst.init(modelResource);
+    return id_array::create(m_models, inst);
+}
+
+void ModelWorld::destroy_model(ModelId id)
+{
+    if(!id_array::has(m_models, id)) return;
+    id_array::destroy(m_models, id);
+}
+
+ModelInstance* ModelWorld::get_model(ModelId id)
+{
+    if(!id_array::has(m_models, id)) return 0;
+    return &id_array::get(m_models, id);
+}
+
+void ModelWorld::cull_models(const Frustum& frust)
+{
+    uint32_t numModels = id_array::size(m_models);
+    m_modelsToDraw = FRAME_ALLOC(ModelInstance*, numModels);
+    m_numModels = 0;
+
+    ModelInstance* begin = id_array::begin(m_models);
+    for(uint32_t i=0; i<numModels; ++i)
+    {
+        ModelInstance* model = begin + i;
+        if(model->m_flag & kNodeInvisible)
+            continue;
+        bool bVisible = !frust.cullBox(model->m_aabb.m_min, model->m_aabb.m_max);
+        model->m_visibleThisFrame = bVisible;
+        if(!bVisible) continue;
+        m_modelsToDraw[m_numModels++] = model;
+    }
+}
+
+void ModelWorld::cull_shadows(const Frustum& lightFrust)
+{
+    uint32_t numModels = id_array::size(m_models);
+    m_shadowsToDraw = FRAME_ALLOC(ModelInstance*, numModels);
+    m_numShadows = 0;
+
+    ModelInstance* begin = id_array::begin(m_models);
+    for(uint32_t i=0; i<numModels; ++i)
+    {
+        ModelInstance* model = begin + i;
+        uint32_t flag = model->m_flag;
+        if(flag & kNodeInvisible) || (flag & kNodeNoShadow) continue;
+        bool bVisible = !lightFrust.cullBox(model->m_aabb.m_min, model->m_aabb.m_max);
+        if(!bVisible) continue;
+        m_shadowsToDraws[m_numShadows++] = model;
+    }
 }

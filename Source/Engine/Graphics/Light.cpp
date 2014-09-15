@@ -5,12 +5,48 @@
 #include "Graphics.h"
 #include "MathDefs.h"
 #include "MemorySystem.h"
+#include "id_array.h"
 #include <bgfx/bgfx.h>
 
 
-LightManager g_lightMgr;
+LightWorld::LightWorld(uint32_t max_num_light)
+:m_lights(g_memoryMgr.get_allocator(kMemoryCategoryCommon), max_num_light)
+{
+    reset();
 
-void LightManager::draw()
+    bx::mtxIdentity(m_shadowView);
+    bx::mtxIdentity(m_shadowProj);
+}
+
+LightWorld::~LightWorld()
+{
+
+}
+
+void LightWorld::reset()
+{
+    m_numLightsToDraw = 0;
+    m_drawLights = 0;
+    m_shadowLight = 0;
+}
+
+void LightWorld::update( float dt )
+{
+    reset();
+
+    uint32_t numLights = id_array::size(m_lights);
+    m_drawLights = FRAME_ALLOC(LightInstance*, numLights);
+    const LightInstance* lights = id_array::begin(m_lights);
+    for (uint32_t i=0; i<numLights; ++i)
+    {
+        const LightInstance& l = lights[i];
+        if(l.m_flag & kNodeInvisible) continue;
+        if(l.m_hasShadow && !m_shadowLight) m_shadowLight = &l;
+        m_drawLights[m_numLightsToDraw++] = &l;
+    }
+}
+
+void LightWorld::sumibt_lights()
 {
     Vec4 s_lightInfo[BGFX_CONFIG_MAX_LIGHTS];
     Vec3 s_lightColor[BGFX_CONFIG_MAX_LIGHTS];
@@ -48,43 +84,54 @@ void LightManager::draw()
     bgfx::setUniform(g_uniformLights.m_type, s_lightType, num);
 }
 
-void LightManager::update( float dt )
+void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* camPos)
 {
-    m_numLightsToDraw = 0;
-    uint32_t numLights = id_array::size(m_components);
-    m_drawLights = FRAME_ALLOC(LightInstance*, numLights);
-    const LightInstance* lights = id_array::begin(m_components);
-    for (uint32_t i=0; i<numLights; ++i)
+    if(!m_shadowLight) return;
+
+    float shadowEye[3] = {0,0,0};
+    float shadowAt[3] = {0,0,0};
+
+    switch(m_shadowLight->m_resource->m_type)
     {
-        const LightInstance& l = lights[i];
-        if(l.m_flag & kNodeInvisible) continue;
-        m_drawLights[m_numLightsToDraw++] = &l;
+    case kLightDirectional:
+        {
+            bx::vec3Mul(shadowEye, m_shadowLight->m_vec, -1);
+            shadowEye[0] += camPos[0];
+            shadowEye[2] += camPos[2];
+            shadowAt[0] = camPos[0];
+            shadowAt[2] = camPos[2];
+        }
+        break;
+    case kLightSpot:
+        break;
+    case kLightPoint:
+        break;
     }
+
+    bx::mtxLookAt(m_shadowView, shadowEye, shadowAt);
+    bx::mtxOrtho(m_shadowProj, -shadowArea, shadowArea, -shadowArea, shadowArea, -shadowSize, shadowSize);
+    m_shadowFrustum.buildViewFrustum(m_shadowView, m_shadowProj);
 }
 
-void LightManager::initComponent( LightInstance* inst, const void* resource )
+LightId LightWorld::create_light(const LightResource* lightResource)
 {
-    const LightResource* lightResource = (const LightResource*)resource;
-    inst->m_resource = lightResource;
-    memcpy(inst->m_color, lightResource->m_color, sizeof(inst->m_color));
-    memcpy(inst->m_vec, lightResource->m_dir, sizeof(inst->m_vec));
-    ADD_BITS(inst->m_flag, kNodeTransformDirty);
+    LightInstance inst;
+    inst.m_resource = lightResource;
+    memcpy(inst.m_color, lightResource->m_color, sizeof(inst.m_color));
+    memcpy(inst.m_vec, lightResource->m_dir, sizeof(inst.m_vec));
+    ADD_BITS(inst.m_flag, kNodeTransformDirty);
+    return id_array::create(m_lights, inst);
 }
 
-void LightManager::transformComponent( ComponentId id, const hkQsTransform& t )
+void LightWorld::destroy_light(LightId id)
 {
-    if(!id_array::has(m_components, id)) return;
-    LightInstance& inst = id_array::get(m_components, id);
-    if(inst.m_resource->m_type == kLightDirectional) return;
-    transform_vec3(inst.m_vec, t.m_translation);
+    if(!id_array::has(m_lights, id)) return;
+    id_array::destroy(m_lights, id);
 }
 
-void LightManager::enableComponent( ComponentId id, bool bEnable )
+
+LightInstance*  LightWorld::get_light(LightId id)
 {
-    if(!id_array::has(m_components, id)) return;
-    LightInstance& inst = id_array::get(m_components, id);
-    if(bEnable) REMOVE_BITS(inst.m_flag, kNodeInvisible);
-    else ADD_BITS(inst.m_flag, kNodeInvisible);
+    if(!id_array::has(m_lights, id)) return 0;
+    return &id_array::get(m_lights, id);
 }
-
-
