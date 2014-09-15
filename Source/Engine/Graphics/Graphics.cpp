@@ -278,11 +278,15 @@ void Graphics::quit()
     bgfx::shutdown();
 }
 
-void Graphics::update(float dt)
+void Graphics::update(ShadingEnviroment* env, float dt)
 {
     PROFILE(Graphics_Update);
     g_modelWorld.update(dt);
     g_guiMgr.update(dt);
+
+    g_modelWorld.cull_models(g_camera.m_frustrum);
+    g_lightWorld.update_shadow(env->m_shadowAreaSize, env->m_shadowFar, g_camera.m_eye);
+    if(g_lightWorld.m_shadowLight) g_modelWorld.cull_shadows(g_lightWorld.m_shadowFrustum);
 }
 
 void submitPerFrameUniforms()
@@ -292,36 +296,6 @@ void submitPerFrameUniforms()
     bgfx::setUniform(g_uniformPerFrame.m_camPos, g_camera.m_eye);
     float zparams[2] = {g_camera.m_near, g_camera.m_far};
     bgfx::setUniform(g_uniformPerFrame.m_zParams, zparams);
-}
-
-void submitShadowUniforms(ShadingEnviroment* env)
-{
-    if(!g_lightWorld.m_shadowLight) return;
-
-
-    const float* shadowLightView = g_lightWorld.m_shadowView;
-    const float* shadowLightProj = g_lightWorld.m_shadowProj;
-
-    bgfx::setViewRect(kShadowViewId, 0, 0, 
-                     g_shadowMap.m_shadowMapSize, 
-                     g_shadowMap.m_shadowMapSize);
-    bgfx::setViewFrameBuffer(kShadowViewId, g_shadowMap.m_shadowMapFB->m_handle);
-    bgfx::setViewTransform(kShadowViewId, shadowLightView, shadowLightProj);
-    bgfx::setUniform(g_shadowMap.m_paramUniform, env->m_shadowParams);
-
-    const float mtxCrop[16] =
-    {
-        0.5f, 0.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.5f, 1.0f,
-    };
-
-    float mtxTmp[16];
-    float mtxShadow[16];
-    bx::mtxMul(mtxTmp, shadowLightProj, mtxCrop);
-    bx::mtxMul(mtxShadow, shadowLightView, mtxTmp);
-    bgfx::setUniform(g_shadowMap.m_lightMtx, mtxShadow);
 }
 
 void Graphics::draw(ShadingEnviroment* env)
@@ -342,8 +316,7 @@ void Graphics::draw(ShadingEnviroment* env)
     bgfx::setViewFrameBufferMask(colorViewId, g_postProcess.m_colorFB->m_handle);
 
     submitPerFrameUniforms();
-    submitShadowUniforms(env);
-
+    g_lightWorld.submit_lights(env);
     if(env) env->submit();
     g_modelWorld.sumibt_models();
     if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();

@@ -97,7 +97,7 @@ struct Graphics
     static void postInit();
     static void quit();
     static void draw(ShadingEnviroment* env);
-    static void update(float dt);
+    static void update(ShadingEnviroment* env, float dt);
     static void frameStart();
     static void frameEnd();
 

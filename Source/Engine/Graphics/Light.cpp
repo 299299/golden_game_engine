@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "DataDef.h"
 #include "Graphics.h"
+#include "ShadingEnviroment.h"
 #include "MathDefs.h"
 #include "MemorySystem.h"
 #include "id_array.h"
@@ -41,7 +42,7 @@ void LightWorld::update( float dt )
     }
 }
 
-void LightWorld::sumibt_lights()
+void LightWorld::sumibt_lights(ShadingEnviroment* env)
 {
     Vec4 s_lightInfo[BGFX_CONFIG_MAX_LIGHTS];
     Vec3 s_lightColor[BGFX_CONFIG_MAX_LIGHTS];
@@ -77,6 +78,27 @@ void LightWorld::sumibt_lights()
     bgfx::setUniform(g_uniformLights.m_vec, s_lightVec, num);
     bgfx::setUniform(g_uniformLights.m_info, s_lightInfo, num);
     bgfx::setUniform(g_uniformLights.m_type, s_lightType, num);
+
+    if(!m_shadowLight) return;
+    extern ShadowMap g_shadowMap;
+    bgfx::setViewRect(kShadowViewId, 0, 0, g_shadowMap.m_shadowMapSize, g_shadowMap.m_shadowMapSize);
+    bgfx::setViewFrameBuffer(kShadowViewId, g_shadowMap.m_shadowMapFB->m_handle);
+    bgfx::setViewTransform(kShadowViewId, m_shadowView, m_shadowProj);
+    bgfx::setUniform(g_shadowMap.m_paramUniform, env->m_shadowParams);
+
+    const float mtxCrop[16] =
+    {
+        0.5f, 0.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f,
+    };
+
+    float mtxTmp[16];
+    float mtxShadow[16];
+    bx::mtxMul(mtxTmp, m_shadowProj, mtxCrop);
+    bx::mtxMul(mtxShadow, m_shadowView, mtxTmp);
+    bgfx::setUniform(g_shadowMap.m_lightMtx, mtxShadow);
 }
 
 void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* camPos)

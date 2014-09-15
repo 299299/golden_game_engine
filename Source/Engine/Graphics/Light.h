@@ -42,11 +42,13 @@ ENGINE_NATIVE_ALIGN struct LightInstance
 
 
 typedef Id LightId;
+struct ShadingEnviroment;
+
 struct LightWorld
 {
     void                    init();
     void                    update(float dt);
-    void                    sumibt_lights();
+    void                    sumibt_lights(ShadingEnviroment* env);
     LightId                 create_light(const LightResource* lightResource);
     void                    destroy_light(LightId id);
     LightInstance*          get_light(LightId id);
