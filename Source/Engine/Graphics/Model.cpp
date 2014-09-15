@@ -180,7 +180,7 @@ void ModelWorld::update(float dt)
     }
 }
 
-void ModelWorld::sumibt_models()
+void ModelWorld::submit_models()
 {
     for(uint32_t i=0; i<m_numModels; ++i)
     {

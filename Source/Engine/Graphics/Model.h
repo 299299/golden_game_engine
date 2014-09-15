@@ -55,7 +55,7 @@ struct ModelWorld
 {
     void                    init();
     void                    update(float dt);
-    void                    sumibt_models();
+    void                    submit_models();
     void                    submit_shadows();
     ModelId                 create_model(const ModelResource* modelResource);
     void                    destroy_model(ModelId id);

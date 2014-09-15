@@ -59,7 +59,7 @@ typedef Id ProxyId;
 
 struct PhysicsWorld
 {
-    void init(uint32_t maxObjects, uint32_t maxCharacters);
+    void init();
     void quit();
 
     void frameStart();
@@ -108,7 +108,7 @@ public:
     uint32_t                                m_numRaycasts;
     int                                     m_status;
     IdArray<MAX_PHYSICS, PhysicsInstance>   m_objects;
-    IdArray<MAX_PROXY, ProxyInstance>*      m_proxies;
+    IdArray<MAX_PROXY, ProxyInstance>       m_proxies;
     //======================================================================
     PhysicsConfig*                          m_config;
 };

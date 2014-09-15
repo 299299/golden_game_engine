@@ -94,7 +94,7 @@ static hkCriticalSection    g_eventCS;
 
 #define MAX_RAYCAST_PERFRAME    (1000)
 
-void PhysicsWorld::init(uint32_t maxObjects, uint32_t maxCharacters)
+void PhysicsWorld::init()
 {
     m_config = 0;
     m_world = 0;

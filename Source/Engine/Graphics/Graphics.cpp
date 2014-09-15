@@ -9,6 +9,7 @@
 #include "ShadingEnviroment.h"
 #include "Material.h"
 #include "Light.h"
+#include "Model.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Resource.h"
@@ -280,7 +281,7 @@ void Graphics::quit()
 void Graphics::update(float dt)
 {
     PROFILE(Graphics_Update);
-    g_sceneMgr.update(dt);
+    g_modelWorld.update(dt);
     g_guiMgr.update(dt);
 }
 
@@ -295,11 +296,15 @@ void submitPerFrameUniforms()
 
 void submitShadowUniforms(ShadingEnviroment* env)
 {
-    if(!g_sceneMgr.m_shadowLight) return;
+    if(!g_lightWorld.m_shadowLight) return;
 
-    extern float shadowLightView[16];
-    extern float shadowLightProj[16];
-    bgfx::setViewRect(kShadowViewId, 0, 0, g_shadowMap.m_shadowMapSize, g_shadowMap.m_shadowMapSize);
+
+    const float* shadowLightView = g_lightWorld.m_shadowView;
+    const float* shadowLightProj = g_lightWorld.m_shadowProj;
+
+    bgfx::setViewRect(kShadowViewId, 0, 0, 
+                     g_shadowMap.m_shadowMapSize, 
+                     g_shadowMap.m_shadowMapSize);
     bgfx::setViewFrameBuffer(kShadowViewId, g_shadowMap.m_shadowMapFB->m_handle);
     bgfx::setViewTransform(kShadowViewId, shadowLightView, shadowLightProj);
     bgfx::setUniform(g_shadowMap.m_paramUniform, env->m_shadowParams);
@@ -340,6 +345,8 @@ void Graphics::draw(ShadingEnviroment* env)
     submitShadowUniforms(env);
 
     if(env) env->submit();
+    g_modelWorld.sumibt_models();
+    if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();
     g_debugDrawMgr.draw();
     postProcessSubmit(env);
 
