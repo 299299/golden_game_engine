@@ -39,6 +39,8 @@ struct MemorySystem
 };
 extern MemorySystem g_memoryMgr;
 
+#define COMMON_ALLOC(type, num)         (type*)g_memoryMgr.alloc(kMemoryCategoryCommon, sizeof(type)*num)
+#define COMMON_DEALLOC(p)               g_memoryMgr.deallocate(kMemoryCategoryCommon, p)
 #define STATIC_ALLOC(type, num)         (type*)g_memoryMgr.alloc(kMemoryCategoryStatic, sizeof(type)*num)
 #define FRAME_ALLOC(type, num)          (type*)g_memoryMgr.alloc(kMemoryCategoryFrame, sizeof(type)*num)
 #define DEBUG_ALLOC(type, num)          (type*)g_memoryMgr.alloc(kMemoryCategoryDebug, sizeof(type)*num)

@@ -23,8 +23,6 @@ namespace memory
         /// @copydoc Allocator::allocate()
         void* allocate(size_t size, size_t align = Allocator::DEFAULT_ALIGN)
         {
-            ScopedMutex sm(m_mutex);
-
             size_t actual_size = actual_allocation_size(size, align);
 
             Header* h = (Header*)malloc(actual_size);
@@ -43,8 +41,6 @@ namespace memory
         /// @copydoc Allocator::deallocate()
         void deallocate(void* data)
         {
-            ScopedMutex sm(m_mutex);
-
             if (!data)
                 return;
 
@@ -118,8 +114,6 @@ namespace memory
         }
 
     private:
-
-        Mutex       m_mutex;
         size_t      m_allocated_size;
         uint32_t    m_allocation_count;
     };

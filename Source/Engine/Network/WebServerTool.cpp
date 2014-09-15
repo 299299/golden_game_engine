@@ -81,13 +81,13 @@ void WebServerTool::onLogMessage(int logLevel, const char* logMsg)
 
 void* WebServerTool::onMalloc(size_t size)
 {
-    return new char[size];
+    return COMMON_ALLOC(char, size);
 }
 
 
 void WebServerTool::onFree(void *ptr)
 {
-    delete []((char*)ptr);
+    COMMON_DEALLOC(ptr);
 }
 
 void WebServerTool::onRequestQuit()

@@ -2,6 +2,7 @@
 #include "Animation.h"
 #include "Resource.h"
 #include "Log.h"
+#include "MemorySystem.h"
 //========================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>
@@ -532,7 +533,7 @@ void AnimFSMInstance::init(const void* resource)
 {
     m_resource = (AnimFSM*)resource;
     uint32_t memSize = m_resource->m_numStates * sizeof(RtState) + m_resource->m_numAnimations * (sizeof(void*) * 2);
-    m_blob = (char*)malloc(memSize);
+    m_blob = COMMON_ALLOC(char, memSize);
     LOGD(__FUNCTION__" blob size = %d", memSize);
     memset(m_blob, 0x00, memSize);
     char* p = m_blob;
@@ -569,7 +570,7 @@ void AnimFSMInstance::destroy()
     {
         m_layers[i].destroy();
     }
-    free(m_blob);
+    COMMON_DEALLOC(m_blob);
 }
 
 void AnimFSMInstance::update(float dt)

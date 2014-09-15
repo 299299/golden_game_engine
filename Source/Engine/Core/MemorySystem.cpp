@@ -1,5 +1,6 @@
 #include "MemorySystem.h"
 #include "memory.h"
+#include "linear_allocator.h"
 #include "Log.h"
 //=================================================================
 #include <Common/Base/System/hkBaseSystem.h>
@@ -65,7 +66,7 @@ uint32_t MemorySystem::allocedSize(uint32_t category)
     
 void MemorySystem::clear(uint32_t category)
 {
-    m_allocators[category]->clear();
+    (LinearAllocator*)m_allocators[category]->clear();
 }
 
 void MemorySystem::registerAllocator(uint32_t category, Allocator* allocator)

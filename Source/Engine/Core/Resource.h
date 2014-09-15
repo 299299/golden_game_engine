@@ -6,6 +6,7 @@ struct ResourceFactory;
 struct ResourcePackage;
 class  hkThread;
 class  hkSemaphore;
+class  LinearAllocator;
 
 enum ResourceStatus
 {
@@ -62,10 +63,9 @@ ENGINE_NATIVE_ALIGN struct ResourcePackage
     int                                 m_lastOnLineGroup;
     int                                 m_lastOnlineResource;
 
-    char*                               m_head;
-    char*                               m_offsetPtr;
     uint32_t                            m_memBudget;
-    uint32_t                            m_lastAllocedMemSize;
+    LinearAllocator*                    m_allocator;
+    char                                m_allocator_buffer[32];
 
     hkUint32                            m_status;
     bool                                m_bundled;
@@ -74,9 +74,6 @@ ENGINE_NATIVE_ALIGN struct ResourcePackage
     void  destroy();
 
     char* allocMemory(uint32_t size);
-    void  freeMemory(char* p);
-    void  dump();
-
     void load();
     void unload();
     void flush(int maxNum);

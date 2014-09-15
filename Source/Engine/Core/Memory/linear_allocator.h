@@ -30,6 +30,7 @@ public:
     /// @copydoc Allocator::allocated_size()
     size_t allocated_size();
 
+    void* get_start() { return m_physical_start; };
 private:
 
     Allocator* m_backing;

@@ -1,9 +1,9 @@
 #include "Resource.h"
 #include "Log.h"
 #include "MemorySystem.h"
+#include "linear_allocator.h"
 #include "DataDef.h"
 #include "Utils.h"
-#include <malloc.h>
 #include <bx/readerwriter.h>
 //=====================================================
 #include <Common/Base/Thread/Thread/hkThread.h>
@@ -16,45 +16,12 @@
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #include <Common/Base/Container/PointerMap/hkPointerMap.h>
 
-struct RingMemBuffer
-{
-    char*           m_ringMemHead;
-    char*           m_ringMemTail;
-    char*           m_ringMemCur;
-    
-    void init(char* head, uint32_t size)
-    {
-        m_ringMemHead = head;
-        m_ringMemCur = m_ringMemHead;
-        m_ringMemTail = m_ringMemHead + size;
-    }
-    
-    char* alloc(int size)
-    {
-        HK_ASSERT(0, size < (m_ringMemTail - m_ringMemHead));
-        int memLeft = m_ringMemCur - m_ringMemHead;
-        //if not enough space left, I dont have another idea for handle this.
-        //just start from 0.
-        if(memLeft < size)
-        {
-            m_ringMemCur = m_ringMemHead + size;
-            return m_ringMemHead;
-        }
-        else {
-            char* p = m_ringMemCur;
-            m_ringMemCur += size;
-            return p;
-        }
-    }
-};
-
 ResourceManager                 g_resourceMgr;
 static hkCriticalSection        g_runningCS;
 static hkCriticalSection        g_queueCS;
 static hkCriticalSection        g_resourceCS;
 static hkCriticalSection        g_statusCS;
 static volatile bool            g_running = true;
-static RingMemBuffer            g_requestMemBuffer;
 
 #define RESOURCE_MAP_NUM        (16384)
 typedef hkPointerMap<hkUint64, void*> ResourceMap;
@@ -82,38 +49,7 @@ inline void unpackId(const hkUint64& key, StringId& type, StringId& name)
 
 char* ResourcePackage::allocMemory(uint32_t size)
 {
-    char* p = m_offsetPtr;
-    size = memAlignedSize(size, NATIVE_MEMORY_ALIGN);
-    m_offsetPtr += size;
-    if(m_offsetPtr > m_head + m_memBudget)
-    {
-        LOGE("package mem budget over flow !!! recompiler it first");
-        return 0;
-    }
-    
-    m_lastAllocedMemSize = size;
-    //LOGD("resource-package alloc-mem=%d, left=%d", size, m_head + m_memBudget - m_offsetPtr);
-    return (char*)memoryRoundUp(p, NATIVE_MEMORY_ALIGN, size);
-}
-
-void  ResourcePackage::freeMemory(char* p)
-{
-    HK_ASSERT(0, m_offsetPtr == p);
-    m_offsetPtr -= m_lastAllocedMemSize;
-}
- 
-void ResourcePackage::dump()
-{
-    LOGI("================DUMPING RESOUCE PACKAGE[%s] ==================", stringid_lookup(m_name));
-    uint32_t sizeLeft = (m_head + m_memBudget) - m_offsetPtr;
-    LOGI("alloc-mem=%d, left=%d", (m_offsetPtr-m_head), sizeLeft);
-    for(uint32_t i=0; i<m_numGroups; ++i)
-    {
-        const ResourceGroup& group = m_groups[i];
-        LOGI("group name [%s] num-of-resources=%d, mem-used=%d", 
-             group.m_factory->m_name, group.m_numResources, group.m_memUsed);
-    }
-    LOGI("===================DUMP END===================");
+    return m_allocator->allocate(size);
 }
 
 void ResourcePackage::init()
@@ -130,9 +66,9 @@ void ResourcePackage::load()
     // TODO FOR RESOURCE STACK ALLOC
     if(m_memBudget > 0)
     {
-        m_head = (char*)_aligned_malloc(m_memBudget, 16);
-        memset(m_head, 0x00, m_memBudget);
-        m_offsetPtr = m_head;
+        char* p = (char*)COMMON_ALLOC(char, m_memBudget);
+        memset(p, 0x00, m_memBudget);
+        m_allocator = new (m_allocator_buffer) LinearAllocator(p, m_memBudget);
     }
     
     if(m_bundled)
@@ -153,12 +89,11 @@ void ResourcePackage::load()
     
     lookupAllResources();
     setStatus(kResourceOffline);
-    dump();
 }
 
 void ResourcePackage::destroy()
 {
-    _aligned_free(m_head);
+    COMMON_DEALLOC(m_allocator->get_start());
 }
 
 void ResourcePackage::loadGroup(int index)
@@ -425,9 +360,6 @@ void ResourceManager::init(int maxFactories)
     m_factories = STATIC_ALLOC(ResourceFactory, m_maxFactories);
     m_types = STATIC_ALLOC(StringId, m_maxFactories);
     m_packages = STATIC_ALLOC(ResourcePackage*, 128);
-    
-    uint32_t ringMemSize = 1024;
-    g_requestMemBuffer.init(STATIC_ALLOC(char, ringMemSize), ringMemSize);
 
     m_semaphore = new hkSemaphore;
     m_thread = new hkThread;
@@ -447,7 +379,7 @@ void ResourceManager::quit()
     for(size_t i=0; i<m_numPackages; ++i)
     {
         m_packages[i]->destroy();
-        _aligned_free(m_packages[i]);
+        COMMON_DEALLOC(m_packages[i]);
     }
     clearRequestQueue(); 
     SAFE_DELETE(g_resourceMap);
@@ -551,9 +483,7 @@ bool ResourceManager::loadPackage(const char* packageName)
         return false;
     }
 
-    int packageNameLen = strlen(packageName);
-    uint32_t memSize = sizeof(ResourceRequest) + packageNameLen;
-    char* blob = g_requestMemBuffer.alloc(memSize);
+    uint32_t memSize = COMMON_ALLOC(char, memSize);
     memset(blob, 0x00, memSize);
     ResourceRequest* request = (ResourceRequest*)blob;
     request->m_data = blob + sizeof(ResourceRequest);
@@ -579,7 +509,7 @@ bool ResourceManager::unloadPackage(const StringId& packageName)
             }
             package->unload();
             package->destroy();
-            _aligned_free(package);
+            COMMON_DEALLOC(package);
             m_packages[0] = m_packages[--m_numPackages];
             return true;
         }
@@ -623,6 +553,8 @@ void ResourceManager::processRequests()
 
         bx::CrtFileReader reader;
         int32_t ret = reader.open(fileName);
+        COMMON_DEALLOC(request);
+
         if(ret)
         {
             LOGE("load package failed");
@@ -631,19 +563,12 @@ void ResourceManager::processRequests()
 
         uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
         reader.seek(0, bx::Whence::Begin);
-        ResourcePackage* package = (ResourcePackage*)_aligned_malloc(fileSize, 16);
+        ResourcePackage* package = (ResourcePackage*)COMMON_ALLOC(char, fileSize);
         memset(package, 0x00, fileSize);
         reader.read(package, fileSize);
         reader.close();
         m_packages[m_numPackages++] = package;
-#ifndef _RETAIL
-        {
-            static bool bLoaded = false;
-            if(!bLoaded) load_string_table(STRING_TABLE_FILE);
-            bLoaded = true;
-        }
-#endif
-        package->load();    
+        package->load();
     }
 }
 
@@ -740,7 +665,7 @@ void ResourceManager::destroyReloadResources()
         ResouceData& data = iter->second;
         if(data.m_fac->m_bringOutFunc) data.m_fac->m_bringOutFunc(data.m_resource);
         if(data.m_fac->m_destroyFunc) data.m_fac->m_destroyFunc(data.m_resource);
-        _aligned_free(data.m_resource);
+        COMMON_DEALLOC(data.m_resource);
     }
     g_reloadResources.clear();
 }
@@ -795,7 +720,7 @@ void* ResourceManager::reloadResource( const StringId& type, const StringId& nam
     void* newResource = 0;
     uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
     reader.seek(0, bx::Whence::Begin);
-    newResource = _aligned_malloc(fileSize, 16);
+    newResource = COMMON_ALLOC(char, fileSize);
     memset(newResource, 0x00, fileSize);
     reader.read(newResource, fileSize);
     reader.close();
@@ -829,7 +754,7 @@ void* ResourceManager::reloadResource( const StringId& type, const StringId& nam
         if(fac->m_bringOutFunc) fac->m_bringOutFunc(oldResource);
         if(fac->m_destroyFunc) fac->m_destroyFunc(oldResource);
     }
-    _aligned_free(ptrToFree);
+    COMMON_DEALLOC(ptrToFree);
     return newResource;
 }
 

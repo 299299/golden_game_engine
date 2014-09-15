@@ -135,6 +135,10 @@ int _tmain(int argc, _TCHAR* argv[])
     extern void registerResourceFactories();
     registerResourceFactories();
 
+#ifndef _RETAIL
+    load_string_table(STRING_TABLE_FILE);
+#endif
+
     LoadingState* loadingState = new LoadingState;
     loadingState->setLoadingPackage("data/core.package");
     g_gameFSM.addState(loadingState);
