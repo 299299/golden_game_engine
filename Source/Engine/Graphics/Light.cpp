@@ -8,20 +8,15 @@
 #include "id_array.h"
 #include <bgfx/bgfx.h>
 
+LightWorld g_lightWorld;
 
-LightWorld::LightWorld(uint32_t max_num_light)
-:m_lights(g_memoryMgr.get_allocator(kMemoryCategoryCommon), max_num_light)
+void LightWorld::init()
 {
     reset();
-
     bx::mtxIdentity(m_shadowView);
     bx::mtxIdentity(m_shadowProj);
 }
 
-LightWorld::~LightWorld()
-{
-
-}
 
 void LightWorld::reset()
 {

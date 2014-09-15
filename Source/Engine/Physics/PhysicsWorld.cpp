@@ -8,7 +8,6 @@
 #include "Log.h"
 #include "MathDefs.h"
 #include "DebugDraw.h"
-#include "ComponentManager.h"
 #include "Resource.h"
 //===========================================
 //          COMPONENTS
@@ -92,12 +91,10 @@ typedef tinystl::unordered_map<uint64_t, CollisionEvent*> CollisionEventMap;
 CollisionEventMap           g_collisionEvtMap;
 PhysicsWorld                g_physicsWorld;
 static hkCriticalSection    g_eventCS;
-static DynamicObjectComponentFactory<PhysicsInstance> g_physicsInstances(PhysicsResource::getName(), 1000);
-static DynamicObjectComponentFactory<ProxyInstance>   g_proxyInstances(ProxyResource::getName(), 30);
 
 #define MAX_RAYCAST_PERFRAME    (1000)
 
-void PhysicsWorld::init()
+void PhysicsWorld::init(uint32_t maxObjects, uint32_t maxCharacters)
 {
     m_config = 0;
     m_world = 0;
@@ -106,8 +103,6 @@ void PhysicsWorld::init()
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     m_raycastSem = new hkSemaphoreBusyWait(0, 1000);
-    g_componentMgr.registerFactory(&g_physicsInstances);
-    g_componentMgr.registerFactory(&g_proxyInstances);
     hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.getJobQueue());
 }
 
@@ -123,7 +118,7 @@ void PhysicsWorld::frameStart()
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     g_collisionEvtMap.clear();
-    m_collisionEvents = FRAME_ALLOC(CollisionEvent*, g_physicsInstances.m_objects.getSize());
+    m_collisionEvents = FRAME_ALLOC(CollisionEvent*, id_array::size(m_objects));
     m_raycasts = FRAME_ALLOC(RaycastJob, MAX_RAYCAST_PERFRAME);
 }
 
@@ -429,4 +424,51 @@ int PhysicsWorld::getFilterLayer(const StringId& name) const
             return i;
     }
     return 0;
+}
+
+
+PhysicsId PhysicsWorld::create_physics(const PhysicsResource* resource)
+{
+    PhysicsInstance inst;
+    init.init(resource);
+    return id_array::create(m_objects, inst);
+}
+
+void PhysicsWorld::destroy_physics(PhysicsId id)
+{
+    if(!id_array::has(m_objects, id))
+        return;
+    PhysicsInstance& inst = id_array::get(m_objects, id);
+    inst.destroy();
+    id_array::destroy(m_objects, id);
+}
+
+PhysicsInstance* PhysicsWorld::get_physics(PhysicsId id)
+{
+    if(!id_array::has(m_objects, id))
+        return 0;
+    return &id_array::get(m_objects, id);
+}
+
+ProxyId PhysicsWorld::create_proxy(const ProxyResource* resource)
+{
+    ProxyInstance inst;
+    init.init(resource);
+    return id_array::create(m_proxies, inst);
+}
+
+void PhysicsWorld::destroy_proxy(ProxyId id)
+{
+    if(!id_array::has(m_proxies, id))
+        return;
+    ProxyInstance& inst = id_array::get(m_proxies, id);
+    inst.destroy();
+    id_array::destroy(m_proxies, id);
+}
+
+ProxyInstance* PhysicsWorld::get_proxy(ProxyId id)
+{
+    if(!id_array::has(m_proxies, id))
+        return 0;
+    return &id_array::get(m_proxies, id);
 }

@@ -4,6 +4,9 @@
 #include "MathDefs.h"
 #include "id_array.h"
 
+
+#define MAX_LIGHTS       (64)
+
 enum LightType
 {
     kLightDirectional,
@@ -41,9 +44,7 @@ ENGINE_NATIVE_ALIGN struct LightInstance
 typedef Id LightId;
 struct LightWorld
 {
-    LightWorld(uint32_t max_num_light);
-    ~LightWorld();
-
+    void                    init();
     void                    update(float dt);
     void                    sumibt_lights();
     LightId                 create_light(const LightResource* lightResource);
@@ -53,7 +54,7 @@ struct LightWorld
                                           float shadowSize, 
                                           const float* camPos);
 
-    IdArray<LightInstance>  m_lights;
+    IdArray<MAX_LIGHTS, LightInstance>  m_lights;
     LightInstance*          m_drawLights;
     uint32_t                m_numLightsToDraw;
 
@@ -65,3 +66,5 @@ struct LightWorld
 private:
     void                    reset();
 };
+
+extern LightWorld g_lightWorld;

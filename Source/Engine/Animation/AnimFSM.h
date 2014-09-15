@@ -111,9 +111,6 @@ ENGINE_NATIVE_ALIGN struct AnimFSM
     void                lookup();
 };
 
-void* load_resource_anim_fsm(const char* data, uint32_t size);
-void  lookup_resource_anim_fsm(void* resource);
-
 //==========================================================================================
 //  RUNTIME
 //==========================================================================================

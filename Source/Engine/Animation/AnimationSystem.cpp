@@ -5,7 +5,6 @@
 #include "Profiler.h"
 #include "Log.h"
 #include "DebugDraw.h"
-#include "ComponentManager.h"
 //===================================
 // RESOURCES
 #include "Resource.h"
@@ -41,26 +40,12 @@ struct AnimJobs
 };
 AnimJobs*                               g_animJobs = 0;
 
-static DynamicObjectComponentFactory<RagdollInstance>       g_ragdollInstances(RagdollResource::getName(), 10);
-static DynamicObjectComponentFactory<AnimRigInstance>          g_animInstances(AnimRig::getName(), 100);
-static DynamicObjectComponentFactory<LookAtInstance>        g_lookatInstances(LookAtResource::getName(), 10);
-static DynamicObjectComponentFactory<ReachInstance>         g_reachInstances(ReachResource::getName(), 10);
-static DynamicObjectComponentFactory<FootInstance>          g_footInstances(FootResource::getName(), 10);
-static DynamicObjectComponentFactory<AnimFSMInstance>       g_animFsmInstances(AnimFSM::getName(), 100);
-
 void AnimationSystem::init()
 {
     m_status = 0;
     hkaSampleBlendJobQueueUtils::registerWithJobQueue( g_threadMgr.getJobQueue());
     g_animJobs = new AnimJobs;
     g_animJobs->m_jobs.reserve(100);
-
-    g_componentMgr.registerFactory(&g_ragdollInstances);
-    g_componentMgr.registerFactory(&g_animInstances);
-    g_componentMgr.registerFactory(&g_lookatInstances);
-    g_componentMgr.registerFactory(&g_reachInstances);
-    g_componentMgr.registerFactory(&g_footInstances);
-    g_componentMgr.registerFactory(&g_animFsmInstances);
 }
 
 void AnimationSystem::quit()
@@ -114,4 +99,48 @@ void AnimationSystem::tickFinishJobs()
     {
         jobs[i].destroy();
     }
+}
+
+
+Id AnimationSystem::create_fsm(const AnimFSM* resource)
+{
+    AnimFSMInstance inst;
+    inst.init(resource);
+    return id_array::create(m_fsms, inst);
+}
+
+void AnimationSystem::destroy_fsm(Id id)
+{
+    if(!id_array::has(m_fsms, id)) return;
+    AnimFSMInstance& inst = id_array::get(m_fsms, id);
+    inst.destroy();
+    id_array::destroy(m_fsms, id);
+}
+
+AnimFSMInstance* AnimationSystem::get_fsm(Id id)
+{
+    if(!id_array::has(m_fsms, id)) return 0;
+    return &id_array::get(m_fsms, id);
+}
+
+Id AnimationSystem::create_rig(const AnimRig* resource)
+{
+    AnimRigInstance inst;
+    inst.init(resource);
+    return id_array::create(m_rigs, inst);
+}
+
+void AnimationSystem::destroy_rig(Id id)
+{
+    if(!id_array::has(m_rigs, id)) return;
+    AnimRigInstance& inst = id_array::get(m_rigs, id);
+    inst.destroy();
+    id_array::destroy(m_rigs, id);
+}
+
+
+AnimRigInstance* AnimationSystem::get_rig(Id id)
+{
+    if(!id_array::has(m_rigs, id)) return 0;
+    return &id_array::get(m_rigs, id);
 }

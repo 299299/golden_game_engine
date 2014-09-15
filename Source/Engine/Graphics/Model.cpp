@@ -7,7 +7,6 @@
 #include "DataDef.h"
 #include "MathDefs.h"
 #include "Graphics.h"
-#include "Light.h"
 #include <bgfx.h>
 
 void ModelInstance::init(const void* resource)
@@ -157,15 +156,10 @@ void lookup_resource_model( void * resource )
     }
 }
 
-ModelWorld::ModelWorld(uint32_t max_num_models)
-:m_models(max_num_models)
+ModelWorld g_modelWorld;
+void ModelWorld::init()
 {
     reset();
-}
-
-ModelWorld::~ModelWorld()
-{
-
 }
 
 void ModelWorld::reset()

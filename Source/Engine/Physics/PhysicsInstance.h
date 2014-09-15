@@ -28,11 +28,10 @@ enum PhysicsSystemType
 };
 
 #define MAX_PHYSICS_SYSTEM_NUM      (6)
-struct PhysicsInstance
+ENGINE_NATIVE_ALIGN struct PhysicsInstance
 {
     void*                       m_data[MAX_PHYSICS_SYSTEM_NUM];
     const PhysicsResource*      m_resource;
-    ID                          m_id;
     uint8_t                     m_numData;
     uint8_t                     m_systemType;
     bool                        m_dirty;
@@ -42,7 +41,6 @@ struct PhysicsInstance
     void destroy();
     void setTransform(const hkQsTransform& t);
     void setEnabled(bool bEnable);
-    
     
     inline int indexOfRB(hkpRigidBody* rb)
     {
@@ -60,6 +58,3 @@ struct PhysicsInstance
     void fetchTransform(int index, hkTransform& outT);
     void setTransform(const hkTransform& t);
 };
-
-void*  load_resource_physics(const char* data, uint32_t size);
-void   destroy_resource_physics(void* resource);

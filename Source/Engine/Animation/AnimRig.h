@@ -79,6 +79,3 @@ struct AnimRigInstance
     inline hkaPose& getPose() { return *m_pose; };
     void testAnimation(const char* animFile);
 };
-
-void* load_resource_anim_rig(const char* data, uint32_t size);
-void  destroy_resource_anim_rig(void * resource);

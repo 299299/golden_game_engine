@@ -18,23 +18,6 @@
 //============================================================
 
 
-void LookAtResource::lookup()
-{
-    m_rig = FIND_RESOURCE(AnimRig, m_rigName);
-}
-
-void ReachResource::lookup()
-{
-    m_rig = FIND_RESOURCE(AnimRig, m_rigName);
-}
-
-void FootResource::lookup()
-{
-    m_rig = FIND_RESOURCE(AnimRig, m_rigName);
-}
-
-
-
 //============================================================
 //                  LOOK AT INSTANCE
 //============================================================
@@ -339,17 +322,17 @@ void  FootInstance::doFootIK(   bool isStanding,
 void  lookup_resource_lookat_ik(void* resource)
 {
     LookAtResource* lookat = (LookAtResource*) resource;
-    lookat->lookup();
+    lookat->m_rig = FIND_RESOURCE(AnimRig, lookat->m_rigName);
 }
 
 void  lookup_resource_reach_ik(void* resource)
 {
     ReachResource* reach = (ReachResource*) resource;
-    reach->lookup();
+    reach->m_rig = FIND_RESOURCE(AnimRig, reach->m_rigName);
 }
 
 void  lookup_resource_foot_ik(void* resource)
 {
     FootResource* foot = (FootResource*)resource;
-    foot->lookup();
+    foot->m_rig = FIND_RESOURCE(AnimRig, foot->m_rigName);
 }

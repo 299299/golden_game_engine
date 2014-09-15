@@ -1,6 +1,10 @@
 #pragma once
 #include "Prerequisites.h"
 #include "StringId.h"
+#include "id_array.h"
+
+#define MAX_PHYSICS     (1024)
+#define MAX_PROXY       (64)
 
 class   hkpEntity;
 class   hkpWorld;
@@ -11,6 +15,8 @@ class   hkpRigidBody;
 class   PhysicsPostSimlator;
 struct  PhysicsInstance;
 struct  PhysicsResource;
+struct  ProxyInstance;
+struct  ProxyResource;
 class   HavokContactListener;
 struct  hkpWorldRayCastCommand;
 struct  hkpWorldRayCastOutput;
@@ -48,9 +54,12 @@ struct PhysicsConfig
     uint32_t                    m_numFilterLayers;
 };
 
+typedef Id PhysicsId;
+typedef Id ProxyId;
+
 struct PhysicsWorld
 {
-    void init();
+    void init(uint32_t maxObjects, uint32_t maxCharacters);
     void quit();
 
     void frameStart();
@@ -75,6 +84,15 @@ struct PhysicsWorld
     int getFilterLayer(const StringId& name) const;
     void createPlane();
 
+    PhysicsId create_physics(const PhysicsResource* resource);
+    void      destroy_physics(PhysicsId id);
+    PhysicsInstance* get_physics(PhysicsId id);
+
+    ProxyId   create_proxy(const ProxyResource* resource);
+    void      destroy_proxy(ProxyId id);
+    ProxyInstance*   get_proxy(ProxyId id);
+
+
 private:
     void updateVDB(float dt);
     void checkStatus();
@@ -89,6 +107,8 @@ public:
     uint32_t                                m_numCollisionEvents;
     uint32_t                                m_numRaycasts;
     int                                     m_status;
+    IdArray<MAX_PHYSICS, PhysicsInstance>   m_objects;
+    IdArray<MAX_PROXY, ProxyInstance>*      m_proxies;
     //======================================================================
     PhysicsConfig*                          m_config;
 };

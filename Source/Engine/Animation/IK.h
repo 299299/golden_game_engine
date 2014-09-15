@@ -13,8 +13,6 @@ ENGINE_NATIVE_ALIGN struct LookAtResource
 {
     DECLARE_RESOURCE(lookat);
 
-    void lookup();
-
     float                                   m_fwdLS[3];
     float                                   m_lookAtLimit;
     float                                   m_gain;
@@ -28,8 +26,6 @@ ENGINE_NATIVE_ALIGN struct LookAtResource
 ENGINE_NATIVE_ALIGN struct ReachResource
 {
     DECLARE_RESOURCE(reach);
-
-    void lookup();
 
     float                                   m_elbowAxis[3];
     float                                   m_hingeLimitAngle[2];    
@@ -46,8 +42,6 @@ ENGINE_NATIVE_ALIGN struct ReachResource
 ENGINE_NATIVE_ALIGN struct  FootResource
 {
     DECLARE_RESOURCE(foot);
-
-    void lookup();
 
     float                                   m_leftKneeAxisLS[3];
     float                                   m_rightKneeAxisLS[3];
@@ -86,7 +80,6 @@ ENGINE_NATIVE_ALIGN struct LookAtInstance
     hkVector4                   m_lookAtLastTargetWS;
     const LookAtResource*       m_resource;
     float                       m_lookAtWeight;
-    ID                          m_id;
     bool                        m_enabled;
 
     void init(const void* resource);
@@ -104,7 +97,6 @@ ENGINE_NATIVE_ALIGN struct ReachInstance
     hkVector4                   m_reachLastTargetWS;
     const ReachResource*        m_resource;
     float                       m_reachWeight;
-    ID                          m_id;
     bool                        m_enabled;
 
     void init(const void* resource);
@@ -124,7 +116,6 @@ ENGINE_NATIVE_ALIGN struct FootInstance
     AnimRaycastInterface*       m_raycast;
     const FootResource*         m_resource;
     float                       m_weight;
-    ID                          m_id;
     bool                        m_footOnAir[2];
     bool                        m_enabled;
 

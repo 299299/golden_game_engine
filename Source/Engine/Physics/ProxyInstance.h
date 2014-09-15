@@ -30,7 +30,7 @@ ENGINE_NATIVE_ALIGN struct ProxyResource
     char                        m_padding[3];
 };
 
-struct ProxyInstance
+ENGINE_NATIVE_ALIGN struct ProxyInstance
 {
     void init(const void* resource);
     void destroy();
@@ -68,9 +68,4 @@ struct ProxyInstance
     const ProxyResource*            m_resource;
     hkpCharacterProxy*              m_proxy;
     AnimCharacterListener*          m_listener;
-    ID                              m_id;
 };
-
-
-void* load_resource_proxy(const char* data, uint32_t size);
-void  destroy_resource_proxy(void * resource);

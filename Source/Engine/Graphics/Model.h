@@ -8,6 +8,7 @@ struct Mesh;
 struct Frustum;
 
 #define MAX_MATERIAL_NUM        (8)
+#define MAX_MODELS              (1024)
 
 ENGINE_NATIVE_ALIGN struct ModelResource
 {
@@ -52,9 +53,7 @@ struct ModelInstance
 typedef Id ModelId;
 struct ModelWorld
 {
-    ModelWorld(uint32_t max_num_models);
-    ~ModelWorld();
-
+    void                    init();
     void                    update(float dt);
     void                    sumibt_models();
     void                    submit_shadows();
@@ -65,12 +64,14 @@ struct ModelWorld
     void                    cull_models(const Frustum& frust);
     void                    cull_shadows(const Frustum& lightFrust);
 
-    IdArray<ModelInstance>  m_models;
-    ModelInstance**         m_modelsToDraw;
-    uint32_t                m_numModels;
-    ModelInstance**         m_shadowsToDraw;
-    uint32_t                m_numShadows;
+    IdArray<MAX_MODELS, ModelInstance>      m_models;
+    ModelInstance**                         m_modelsToDraw;
+    uint32_t                                m_numModels;
+    ModelInstance**                         m_shadowsToDraw;
+    uint32_t                                m_numShadows;
 
 private:
     void                    reset();
 };
+
+extern ModelWorld g_modelWorld;

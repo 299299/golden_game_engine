@@ -1,5 +1,6 @@
 #pragma once
 #include "Prerequisites.h"
+#include "id_array.h"
 
 class hkaSkeleton;
 class hkaAnimatedSkeleton;
@@ -9,6 +10,14 @@ class hkaMirroredSkeleton;
 class hkaAnimation;
 class hkaMirroredAnimation;
 class hkaAnimationBinding;
+
+struct AnimFSM;
+struct AnimFSMInstance;
+struct AnimRig;
+struct AnimRigInstance;
+
+#define MAX_ANIM_FSM    (64)
+#define MAX_ANIM_RIG    (64)
 
 struct AnimationSystem
 {
@@ -20,8 +29,18 @@ struct AnimationSystem
     void    tickFinishJobs();
     void    checkStatus();
 
+    Id      create_fsm(const AnimFSM* resource);
+    void    destroy_fsm(Id id);
+    AnimFSMInstance* get_fsm(Id id);
+
+    Id      create_rig(const AnimRig* resource);
+    void    destroy_rig(Id id);
+    AnimRigInstance* get_rig(Id id);
+
 private:
-    int     m_status;
+    IdArray<MAX_ANIM_FSM, AnimFSMInstance>      m_fsms;
+    IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
+    int                                         m_status;
 };
 
 extern AnimationSystem g_animMgr;
