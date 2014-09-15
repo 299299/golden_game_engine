@@ -12,19 +12,6 @@
 #define INVALID_U16         (0xFFFF)
 #define INVALID_U32         (0xFFFFFFFF)
 
-typedef uint32_t ID;
-#define INVALID_ID          INVALID_U32
-
-#define INDEX_MASK                  0xffff
-#define NEW_OBJECT_ID_ADD           0x10000
-
-struct Index 
-{
-    ID              m_id;
-    uint16_t        m_index;
-    uint16_t        m_next;
-};
-
 #define LOAD_OBJECT(container, objectClassName)\
                  (objectClassName*)container->findObjectByType( objectClassName##Class.getName() );
 
@@ -61,7 +48,7 @@ struct Index
 typedef uint32_t StringId32;
 typedef uint64_t StringId64;
 
-//#define INVALID_ID 65535
+#define INVALID_ID 65535
 
 struct Id
 {

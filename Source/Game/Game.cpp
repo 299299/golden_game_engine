@@ -2,8 +2,7 @@
 #include "Log.h"
 #include "Component.h"
 #include "WebServerTool.h"
-#include "Memory.h"
-#include "MemoryPool.h"
+#include "MemorySystem.h"
 #include "Utils.h"
 //==================================================
 //RESOURCE

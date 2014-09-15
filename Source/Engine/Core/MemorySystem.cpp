@@ -1,6 +1,6 @@
-#include "Memory.h"
+#include "MemorySystem.h"
+#include "memory.h"
 #include "Log.h"
-#include "MemoryPool.h"
 //=================================================================
 #include <Common/Base/System/hkBaseSystem.h>
 #include <Common/Base/System/Error/hkDefaultError.h>
@@ -20,8 +20,6 @@ static void errorReport(const char* msg, void* userArgGivenToInit)
 }
 
 MemorySystem    g_memoryMgr;
-static MallocAllocator g_commonAllocator("common_memory");
-
 MemorySystem::MemorySystem()
 {
     memset(m_allocators, 0x00, sizeof(m_allocators));
@@ -37,31 +35,16 @@ void MemorySystem::init(bool bCheckMem)
     if(bCheckMem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
     else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
     hkBaseSystem::init( m_memRouter, errorReport );
-    hkMonitorStream::getInstance().resize( MONITOR_FRAME_SIZE  );
-    registerAllocator(kMemoryCategoryCommon, &g_commonAllocator);
+    hkMonitorStream::getInstance().resize(MONITOR_FRAME_SIZE);
+    memory_globals::init();
+    registerAllocator(kMemoryCategoryCommon, &default_allocator());
 }
 
 void MemorySystem::quit()
 {
     hkBaseSystem::quit();
     hkMemoryInitUtil::quit();
-    for (uint32_t i=0; i<kMemoryCategoryMax; ++i)
-    {
-        Allocator* allocator = m_allocators[i];
-        if(!allocator) continue;
-        allocator->dump();
-        allocator->check();
-    }
-}
-
-void MemorySystem::dump()
-{
-    for (uint32_t i=0; i<kMemoryCategoryMax; ++i)
-    {
-        Allocator* allocator = m_allocators[i];
-        if(!allocator) continue;
-        allocator->dump();
-    }
+    memory_globals::shutdown();
 }
 
 void* MemorySystem::alloc(uint32_t category, uint32_t size, uint32_t alignment)
@@ -70,14 +53,9 @@ void* MemorySystem::alloc(uint32_t category, uint32_t size, uint32_t alignment)
     return m_allocators[category]->alloc(size, alignment);
 }
 
-void MemorySystem::free(uint32_t category, void* p)
+void MemorySystem::deallocate(uint32_t category, void* p)
 {
-    m_allocators[category]->free(p);
-}
-
-void MemorySystem::free( uint32_t category, void* p, uint32_t numOfBytes )
-{
-    m_allocators[category]->free(p, numOfBytes);
+    m_allocators[category]->deallocate(p);
 }
 
 uint32_t MemorySystem::allocedSize(uint32_t category)

@@ -1,8 +1,7 @@
 #include "Graphics.h"
 #include "Log.h"
 #include "DataDef.h"
-#include "Memory.h"
-#include "MemoryPool.h"
+#include "MemorySystem.h"
 #include "Profiler.h"
 //============================================
 #include "Camera.h"

@@ -24,13 +24,11 @@ struct MemorySystem
 
     void            init(bool bCheckMem);
     void            quit();
-    void            dump();
 
     //=====================================================
     //          LINEAR ALLOCATION
     void*           alloc(uint32_t category, uint32_t size, uint32_t alignment = 16);
-    void            free(uint32_t category, void* p);
-    void            free(uint32_t category, void* p, uint32_t numOfBytes);
+    void            deallocate(uint32_t category, void* p);
     uint32_t        allocedSize(uint32_t category);
     void            clear(uint32_t category);
     void            registerAllocator(uint32_t category, Allocator* allocator);

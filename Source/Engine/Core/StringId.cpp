@@ -5,7 +5,7 @@
 #include <ctype.h>
 
 #ifndef _RETAIL
-#include "Memory.h"
+#include "MemorySystem.h"
 #include <bx/tinystl/allocator.h>
 #include <bx/tinystl/unordered_map.h>
 #include <stdio.h>

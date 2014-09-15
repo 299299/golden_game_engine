@@ -387,7 +387,7 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Prerequisites.h" />
-    <ClInclude Include="Core\Memory.h">
+    <ClInclude Include="Core\MemorySystem.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Thread.h">

@@ -72,13 +72,13 @@ ENGINE_NATIVE_ALIGN struct ResourcePackage
     
     void  init();
     void  destroy();
-    void  clear();
 
     char* allocMemory(uint32_t size);
     void  freeMemory(char* p);
     void  dump();
 
     void load();
+    void unload();
     void flush(int maxNum);
     
     void lookupAllResources();

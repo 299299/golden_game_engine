@@ -10,7 +10,7 @@
 #include "EntityManager.h"
 #include "DataDef.h"
 #include "Thread.h"
-#include "Memory.h"
+#include "MemorySystem.h"
 #include "ShadingEnviroment.h"
 
 GameState::GameState()

@@ -1,6 +1,6 @@
 #include "Texture.h"
 #include "Resource.h"
-#include "Memory.h"
+#include "MemorySystem.h"
 #include "ShaderInc.h"
 #include <string.h>
 

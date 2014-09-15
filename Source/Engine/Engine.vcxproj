@@ -331,7 +331,7 @@
     <ClInclude Include="Core\id_table.h" />
     <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Core\MathDefs.h" />
-    <ClInclude Include="Core\Memory.h" />
+    <ClInclude Include="Core\MemorySystem.h" />
     <ClInclude Include="Core\MemoryPool.h" />
     <ClInclude Include="Core\Profiler.h" />
     <ClInclude Include="Core\Resource.h" />

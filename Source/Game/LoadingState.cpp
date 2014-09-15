@@ -1,6 +1,6 @@
 #include "LoadingState.h"
 #include "Resource.h"
-#include "Memory.h"
+#include "MemorySystem.h"
 #include "Graphics.h"
 #include "DebugDraw.h"
 #include "Scene.h"

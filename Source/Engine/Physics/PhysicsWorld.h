@@ -57,7 +57,7 @@ struct PhysicsWorld
     void kickInJobs(float timeStep);
     void tickFinishJobs(float timeStep);
 
-    void createWorld(float worldSize, const hkVector4& gravity, bool bPlane);
+    void createWorld(float worldSize, const hkVector4& gravity, PhysicsConfig* config);
     void destroyWorld();
     void clearWorld();
     inline hkpWorld* getWorld() const { return m_world;};
@@ -73,7 +73,7 @@ struct PhysicsWorld
     RaycastJob* getRaycastJob(int handle) const;
 
     int getFilterLayer(const StringId& name) const;
-    void postInit();
+    void createPlane();
 
 private:
     void updateVDB(float dt);

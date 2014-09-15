@@ -2,8 +2,7 @@
 #include "Thread.h"
 #include "PhysicsAutoLock.h"
 #include "DataDef.h"
-#include "MemoryPool.h"
-#include "Memory.h"
+#include "MemorySystem.h"
 #include "Profiler.h"
 #include "Resource.h"
 #include "Log.h"
@@ -138,10 +137,10 @@ void PhysicsWorld::clearWorld()
     SAFE_DELETE(m_contactListener);
 }
 
-void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bPlane)
+void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bPlane, PhysicsConfig* config)
 {
-    if(m_world)
-        return;
+    if(m_world) return;
+    m_config = config;
     // The world cinfo contains global simulation parameters, including gravity, solver settings etc.
     hkpWorldCinfo info;
     // Set the simulation type of the world to multi-threaded.
@@ -151,7 +150,6 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     info.m_gravity = gravity;
     info.setBroadPhaseWorldSize(worldSize);
     //info.m_collisionTolerance = 0.01f;
-
     m_world = new hkpWorld(info);
 
     PHYSICS_LOCKWRITE(m_world);
@@ -178,24 +176,24 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     m_contactListener = new HavokContactListener();
     m_world->addContactListener( m_contactListener );
     m_world->addEntityListener( m_contactListener );
+}
 
-    if(bPlane)
-    {   
-        hkVector4 planeSize(worldSize - 10.0f, 2.0f, worldSize - 10.0f);
-        hkVector4 halfExtents(planeSize(0) * 0.5f, planeSize(1) * 0.5f, planeSize(2) * 0.5f);
-        float radius = 0.f;
-        hkpShape* cube = new hkpBoxShape(halfExtents, radius );
-        hkpRigidBodyCinfo boxInfo;
-        boxInfo.m_motionType = hkpMotion::MOTION_FIXED;
-        boxInfo.m_rotation.setIdentity();
-        boxInfo.m_shape = cube;
-        boxInfo.m_position = hkVector4(0,-1,0);
-        //boxInfo.m_collisionFilterInfo = hkpGroupFilter::calcFilterInfo( LAYER_LANDSCAPE,  0);
-        hkpRigidBody* boxRigidBody = new hkpRigidBody(boxInfo);
-        cube->removeReference();
-        m_world->addEntity(boxRigidBody);
-        boxRigidBody->removeReference();
-    }
+void PhysicsWorld::createPlane()
+{
+    PHYSICS_LOCKWRITE(m_world);
+    hkVector4 planeSize(worldSize - 10.0f, 2.0f, worldSize - 10.0f);
+    hkVector4 halfExtents(planeSize(0) * 0.5f, planeSize(1) * 0.5f, planeSize(2) * 0.5f);
+    float radius = 0.f;
+    hkpShape* cube = new hkpBoxShape(halfExtents, radius );
+    hkpRigidBodyCinfo boxInfo;
+    boxInfo.m_motionType = hkpMotion::MOTION_FIXED;
+    boxInfo.m_rotation.setIdentity();
+    boxInfo.m_shape = cube;
+    boxInfo.m_position = hkVector4(0,-1,0);
+    hkpRigidBody* boxRigidBody = new hkpRigidBody(boxInfo);
+    cube->removeReference();
+    m_world->addEntity(boxRigidBody);
+    boxRigidBody->removeReference();
 }
 
 void PhysicsWorld::postSimulationCallback()
@@ -418,11 +416,6 @@ void PhysicsWorld::kickInRaycastJob()
     m_world->unmarkForRead();
 
     g_threadMgr.getJobQueue()->addJob(*worldRayCastJob, hkJobQueue::JOB_LOW_PRIORITY);
-}
-
-void PhysicsWorld::postInit()
-{
-    m_config = FIND_RESOURCE(PhysicsConfig, StringId("core/global"));
 }
 
 

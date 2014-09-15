@@ -2,7 +2,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Resource.h"
-#include "Memory.h"
+#include "MemorySystem.h"
 #include "Log.h"
 #include "DataDef.h"
 #include "MathDefs.h"

@@ -1,7 +1,6 @@
 #include "Resource.h"
 #include "Log.h"
-#include "Memory.h"
-#include "MemoryPool.h"
+#include "MemorySystem.h"
 #include "DataDef.h"
 #include "Utils.h"
 #include <malloc.h>
@@ -16,6 +15,38 @@
 #include <Common/Serialize/Util/hkLoader.h>
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #include <Common/Base/Container/PointerMap/hkPointerMap.h>
+
+struct RingMemBuffer
+{
+    char*           m_ringMemHead;
+    char*           m_ringMemTail;
+    char*           m_ringMemCur;
+    
+    void init(char* head, uint32_t size)
+    {
+        m_ringMemHead = head;
+        m_ringMemCur = m_ringMemHead;
+        m_ringMemTail = m_ringMemHead + size;
+    }
+    
+    char* alloc(int size)
+    {
+        HK_ASSERT(0, size < (m_ringMemTail - m_ringMemHead));
+        int memLeft = m_ringMemCur - m_ringMemHead;
+        //if not enough space left, I dont have another idea for handle this.
+        //just start from 0.
+        if(memLeft < size)
+        {
+            m_ringMemCur = m_ringMemHead + size;
+            return m_ringMemHead;
+        }
+        else {
+            char* p = m_ringMemCur;
+            m_ringMemCur += size;
+            return p;
+        }
+    }
+};
 
 ResourceManager                 g_resourceMgr;
 static hkCriticalSection        g_runningCS;
@@ -349,7 +380,7 @@ void ResourcePackage::removeAllResources()
     }
 }
 
-void ResourcePackage::clear()
+void ResourcePackage::unload()
 {
     removeAllResources();
     bringOutAllresources();
@@ -480,7 +511,7 @@ void ResourceManager::destroyAllResources()
     setRunning(false);
     for(size_t i=0; i<m_numPackages; ++i)
     {
-        m_packages[i]->clear();
+        m_packages[i]->unload();
     }
 #ifdef RESOURCE_RELOAD
     destroyReloadResources();
@@ -546,7 +577,7 @@ bool ResourceManager::unloadPackage(const StringId& packageName)
                 package->setStatus(kResourceRequestUnload);
                 return false;
             }
-            package->clear();
+            package->unload();
             package->destroy();
             _aligned_free(package);
             m_packages[0] = m_packages[--m_numPackages];

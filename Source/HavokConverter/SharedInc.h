@@ -158,8 +158,7 @@
 
 //engine header
 #include "Log.h"
-#include "Memory.h"
-#include "MemoryPool.h"
+#include "MemorySystem.h"
 #include "MathDefs.h"
 #include <stdio.h>
 

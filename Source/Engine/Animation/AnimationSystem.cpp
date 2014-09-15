@@ -1,7 +1,6 @@
 #include "AnimationSystem.h"
 #include "Thread.h"
-#include "MemoryPool.h"
-#include "Memory.h"
+#include "MemorySystem.h"
 #include "DataDef.h"
 #include "Profiler.h"
 #include "Log.h"
