@@ -366,6 +366,9 @@
     <ClCompile Include="Core\EngineAssert.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Entity.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Log.h">
@@ -892,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Core\EngineAssert.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Entity.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
