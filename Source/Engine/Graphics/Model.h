@@ -1,14 +1,12 @@
 #pragma once
 #include "BaseTypes.h"
 #include "StringId.h"
-#include "id_array.h"
+#include "config.h"
+#include "MathDefs.h"
 
 struct Material;
 struct Mesh;
 struct Frustum;
-
-#define MAX_MATERIAL_NUM        (8)
-#define MAX_MODELS              (1024)
 
 ENGINE_NATIVE_ALIGN struct ModelResource
 {
@@ -64,7 +62,6 @@ struct ModelWorld
     void                    cull_models(const Frustum& frust);
     void                    cull_shadows(const Frustum& lightFrust);
 
-    IdArray<MAX_MODELS, ModelInstance>      m_models;
     ModelInstance**                         m_modelsToDraw;
     uint32_t                                m_numModels;
     ModelInstance**                         m_shadowsToDraw;

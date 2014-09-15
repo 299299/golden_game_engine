@@ -7,9 +7,11 @@
 #include "MathDefs.h"
 #include "MemorySystem.h"
 #include "id_array.h"
+#include "config.h"
 #include <bgfx/bgfx.h>
 
 LightWorld g_lightWorld;
+static IdArray<MAX_LIGHTS, LightInstance>  m_lights;
 
 void LightWorld::init()
 {
@@ -32,17 +34,17 @@ void LightWorld::update( float dt )
 
     uint32_t numLights = id_array::size(m_lights);
     m_drawLights = FRAME_ALLOC(LightInstance*, numLights);
-    const LightInstance* lights = id_array::begin(m_lights);
+    LightInstance* lights = id_array::begin(m_lights);
     for (uint32_t i=0; i<numLights; ++i)
     {
-        const LightInstance& l = lights[i];
+        LightInstance& l = lights[i];
         if(l.m_flag & kNodeInvisible) continue;
-        if(l.m_hasShadow && !m_shadowLight) m_shadowLight = &l;
+        if(l.m_resource->m_hasShadow && !m_shadowLight) m_shadowLight = &l;
         m_drawLights[m_numLightsToDraw++] = &l;
     }
 }
 
-void LightWorld::sumibt_lights(ShadingEnviroment* env)
+void LightWorld::submit_lights(ShadingEnviroment* env)
 {
     Vec4 s_lightInfo[BGFX_CONFIG_MAX_LIGHTS];
     Vec3 s_lightColor[BGFX_CONFIG_MAX_LIGHTS];

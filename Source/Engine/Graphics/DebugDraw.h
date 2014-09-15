@@ -36,9 +36,7 @@ struct DebugDrawManager
     void addFrustum(const Frustum& frustum, uint32_t color, bool bDepth);
     void addGrid(int gridsNum, float gridWidth, uint32_t color, bool bDepth);
 
-    DebugLine*              m_lines[2];
     uint32_t                m_numLines[2];
-    DebugText*              m_texts;
     uint32_t                m_numTexts;
 
     bgfx::ProgramHandle     m_shader;

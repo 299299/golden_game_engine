@@ -49,5 +49,13 @@ enum SceneNodeFlag
     kNodeNoShadow       = (1 << 2)
 };
 
+enum LightType
+{
+    kLightDirectional,
+    kLightSpot,
+    kLightPoint,
+    kLightCount
+};
+
 #define RESOURCE_WORKER_THREAD_ID                   (1)
 #define STRING_TABLE_FILE                           ("string_table.txt")

@@ -57,14 +57,14 @@ void WebServerTool::frameStarted(float dt)
             Message::Field("dt",dt),
             Message::Field("t",g_totalSeconds)));
         Message staticMemMsg("monitoring.memory",
-            Message::Field("name","static-alloc"),
+            Message::Field("name","common-alloc"),
             Message::Field("t",g_frameId),
-            Message::Field("size", g_memoryMgr.allocedSize(kMemoryCategoryStatic)));
+            Message::Field("size", g_memoryMgr.allocated_size(kMemoryCategoryCommon)));
         send(staticMemMsg);
         Message frameMemMsg("monitoring.memory",
             Message::Field("name","frame-alloc"),
             Message::Field("t",g_frameId),
-            Message::Field("size", g_memoryMgr.allocedSize(kMemoryCategoryFrame)));
+            Message::Field("size", g_memoryMgr.allocated_size(kMemoryCategoryFrame)));
         send(frameMemMsg);
         m_updateTimer -= WEB_TICK_TIME;
     }

@@ -1,19 +1,7 @@
 #pragma once
 #include "BaseTypes.h"
-#include "StringId.h"
 #include "MathDefs.h"
-#include "id_array.h"
-
-
-#define MAX_LIGHTS       (64)
-
-enum LightType
-{
-    kLightDirectional,
-    kLightSpot,
-    kLightPoint,
-    kLightCount
-};
+#include "StringId.h"
 
 ENGINE_NATIVE_ALIGN struct LightResource
 {
@@ -48,7 +36,7 @@ struct LightWorld
 {
     void                    init();
     void                    update(float dt);
-    void                    sumibt_lights(ShadingEnviroment* env);
+    void                    submit_lights(ShadingEnviroment* env);
     LightId                 create_light(const LightResource* lightResource);
     void                    destroy_light(LightId id);
     LightInstance*          get_light(LightId id);
@@ -56,11 +44,10 @@ struct LightWorld
                                           float shadowSize, 
                                           const float* camPos);
 
-    IdArray<MAX_LIGHTS, LightInstance>  m_lights;
-    LightInstance*          m_drawLights;
+    LightInstance**         m_drawLights;
     uint32_t                m_numLightsToDraw;
 
-    LightInstance*          m_shadowLight;
+    const LightInstance*    m_shadowLight;
     Frustum                 m_shadowFrustum;
     float                   m_shadowView[16];
     float                   m_shadowProj[16];

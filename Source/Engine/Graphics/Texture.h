@@ -55,14 +55,3 @@ ENGINE_NATIVE_ALIGN struct Raw3DTexture
     uint8_t                     m_numMips;
     char                        m_padding[3];
 };
-
-void* load_resource_texture(const char* data, uint32_t size);
-void  bringout_resource_texture(void* resource);
-
-void* load_resource_texture2d(const char* data, uint32_t size);
-void  bringin_resource_texture2d(void* resource);
-void  bringout_resource_texture2d(void* resource);
-
-void* load_resource_texture3d(const char* data, uint32_t size);
-void  bringin_resource_texture3d(void* resource);
-void  bringout_resource_texture3d(void* resource);

@@ -38,12 +38,4 @@ ENGINE_NATIVE_ALIGN struct ShaderProgram
     StringId                    m_vsName;
 };
 
-void* load_resource_shader(const char* data, uint32_t size);
-void bringin_resource_shader(void* resource);
-void bringout_resource_shader(void* resource);
-
-void lookup_resource_shader_program(void* resource);
-void bringin_resource_shader_program(void* resource);
-void bringout_resource_shader_program(void* resource);
-
 ShaderProgram* findShader(const char* name);

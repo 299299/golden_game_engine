@@ -57,7 +57,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Project\hk2013_1_0_r1\Source;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;__STDC_FORMAT_MACROS;BGFX_CONFIG_DEBUG=1;BGFX_CONFIG_RENDERER_DIRECT3D11=1;BGFX_CONFIG_RENDERER_NULL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -149,10 +149,14 @@
     <ClCompile Include="Animation\AnimRig.cpp" />
     <ClCompile Include="Animation\IK.cpp" />
     <ClCompile Include="Animation\Ragdoll.cpp" />
-    <ClCompile Include="Core\Assert.cpp" />
+    <ClCompile Include="Core\EngineAssert.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Core\MathDefs.cpp" />
-    <ClCompile Include="Core\Memory.cpp" />
+    <ClCompile Include="Core\MemorySystem.cpp" />
+    <ClCompile Include="Core\Memory\linear_allocator.cpp" />
+    <ClCompile Include="Core\Memory\memory.cpp" />
+    <ClCompile Include="Core\Memory\pool_allocator.cpp" />
+    <ClCompile Include="Core\Memory\stack_allocator.cpp" />
     <ClCompile Include="Core\Profiler.cpp" />
     <ClCompile Include="Core\Resource.cpp" />
     <ClCompile Include="Core\StringId.cpp" />
@@ -160,8 +164,6 @@
     <ClCompile Include="Core\Utils.cpp" />
     <ClCompile Include="Engine\DataDef.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
-    <ClCompile Include="Engine\Entity.cpp" />
-    <ClCompile Include="Engine\EntityManager.cpp" />
     <ClCompile Include="Engine\Level.cpp" />
     <ClCompile Include="Engine\Win32Context.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
@@ -171,24 +173,17 @@
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
-    <ClCompile Include="Graphics\Scene.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Graphics\ShadingEnviroment.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Input\XBoxInput.cpp" />
-    <ClCompile Include="Logic\Character.cpp" />
-    <ClCompile Include="Logic\GameFSM.cpp" />
-    <ClCompile Include="Logic\GameState.cpp" />
-    <ClCompile Include="Logic\LevelGeometry.cpp" />
-    <ClCompile Include="Logic\Locomotion.cpp" />
-    <ClCompile Include="Logic\Prop.cpp" />
     <ClCompile Include="Network\gamedevwebtools.cpp" />
     <ClCompile Include="Network\WebServerTool.cpp" />
+    <ClCompile Include="Physics\PhysicsWorld.cpp" />
     <ClCompile Include="Physics\ProxyInstance.cpp" />
     <ClCompile Include="Physics\PhysicsAutoLock.cpp" />
     <ClCompile Include="Physics\PhysicsInstance.cpp" />
-    <ClCompile Include="Physics\PhysicsWorld.cpp" />
     <ClCompile Include="Script\ScriptAPI.cpp" />
     <ClCompile Include="Script\ScriptSystem.cpp" />
   </ItemGroup>
@@ -326,25 +321,27 @@
     <ClInclude Include="Animation\IK.h" />
     <ClInclude Include="Animation\Ragdoll.h" />
     <ClInclude Include="BaseTypes.h" />
-    <ClInclude Include="Core\Assert.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="Core\EngineAssert.h" />
     <ClInclude Include="Core\id_array.h" />
     <ClInclude Include="Core\id_table.h" />
     <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Core\MathDefs.h" />
     <ClInclude Include="Core\MemorySystem.h" />
-    <ClInclude Include="Core\MemoryPool.h" />
+    <ClInclude Include="Core\Memory\allocator.h" />
+    <ClInclude Include="Core\Memory\linear_allocator.h" />
+    <ClInclude Include="Core\Memory\memory.h" />
+    <ClInclude Include="Core\Memory\pool_allocator.h" />
+    <ClInclude Include="Core\Memory\stack_allocator.h" />
+    <ClInclude Include="Core\Memory\temp_allocator.h" />
     <ClInclude Include="Core\Profiler.h" />
     <ClInclude Include="Core\Resource.h" />
     <ClInclude Include="Core\StringId.h" />
     <ClInclude Include="Core\Thread.h" />
     <ClInclude Include="Core\Utils.h" />
     <ClInclude Include="Core\Variant.h" />
-    <ClInclude Include="Engine\Component.h" />
-    <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DataDef.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\Entity.h" />
-    <ClInclude Include="Engine\EntityManager.h" />
     <ClInclude Include="Engine\Level.h" />
     <ClInclude Include="Engine\Win32Context.h" />
     <ClInclude Include="Graphics\Camera.h" />
@@ -355,18 +352,11 @@
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Model.h" />
-    <ClInclude Include="Graphics\Scene.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\ShadingEnviroment.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Input\XBoxInput.h" />
-    <ClInclude Include="Logic\Character.h" />
-    <ClInclude Include="Logic\GameFSM.h" />
-    <ClInclude Include="Logic\GameState.h" />
-    <ClInclude Include="Logic\LevelGeometry.h" />
-    <ClInclude Include="Logic\Locomotion.h" />
-    <ClInclude Include="Logic\Prop.h" />
     <ClInclude Include="Network\gamedevwebtools.h" />
     <ClInclude Include="Network\WebServerTool.h" />
     <ClInclude Include="Physics\ProxyInstance.h" />

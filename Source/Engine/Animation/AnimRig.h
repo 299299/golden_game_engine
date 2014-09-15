@@ -63,7 +63,6 @@ struct AnimRigInstance
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
-    ID                              m_id;
 
     void init(const void* resource);
     void setTransform(const hkQsTransform& t) {};

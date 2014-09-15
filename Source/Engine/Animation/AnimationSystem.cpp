@@ -5,6 +5,8 @@
 #include "Profiler.h"
 #include "Log.h"
 #include "DebugDraw.h"
+#include "id_array.h"
+#include "config.h"
 //===================================
 // RESOURCES
 #include "Resource.h"
@@ -30,15 +32,16 @@
 #include <Common/Visualize/hkDebugDisplay.h>
 //=======================================================================================
 
-
-AnimationSystem g_animMgr;
-
 struct AnimJobs
 {
     HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR( HK_MEMORY_CLASS_USER, AnimJobs );
     hkArray<hkaSampleBlendJob> m_jobs;
 };
-AnimJobs*                               g_animJobs = 0;
+
+AnimationSystem g_animMgr;
+static IdArray<MAX_ANIM_FSM, AnimFSMInstance>      m_fsms;
+static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
+static AnimJobs*                                   g_animJobs = 0;
 
 void AnimationSystem::init()
 {
@@ -55,7 +58,7 @@ void AnimationSystem::quit()
 
 void AnimationSystem::checkStatus()
 {
-    HK_ASSERT2(0, (m_status != kTickProcessing),  "AnimSystem Status is Processing!!!");
+    ENGINE_ASSERT((m_status != kTickProcessing),  "AnimSystem Status is Processing!!!");
 }
 
 void AnimationSystem::frameStart()
@@ -65,8 +68,7 @@ void AnimationSystem::frameStart()
 
 void AnimationSystem::kickInJobs()
 {
-    DynamicObjectArray<AnimRigInstance>& animList = g_animInstances.m_objects;
-    uint32_t numSkeletons = animList.getSize();
+    uint32_t numSkeletons = id_array::size(m_rigs);
     if(numSkeletons == 0)
         return;
     PROFILE(Animation_KickInJobs);
@@ -74,9 +76,10 @@ void AnimationSystem::kickInJobs()
     hkArray<hkaSampleBlendJob>& jobs = g_animJobs->m_jobs;
     jobs.clear();
     jobs.setSize(numSkeletons);
+    AnimRigInstance* rigs = id_array::begin(m_rigs);
     for (uint32_t i=0; i<numSkeletons;++i)
     {
-        AnimRigInstance& instance = animList[i];
+        AnimRigInstance& instance = rigs[i];
         g_animJobs->m_jobs[i].build(instance.m_skeleton, instance.m_pose, true);
     }
     hkLocalArray<hkJob*> jobPointers( numSkeletons );
@@ -90,7 +93,7 @@ void AnimationSystem::kickInJobs()
 
 void AnimationSystem::tickFinishJobs()
 {
-    if(g_animInstances.m_objects.getSize() == 0)
+    if(!id_array::size(m_rigs))
         return;
     PROFILE(AnimationFinishJobs);
     m_status = kTickProcessing;

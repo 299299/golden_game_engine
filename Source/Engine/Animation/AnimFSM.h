@@ -182,12 +182,8 @@ struct AnimFSMInstance
     RtLayer                     m_layers[MAX_ANIM_FSM_LAYER_NUM];
     const AnimFSM*              m_resource;
     char*                       m_blob;
-    ID                          m_id;
     
     void init(const void* resource);
-    void setTransform(const hkQsTransform& t) {};
-    void setEnabled(bool bEnable) {};
-    
     void destroy();
     void update(float dt);
     uint32_t collectTriggers(float dt, AnimationTrigger* outTriggers);

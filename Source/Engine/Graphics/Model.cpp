@@ -7,6 +7,8 @@
 #include "DataDef.h"
 #include "MathDefs.h"
 #include "Graphics.h"
+#include "id_array.h"
+#include "config.h"
 #include <bgfx.h>
 
 void ModelInstance::init(const void* resource)
@@ -152,11 +154,13 @@ void lookup_resource_model( void * resource )
     model->m_mesh = FIND_RESOURCE(Mesh,  model->m_meshName);
     for(uint32_t i=0; i<model->m_numMaterials;++i) 
     {
-        model->m_materials[i] = FIND_RESOURCE(Material, m_materialNames[i]);
+        model->m_materials[i] = FIND_RESOURCE(Material, model->m_materialNames[i]);
     }
 }
 
 ModelWorld g_modelWorld;
+static IdArray<MAX_MODELS, ModelInstance>      m_models;
+
 void ModelWorld::init()
 {
     reset();
@@ -245,9 +249,10 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
     {
         ModelInstance* model = begin + i;
         uint32_t flag = model->m_flag;
-        if(flag & kNodeInvisible) || (flag & kNodeNoShadow) continue;
+        if((flag & kNodeInvisible) || (flag & kNodeNoShadow))
+            continue;
         bool bVisible = !lightFrust.cullBox(model->m_aabb.m_min, model->m_aabb.m_max);
         if(!bVisible) continue;
-        m_shadowsToDraws[m_numShadows++] = model;
+        m_shadowsToDraw[m_numShadows++] = model;
     }
 }

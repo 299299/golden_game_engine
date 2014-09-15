@@ -1,8 +1,6 @@
 #pragma once
 #include "BaseTypes.h"
-
-#define MAX_BLOCK_NUM                   (32)
-#define TOTAL_BLOCK_NUM                 (512)
+#include "config.h"
 
 /// High-resolution operating system timer used in profiling.
 class HiresTimer
@@ -165,7 +163,7 @@ private:
     /// Root profiling block.
     ProfilerBlock* root_;
 
-    ProfilerBlock* blocks_;
+    ProfilerBlock  blocks_[TOTAL_BLOCK_NUM];
     uint32_t       numBlocks_; 
 
     /// Frames in the current interval.

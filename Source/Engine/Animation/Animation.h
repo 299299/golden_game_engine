@@ -77,11 +77,6 @@ ENGINE_NATIVE_ALIGN struct Animation
     void dump();
 };
 
-
-void* load_resource_animation(const char* data, uint32_t size);
-void  destroy_resource_animation(void * resource);
-void  lookup_resource_animation(void * resource);
-
 //======================================================================
 //          HELPER API
 //======================================================================

@@ -1,7 +1,7 @@
 #include "Profiler.h"
 #include "MemorySystem.h"
-#include "Prerequisites.h"
 #include "Graphics.h"
+#include "EngineAssert.h"
 #include <cstdio>
 #include <cstring>
 #include <Windows.h>
@@ -100,14 +100,13 @@ void Profiler::BeginInterval()
 void Profiler::Init()
 {
     numBlocks_ = 0;
-    blocks_ = STATIC_ALLOC(ProfilerBlock, TOTAL_BLOCK_NUM);
     root_ = AllocBlock("Root");
     current_ = root_;
 }
 
 ProfilerBlock* Profiler::AllocBlock( const char* name )
 {
-    HK_ASSERT(0, numBlocks_ < TOTAL_BLOCK_NUM - 1);
+    ENGINE_ASSERT(numBlocks_ < TOTAL_BLOCK_NUM - 1, "profile blocks overflow.");
     ProfilerBlock* newBlock = blocks_ + (numBlocks_++);
     newBlock->name_ = name;
     return newBlock;

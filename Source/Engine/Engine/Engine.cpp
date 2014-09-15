@@ -9,8 +9,6 @@
 #include "XBoxInput.h"
 #include "Graphics.h"
 #include "Profiler.h"
-#include "EntityManager.h"
-#include "GameFSM.h"
 #include "ScriptSystem.h"
 //=================================================================
 #include "Log.h"
@@ -41,7 +39,6 @@ void Engine::init( const EngineConfig& cfg )
     HiresTimer::Init();
     coreInit();
     subSystemsInit();
-    g_memoryMgr.dump();
 }
 
 void Engine::quit()
@@ -91,20 +88,20 @@ void Engine::frame(float timeStep)
     g_memoryMgr.clear(kMemoryCategoryFrame);
     if(m_updating)
     {
-        g_gameFSM.frameStart(timeStep);
+        //g_gameFSM.frameStart(timeStep);
         {
             PROFILE(Game_PreStep);
-            g_gameFSM.preStep(timeStep);
+            //g_gameFSM.preStep(timeStep);
         }
         {
             PROFILE(Game_Step);
-            g_gameFSM.step(timeStep);
+            //g_gameFSM.step(timeStep);
         }
         {
             PROFILE(Game_PostStep);
-            g_gameFSM.postStep(timeStep);
+            //g_gameFSM.postStep(timeStep);
         }
-        g_gameFSM.frameEnd(timeStep);
+        //g_gameFSM.frameEnd(timeStep);
         g_threadMgr.updateVDB(timeStep);
     }
 
@@ -112,7 +109,7 @@ void Engine::frame(float timeStep)
         return;
 
     PROFILE(Game_Render);
-    g_gameFSM.render();
+    //g_gameFSM.render();
 }
 
 void Engine::applyFrameLimit(double timeMS)
@@ -136,8 +133,6 @@ void Engine::coreInit()
 void Engine::subSystemsInit()
 {
     TIMELOG("Engine Subsystem Init");
-    g_componentMgr.init();
-
     if(!m_cfg.m_headless)
         g_win32Context.createWindow(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
     else
@@ -151,11 +146,7 @@ void Engine::subSystemsInit()
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init();
-    g_physicsWorld.createWorld(1000.0f, hkVector4(0, -9.8f, 0), true);
     g_animMgr.init();
-    g_entityMgr.init();
-    g_gameFSM.init();
-    g_componentMgr.initFactories();
     g_script.init();
 }
 
@@ -171,9 +162,6 @@ void Engine::subSystemsShutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
     g_script.quit();
-    g_componentMgr.destroy();
-    g_gameFSM.quit();
-    g_entityMgr.quit();
     g_animMgr.quit();
     g_physicsWorld.quit();
     g_resourceMgr.destroyAllResources();

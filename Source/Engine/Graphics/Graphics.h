@@ -47,8 +47,8 @@ struct FrameBuffer
 {
     int                                 m_realSize[2];
     int                                 m_sizeDiv[2];
-    FrameBufferTexture*                 m_texInfo;
-    bgfx::TextureHandle*                m_textures;
+    FrameBufferTexture                  m_texInfo[4];
+    bgfx::TextureHandle                 m_textures[4];
     bgfx::FrameBufferHandle             m_handle;
     uint8_t                             m_numTextures;
     bool                                m_scaled;

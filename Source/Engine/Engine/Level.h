@@ -81,5 +81,3 @@ ENGINE_NATIVE_ALIGN struct Level
 };
 
 
-void*  load_resource_level(const char* data, uint32_t size);
-void   lookup_resource_level(void* resource);

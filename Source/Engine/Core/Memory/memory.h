@@ -2,6 +2,7 @@
 #include <new>
 #include "BaseTypes.h"
 #include "allocator.h"
+#include "EngineAssert.h"
 
 Allocator& default_allocator();
 

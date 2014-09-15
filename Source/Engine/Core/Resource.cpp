@@ -4,6 +4,7 @@
 #include "linear_allocator.h"
 #include "DataDef.h"
 #include "Utils.h"
+#include "EngineAssert.h"
 #include <bx/readerwriter.h>
 //=====================================================
 #include <Common/Base/Thread/Thread/hkThread.h>
@@ -49,7 +50,7 @@ inline void unpackId(const hkUint64& key, StringId& type, StringId& name)
 
 char* ResourcePackage::allocMemory(uint32_t size)
 {
-    return m_allocator->allocate(size);
+    return (char*)m_allocator->allocate(size);
 }
 
 void ResourcePackage::init()
@@ -349,25 +350,20 @@ ResourceInfo* ResourcePackage::findResource( const StringId& type, const StringI
 //          RESOURCE MANAGER
 //=================================================================================
 
-void ResourceManager::init(int maxFactories)
+void ResourceManager::init()
 {
     m_numFactories = 0;
-    m_maxFactories = maxFactories;
     m_numPackages = 0;
     m_numRequests = 0;
     m_requestListHead = 0;
-
-    m_factories = STATIC_ALLOC(ResourceFactory, m_maxFactories);
-    m_types = STATIC_ALLOC(StringId, m_maxFactories);
-    m_packages = STATIC_ALLOC(ResourcePackage*, 128);
 
     m_semaphore = new hkSemaphore;
     m_thread = new hkThread;
     m_thread->startThread(ioWorkLoop, this, "io_work_thread");
     uint32_t pairSize = sizeof(hkUint64) * 2;
     uint32_t memSize = RESOURCE_MAP_NUM*pairSize;
-    char* mem = STATIC_ALLOC(char, memSize);
-    g_resourceMap = new ResourceMap(mem, memSize);
+    m_resMapBuffer = COMMON_ALLOC(char, memSize);
+    g_resourceMap = new ResourceMap(m_resMapBuffer, memSize);
 }
 
 void ResourceManager::quit()
@@ -382,6 +378,7 @@ void ResourceManager::quit()
         COMMON_DEALLOC(m_packages[i]);
     }
     clearRequestQueue(); 
+    COMMON_DEALLOC(m_resMapBuffer);
     SAFE_DELETE(g_resourceMap);
     SAFE_DELETE(m_thread);
     SAFE_DELETE(m_semaphore);
@@ -408,7 +405,7 @@ void ResourceManager::registerFactory(const ResourceFactory& factory)
 {
     m_types[m_numFactories] = StringId(factory.m_name); 
     m_factories[m_numFactories++] = factory;
-    HK_ASSERT(0, m_numFactories < m_maxFactories);
+    ENGINE_ASSERT(m_numFactories < MAX_RESOURCE_TYPES, "resource manager factories overflow.");
 }
 
 void* ResourceManager::findResource( const StringId& type, const StringId& name )
@@ -483,7 +480,9 @@ bool ResourceManager::loadPackage(const char* packageName)
         return false;
     }
 
-    uint32_t memSize = COMMON_ALLOC(char, memSize);
+    uint32_t packageNameLen = strlen(packageName) + 1;
+    uint32_t memSize = packageNameLen + sizeof(ResourceRequest);
+    char* blob = COMMON_ALLOC(char, memSize);
     memset(blob, 0x00, memSize);
     ResourceRequest* request = (ResourceRequest*)blob;
     request->m_data = blob + sizeof(ResourceRequest);

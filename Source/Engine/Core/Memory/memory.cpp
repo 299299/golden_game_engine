@@ -55,14 +55,12 @@ namespace memory
         /// @copydoc Allocator::allocated_size()
         size_t allocated_size()
         {
-            ScopedMutex sm(m_mutex);
             return m_allocated_size;
         }
 
         /// Returns the size in bytes of the block of memory pointed by @a data
         size_t get_size(void* data)
         {
-            ScopedMutex sm(m_mutex);
             Header* h = header(data);
             return h->size;
         }

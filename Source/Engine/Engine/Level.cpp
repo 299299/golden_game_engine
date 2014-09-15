@@ -13,7 +13,7 @@ void transform_object(hkQsTransform& m, const float* t, const float* r, const fl
     transform_vec3(m.m_translation, t);
     transform_vec3(m.m_scale, s);
     m.m_rotation.set(r[0], r[1], r[2], r[3]);
-    HK_ASSERT(0, m.isOk());
+    ENGINE_ASSERT(m.isOk(), "m should ok!");
 }
 
 void Level::load(uint32_t max_num_perframe)

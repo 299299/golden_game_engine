@@ -9,6 +9,8 @@
 #include "MathDefs.h"
 #include "DebugDraw.h"
 #include "Resource.h"
+#include "id_array.h"
+#include "config.h"
 //===========================================
 //          COMPONENTS
 #include "PhysicsInstance.h"
@@ -87,10 +89,12 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
     }
 };
 
-typedef tinystl::unordered_map<uint64_t, CollisionEvent*> CollisionEventMap;
-CollisionEventMap           g_collisionEvtMap;
 PhysicsWorld                g_physicsWorld;
-static hkCriticalSection    g_eventCS;
+typedef tinystl::unordered_map<uint64_t, CollisionEvent*> CollisionEventMap;
+static CollisionEventMap                        g_collisionEvtMap;
+static hkCriticalSection                        g_eventCS;
+static IdArray<MAX_PHYSICS, PhysicsInstance>    m_objects;
+static IdArray<MAX_PROXY, ProxyInstance>        m_proxies;
 
 #define MAX_RAYCAST_PERFRAME    (1000)
 
@@ -132,7 +136,7 @@ void PhysicsWorld::clearWorld()
     SAFE_DELETE(m_contactListener);
 }
 
-void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bPlane, PhysicsConfig* config)
+void PhysicsWorld::createWorld(PhysicsConfig* config)
 {
     if(m_world) return;
     m_config = config;
@@ -142,8 +146,8 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     info.m_simulationType = hkpWorldCinfo::SIMULATION_TYPE_MULTITHREADED;
     // Flag objects that fall "out of the world" to be automatically removed - just necessary for this physics scene
     info.m_broadPhaseBorderBehaviour = hkpWorldCinfo::BROADPHASE_BORDER_DO_NOTHING;
-    info.m_gravity = gravity;
-    info.setBroadPhaseWorldSize(worldSize);
+    transform_vec3(info.m_gravity, config->m_gravity);
+    info.setBroadPhaseWorldSize(config->m_worldSize);
     //info.m_collisionTolerance = 0.01f;
     m_world = new hkpWorld(info);
 
@@ -173,10 +177,10 @@ void PhysicsWorld::createWorld(float worldSize,const hkVector4& gravity, bool bP
     m_world->addEntityListener( m_contactListener );
 }
 
-void PhysicsWorld::createPlane()
+void PhysicsWorld::createPlane(float size)
 {
     PHYSICS_LOCKWRITE(m_world);
-    hkVector4 planeSize(worldSize - 10.0f, 2.0f, worldSize - 10.0f);
+    hkVector4 planeSize(size, 2.0f, size);
     hkVector4 halfExtents(planeSize(0) * 0.5f, planeSize(1) * 0.5f, planeSize(2) * 0.5f);
     float radius = 0.f;
     hkpShape* cube = new hkpBoxShape(halfExtents, radius );
@@ -430,7 +434,7 @@ int PhysicsWorld::getFilterLayer(const StringId& name) const
 PhysicsId PhysicsWorld::create_physics(const PhysicsResource* resource)
 {
     PhysicsInstance inst;
-    init.init(resource);
+    inst.init(resource);
     return id_array::create(m_objects, inst);
 }
 
@@ -453,7 +457,7 @@ PhysicsInstance* PhysicsWorld::get_physics(PhysicsId id)
 ProxyId PhysicsWorld::create_proxy(const ProxyResource* resource)
 {
     ProxyInstance inst;
-    init.init(resource);
+    inst.init(resource);
     return id_array::create(m_proxies, inst);
 }
 

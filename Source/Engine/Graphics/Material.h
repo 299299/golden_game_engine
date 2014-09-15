@@ -90,6 +90,4 @@ ENGINE_NATIVE_ALIGN struct Material
     void dump();
 };
 
-void* load_resource_material(const char* data, uint32_t size);
-void  lookup_resource_material(void * resource);
-void  bringin_resource_material(void* resource);
+

@@ -1,6 +1,5 @@
 #pragma once
-#include "Prerequisites.h"
-#include "id_array.h"
+#include "BaseTypes.h"
 
 class hkaSkeleton;
 class hkaAnimatedSkeleton;
@@ -15,9 +14,6 @@ struct AnimFSM;
 struct AnimFSMInstance;
 struct AnimRig;
 struct AnimRigInstance;
-
-#define MAX_ANIM_FSM    (64)
-#define MAX_ANIM_RIG    (64)
 
 struct AnimationSystem
 {
@@ -38,8 +34,6 @@ struct AnimationSystem
     AnimRigInstance* get_rig(Id id);
 
 private:
-    IdArray<MAX_ANIM_FSM, AnimFSMInstance>      m_fsms;
-    IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
     int                                         m_status;
 };
 

@@ -171,9 +171,65 @@ const char*   physics_type_names[] =
 #include "Material.h"
 #include "IK.h"
 #include "Ragdoll.h"
-#include "Entity.h"
 #include "ShadingEnviroment.h"
 #include "Level.h"
+extern void* load_resource_texture(const char* data, uint32_t size);
+extern void  bringout_resource_texture(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_texture2d(const char* data, uint32_t size);
+extern void  bringin_resource_texture2d(void* resource);
+extern void  bringout_resource_texture2d(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_texture3d(const char* data, uint32_t size);
+extern void  bringin_resource_texture3d(void* resource);
+extern void  bringout_resource_texture3d(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_mesh(const char* data, uint32_t size);
+extern void  bringin_resource_mesh(void* resource);
+extern void  bringout_resource_mesh(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_shader(const char* data, uint32_t size);
+extern void bringin_resource_shader(void* resource);
+extern void bringout_resource_shader(void* resource);
+//-----------------------------------------------------------------
+extern void lookup_resource_shader_program(void* resource);
+extern void bringin_resource_shader_program(void* resource);
+extern void bringout_resource_shader_program(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_animation(const char* data, uint32_t size);
+extern void  destroy_resource_animation(void * resource);
+extern void  lookup_resource_animation(void * resource);
+//-----------------------------------------------------------------
+extern void* load_resource_anim_rig(const char* data, uint32_t size);
+extern void  destroy_resource_anim_rig(void * resource);
+//-----------------------------------------------------------------
+extern void* load_resource_anim_fsm(const char* data, uint32_t size);
+extern void  lookup_resource_anim_fsm(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_material(const char* data, uint32_t size);
+extern void  lookup_resource_material(void * resource);
+extern void  bringin_resource_material(void* resource);
+//-----------------------------------------------------------------
+extern void* load_resource_model(const char* data, uint32_t size);
+extern void lookup_resource_model( void * resource );
+//-----------------------------------------------------------------
+extern void* load_resource_physics( const char* data, uint32_t size );
+extern void destroy_resource_physics( void* resource );
+//-----------------------------------------------------------------
+extern void* load_resource_proxy( const char* data, uint32_t size);
+extern void destroy_resource_proxy( void * resource );
+//-----------------------------------------------------------------
+extern void* load_resource_ragdoll( const char* data, uint32_t size );
+extern void destroy_resource_ragdoll( void* resource );
+//-----------------------------------------------------------------
+extern void  lookup_resource_lookat_ik(void* resource);
+extern void  lookup_resource_reach_ik(void* resource);
+extern void  lookup_resource_foot_ik(void* resource);
+//-----------------------------------------------------------------
+extern void lookup_resource_shading_enviroment( void* resource );
+//-----------------------------------------------------------------
+extern void*  load_resource_level(const char* data, uint32_t size);
+extern void   lookup_resource_level(void* resource);
 //======================================================
 static ResourceFactory g_resourceFactories[] = 
 {
@@ -196,7 +252,6 @@ static ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_lookat_ik, 0, 0, LookAtResource::getName()},
     {0, 0, lookup_resource_reach_ik, 0, 0, ReachResource::getName()},
     {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::getName()},
-    {load_resource_entity, 0, lookup_resource_entity, 0, 0, EntityResource::getName()},
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::getName()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::getName()},
 };

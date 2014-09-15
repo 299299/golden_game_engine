@@ -10,9 +10,7 @@
 #include "Camera.h"
 #include <imgui/imgui.h>
 #include <bgfx.h>
-
-#define  MAX_DEBUG_LINES    (1000)
-#define  MAX_DEBUG_TEXTS    (300)
+#include "config.h"
 
 #define  DEPTH_LINE_RENDER_STATE (BGFX_STATE_RGB_WRITE  | BGFX_STATE_PT_LINES | BGFX_STATE_DEPTH_WRITE| BGFX_STATE_DEPTH_TEST_LESS| BGFX_STATE_CULL_CCW)
 //#define  NO_DEPTH_LINE_RENDER_STATE (BGFX_STATE_RGB_WRITE | BGFX_STATE_PT_LINES | BGFX_STATE_DEPTH_WRITE | BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_CULL_CCW)
@@ -35,12 +33,12 @@ struct PosColorVertex
 bgfx::VertexDecl PosColorVertex::ms_decl;
 DebugDrawManager g_debugDrawMgr;
 
+static DebugLine              m_lines[2][MAX_DEBUG_LINES];
+static DebugText              m_texts[MAX_DEBUG_TEXTS];
+
 void DebugDrawManager::init()
 {
     PosColorVertex::init();
-    m_lines[0] = STATIC_ALLOC(DebugLine, MAX_DEBUG_LINES);
-    m_lines[1] = STATIC_ALLOC(DebugLine, MAX_DEBUG_LINES);
-    m_texts = STATIC_ALLOC(DebugText, MAX_DEBUG_TEXTS);
     m_numLines[0] = m_numLines[1] = 0;
     m_numTexts = 0;
 }

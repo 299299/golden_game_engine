@@ -3,6 +3,7 @@
 #include "DataDef.h"
 #include "MemorySystem.h"
 #include "Profiler.h"
+#include "EngineAssert.h"
 //============================================
 #include "Camera.h"
 #include "DebugDraw.h"
@@ -72,9 +73,9 @@ int                         g_dbgTexIndex = 0;
 //==============================================================
 static bgfxCallback         g_bgfxCallback;
 static uint32_t             g_resetFlag = BGFX_RESET_VSYNC|BGFX_RESET_MSAA_X4;
-static bgfx::UniformHandle* g_engineUniforms;
+static bgfx::UniformHandle  g_engineUniforms[MAX_UNIFORM_NUM];
 static uint32_t             g_numEngineUniforms = 0;
-static FrameBuffer*         g_frameBuffers = 0;
+static FrameBuffer          g_frameBuffers[MAX_FRAMEBUFFER_NUM];
 static uint32_t             g_numFrameBuffers = 0;
 static uint64_t postprocess_state = BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE;
 static int                  g_status = 0;
@@ -89,7 +90,7 @@ bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enu
         bgfx::UniformHandle handle = BGFX_INVALID_HANDLE;
         return handle;
     }
-    HK_ASSERT(0, g_numEngineUniforms < MAX_UNIFORM_NUM);
+    ENGINE_ASSERT(g_numEngineUniforms < MAX_UNIFORM_NUM, "g_numEngineUniforms < MAX_UNIFORM_NUM");
     bgfx::UniformHandle& handle = g_engineUniforms[g_numEngineUniforms++];
     handle = bgfx::createUniform(name, type, num);
     return handle;
@@ -97,7 +98,7 @@ bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enu
 
 FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, uint32_t numTextures, FrameBufferTexture* textures)
 {
-    HK_ASSERT(0, g_numFrameBuffers < MAX_FRAMEBUFFER_NUM);
+    ENGINE_ASSERT(g_numFrameBuffers < MAX_FRAMEBUFFER_NUM, "g_numEngineUniforms < MAX_UNIFORM_NUM");
     FrameBuffer* fb = g_frameBuffers + g_numFrameBuffers;
     ++g_numFrameBuffers;
     fb->m_handle.idx = bgfx::invalidHandle;
@@ -107,8 +108,7 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, ui
     fb->m_sizeDiv[0] = wDiv;
     fb->m_sizeDiv[1] = hDiv;
     fb->m_scaled = scaled;
-    fb->m_textures = STATIC_ALLOC(bgfx::TextureHandle, numTextures);
-    fb->m_texInfo = STATIC_ALLOC(FrameBufferTexture, numTextures);
+    ENGINE_ASSERT(numTextures <= BX_COUNTOF(fb->m_texInfo), "frame buffer texture num overflow.");
     memcpy(fb->m_texInfo, textures, numTextures*sizeof(FrameBufferTexture));
     fb->create();
     return fb;
@@ -125,9 +125,6 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
 void createUniforms()
 {
     extern const char*  g_textureNames[];
-    g_engineUniforms = STATIC_ALLOC(bgfx::UniformHandle, MAX_UNIFORM_NUM);
-    g_frameBuffers = STATIC_ALLOC(FrameBuffer, MAX_FRAMEBUFFER_NUM);
-
     g_uniformPerFrame.m_time = createEngineUniform("u_time", bgfx::UniformType::Uniform1f);
     g_uniformPerFrame.m_ambientSkyColor = createEngineUniform("u_ambientSkyColor", bgfx::UniformType::Uniform3fv);
     g_uniformPerFrame.m_ambientGroundColor = createEngineUniform("u_ambientGroundColor", bgfx::UniformType::Uniform3fv);
@@ -284,7 +281,7 @@ void Graphics::update(ShadingEnviroment* env, float dt)
     g_modelWorld.update(dt);
     g_guiMgr.update(dt);
 
-    g_modelWorld.cull_models(g_camera.m_frustrum);
+    g_modelWorld.cull_models(g_camera.m_frustum);
     g_lightWorld.update_shadow(env->m_shadowAreaSize, env->m_shadowFar, g_camera.m_eye);
     if(g_lightWorld.m_shadowLight) g_modelWorld.cull_shadows(g_lightWorld.m_shadowFrustum);
 }
@@ -318,7 +315,7 @@ void Graphics::draw(ShadingEnviroment* env)
     submitPerFrameUniforms();
     g_lightWorld.submit_lights(env);
     if(env) env->submit();
-    g_modelWorld.sumibt_models();
+    g_modelWorld.submit_models();
     if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();
     g_debugDrawMgr.draw();
     postProcessSubmit(env);

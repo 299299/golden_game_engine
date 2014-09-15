@@ -75,7 +75,6 @@ ENGINE_NATIVE_ALIGN struct RagdollInstance
     void setMotors(float force, float tau, float propRecoveryVel, float conRecoveryVel);
     //=====================================================================================
 
-    ID                                          m_id;
     const RagdollResource*                      m_resource;
     hkaAnimatedSkeleton*                        m_animSkeleton;
     hkaRagdollInstance*                         m_ragdoll;
@@ -85,6 +84,3 @@ ENGINE_NATIVE_ALIGN struct RagdollInstance
     bool                                        m_initFeedback;
     char                                        m_padding[2];
 };
-
-void* load_resource_ragdoll(const char* data, uint32_t size);
-void  destroy_resource_ragdoll(void* resource);

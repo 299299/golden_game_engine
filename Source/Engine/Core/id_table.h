@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseTypes.h"
-#include "Assert.h"
+#include "EngineAssert.h"
 
 /// Table of Ids.
 ///

@@ -1,10 +1,6 @@
 #pragma once
 #include "Prerequisites.h"
 #include "StringId.h"
-#include "id_array.h"
-
-#define MAX_PHYSICS     (1024)
-#define MAX_PROXY       (64)
 
 class   hkpEntity;
 class   hkpWorld;
@@ -52,6 +48,8 @@ struct PhysicsConfig
     
     CollisionFilter             m_filters[32];
     uint32_t                    m_numFilterLayers;
+    float                       m_worldSize;
+    float                       m_gravity[3];
 };
 
 typedef Id PhysicsId;
@@ -66,7 +64,7 @@ struct PhysicsWorld
     void kickInJobs(float timeStep);
     void tickFinishJobs(float timeStep);
 
-    void createWorld(float worldSize, const hkVector4& gravity, PhysicsConfig* config);
+    void createWorld(PhysicsConfig* config);
     void destroyWorld();
     void clearWorld();
     inline hkpWorld* getWorld() const { return m_world;};
@@ -82,7 +80,7 @@ struct PhysicsWorld
     RaycastJob* getRaycastJob(int handle) const;
 
     int getFilterLayer(const StringId& name) const;
-    void createPlane();
+    void createPlane(float size);
 
     PhysicsId create_physics(const PhysicsResource* resource);
     void      destroy_physics(PhysicsId id);
@@ -91,7 +89,6 @@ struct PhysicsWorld
     ProxyId   create_proxy(const ProxyResource* resource);
     void      destroy_proxy(ProxyId id);
     ProxyInstance*   get_proxy(ProxyId id);
-
 
 private:
     void updateVDB(float dt);
@@ -107,8 +104,6 @@ public:
     uint32_t                                m_numCollisionEvents;
     uint32_t                                m_numRaycasts;
     int                                     m_status;
-    IdArray<MAX_PHYSICS, PhysicsInstance>   m_objects;
-    IdArray<MAX_PROXY, ProxyInstance>       m_proxies;
     //======================================================================
     PhysicsConfig*                          m_config;
 };

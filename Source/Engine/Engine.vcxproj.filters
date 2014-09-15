@@ -37,9 +37,6 @@
     <Filter Include="Network">
       <UniqueIdentifier>{089c8644-62fc-41ac-9ec0-b326a6abd98f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Logic">
-      <UniqueIdentifier>{e84addef-421e-4af8-9d0e-73f3965cf001}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI">
       <UniqueIdentifier>{7cf7d848-f780-4a99-8ab8-27036b428c02}</UniqueIdentifier>
     </Filter>
@@ -76,12 +73,12 @@
     <Filter Include="ThirdParty\gamemonkey">
       <UniqueIdentifier>{29f2e831-3e44-4486-b05d-972493e781f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\memory">
+      <UniqueIdentifier>{2809e10d-2957-47f0-8c4e-eb935ca48f36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Log.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Memory.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Thread.cpp">
@@ -92,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="Core\MathDefs.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\PhysicsWorld.cpp">
-      <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="Physics\PhysicsAutoLock.cpp">
       <Filter>Physics</Filter>
@@ -177,9 +171,6 @@
     <ClCompile Include="..\ThirdParty\stb_image\stb_image.h">
       <Filter>ThirdParty\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Scene.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DebugDraw.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -207,34 +198,10 @@
     <ClCompile Include="Core\Profiler.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\Character.cpp">
-      <Filter>Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\GameFSM.cpp">
-      <Filter>Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\GameState.cpp">
-      <Filter>Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\LevelGeometry.cpp">
-      <Filter>Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\Locomotion.cpp">
-      <Filter>Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="Logic\Prop.cpp">
-      <Filter>Logic</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\DataDef.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Engine.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Entity.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\EntityManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Level.cpp">
@@ -378,7 +345,25 @@
     <ClCompile Include="..\ThirdParty\gamemonkey\gmVector3Lib.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Assert.cpp">
+    <ClCompile Include="Core\Memory\linear_allocator.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\memory.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\pool_allocator.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\stack_allocator.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MemorySystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsWorld.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EngineAssert.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -413,9 +398,6 @@
     </ClInclude>
     <ClInclude Include="Animation\Animation.h">
       <Filter>Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\MemoryPool.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Physics\PhysicsInstance.h">
       <Filter>Physics</Filter>
@@ -682,9 +664,6 @@
     <ClInclude Include="..\ThirdParty\entry\dbg.h">
       <Filter>ThirdParty\entry</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Scene.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DebugDraw.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -721,37 +700,10 @@
     <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\Character.h">
-      <Filter>Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\GameFSM.h">
-      <Filter>Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\GameState.h">
-      <Filter>Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\LevelGeometry.h">
-      <Filter>Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\Locomotion.h">
-      <Filter>Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Logic\Prop.h">
-      <Filter>Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Component.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\DataDef.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Engine.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Entity.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\EntityManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Level.h">
@@ -919,10 +871,26 @@
     <ClInclude Include="Core\id_table.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ComponentManager.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="config.h" />
+    <ClInclude Include="Core\Memory\allocator.h">
+      <Filter>Core\memory</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Assert.h">
+    <ClInclude Include="Core\Memory\linear_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\memory.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\pool_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\stack_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\temp_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EngineAssert.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

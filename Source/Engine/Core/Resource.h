@@ -1,6 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
 #include "StringId.h"
+#include "config.h"
 
 struct ResourceFactory;
 struct ResourcePackage;
@@ -105,21 +106,21 @@ struct ResourceRequest
 
 struct ResourceManager
 {
-    ResourcePackage**               m_packages;
+    ResourcePackage*                m_packages[MAX_RESOURCE_PACKAGES];
     ResourceRequest*                m_requestListHead;
 
     uint32_t                        m_numPackages;
     uint32_t                        m_numRequests;
 
-    ResourceFactory*                m_factories;
-    StringId*                       m_types;
+    ResourceFactory                 m_factories[MAX_RESOURCE_TYPES];
+    StringId                        m_types[MAX_RESOURCE_TYPES];
     uint32_t                        m_numFactories;
-    uint32_t                        m_maxFactories;
+    char*                           m_resMapBuffer;
 
     hkThread*                       m_thread;
     hkSemaphore*                    m_semaphore;
 
-    void init(int maxFactories = 64);
+    void init();
     void quit();
 
     ResourceFactory* findFactory(const StringId& type);

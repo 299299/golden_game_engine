@@ -130,8 +130,3 @@ ENGINE_NATIVE_ALIGN struct FootInstance
                     hkaPose& poseInOut, 
                     hkReal& verticalDisplacementInOut);
 };
-
-
-void  lookup_resource_lookat_ik(void* resource);
-void  lookup_resource_reach_ik(void* resource);
-void  lookup_resource_foot_ik(void* resource);
