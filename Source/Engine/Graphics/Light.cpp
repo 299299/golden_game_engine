@@ -154,3 +154,13 @@ LightInstance*  LightWorld::get_light(LightId id)
     if(!id_array::has(m_lights, id)) return 0;
     return &id_array::get(m_lights, id);
 }
+
+uint32_t LightWorld::num_lights()
+{
+    return id_array::size(m_lights);
+}
+
+LightInstance* LightWorld::get_lights()
+{
+    return id_array::begin(m_lights);
+}

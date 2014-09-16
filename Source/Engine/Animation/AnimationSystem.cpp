@@ -126,6 +126,16 @@ AnimFSMInstance* AnimationSystem::get_fsm(Id id)
     return &id_array::get(m_fsms, id);
 }
 
+uint32_t AnimationSystem::num_fsms()
+{
+    return id_array::size(m_fsms);
+}
+
+AnimFSMInstance* AnimationSystem::get_fsms()
+{
+    return id_array::begin(m_fsms);
+}
+
 Id AnimationSystem::create_rig(const AnimRig* resource)
 {
     AnimRigInstance inst;
@@ -146,4 +156,14 @@ AnimRigInstance* AnimationSystem::get_rig(Id id)
 {
     if(!id_array::has(m_rigs, id)) return 0;
     return &id_array::get(m_rigs, id);
+}
+
+uint32_t AnimationSystem::num_rigs()
+{
+    return id_array::size(m_rigs);
+}
+
+AnimRigInstance* AnimationSystem::get_rigs()
+{
+    return id_array::begin(m_rigs);
 }

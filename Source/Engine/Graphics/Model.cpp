@@ -256,3 +256,14 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
         m_shadowsToDraw[m_numShadows++] = model;
     }
 }
+
+
+uint32_t ModelWorld::num_models()
+{
+    return id_array::size(m_models);
+}
+
+ModelInstance* ModelWorld::get_models()
+{
+    return id_array::begin(m_models);
+}

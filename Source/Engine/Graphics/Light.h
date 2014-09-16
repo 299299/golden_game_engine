@@ -37,16 +37,22 @@ struct LightWorld
     void                    init();
     void                    update(float dt);
     void                    submit_lights(ShadingEnviroment* env);
-    LightId                 create_light(const LightResource* lightResource);
-    void                    destroy_light(LightId id);
-    LightInstance*          get_light(LightId id);
     void                    update_shadow(float shadowArea, 
                                           float shadowSize, 
                                           const float* camPos);
 
+    //--------------------------------------------------------------------------
+    LightId                 create_light(const LightResource* lightResource);
+    void                    destroy_light(LightId id);
+    LightInstance*          get_light(LightId id);
+    uint32_t                num_lights();
+    LightInstance*          get_lights();
+
     LightInstance**         m_drawLights;
     uint32_t                m_numLightsToDraw;
+    //--------------------------------------------------------------------------
 
+    
     const LightInstance*    m_shadowLight;
     Frustum                 m_shadowFrustum;
     float                   m_shadowView[16];

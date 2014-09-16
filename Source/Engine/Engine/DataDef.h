@@ -57,5 +57,20 @@ enum LightType
     kLightCount
 };
 
+
+enum ComponentType
+{
+    kComponentModel,
+    kComponentLight,
+    kComponentPhysics,
+    kComponentProxy,
+    kComponentAnimRig,
+    kComponentAnimFSM,
+    kComponentIk,
+    kComponentScript,
+    kComponentTypeNum
+};
+
+
 #define RESOURCE_WORKER_THREAD_ID                   (1)
 #define STRING_TABLE_FILE                           ("string_table.txt")

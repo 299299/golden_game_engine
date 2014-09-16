@@ -82,13 +82,17 @@ struct PhysicsWorld
     int getFilterLayer(const StringId& name) const;
     void createPlane(float size);
 
-    PhysicsId create_physics(const PhysicsResource* resource);
-    void      destroy_physics(PhysicsId id);
-    PhysicsInstance* get_physics(PhysicsId id);
+    PhysicsId create_physics_object(const PhysicsResource* resource);
+    void      destroy_physics_object(PhysicsId id);
+    PhysicsInstance* get_physics_object(PhysicsId id);
+    uint32_t   num_physics_objects();
+    PhysicsInstance* get_physics_objects();
 
     ProxyId   create_proxy(const ProxyResource* resource);
     void      destroy_proxy(ProxyId id);
     ProxyInstance*   get_proxy(ProxyId id);
+    uint32_t   num_proxies();
+    ProxyInstance*   get_proxies();
 
 private:
     void updateVDB(float dt);
