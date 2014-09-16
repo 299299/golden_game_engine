@@ -68,7 +68,8 @@ void LightWorld::submit_lights(ShadingEnviroment* env)
         Vec3& vec = s_lightVec[i];
         s_lightType[i] = res->m_type;
         bx::vec3Move(color.m_vec, light->m_color);
-        bx::vec3Move(vec.m_vec, light->m_vec);
+        if(s_lightType[i] == kLightDirectional) bx::vec3Move(vec.m_vec, light->m_dir);
+        else vec3Make(vec.m_vec, light->m_transform[12], light->m_transform[13], light->m_transform[14]);
         info.m_vec[0] = res->m_fallOff;
         info.m_vec[1] = res->m_intensity;
         info.m_vec[2] = res->m_coneAngle;
@@ -114,7 +115,7 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
     {
     case kLightDirectional:
         {
-            bx::vec3Mul(shadowEye, m_shadowLight->m_vec, -1);
+            bx::vec3Mul(shadowEye, m_shadowLight->m_dir, -1);
             shadowEye[0] += camPos[0];
             shadowEye[2] += camPos[2];
             shadowAt[0] = camPos[0];
@@ -132,35 +133,44 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
     m_shadowFrustum.buildViewFrustum(m_shadowView, m_shadowProj);
 }
 
-LightId LightWorld::create_light(const LightResource* lightResource)
+
+
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------
+Id create_render_light(const void* res)
 {
     LightInstance inst;
+    const LightResource* lightResource = (const LightResource*)res;
     inst.m_resource = lightResource;
     memcpy(inst.m_color, lightResource->m_color, sizeof(inst.m_color));
-    memcpy(inst.m_vec, lightResource->m_dir, sizeof(inst.m_vec));
+    memcpy(inst.m_dir, lightResource->m_dir, sizeof(inst.m_dir));
     ADD_BITS(inst.m_flag, kNodeTransformDirty);
     return id_array::create(m_lights, inst);
 }
 
-void LightWorld::destroy_light(LightId id)
+void destroy_render_light(Id id)
 {
     if(!id_array::has(m_lights, id)) return;
     id_array::destroy(m_lights, id);
 }
 
 
-LightInstance*  LightWorld::get_light(LightId id)
+void*  get_render_light(Id id)
 {
     if(!id_array::has(m_lights, id)) return 0;
     return &id_array::get(m_lights, id);
 }
 
-uint32_t LightWorld::num_lights()
+uint32_t num_render_lights()
 {
     return id_array::size(m_lights);
 }
 
-LightInstance* LightWorld::get_lights()
+void* get_render_lights()
 {
     return id_array::begin(m_lights);
 }
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------

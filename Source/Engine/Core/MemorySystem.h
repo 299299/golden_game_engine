@@ -21,7 +21,7 @@ struct MemorySystem
     MemorySystem();
     ~MemorySystem();
 
-    void            init(bool bCheckMem);
+    void            init(int havok_frame_size, int monitor_size, bool init_havok, bool havok_check_mem);
     void            quit();
 
     //=====================================================
@@ -36,6 +36,7 @@ struct MemorySystem
 
     hkMemoryRouter*                 m_memRouter;
     Allocator*                      m_allocators[kMemoryCategoryMax];
+    bool                            m_havokInited;
 };
 extern MemorySystem g_memoryMgr;
 

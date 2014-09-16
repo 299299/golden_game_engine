@@ -24,7 +24,7 @@ class ModelConverter   : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    ModelConverter(EntityConverter* ownner);
+    ModelConverter(ActorConverter* ownner);
     ~ModelConverter();
 
     virtual std::string getTypeName() const { return ModelResource::getName(); };

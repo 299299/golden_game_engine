@@ -100,7 +100,7 @@
     <ClInclude Include="bounds.h" />
     <ClInclude Include="CharacterConverter.h" />
     <ClInclude Include="ComponentConverter.h" />
-    <ClInclude Include="EntityConverter.h" />
+    <ClInclude Include="ActorConverter.h" />
     <ClInclude Include="forsythtriangleorderoptimizer.h" />
     <ClInclude Include="HC_Utils.h" />
     <ClInclude Include="jsonxx.h" />
@@ -122,7 +122,7 @@
     <ClCompile Include="CharacterConverter.cpp" />
     <ClCompile Include="ComponentConverter.cpp" />
     <ClCompile Include="HavokConverter.cpp" />
-    <ClCompile Include="EntityConverter.cpp" />
+    <ClCompile Include="ActorConverter.cpp" />
     <ClCompile Include="forsythtriangleorderoptimizer.cpp" />
     <ClCompile Include="HC_Utils.cpp" />
     <ClCompile Include="jsonxx.cc" />

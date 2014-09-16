@@ -1,10 +1,10 @@
 #include "MaterialConverter.h"
 #include "SamplerConverter.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "ModelConverter.h"
 #include "HC_Utils.h"
 
-MaterialConverter::MaterialConverter(EntityConverter* ownner)
+MaterialConverter::MaterialConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_model(0)
 ,m_existInCommonPackage(false)

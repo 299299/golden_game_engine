@@ -1,6 +1,6 @@
 #include "AnimRigConverter.h"
 #include "ModelConverter.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "HC_Utils.h"
 #include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
 
@@ -25,7 +25,7 @@ const char* g_body_names_0[] =
     "rightfoot",
 };
 
-AnimRigConverter::AnimRigConverter(EntityConverter* ownner)
+AnimRigConverter::AnimRigConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_skin(0)
 {

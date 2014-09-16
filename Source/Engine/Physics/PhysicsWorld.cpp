@@ -15,6 +15,7 @@
 //          COMPONENTS
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
+#include "Actor.h"
 //===========================================
 
 #include <bx/tinystl/allocator.h>
@@ -430,15 +431,32 @@ int PhysicsWorld::getFilterLayer(const StringId& name) const
     return 0;
 }
 
+void PhysicsWorld::sync_actors( struct Actor* actors, uint32_t num )
+{
+    hkQsTransform t;
+    hkTransform t1;
+    for (uint32_t i=0; i<num; ++i)
+    {
+        Actor& actor = actors[i];
+        PhysicsInstance* physics_object = (PhysicsInstance*)actor.get_component(kComponentPhysics);
+        if(!physics_object->m_dirty) continue;
+        physics_object->fetchTransform(0, t1);
+        t.setFromTransformNoScale(t1);
+        actor.transform_renders(t);
+    }
+}
 
-PhysicsId PhysicsWorld::create_physics_object(const PhysicsResource* resource)
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------
+Id create_physics_object(const void* resource)
 {
     PhysicsInstance inst;
     inst.init(resource);
     return id_array::create(m_objects, inst);
 }
 
-void PhysicsWorld::destroy_physics_object(PhysicsId id)
+void destroy_physics_object(Id id)
 {
     if(!id_array::has(m_objects, id))
         return;
@@ -447,31 +465,31 @@ void PhysicsWorld::destroy_physics_object(PhysicsId id)
     id_array::destroy(m_objects, id);
 }
 
-PhysicsInstance* PhysicsWorld::get_physics_object(PhysicsId id)
+void* get_physics_object(Id id)
 {
     if(!id_array::has(m_objects, id))
         return 0;
     return &id_array::get(m_objects, id);
 }
 
-uint32_t PhysicsWorld::num_physics_objects()
+uint32_t num_physics_objects()
 {
     return id_array::size(m_objects);
 }
 
-PhysicsInstance* PhysicsWorld::get_physics_objects()
+void* get_physics_objects()
 {
     return id_array::begin(m_objects);
 }
 
-ProxyId PhysicsWorld::create_proxy(const ProxyResource* resource)
+Id create_physics_proxy(const void* resource)
 {
     ProxyInstance inst;
     inst.init(resource);
     return id_array::create(m_proxies, inst);
 }
 
-void PhysicsWorld::destroy_proxy(ProxyId id)
+void destroy_physics_proxy(Id id)
 {
     if(!id_array::has(m_proxies, id))
         return;
@@ -480,19 +498,22 @@ void PhysicsWorld::destroy_proxy(ProxyId id)
     id_array::destroy(m_proxies, id);
 }
 
-ProxyInstance* PhysicsWorld::get_proxy(ProxyId id)
+void* get_physics_proxy(Id id)
 {
     if(!id_array::has(m_proxies, id))
         return 0;
     return &id_array::get(m_proxies, id);
 }
 
-uint32_t PhysicsWorld::num_proxies()
+uint32_t num_physics_proxies()
 {
     return id_array::size(m_proxies);
 }
 
-ProxyInstance* PhysicsWorld::get_proxies()
+void* get_physics_proxies()
 {
     return id_array::begin(m_proxies);
 }
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------

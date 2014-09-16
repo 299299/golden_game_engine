@@ -9,7 +9,7 @@ class MaterialConverter  : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    MaterialConverter(EntityConverter* ownner);
+    MaterialConverter(ActorConverter* ownner);
     ~MaterialConverter();
 
     virtual std::string getTypeName() const { return Material::getName(); };

@@ -44,7 +44,7 @@ struct Entity_Config
 {
     Entity_Config()
         :m_loader(0)
-        ,m_exportClass("prop")
+        ,m_exportClass("level_geometry")
         ,m_exportMode("model")
         ,m_rlc(0)
         ,m_animation(0)

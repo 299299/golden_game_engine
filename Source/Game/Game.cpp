@@ -4,6 +4,7 @@
 #include "WebServerTool.h"
 #include "MemorySystem.h"
 #include "Utils.h"
+#include "linear_allocator.h"
 //==================================================
 //RESOURCE
 #include "Resource.h"
@@ -187,16 +188,9 @@ static  char                                    g_frameBuf[1024*1024*5];//5M Fra
 static LinearAllocator  g_frameAllocator("frame_memory", g_frameBuf, sizeof(g_frameBuf));
 static  char                                    g_staticBuf[1024*1024*3];//3M Static Mem
 static LinearAllocator  g_staticAllocator("static_memory", g_staticBuf, sizeof(g_staticBuf));
-#ifndef _RETAIL
-static  char                                    g_debugBuf[1024*1024*2];
-static LinearAllocator  g_debugAllocator("debug_memory", g_debugBuf, sizeof(g_debugBuf));
-#endif
 
 void registerMemoryAllocators()
 {
     g_memoryMgr.registerAllocator(kMemoryCategoryFrame, &g_frameAllocator);
     g_memoryMgr.registerAllocator(kMemoryCategoryStatic, &g_staticAllocator);
-#ifndef _RETAIL
-    g_memoryMgr.registerAllocator(kMemoryCategoryDebug, &g_debugAllocator);
-#endif
 }

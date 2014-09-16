@@ -1,8 +1,8 @@
 #pragma once
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 
 struct RigSkinData;
-class CharacterConverter : public EntityConverter
+class CharacterConverter : public ActorConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);

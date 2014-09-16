@@ -1,10 +1,10 @@
 #include "PhysicsConverter.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "Utils.h"
 #include "HC_Utils.h"
 #include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
 
-PhysicsConverter::PhysicsConverter(EntityConverter* ownner)
+PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_physics(0)
 ,m_type(0)

@@ -108,7 +108,7 @@
     <ClInclude Include="BaseCompiler.h" />
     <ClInclude Include="CopyCompiler.h" />
     <ClInclude Include="DC_Utils.h" />
-    <ClInclude Include="EntityCompiler.h" />
+    <ClInclude Include="ActorCompiler.h" />
     <ClInclude Include="IKCompiler.h" />
     <ClInclude Include="jsmn.h" />
     <ClInclude Include="JsonParser.h" />
@@ -134,7 +134,7 @@
     <ClCompile Include="CopyCompiler.cpp" />
     <ClCompile Include="DataCompiler.cpp" />
     <ClCompile Include="DC_Utils.cpp" />
-    <ClCompile Include="EntityCompiler.cpp" />
+    <ClCompile Include="ActorCompiler.cpp" />
     <ClCompile Include="IKCompiler.cpp" />
     <ClCompile Include="jsmn.cpp" />
     <ClCompile Include="JsonParser.cpp" />

@@ -200,25 +200,6 @@ void ModelWorld::submit_shadows()
     }
 }
 
-ModelId ModelWorld::create_model(const ModelResource* modelResource)
-{
-    ModelInstance inst;
-    inst.init(modelResource);
-    return id_array::create(m_models, inst);
-}
-
-void ModelWorld::destroy_model(ModelId id)
-{
-    if(!id_array::has(m_models, id)) return;
-    id_array::destroy(m_models, id);
-}
-
-ModelInstance* ModelWorld::get_model(ModelId id)
-{
-    if(!id_array::has(m_models, id)) return 0;
-    return &id_array::get(m_models, id);
-}
-
 void ModelWorld::cull_models(const Frustum& frust)
 {
     uint32_t numModels = id_array::size(m_models);
@@ -257,13 +238,37 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
     }
 }
 
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------
+Id create_render_model(const void* modelResource)
+{
+    ModelInstance inst;
+    inst.init(modelResource);
+    return id_array::create(m_models, inst);
+}
 
-uint32_t ModelWorld::num_models()
+void destroy_render_model(Id id)
+{
+    if(!id_array::has(m_models, id)) return;
+    id_array::destroy(m_models, id);
+}
+
+void* get_render_model(Id id)
+{
+    if(!id_array::has(m_models, id)) return 0;
+    return &id_array::get(m_models, id);
+}
+
+uint32_t num_render_models()
 {
     return id_array::size(m_models);
 }
 
-ModelInstance* ModelWorld::get_models()
+void* get_render_models()
 {
     return id_array::begin(m_models);
 }
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------

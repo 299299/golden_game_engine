@@ -6,7 +6,7 @@ class SamplerConverter  : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    SamplerConverter(EntityConverter* ownner);
+    SamplerConverter(ActorConverter* ownner);
     ~SamplerConverter();
 
     virtual std::string getTypeName() const { return "texture"; };

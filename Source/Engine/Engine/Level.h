@@ -1,30 +1,29 @@
 #pragma once
 #include "StringId.h"
+#include "Actor.h"
 
 enum LevelState
 {
     kLevelStateLoadingObjects = 0,
-    kLevelStateLoadingModels,
-    kLevelStateLoadingLights,
     kLevelStateReady,
     kLevelStateUnloaded,
     kLevelStateMax
 };
 
-struct EntityResource;
+
 struct LevelObject
 {
     float           m_translation[3];
     float           m_rotation[4];
     float           m_scale[3];
-    uint32_t        m_entityId;
+    ActorId         m_actorId;
     StringId        m_name;
     int             m_resourceIndex;
 };
-struct LevelEntityResource
+struct LevelActorResource
 {
     StringId            m_name;
-    EntityResource*     m_resource;
+    void*               m_resource;
 };
 struct LevelModel
 {
@@ -53,24 +52,16 @@ ENGINE_NATIVE_ALIGN struct Level
     uint32_t                    m_state;
     uint32_t                    m_loadedObjects;
     uint32_t                    m_loadNumPerframe;
-    uint32_t                    m_loadedModels;
-
     //=============================================================
     // cold data
     LevelObject*                m_objects;
-    LevelEntityResource*        m_resources;
-    LevelModel*                 m_models;
-    LevelLight*                 m_lights;
+    LevelActorResource*         m_resources;
 
     uint32_t                    m_numObject;
     uint32_t                    m_numResources;
-    uint32_t                    m_numModels;
-    uint32_t                    m_numLights;
 
     uint32_t                    m_objectOffset;
     uint32_t                    m_resourceOffset;
-    uint32_t                    m_modelOffset;
-    uint32_t                    m_lightOffset;
 
     void  lookup();
     void  load(uint32_t max_num_perframe = 100);

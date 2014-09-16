@@ -1,7 +1,7 @@
 #include "LightConverter.h"
 #include "HC_Utils.h"
 
-LightConverter::LightConverter(EntityConverter* ownner)
+LightConverter::LightConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 {
     

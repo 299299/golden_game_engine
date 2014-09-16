@@ -2,12 +2,12 @@
 #include "stdafx.h"
 #include "CommonUtils.h"
 
-class EntityConverter;
+class ActorConverter;
 class ComponentConverter : public hkReferencedObject
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    ComponentConverter(EntityConverter* ownner);
+    ComponentConverter(ActorConverter* ownner);
     ~ComponentConverter() =0 {};
 
     virtual std::string getTypeName() const = 0;
@@ -29,5 +29,5 @@ public:
     virtual bool isExistInCommonPackage() const;
 
     std::string             m_name;
-    EntityConverter*        m_ownner;
+    ActorConverter*         m_ownner;
 };

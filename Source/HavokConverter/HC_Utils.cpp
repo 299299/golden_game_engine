@@ -79,7 +79,7 @@ Entity_Config* createConfig( const std::string& input, const std::string& outFol
     if(!bLevel) outputFolder += "entity/";
     std::string outputFile;
     if(bLevel) outputFile = outputFolder + entityName + "." + Level::getName();
-    else outputFile = outputFolder + entityName + "."+ EntityResource::getName();
+    else outputFile = outputFolder + entityName + "."+ ActorResource::getName();
     uint64_t fileTime = 0;
     bool bFileChanged = g_havokDB.isFileChanged(hkxFileName, fileTime);
     bool bFileExist = isFileExist(outputFile);

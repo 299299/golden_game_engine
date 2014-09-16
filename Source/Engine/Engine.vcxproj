@@ -162,9 +162,9 @@
     <ClCompile Include="Core\StringId.cpp" />
     <ClCompile Include="Core\Thread.cpp" />
     <ClCompile Include="Core\Utils.cpp" />
+    <ClCompile Include="Engine\Actor.cpp" />
     <ClCompile Include="Engine\DataDef.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
-    <ClCompile Include="Engine\Entity.cpp" />
     <ClCompile Include="Engine\Level.cpp" />
     <ClCompile Include="Engine\Win32Context.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
@@ -341,9 +341,9 @@
     <ClInclude Include="Core\Thread.h" />
     <ClInclude Include="Core\Utils.h" />
     <ClInclude Include="Core\Variant.h" />
+    <ClInclude Include="Engine\Actor.h" />
     <ClInclude Include="Engine\DataDef.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\Entity.h" />
     <ClInclude Include="Engine\Level.h" />
     <ClInclude Include="Engine\Win32Context.h" />
     <ClInclude Include="Graphics\Camera.h" />

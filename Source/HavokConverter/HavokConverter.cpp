@@ -2,6 +2,7 @@
 #include "CharacterConverter.h"
 #include "StaticModelConverter.h"
 #include "LevelConverter.h"
+#include "linear_allocator.h"
 #include "HC_Utils.h"
 #include <bx/thread.h>
 #include <Common/Base/Thread/Thread/hkThread.h>
@@ -23,12 +24,7 @@ struct HavokThreadContext
     int                                 m_threadId;
 };
 
-
 HAVOK_Config                            g_config;
-#ifndef _RETAIL
-static  char                            g_debugBuf[1024*1024*2];
-static LinearAllocator                  g_debugAllocator("debug-memory", g_debugBuf, sizeof(g_debugBuf));
-#endif
 static  std::vector<Entity_Config*>     g_havokFiles;
 ResourceFileDataBase                    g_havokDB;
 
@@ -45,10 +41,6 @@ void showHelp()
             "--packnormal pack normal\n"
             "--packuv pack uv\n"
             "--debug to wait for vs debug attach when lunch\n");
-}
-void HK_CALL errorReport(const char* msg, void* userArgGivenToInit)
-{
-    LOGE(msg);
 }
 void havok_convert(Entity_Config* config)
 {
@@ -88,7 +80,7 @@ void havok_convert(Entity_Config* config)
     config->m_animation = ac;
     config->m_physics = data;
 
-    EntityConverter* converter = 0;
+    ActorConverter* converter = 0;
     if(config->m_exportMode == "model")
     {
         if(!scene || !scene->m_rootNode)
@@ -177,9 +169,6 @@ int32_t thread_compile(void* _userData)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-#ifndef _RETAIL
-    g_memoryMgr.registerAllocator(kMemoryCategoryDebug, &g_debugAllocator);
-#endif
     DWORD timeMS = ::GetTickCount();
     //======================================================
 #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
@@ -199,6 +188,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     showHelp();
     LOG_INIT("HavokConverterLog.html", MSG_TITLE);
+    g_memoryMgr.init(1024,1024,true,true);
 
     bx::CommandLine cmdline(argc, argv);
     if(cmdline.hasArg("debug"))
@@ -212,13 +202,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
     const char* threadChar = cmdline.findOption('t');
     if(threadChar) g_config.m_numThreads = atoi(threadChar);
-
-#ifdef _DEBUG
-    hkMemoryRouter* memoryRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo(1024));
-#else
-    hkMemoryRouter* memoryRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo(1024));
-#endif
-    hkBaseSystem::init( memoryRouter, errorReport );
 
     const char* inputFolder = cmdline.findOption('i');
     if (inputFolder)
@@ -291,8 +274,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(g_config.m_slient) g_config.m_exitCode = -g_errorNum;
     else showErrorMessage(MSG_TITLE);
 
-    hkBaseSystem::quit();
-    hkMemoryInitUtil::quit();
+    g_memoryMgr.quit();
 
     timeMS = ::GetTickCount() - timeMS;
     LOGD("******************************************************");

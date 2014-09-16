@@ -11,12 +11,16 @@
 #define MAX_ANIM_FSM            64
 #define MAX_ANIM_RIG            64
 
-#define MAX_DEBUG_LINES        1000
-#define MAX_DEBUG_TEXTS        300
+#define MAX_DEBUG_LINES         1000
+#define MAX_DEBUG_TEXTS         300
 
-#define MAX_RESOURCE_TYPES     64
-#define MAX_RESOURCE_PACKAGES  64
+#define MAX_RESOURCE_TYPES      64
+#define MAX_RESOURCE_PACKAGES   64
 
 
-#define MAX_BLOCK_NUM          32
-#define TOTAL_BLOCK_NUM        512
+#define MAX_BLOCK_NUM           32
+#define TOTAL_BLOCK_NUM         512
+
+#define MAX_LEVEL_GEOMETRY      512
+#define MAX_PROP                128
+#define MAX_CHARACTER           32

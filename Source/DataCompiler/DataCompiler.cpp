@@ -4,7 +4,7 @@
 //=================================================================
 #include "AnimationCompiler.h"
 #include "AnimRigCompiler.h"
-#include "EntityCompiler.h"
+#include "ActorCompiler.h"
 #include "IKCompiler.h"
 #include "LightCompiler.h"
 #include "MaterialCompiler.h"
@@ -29,10 +29,6 @@ ResourceFileDataBase                    g_database;
 std::vector<class BaseCompiler*>        g_compilers;
 std::vector<class LevelCompiler*>       g_levels;
 std::vector<class BaseCompiler*>        g_childCompilers;
-#ifndef _RETAIL
-static char                             g_debugBuf[1024*1024*2];
-static LinearAllocator                  g_debugAllocator("debug-memory", g_debugBuf, sizeof(g_debugBuf));
-#endif
 static bool                             g_updatePackage = false; 
 typedef BaseCompiler* (*__create_compiler__)();
 template <class T> BaseCompiler* create_compiler() { return new T; };
@@ -60,7 +56,7 @@ static const char* g_resourceTypeNames[] =
 {
     Animation::getName(),
     AnimRig::getName(),
-    EntityResource::getName(),
+    ActorResource::getName(),
     LookAtResource::getName(),
     ReachResource::getName(),
     FootResource::getName(),
@@ -86,7 +82,7 @@ static __create_compiler__ g_funtions[] =
 {
     create_compiler<AnimationCompiler>,
     create_compiler<AnimRigCompiler>,
-    create_compiler<EntityCompiler>,
+    create_compiler<ActorCompiler>,
     create_compiler<LookIKCompiler>,
     create_compiler<ReachIKCompiler>,
     create_compiler<FootIKCompiler>,
@@ -332,10 +328,6 @@ void clear_resources()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-#ifndef _RETAIL
-    g_memoryMgr.registerAllocator(kMemoryCategoryDebug, &g_debugAllocator);
-#endif
-
     DWORD timeMS = ::GetTickCount();
 
     if(argc < 2) 
@@ -344,6 +336,8 @@ int _tmain(int argc, _TCHAR* argv[])
         printf("argument num < 3 !\n");
         return kErrorArg;
     }
+
+    g_memoryMgr.init(0,0,false,false);
 
     showHelp();
     LOG_INIT("DataCompilerLog.html", MSG_TITLE);
@@ -493,6 +487,7 @@ int _tmain(int argc, _TCHAR* argv[])
     g_database.m_files.clear();
     g_compilerBuilder.clear();
     save_string_table(STRING_TABLE_FILE);
+    g_memoryMgr.quit();
 
     LOGD("******************************************************");
     LOGD("******************************************************");

@@ -187,9 +187,9 @@
 #include "Model.h"
 #include "Light.h"
 #include "bounds.h"
-#include "Entity.h"
 #include "Graphics.h"
 #include "Level.h"
+#include "Actor.h"
 
 #include "DataDef.h"
 #include "ShaderInc.h"

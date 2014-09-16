@@ -13,15 +13,17 @@
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 //=================================================================
 
-#define HAVOK_FRAME_MEM_SIZE                   (1024*1024*5)  //(5M)
-#define MONITOR_FRAME_SIZE                     (1024*1024*3)  //(3M)
-
 static void errorReport(const char* msg, void* userArgGivenToInit)
 {
     LOGHAVOK(msg);
 }
 
 MemorySystem    g_memoryMgr;
+#ifndef _RETAIL
+static  char                            g_debugBuf[1024*1024*2];
+static  LinearAllocator                 g_debugAllocator(g_debugBuf, sizeof(g_debugBuf));
+#endif
+
 MemorySystem::MemorySystem()
 {
     memset(m_allocators, 0x00, sizeof(m_allocators));
@@ -32,20 +34,35 @@ MemorySystem::~MemorySystem()
 
 }
 
-void MemorySystem::init(bool bCheckMem)
+void MemorySystem::init(int havok_frame_size, int monitor_size, bool init_havok, bool havok_check_mem)
 {
-    if(bCheckMem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
-    else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator, hkMemorySystem::FrameInfo( HAVOK_FRAME_MEM_SIZE ) );
-    hkBaseSystem::init( m_memRouter, errorReport );
-    hkMonitorStream::getInstance().resize(MONITOR_FRAME_SIZE);
+    if(init_havok)
+    {
+        if(havok_check_mem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator, 
+            hkMemorySystem::FrameInfo( havok_frame_size ) );
+        else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator, 
+            hkMemorySystem::FrameInfo( havok_frame_size ) );
+        hkBaseSystem::init( m_memRouter, errorReport );
+        hkMonitorStream::getInstance().resize(monitor_size); 
+    }
+    m_havokInited = init_havok;
     memory_globals::init();
     register_allocator(kMemoryCategoryCommon, &default_allocator());
+#ifndef _RETAIL
+    register_allocator(kMemoryCategoryDebug, &g_debugAllocator);
+#endif
+
+    extern void init_component_names();
+    init_component_names();
 }
 
 void MemorySystem::quit()
 {
-    hkBaseSystem::quit();
-    hkMemoryInitUtil::quit();
+    if(m_havokInited)
+    {
+        hkBaseSystem::quit();
+        hkMemoryInitUtil::quit();
+    }
     memory_globals::shutdown();
 }
 

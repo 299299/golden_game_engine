@@ -3,7 +3,7 @@
 #include "MeshConverter.h"
 #include "MaterialConverter.h"
 #include "forsythtriangleorderoptimizer.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "HC_Utils.h"
 #include <bgfx/vertexdecl.h>
 
@@ -77,7 +77,7 @@ static bgfx::AttribType::Enum havokDataTypeToBgfx(const hkxVertexDescription::Da
     }
 }
 
-MeshConverter::MeshConverter(EntityConverter* ownner)
+MeshConverter::MeshConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_mesh(0)
 ,m_material(0)

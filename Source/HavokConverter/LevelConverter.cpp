@@ -2,6 +2,7 @@
 #include "HC_Utils.h"
 #include "ModelConverter.h"
 #include "LightConverter.h"
+#include "StaticModelConverter.h"
 #include "HC_Utils.h"
 #include <Common/Base/Math/Matrix/hkMatrixDecomposition.h>
 
@@ -56,7 +57,10 @@ LevelConverter::LevelConverter()
 
 LevelConverter::~LevelConverter()
 {
-    
+    for (size_t i=0; i<m_levelActors.size(); ++i)
+    {
+        SAFE_REMOVEREF(m_levelActors[i]);
+    }
 }
 
 void LevelConverter::process(void* pData)
@@ -79,39 +83,37 @@ void LevelConverter::process(hkxScene* scene)
         hkxNode* node = m_meshNodes[i];
         std::string nodeName(node->m_name.cString());
         toLower(nodeName);
-        hkVariant va = node->m_object;
-        ModelConverter* mc = new ModelConverter(this);
+        StaticModelConverter* actor = new StaticModelConverter();
+        actor->process(node);
+#if 0
         if(str_begin_with(nodeName, "sky"))
         {
             mc->m_type = kModelSky;
         }
         mc->setName(m_name + "_" + node->m_name.cString());
         mc->process(va.m_object, 0);
-        m_models.push_back(mc);
-        m_components.push_back(mc);
+#endif
+        m_levelActors.push_back(actor);
     }
 
     for(size_t i=0; i<m_lightNodes.size(); ++i)
     {
         hkxNode* node = m_lightNodes[i];
-        hkVariant va = node->m_object;
-        LightConverter* lc = new LightConverter(this);
-        lc->setName(m_name + "_" + node->m_name.cString());
-        lc->process(va.m_object);
-        m_lights.push_back(lc);
-        m_components.push_back(lc);
+        StaticModelConverter* actor = new StaticModelConverter();
+        actor->process(node);
+        m_levelActors.push_back(actor);
     }
 }
 
 jsonxx::Object LevelConverter::serializeToJson() const
 {
     jsonxx::Object levelObject;
-    jsonxx::Array entityList;
+    jsonxx::Array actorList;
     for (size_t i = 0; i < m_sceneNodes.size(); ++i)
     {
         hkxNode* node = m_sceneNodes[i];
-        jsonxx::Object entity;
-        json_transform(entity, node, m_scene);
+        jsonxx::Object actor;
+        json_transform(actor, node, m_scene);
 
         const hkxAttributeGroup* attrGrp = node->findAttributeGroupByName("engineAttributes");
         for (int i=0; i<attrGrp->m_attributes.getSize(); ++i)
@@ -122,32 +124,21 @@ jsonxx::Object LevelConverter::serializeToJson() const
             if(variant.m_class == &hkxSparselyAnimatedStringClass)
             {
                 hkxSparselyAnimatedString* hString = (hkxSparselyAnimatedString*)variant.m_object;
-                entity << attrName << std::string(hString->m_strings[0].cString());
+                actor << attrName << std::string(hString->m_strings[0].cString());
             }
             // OTHER Attribute TODO
         }
-        entityList << entity;
+        actorList << actor;
     }
 
-    jsonxx::Array modelList;
-    for(size_t i=0; i<m_models.size(); ++i)
+    for(size_t i=0; i<m_levelActors.size(); ++i)
     {
-        jsonxx::Object modelObject = m_models[i]->serializeToJson();
-        json_transform(modelObject, m_meshNodes[i], m_scene);
-        modelList << modelObject;
+        jsonxx::Object actorObject = m_levelActors[i]->serializeToJson();
+        json_transform(actorObject, m_meshNodes[i], m_scene);
+        actorList << actorObject;
     }
 
-    jsonxx::Array lightList;
-    for(size_t i=0; i<m_lights.size(); ++i)
-    {
-        jsonxx::Object lightObject = m_lights[i]->serializeToJson();
-        json_transform(lightObject, m_lightNodes[i], m_scene);
-        lightList << lightObject;
-    }
-
-    levelObject << "entities" << entityList;
-    levelObject << "models" << modelList;
-    levelObject << "lights" << lightList;
+    levelObject << "actor" << actorList;
     return levelObject;
 }
 

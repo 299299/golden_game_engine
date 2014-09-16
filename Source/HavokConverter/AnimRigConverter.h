@@ -6,7 +6,7 @@ class AnimRigConverter : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    AnimRigConverter(EntityConverter* ownner);
+    AnimRigConverter(ActorConverter* ownner);
     ~AnimRigConverter();
     
     virtual std::string getTypeName() const { return AnimRig::getName(); };

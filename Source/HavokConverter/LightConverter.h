@@ -6,7 +6,7 @@ class LightConverter   : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    LightConverter(EntityConverter* ownner);
+    LightConverter(ActorConverter* ownner);
     ~LightConverter();
 
     virtual std::string getTypeName() const { return LightResource::getName(); };

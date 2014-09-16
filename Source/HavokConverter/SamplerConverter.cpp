@@ -1,8 +1,8 @@
 #include "SamplerConverter.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "HC_Utils.h"
 
-SamplerConverter::SamplerConverter(EntityConverter* ownner)
+SamplerConverter::SamplerConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_type(0)
 ,m_textureFormat(DDS_FORMAT)

@@ -122,7 +122,7 @@ void Engine::applyFrameLimit(double timeMS)
 void Engine::coreInit()
 {
     TIMELOG("Engine Core Init");
-    g_memoryMgr.init(m_cfg.m_checkMemory);
+    g_memoryMgr.init(1024*1024*4, 1024*1024*2, true, m_cfg.m_checkMemory);
     g_threadMgr.init(true);
     g_resourceMgr.init();
 #ifdef USE_PROFILING
@@ -133,10 +133,8 @@ void Engine::coreInit()
 void Engine::subSystemsInit()
 {
     TIMELOG("Engine Subsystem Init");
-    if(!m_cfg.m_headless)
-        g_win32Context.createWindow(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
-    else
-        g_engineMode = 1;
+    if(!m_cfg.m_headless) g_win32Context.createWindow(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
+    else g_engineMode = 1;
 
     Win32InputCallback cb = 
     {

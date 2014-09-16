@@ -1,13 +1,13 @@
 #pragma once
 #include "ShaderInc.h"
 
-enum EntityClasss
+enum ActorClass
 {
     kLevelGeometry,
     kProp,
     kCharacter,
     //kTrigger,
-    kEntityClassNum
+    kActorClassNum
 };
 
 enum SubsystemTickStatus

@@ -21,9 +21,6 @@
     <ClInclude Include="DC_Utils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="EntityCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
     <ClInclude Include="IKCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
@@ -74,15 +71,15 @@
     <ClInclude Include="..\Shared\CommonUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="ActorCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationCompiler.cpp">
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="AnimRigCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityCompiler.cpp">
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="IKCompiler.cpp">
@@ -140,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="..\Shared\CommonUtils.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorCompiler.cpp">
+      <Filter>compilers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

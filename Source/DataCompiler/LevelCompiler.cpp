@@ -36,7 +36,7 @@ LevelCompiler::~LevelCompiler()
 bool LevelCompiler::readJSON( const JsonValue& root )
 {
     __super::readJSON(root);
-    JsonValue entitiesValue = root.GetValue("entities");
+    JsonValue entitiesValue = root.GetValue("actors");
     uint32_t numOfEntities = entitiesValue.GetElementsCount();
     JsonValue modelsValue = root.GetValue("models");
     JsonValue lightsValue = root.GetValue("lights");

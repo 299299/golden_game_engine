@@ -366,7 +366,7 @@
     <ClCompile Include="Core\EngineAssert.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Entity.cpp">
+    <ClCompile Include="Engine\Actor.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -896,7 +896,7 @@
     <ClInclude Include="Core\EngineAssert.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Entity.h">
+    <ClInclude Include="Engine\Actor.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

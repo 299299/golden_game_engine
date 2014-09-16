@@ -6,7 +6,7 @@ class PhysicsConverter   : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    PhysicsConverter(EntityConverter* ownner);
+    PhysicsConverter(ActorConverter* ownner);
     ~PhysicsConverter();
 
     virtual std::string getTypeName() const { return PhysicsResource::getName(); };

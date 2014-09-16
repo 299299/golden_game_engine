@@ -1,10 +1,10 @@
 #include "ModelConverter.h"
 #include "MaterialConverter.h"
 #include "MeshConverter.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "HC_Utils.h"
 
-ModelConverter::ModelConverter(EntityConverter* ownner)
+ModelConverter::ModelConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_skin(0)
 ,m_type(kModelDefault)

@@ -1,10 +1,7 @@
 #pragma once
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 
-class ModelConverter;
-class LightConverter;
-
-class LevelConverter : public EntityConverter
+class LevelConverter : public ActorConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
@@ -20,6 +17,5 @@ private:
     std::vector<hkxNode*>                       m_sceneNodes;
     std::vector<hkxNode*>                       m_meshNodes;
     std::vector<hkxNode*>                       m_lightNodes;
-    std::vector<ModelConverter*>                m_models;
-    std::vector<LightConverter*>                m_lights;
+    std::vector<ActorConverter*>                m_levelActors;
 };

@@ -18,7 +18,7 @@ class MeshConverter  : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    MeshConverter(EntityConverter* ownner);
+    MeshConverter(ActorConverter* ownner);
     ~MeshConverter();
 
     virtual std::string getTypeName() const { return Mesh::getName(); };

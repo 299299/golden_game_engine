@@ -1,8 +1,8 @@
 #include "ComponentConverter.h"
-#include "EntityConverter.h"
+#include "ActorConverter.h"
 #include "HC_Utils.h"
 
-ComponentConverter::ComponentConverter(EntityConverter* ownner)
+ComponentConverter::ComponentConverter(ActorConverter* ownner)
 :m_ownner(ownner)
 {
 

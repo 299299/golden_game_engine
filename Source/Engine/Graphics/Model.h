@@ -48,7 +48,6 @@ struct ModelInstance
                             float* outNormal ) const;
 };
 
-typedef Id ModelId;
 struct ModelWorld
 {
     void                    init();
@@ -57,14 +56,6 @@ struct ModelWorld
     void                    submit_shadows();
     void                    cull_models(const Frustum& frust);
     void                    cull_shadows(const Frustum& lightFrust);
-
-    //------------------------------------------------------------------------
-    ModelId                 create_model(const ModelResource* modelResource);
-    void                    destroy_model(ModelId id);
-    ModelInstance*          get_model(ModelId id);
-    uint32_t                num_models();
-    ModelInstance*          get_models();
-    //------------------------------------------------------------------------
 
     ModelInstance**                         m_modelsToDraw;
     uint32_t                                m_numModels;
