@@ -83,7 +83,7 @@ void LevelConverter::process(hkxScene* scene)
         if(str_begin_with(nodeName, "sky"))
         {
             //hack here for skydome materil
-            actor->m_type = kModelSky;
+            actor->setType(kModelSky);
         }
         actor->setName(m_name + "_" + node->m_name.cString());
         actor->process(node);

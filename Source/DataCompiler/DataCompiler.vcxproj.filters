@@ -9,138 +9,138 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimationCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimRigCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="DC_Utils.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="IKCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="LightCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="RagdollCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="jsmn.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonParser.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="PackageCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="CopyCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
     <ClInclude Include="SharedInc.h" />
-    <ClInclude Include="ShadingEnviromentCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimFSMCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
     <ClInclude Include="..\Shared\CommonUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="ActorCompiler.h">
+    <ClInclude Include="Utils\DC_Utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\jsmn.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\JsonParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\ActorCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\AnimationCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\AnimFSMCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\AnimRigCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\BaseCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\CopyCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\IKCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\LevelCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\LightCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\MaterialCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\ModelCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\PackageCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\PhysicsCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\RagdollCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\ShaderCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\ShadingEnviromentCompiler.h">
+      <Filter>compilers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compilers\TextureCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AnimationCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimRigCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="IKCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="LightCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="RagdollCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="DC_Utils.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="jsmn.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonParser.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="PackageCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="CopyCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="DataCompiler.cpp" />
-    <ClCompile Include="ModelCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadingEnviromentCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimFSMCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
     <ClCompile Include="..\Shared\CommonUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="ActorCompiler.cpp">
+    <ClCompile Include="Utils\DC_Utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\jsmn.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\JsonParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\ActorCompiler.cpp">
       <Filter>compilers</Filter>
     </ClCompile>
+    <ClCompile Include="Compilers\AnimationCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\AnimFSMCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\AnimRigCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\BaseCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\CopyCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\IKCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\LevelCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\LightCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\MaterialCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\ModelCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\PackageCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\PhysicsCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\RagdollCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\ShaderCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\ShadingEnviromentCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="Compilers\TextureCompiler.cpp">
+      <Filter>compilers</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="path.cfg" />

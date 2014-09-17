@@ -193,31 +193,3 @@ int JSON_GetFlags(const JsonValue& jsValue, const char** enum_names, int* flags,
     }
     return retValue;
 }
-
-
-
-int JSON_GetVariant(const JsonValue& jsValue, Variant& outValue)
-{
-    if(!jsValue.IsValid()) return -1;
-    int type = JSON_GetEnum(jsValue.GetValue("type"), g_variantTypeNames, -1);
-    if(type < 0) return -1;
-    JsonValue value = jsValue.GetValue("value");
-    switch(type)
-    {
-    case Variant::TYPE_INTEGER:
-        outValue.m_int = JSON_GetInt(value);
-        break;
-    case Variant::TYPE_STRING_ID:
-        outValue.m_uint = JSON_GetStringId(value).value();
-        break;
-    case Variant::TYPE_FLOAT:
-        outValue.m_float = JSON_GetFloat(value);
-        break;
-    case Variant::TYPE_BOOL:
-        outValue.m_bool = JSON_GetBool(value);
-        break;
-    default:
-        break;
-    }
-    return type;
-}

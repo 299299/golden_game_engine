@@ -1,5 +1,5 @@
 #pragma once
-
+#include <bgfx/bgfx.h>
 
 struct Gui
 {

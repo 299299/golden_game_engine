@@ -7,7 +7,7 @@ static const char* g_keynames[] =
 };
 static int g_valuesizes[] =
 {
-    sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4;
+    sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4, 
 };
 
 ActorCompiler::ActorCompiler()
@@ -83,19 +83,19 @@ bool ActorCompiler::readJSON(const JsonValue& root)
     {
         JsonValue dataValue = datasValue[i];
         Key& key = keys[i];
-        key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_keynames);
-        key.m_name = JSON_GStringId(dataValue.GetValue("name"));
-        key.m_offset = (uint32_t)(values - p);
+        key.type = JSON_GetEnum(dataValue.GetValue("type"), g_keynames);
+        key.name = JSON_GetStringId(dataValue.GetValue("name"));
+        key.offset = (uint32_t)(values - p);
 
         JsonValue jValue = dataValue.GetValue("value");
-        switch(key.m_type)
+        switch(key.type)
         {
         case ValueType::INT:
             *((int*)values) = JSON_GetInt(jValue);
             values += sizeof(int);
             break;
-        case ValueType::FLAOT:
-            *((float*)values) = JSON_GetInt(jValue);
+        case ValueType::FLOAT:
+            *((float*)values) = JSON_GetFloat(jValue);
             values += sizeof(float);
             break;
         case ValueType::STRING:

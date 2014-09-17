@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
+#include "MemorySystem.h"
 
 static IdArray<MAX_LEVEL_GEOMETRY, Actor>       g_levelGeometries;
 static IdArray<MAX_PROP, Actor>                 g_props;
@@ -16,7 +17,7 @@ bool ActorResource::has_key(const StringId& k) const
 {
     for (uint32_t i = 0; i < m_numKeys; ++i)
     {
-        if(m_keys[i].m_name == k) return true;
+        if(m_keys[i].name == k) return true;
     }
     return false;
 }
@@ -25,7 +26,7 @@ bool ActorResource::get_key(const StringId& k, Key& out_k) const
 {
     for (uint32_t i = 0; i < m_numKeys; ++i)
     {
-        if(m_keys[i].m_name == k)
+        if(m_keys[i].name == k)
         {
             out_k = m_keys[i];
             return true;
@@ -72,7 +73,7 @@ void Actor::init( const ActorResource* resource )
         const void* res = resource->m_resources[i];
         if(res) m_components[i] = create_componet(i, res);
     }
-    m_values = COMMON_ALLOC(char, m_resources->m_valueSize);
+    m_values = COMMON_ALLOC(char, m_resource->m_valueSize);
 }
 
 void Actor::destroy()
@@ -119,7 +120,7 @@ bool Actor::has_key(const StringId& k) const
     return m_resource->has_key(k);
 }
 
-uint32_t value_type(const StringId& k)
+uint32_t Actor::value_type(const StringId& k)
 {
     Key key;
     m_resource->get_key(k, key);

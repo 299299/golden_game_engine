@@ -89,7 +89,7 @@ void Engine::frame(float timeStep)
     g_memoryMgr.clear(kMemoryCategoryFrame);
     if(m_updating)
     {
-        g_actorWorld.frameStart(timeStep);
+        g_actorWorld.frame_start(timeStep);
         {
             PROFILE(Game_PreStep);
             g_actorWorld.pre_step(timeStep);

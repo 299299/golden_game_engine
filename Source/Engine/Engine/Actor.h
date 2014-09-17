@@ -17,9 +17,9 @@ struct ValueType
 
 struct Key
 {
-    StringId    m_name;
-    uint32_t    m_type;
-    uint32_t    m_offset;
+    StringId    name;
+    uint32_t    type;
+    uint32_t    offset;
 };
 
 ENGINE_NATIVE_ALIGN struct ActorResource

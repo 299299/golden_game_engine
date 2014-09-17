@@ -3,6 +3,7 @@
 #include "MeshConverter.h"
 #include "ActorConverter.h"
 #include "HC_Utils.h"
+#include "bounds.h"
 
 ModelConverter::ModelConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

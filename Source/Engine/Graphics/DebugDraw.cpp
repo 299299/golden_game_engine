@@ -212,7 +212,7 @@ void DebugDrawManager::addCross( const float* pos, float size, uint32_t color, b
 void DebugDrawManager::add3DText( const char* text, const float* pos, uint32_t color )
 {
     float pos2D[2] = {0,0};
-    bool bFlag = g_camera.project3DPosTo2D(pos2D, pos);
+    bool bFlag = g_camera.project_3d_to_2d(pos2D, pos);
     if(!bFlag) return;
     DebugText& dbgText = m_texts[m_numTexts++];
     dbgText.m_color = color;

@@ -228,6 +228,5 @@ int JSON_GetFlags(const JsonValue& jsValue,
 int JSON_GetFlags(const JsonValue& jsValue, 
                   const char** enum_names, 
                   int defaultValue = 0);
-int JSON_GetVariant(const JsonValue& jsValue, Variant& outValue);
 std::string JSON_GetString(const JsonValue& jsValue, const std::string& defaultValue="");
 

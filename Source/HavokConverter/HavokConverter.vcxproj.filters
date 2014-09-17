@@ -9,113 +9,113 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimRigConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="LightConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticModelConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="bounds.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="forsythtriangleorderoptimizer.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="jsonxx.h">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="SharedInc.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Utils\bounds.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\forsythtriangleorderoptimizer.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\HC_Utils.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\jsonxx.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ActorConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\AnimRigConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\CharacterConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ComponentConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\LevelConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\LightConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\MaterialConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\MeshConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ModelConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\PhysicsConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\SamplerConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\StaticModelConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
     <ClInclude Include="..\Shared\CommonUtils.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="SamplerConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="HC_Utils.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
-    <ClInclude Include="ActorConverter.h">
-      <Filter>converters</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="StaticModelConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="LightConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="forsythtriangleorderoptimizer.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimRigConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="bounds.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="jsonxx.cc">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="HavokConverter.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Utils\bounds.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\forsythtriangleorderoptimizer.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\HC_Utils.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\jsonxx.cc">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ActorConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\AnimRigConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\CharacterConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ComponentConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\LevelConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\LightConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\MaterialConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\MeshConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ModelConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\PhysicsConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\SamplerConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\StaticModelConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="..\Shared\CommonUtils.cpp">
       <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="SamplerConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="HC_Utils.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelConverter.cpp">
-      <Filter>converters</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorConverter.cpp">
-      <Filter>converters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

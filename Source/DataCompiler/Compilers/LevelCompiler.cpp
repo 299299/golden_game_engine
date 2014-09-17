@@ -58,7 +58,7 @@ bool LevelCompiler::readJSON( const JsonValue& root )
             resourceNames.push_back(key);
             index = (int)resourceNames.size() - 1;
             m_resourceKeys[key] = index;
-            addDependency("actor resource", name_to_file_path(typeName, EntityResource::getName()));
+            addDependency("actor resource", name_to_file_path(typeName, ActorResource::getName()));
         }
         else {
             index = iter->second;
@@ -67,7 +67,8 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     }
 
     uint32_t numOfResources = resourceNames.size();
-    uint32_t memSize = sizeof(Level) + sizeof(LevelObject) * numOfActors + sizeof(LevelEntityResource) * numOfResources;
+    uint32_t memSize = sizeof(Level) + sizeof(LevelObject) * numOfActors + 
+                       sizeof(LevelActorResource) * numOfResources;
     char* p = (char*)malloc(memSize);
     memset(p, 0x00, memSize);
     char* offset = p;
@@ -83,18 +84,18 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     level->m_objectOffset = (uint32_t)(offset - p);
     offset += (sizeof(LevelObject) * numOfActors);
     //============================================================
-    level->m_resources = (LevelEntityResource*)offset;
+    level->m_resources = (LevelActorResource*)offset;
     level->m_resourceOffset = (uint32_t)(offset - p);
-    offset += (sizeof(LevelEntityResource) * numOfResources);
+    offset += (sizeof(LevelActorResource) * numOfResources);
     ENGINE_ASSERT(offset == p + memSize, "offset error.");
 
     for (uint32_t i = 0; i < numOfActors; ++i)
     {
-        JsonValue entityValue = entitiesValue[i];
+        JsonValue actorValue = actorsValue[i];
         LevelObject& object = level->m_objects[i];
         object.m_resourceIndex = actorIndices[i];
-        object.m_name = JSON_GetStringId(entityValue.GetValue("name"));
-        json_transform(entityValue, object.m_translation, object.m_rotation, object.m_scale);
+        object.m_name = JSON_GetStringId(actorValue.GetValue("name"));
+        json_transform(actorValue, object.m_translation, object.m_rotation, object.m_scale);
     }
 
     for (uint32_t i = 0; i < numOfResources; ++i)
