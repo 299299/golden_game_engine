@@ -6,6 +6,7 @@
 
 StaticModelConverter::StaticModelConverter()
 :m_scene(0)
+,m_type(kModelDefault)
 {
     
 }
@@ -42,6 +43,7 @@ void StaticModelConverter::process( hkxNode* node )
         else
             sprintf_s(buf, "%s_%d", m_name.c_str(), i);
 
+        mc->m_type = m_type;
         mc->setName(buf);
         mc->process(va.m_object, 0);
         m_components.push_back(mc);
@@ -57,10 +59,8 @@ void StaticModelConverter::process( hkxNode* node )
         ModelConverter* mc = new ModelConverter(this);
 
         char buf[128];
-        if(i == 0)
-            sprintf_s(buf, "%s", m_name.c_str());
-        else
-            sprintf_s(buf, "%s_%d", m_name.c_str(), i);
+        if(i == 0) sprintf_s(buf, "%s", m_name.c_str());
+        else sprintf_s(buf, "%s_%d", m_name.c_str(), i);
 
         mc->setName(buf);
         mc->process((void*)skin->m_mesh, 0);
@@ -76,10 +76,8 @@ void StaticModelConverter::process( hkxNode* node )
         LightConverter* lc = new LightConverter(this);
 
         char buf[128];
-        if(i == 0)
-            sprintf_s(buf, "%s", m_name.c_str());
-        else
-            sprintf_s(buf, "%s_%d", m_name.c_str(), i);
+        if(i == 0) sprintf_s(buf, "%s", m_name.c_str());
+        else sprintf_s(buf, "%s_%d", m_name.c_str(), i);
 
         lc->setName(buf);
         lc->process(va.m_object);

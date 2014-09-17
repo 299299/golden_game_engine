@@ -68,7 +68,6 @@ struct ShadowMap
     int                                 m_shadowMapSize;
 };
 
-    
 
 struct PostProcess
 {

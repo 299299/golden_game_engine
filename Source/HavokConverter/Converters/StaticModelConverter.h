@@ -9,9 +9,11 @@ public:
     ~StaticModelConverter();
     virtual void process(void* pData);
     void process(hkxNode* node);
+    void setType(int modelType) { m_type = modelType; };
 
 private:
     void process(hkxScene* scene);
 private:
-    hkxScene*                                   m_scene;
+    hkxScene*           m_scene;
+    int                 m_type;
 };

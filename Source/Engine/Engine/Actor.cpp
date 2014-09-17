@@ -179,17 +179,17 @@ Actor* ActorWorld::get_actors( uint32_t type )
     }
 }
 
-void ActorWorld::preStep( float dt )
+void ActorWorld::pre_step( float dt )
 {
 
 }
 
-void ActorWorld::update( float dt )
+void ActorWorld::step( float dt )
 {
 
 }
 
-void ActorWorld::postStep( float dt )
+void ActorWorld::post_step( float dt )
 {
     g_physicsWorld.sync_actors(id_array::begin(g_props), id_array::size(g_props));
 }

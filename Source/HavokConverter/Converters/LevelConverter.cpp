@@ -11,14 +11,10 @@ void matrix_to_transform(const hkMatrix4& m, hkQsTransform& t)
     t.setIdentity();
     hkMatrixDecomposition::Decomposition de;
     hkMatrixDecomposition::decomposeMatrix(m, de);
-    if(de.m_hasScale)
-    {
-        t.m_scale = de.m_scale;
-    }
-    //HK_ASSERT(0, de.m_hasSkew);
+    if(de.m_hasScale) t.m_scale = de.m_scale;
     t.m_translation = de.m_translation;
     t.m_rotation = de.m_rotation;
-    HK_ASSERT(0, t.isOk());
+    ENGINE_ASSERT(t.isOk(), "t is ok ?");
 }
 
 void json_transform(jsonxx::Object& object, hkxNode* pNode, hkxScene* pScene)
@@ -84,15 +80,13 @@ void LevelConverter::process(hkxScene* scene)
         std::string nodeName(node->m_name.cString());
         toLower(nodeName);
         StaticModelConverter* actor = new StaticModelConverter();
-        actor->process(node);
-#if 0
         if(str_begin_with(nodeName, "sky"))
         {
-            mc->m_type = kModelSky;
+            //hack here for skydome materil
+            actor->m_type = kModelSky;
         }
-        mc->setName(m_name + "_" + node->m_name.cString());
-        mc->process(va.m_object, 0);
-#endif
+        actor->setName(m_name + "_" + node->m_name.cString());
+        actor->process(node);
         m_levelActors.push_back(actor);
     }
 
@@ -100,6 +94,7 @@ void LevelConverter::process(hkxScene* scene)
     {
         hkxNode* node = m_lightNodes[i];
         StaticModelConverter* actor = new StaticModelConverter();
+        actor->setName(m_name + "_" + node->m_name.cString());
         actor->process(node);
         m_levelActors.push_back(actor);
     }
