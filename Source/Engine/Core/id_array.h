@@ -16,6 +16,8 @@ struct IdArray
     /// Random access by index.
     const T& operator[](uint32_t i) const;
 
+    void clear();
+
     // The index of the first unused id
     uint16_t m_freelist;
 
@@ -167,14 +169,8 @@ namespace id_array
 //-----------------------------------------------------------------------------
 template <uint32_t MAX, typename T>
 inline IdArray<MAX, T>::IdArray()
-    : m_freelist(INVALID_ID)
-    , m_next_id(0)
-    , m_size(0)
 {
-    for (uint32_t i = 0; i < MAX; i++)
-    {
-        m_sparse[i].id = INVALID_ID;
-    }
+    clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -193,3 +189,15 @@ inline const T& IdArray<MAX, T>::operator[](uint32_t i) const
     return m_objects[i];
 }
 
+template <uint32_t MAX, typename T>
+inline void IdArray<MAX, T>::clear()
+{
+    m_freelist = INVALID_ID;
+    m_next_id  = 0;
+    m_size = 0;
+
+    for (uint32_t i = 0; i < MAX; i++)
+    {
+        m_sparse[i].id = INVALID_ID;
+    }
+}

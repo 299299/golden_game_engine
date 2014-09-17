@@ -49,7 +49,7 @@ void DebugDrawManager::ready()
     m_shader = findShader("debug")->m_handle;
 }
 
-void DebugDrawManager::frameStart()
+void DebugDrawManager::frame_start()
 {
     m_numLines[0] = m_numLines[1] = 0;
     m_numTexts = 0;

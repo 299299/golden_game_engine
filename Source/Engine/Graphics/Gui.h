@@ -4,8 +4,8 @@
 struct Gui
 {
     void init();
-    void frameStart();
-    void frameEnd();
+    void frame_start();
+    void frame_end();
     void update(float dt);
     void draw();
     void destroy();
@@ -13,3 +13,6 @@ struct Gui
 
 
 extern Gui g_guiMgr;
+extern int g_dbgTexIndex;
+
+#define DBG_TEX_PRINTF(color, ...) bgfx::dbgTextPrintf(0, g_dbgTexIndex++, color, __VA_ARGS__)

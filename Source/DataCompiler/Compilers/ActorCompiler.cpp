@@ -1,6 +1,15 @@
 #include "ActorCompiler.h"
 #include "DC_Utils.h"
 
+static const char* g_keynames[] = 
+{
+    "int", "float", "string", "float4", 0
+};
+static int g_valuesizes[] =
+{
+    sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4;
+};
+
 ActorCompiler::ActorCompiler()
 {
 
@@ -26,6 +35,10 @@ bool ActorCompiler::readJSON(const JsonValue& root)
 
     uint32_t numComps = compsValue.GetElementsCount();
     uint32_t memSize = sizeof(ActorResource);
+    memSize += (numOfData * sizeof(Key));
+    uint32_t resSize = memSize;
+    memSize += (numOfData * sizeof(float) * 4);
+
     char* p = (char*)malloc(memSize);
     memset(p, 0x00, memSize);
     char* offset = p;
@@ -35,7 +48,6 @@ bool ActorCompiler::readJSON(const JsonValue& root)
     actor->m_class = JSON_GetEnum(root.GetValue("class"), g_actorClassNames);
     
     extern int find_component_type(const StringId&);
-    ENGINE_ASSERT(offset == p + memSize, "offset address");
     for(size_t i=0; i<numComps; ++i)
     {
         JsonValue compValue = compsValue[i];
@@ -61,16 +73,43 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         addDependency(type, name_to_file_path(name, type));
     }
 
-#if 0
+    offset += sizeof(ActorResource);
+    uint32_t valueSize = 0;
+    Key* keys = (Key*)offset;
+    offset += sizeof(Key) * numOfData;
+    char* values = offset;
+
     for (size_t i=0; i<numOfData; ++i)
     {
         JsonValue dataValue = datasValue[i];
-        NamedVariant& variant = entity->m_variants[i];
-        variant.m_name = JSON_GetStringId(dataValue.GetValue("name"));
-        JSON_GetVariant(dataValue, variant.m_variant);
+        Key& key = keys[i];
+        key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_keynames);
+        key.m_name = JSON_GStringId(dataValue.GetValue("name"));
+        key.m_offset = (uint32_t)(values - p);
+
+        JsonValue jValue = dataValue.GetValue("value");
+        switch(key.m_type)
+        {
+        case ValueType::INT:
+            *((int*)values) = JSON_GetInt(jValue);
+            values += sizeof(int);
+            break;
+        case ValueType::FLAOT:
+            *((float*)values) = JSON_GetInt(jValue);
+            values += sizeof(float);
+            break;
+        case ValueType::STRING:
+            *((StringId*)values) = JSON_GetStringId(jValue);
+            values += sizeof(StringId);
+            break;
+        case ValueType::FLOAT4:
+            JSON_GetFloats(jValue, (float*)values, 4);
+            values += sizeof(float)*4;
+            break;    
+        }
     }
-#endif
-    
+    ENGINE_ASSERT(values == p + resSize, "offset address");
+
     if(!write_file(m_output, p, memSize))
     {
         free(p);

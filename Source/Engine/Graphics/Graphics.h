@@ -97,8 +97,8 @@ struct Graphics
     static void quit();
     static void draw(ShadingEnviroment* env);
     static void update(ShadingEnviroment* env, float dt);
-    static void frameStart();
-    static void frameEnd();
+    static void frame_start();
+    static void frame_end();
 
     //must called before draw !!
     static void resize(int w, int h);
@@ -108,8 +108,3 @@ struct Graphics
     static void setTexture(int slot, bgfx::TextureHandle handle);
     static void setTexture(int slot, bgfx::FrameBufferHandle handle);
 };
-
-extern int g_dbgTexIndex;
-
-
-#define DBG_TEX_PRINTF(color, ...) bgfx::dbgTextPrintf(0, g_dbgTexIndex++, color, __VA_ARGS__)

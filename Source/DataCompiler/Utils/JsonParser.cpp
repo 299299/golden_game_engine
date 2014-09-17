@@ -194,10 +194,7 @@ int JSON_GetFlags(const JsonValue& jsValue, const char** enum_names, int* flags,
     return retValue;
 }
 
-static const char* g_variantTypeNames[] = 
-{
-    "int", "float", "bool", "stringid", 0
-};
+
 
 int JSON_GetVariant(const JsonValue& jsValue, Variant& outValue)
 {

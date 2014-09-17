@@ -5,7 +5,7 @@
 struct WebServerTool : public gamedevwebtools::Service
 {
     void start(uint32_t netPort);
-    void frameStarted(float dt);
+    void frame_start(float dt);
     void onLogMessage(int logLevel, const char* logMsg);
 
     virtual void *onMalloc(size_t size);

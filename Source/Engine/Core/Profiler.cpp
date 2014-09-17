@@ -1,6 +1,6 @@
 #include "Profiler.h"
 #include "MemorySystem.h"
-#include "Graphics.h"
+#include "Gui.h"
 #include "EngineAssert.h"
 #include <cstdio>
 #include <cstring>

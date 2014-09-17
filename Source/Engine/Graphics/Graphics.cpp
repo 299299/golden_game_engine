@@ -66,8 +66,6 @@ UniformPerLight             g_uniformLights;
 ShadowMap                   g_shadowMap;
 PostProcess                 g_postProcess;
 bool                        g_hdr = true;
-bool                        g_smallDebugDraw = false;
-int                         g_dbgTexIndex = 0;
 //==============================================================
 //      INNER GLOBAL VARIABLES
 //==============================================================
@@ -324,17 +322,15 @@ void Graphics::draw(ShadingEnviroment* env)
     bgfx::frame();
 }
 
-void Graphics::frameStart()
+void Graphics::frame_start()
 {
-    g_debugDrawMgr.frameStart();
-    g_guiMgr.frameStart();
-    bgfx::dbgTextClear(0, g_smallDebugDraw);
-    g_dbgTexIndex = 0;
+    g_debugDrawMgr.frame_start();
+    g_guiMgr.frame_start();
 }
 
-void Graphics::frameEnd()
+void Graphics::frame_end()
 {
-    g_guiMgr.frameEnd();
+    g_guiMgr.frame_end();
 }
 
 void Graphics::resize( int w, int h )

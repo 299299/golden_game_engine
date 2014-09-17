@@ -4,14 +4,16 @@
 #include "droidsans.ttf.h"
 #include "DataDef.h"
 
-Gui g_guiMgr;
+Gui     g_guiMgr;
+bool    g_smallDebugDraw = false;
+int     g_dbgTexIndex = 0;
 
 void Gui::init()
 {
     imguiCreate(s_droidSansTtf);
 }
 
-void Gui::frameStart()
+void Gui::frame_start()
 {
     imguiBeginFrame(g_win32Context.m_mx
         , g_win32Context.m_my
@@ -21,9 +23,12 @@ void Gui::frameStart()
         , g_win32Context.m_width
         , g_win32Context.m_height
         , kGUIViewId);
+
+    bgfx::dbgTextClear(0, g_smallDebugDraw);
+    g_dbgTexIndex = 0;
 }
 
-void Gui::frameEnd()
+void Gui::frame_end()
 {
     imguiEndFrame();
 }

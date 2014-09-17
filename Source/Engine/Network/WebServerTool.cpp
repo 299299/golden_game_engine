@@ -42,7 +42,7 @@ void WebServerTool::start(uint32_t netPort)
 }
 
 
-void WebServerTool::frameStarted(float dt)
+void WebServerTool::frame_start(float dt)
 {
     frameStart(dt);
 

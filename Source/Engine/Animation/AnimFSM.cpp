@@ -3,6 +3,7 @@
 #include "Resource.h"
 #include "Log.h"
 #include "MemorySystem.h"
+#include "Gui.h"
 //========================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>

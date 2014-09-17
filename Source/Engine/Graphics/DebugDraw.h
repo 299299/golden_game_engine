@@ -24,7 +24,7 @@ struct DebugDrawManager
     //must called when common package loaded.
     void ready();
     void draw();
-    void frameStart();
+    void frame_start();
     void addLine(const float* start, const float* end, uint32_t color, bool bDepth);
     void addAabb(const float* min, const float* max, uint32_t color, bool bDepth);
     void addAxis(const hkQsTransform& t, float size = 0.25f, bool bDepth = false);

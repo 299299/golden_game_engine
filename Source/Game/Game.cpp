@@ -133,8 +133,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
     registerMemoryAllocators();
     g_engine.init(cfg);
-    extern void registerResourceFactories();
-    registerResourceFactories();
+    extern void regster_resource_factories();
+    regster_resource_factories();
 
 #ifndef _RETAIL
     load_string_table(STRING_TABLE_FILE);

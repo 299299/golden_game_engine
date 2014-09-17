@@ -10,6 +10,7 @@
 #include "Graphics.h"
 #include "Profiler.h"
 #include "ScriptSystem.h"
+#include "Actor.h"
 //=================================================================
 #include "Log.h"
 #include "DataDef.h"
@@ -88,18 +89,18 @@ void Engine::frame(float timeStep)
     g_memoryMgr.clear(kMemoryCategoryFrame);
     if(m_updating)
     {
-        //g_gameFSM.frameStart(timeStep);
+        g_actorWorld.frameStart(timeStep);
         {
             PROFILE(Game_PreStep);
-            //g_gameFSM.preStep(timeStep);
+            g_actorWorld.pre_step(timeStep);
         }
         {
             PROFILE(Game_Step);
-            //g_gameFSM.step(timeStep);
+            g_actorWorld.step(timeStep);
         }
         {
             PROFILE(Game_PostStep);
-            //g_gameFSM.postStep(timeStep);
+            g_actorWorld.post_step(timeStep);
         }
         //g_gameFSM.frameEnd(timeStep);
         g_threadMgr.updateVDB(timeStep);
@@ -159,6 +160,7 @@ void Engine::coreShutdown()
 void Engine::subSystemsShutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
+    g_actorWorld.clear();
     g_script.quit();
     g_animMgr.quit();
     g_physicsWorld.quit();

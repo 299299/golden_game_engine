@@ -261,7 +261,7 @@ static ResourceFactory g_resourceFactories[] =
     {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::getName()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::getName()},
 };
-void registerResourceFactories()
+void regster_resource_factories()
 {
     for (uint32_t i = 0; i < BX_COUNTOF(g_resourceFactories); ++i)
     {
