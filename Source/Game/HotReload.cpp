@@ -305,7 +305,7 @@ void reload_entity_resource(void* oldResource, void* newResource)
                 uint32_t oldId = inst->m_id;
                 bucket->remove_entity(inst->m_id);
                 uint32_t newId = bucket->add_entity(newEntity, t);
-                LOGI("entity %d --> %d", oldId, newId);
+                LOGI("actor %d --> %d", oldId, newId);
             }
         }
     }

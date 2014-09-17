@@ -58,7 +58,7 @@ void showHelp()
             "-m set game mode(0-test, 1-remote, 2-render)\n"
             "-w set window width\n"
             "-h set window height\n"
-            "--entity previewer --> entity name\n"
+            "--actor previewer --> actor name\n"
             "--level previewer --> level name\n"
             "--debug wait for debug attach when launched.\n"
             "--headless no graphics & no window\n");
@@ -108,7 +108,7 @@ int _tmain(int argc, _TCHAR* argv[])
     name = cmdline.findOption('h');
     if(name) cfg.m_windowHeight = atoi(name);
     cfg.m_headless = cmdline.hasArg("headless");
-    name = cmdline.findOption("entity");
+    name = cmdline.findOption("actor");
     if(name) loadEntityName = name;
     name = cmdline.findOption("level");
     if(name) loadLevelName = name;

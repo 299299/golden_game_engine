@@ -71,7 +71,7 @@ void RemoteViewerState::onFirstEnter( GameState* pPrevState )
 
     if(strlen(g_entityName) > 0)
     {
-        LOGI("load preview entity %s", g_entityName);
+        LOGI("load preview actor %s", g_entityName);
         char packagePath[256];
         find_package_path(g_entityName, packagePath);
         g_resourceMgr.loadPackageAndWait(packagePath);
@@ -113,7 +113,7 @@ void RemoteViewerState::postStep( float timeStep )
     g_entityMgr.postStep(timeStep);
     Graphics::update(timeStep);
     dbgPrintfEngineStatus(false);
-    if(strlen(g_entityName) > 0) DBG_TEX_PRINTF(0x2f, "entity name = %s", g_entityName);
+    if(strlen(g_entityName) > 0) DBG_TEX_PRINTF(0x2f, "actor name = %s", g_entityName);
     else DBG_TEX_PRINTF(0x2f, "level name = %s", g_levelName);
     g_debugDrawMgr.addAxis(hkQsTransform::getIdentity(), 10.0f);
     g_sceneMgr.draw_debug();

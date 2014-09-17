@@ -139,7 +139,7 @@ def isLevel(name):
 
 def getEntityResourceName(packageName):
     entityName = getSceneName()
-    return packageName + '/entity/' + entityName
+    return packageName + '/actor/' + entityName
 
 
 def fixAssemblyRepPath():
@@ -334,7 +334,7 @@ class NagaMayaUtil(object):
             cmds.setAttr(
                 nodeName + '.hkType', 'engineAttributes', type='string')
             cmds.addAttr(sn='tp', ln='type', dt='string')
-            resourceName = packageName + '/entity/' + entityType
+            resourceName = packageName + '/actor/' + entityType
             cmds.setAttr(
                 nodeName + '.type', resourceName, type='string')
             cmds.addAttr(sn='na', ln='name', dt='string')

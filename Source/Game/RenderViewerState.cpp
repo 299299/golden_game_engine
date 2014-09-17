@@ -250,7 +250,7 @@ void RenderViewerState::createNormalGUI()
     imguiSlider("fog height", shading_env->m_fogParams[3], -100.0f, 100.0f, 0.1f);
     imguiSeparator();
 
-    const char* matName = "core/entity/test_monk/Mat_Monk_Body.mat";
+    const char* matName = "core/actor/test_monk/Mat_Monk_Body.mat";
     static Material* mat = FIND_RESOURCE(Material, StringId(matName));
     if(mat)
     {

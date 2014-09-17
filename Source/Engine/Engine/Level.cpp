@@ -52,7 +52,6 @@ void Level::update()
             LevelObject& object = m_objects[i];
             transform_object(t, object.m_translation, object.m_rotation, object.m_scale);
             object.m_actorId = g_actorWorld.create_actor(m_resources[object.m_resourceIndex].m_resource, t);
-            //LOGI("create entity %d = %d", i, object.m_entityId);
         }
 
         m_loadedObjects += numLeft;

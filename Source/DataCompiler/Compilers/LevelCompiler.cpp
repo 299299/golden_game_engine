@@ -73,7 +73,7 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     memset(p, 0x00, memSize);
     char* offset = p;
 
-    LOGI("num of entities = %d, num of entity resources = %d", numOfActors, numOfResources);
+    LOGI("num of entities = %d, num of actor resources = %d", numOfActors, numOfResources);
 
     Level* level = (Level*)p;
     level->m_numObject = numOfActors;

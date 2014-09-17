@@ -3,6 +3,7 @@
 #include "HC_Utils.h"
 
 ActorConverter::ActorConverter()
+:m_config(NULL)
 {
     
 }

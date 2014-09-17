@@ -25,7 +25,7 @@ bool ActorCompiler::readJSON(const JsonValue& root)
     JsonValue compsValue = root.GetValue("components");
     if(!compsValue.IsValid())
     {
-        addError(__FUNCTION__" no components in this entity resource json ");
+        addError(__FUNCTION__" no components in this actor resource json ");
         return false;
     }
 

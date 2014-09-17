@@ -76,7 +76,7 @@ Entity_Config* createConfig( const std::string& input, const std::string& outFol
     std::string entityName = getFileName(hkxFileName);
     std::string outputFolder = outFolder;//std::string("intermediate/") + package + "/";
     bool bLevel = str_begin_with(entityName, "Level");
-    if(!bLevel) outputFolder += "entity/";
+    if(!bLevel) outputFolder += "actor/";
     std::string outputFile;
     if(bLevel) outputFile = outputFolder + entityName + "." + Level::getName();
     else outputFile = outputFolder + entityName + "."+ ActorResource::getName();

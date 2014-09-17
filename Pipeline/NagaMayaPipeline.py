@@ -271,8 +271,8 @@ class NagaPipeline(object):
             args = ['-m', '1', '--level',
                     previewName, '-w', str(width), '-h', str(height)]
         else:
-            previewName = packageName + '/entity/' + sceneName
-            args = ['-m', '1', '--entity',
+            previewName = packageName + '/actor/' + sceneName
+            args = ['-m', '1', '--actor',
                     previewName, '-w', str(width), '-h', str(height)]
         NAGA.lunchApplication(GAME_APP, self.naga.appPath, args, False)
 
