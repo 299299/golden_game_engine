@@ -36,7 +36,7 @@ void Camera::update(const float* transform)
     m_frustum.buildViewFrustum(m_view, m_proj);
 }
 
-bool Camera::project3DPosTo2D(float* out2DPos, const float* in3DPos)
+bool Camera::project_3d_to_2d(float* out2DPos, const float* in3DPos)
 {
     float inp[4] = { in3DPos[0], in3DPos[1], in3DPos[2], 1 };
     float p[4];
@@ -56,7 +56,7 @@ bool Camera::project3DPosTo2D(float* out2DPos, const float* in3DPos)
     return true;
 }
 
-void Camera::project2DPosTo3D(float* out3DPos, const float* in2DPosWithDepth)
+void Camera::project_2d_to_3d(float* out3DPos, const float* in2DPosWithDepth)
 {
     // Transform from normalized window [0, 1] to normalized device coordinates [-1, 1]
     float nwx = in2DPosWithDepth[0]/(float)g_win32Context.m_width;

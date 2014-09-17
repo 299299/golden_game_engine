@@ -18,8 +18,8 @@ struct Camera
     void init();
     void update(const float* eye, const float* at);
     void update(const float* transform);
-    bool project3DPosTo2D(float* out2DPos, const float* in3DPos);
-    void project2DPosTo3D(float* out3DPos, const float* in2DPosWithDepth);
+    bool project_3d_to_2d(float* out2DPos, const float* in3DPos);
+    void project_2d_to_3d(float* out3DPos, const float* in2DPosWithDepth);
 };
 
 extern Camera g_camera;
