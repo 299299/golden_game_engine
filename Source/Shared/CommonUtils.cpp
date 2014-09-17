@@ -10,6 +10,7 @@
 #include "StringId.h"
 #include "Log.h"
 #include "Prerequisites.h"
+#include "EngineAssert.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 
 static hkCriticalSection g_errorCS;
@@ -506,7 +507,7 @@ void ResourceFileDataBase::load(const char* fileName)
         int argNum = fscanf(fp, RESOURCE_FILE_FMT, &modifyTime, &fileHash);
         if(argNum != 2) break;
         m_files[fileHash] = modifyTime;
-        HK_ASSERT(0, fileHash && modifyTime);
+        ENGINE_ASSERT(fileHash && modifyTime, "fileHash && modifyTime");
     }
     fclose(fp);
 }
@@ -534,11 +535,10 @@ bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint64_t& 
     WIN32_FIND_DATA wfd;
     memset(&wfd, 0, sizeof(wfd));
     HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);  
-    if (hFind == INVALID_HANDLE_VALUE) 
-        return true;
+    if (hFind == INVALID_HANDLE_VALUE) return true;
     FILETIME ftWriteTime = wfd.ftLastWriteTime;
     modifyTime = MAKE_U64(ftWriteTime.dwHighDateTime, ftWriteTime.dwLowDateTime);
-    HK_ASSERT(0, modifyTime);
+    ENGINE_ASSERT(modifyTime, "modifyTime");
     uint32_t key = StringId(fileName.c_str()).value();
     ResourceFileMap::const_iterator iter = m_files.find(key);
     if(iter == m_files.end()) return true;
@@ -550,7 +550,7 @@ void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  con
     //hkCriticalSectionLock _l(&g_dbCS);
     uint32_t key = StringId(fileName.c_str()).value();
     m_files[key] = modifyTime;
-    HK_ASSERT(0, key && modifyTime);
+    ENGINE_ASSERT(key && modifyTime, "key && modifyTime");
 }
 
 //========================================================================

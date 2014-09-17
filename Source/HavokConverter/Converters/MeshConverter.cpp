@@ -1,10 +1,10 @@
 #include <windows.h>
-#include <bx/platform.h>
 #include "MeshConverter.h"
 #include "MaterialConverter.h"
 #include "forsythtriangleorderoptimizer.h"
 #include "ActorConverter.h"
 #include "HC_Utils.h"
+#include "bounds.h"
 #include <bgfx/vertexdecl.h>
 
 //#define FLOAT_WEIGHT
@@ -72,7 +72,7 @@ static bgfx::AttribType::Enum havokDataTypeToBgfx(const hkxVertexDescription::Da
     case hkxVertexDescription::HKX_DT_UINT32:
         return bgfx::AttribType::Uint8;
     default:
-        HK_ASSERT(0, 0);
+        ENGINE_ASSERT(false, "unknow vertex attrib type");
         return bgfx::AttribType::Count;
     }
 }
@@ -95,7 +95,7 @@ void MeshConverter::process(void* pData, int hint)
 {
     m_mesh = (hkxMeshSection*)pData;
     processVertexBuffer(m_mesh->m_vertexBuffer);
-    HK_ASSERT(0, m_mesh->m_indexBuffers.getSize() < 2);
+    ENGINE_ASSERT(m_mesh->m_indexBuffers.getSize() < 2, "index buffer size >= 2!");
     processIndexBuffer(m_mesh->m_indexBuffers[0]);
     if(m_mesh->m_material)
     {
@@ -231,9 +231,9 @@ void MeshConverter::processTangent()
 
 void MeshConverter::processIndexBuffer(hkxIndexBuffer* ib)
 {
-    HK_ASSERT(0, ib->m_indexType == hkxIndexBuffer::INDEX_TYPE_TRI_LIST);
+    ENGINE_ASSERT(ib->m_indexType == hkxIndexBuffer::INDEX_TYPE_TRI_LIST, "not tri list index buffer.");
     int numIndices = ib->m_indices16.getSize();
-    HK_ASSERT(0, numIndices > 0);
+    ENGINE_ASSERT(numIndices > 0, "numIndices <= 0");
 
     m_numIndices = numIndices;
     m_indices.resize(m_numIndices);

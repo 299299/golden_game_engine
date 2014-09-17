@@ -5,6 +5,7 @@
 #include "Log.h"
 #include "Resource.h"
 #include "Utils.h"
+#include "EngineAssert.h"
 //==================================================================
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
 #include <Animation/Physics2012Bridge/Instance/hkaRagdollInstance.h>
@@ -52,7 +53,7 @@ bool boneInArray(hkInt16 boneId, const hkInt16* bones, uint8_t num)
 void RagdollResource::load(hkRootLevelContainer* container)
 {
     m_ragdoll = LOAD_OBJECT(container, hkaRagdollInstance);
-    HK_ASSERT(0, m_ragdoll);
+    ENGINE_ASSERT(m_ragdoll, "can not load hkaRagdollInstance");
     const hkaSkeleton* ragdollSkeleton = m_ragdoll->getSkeleton();
     void *objectFound = LOAD_OBJECT(container, hkaSkeletonMapper);
     while (objectFound)
@@ -65,13 +66,14 @@ void RagdollResource::load(hkRootLevelContainer* container)
         }
         else
         {
-            HK_ASSERT(0,mapperFound->m_mapping.m_skeletonB == ragdollSkeleton);
+            ENGINE_ASSERT(mapperFound->m_mapping.m_skeletonB == ragdollSkeleton, 
+                         "mapperFound->m_mapping.m_skeletonB == ragdollSkeleton");
             m_highResToRagdollMapper = mapperFound;
         }
         objectFound = container->findObjectByType(hkaSkeletonMapperClass.getName(), objectFound);
     }
-    HK_ASSERT2(0, m_highResToRagdollMapper, "Couldn't load high-to-ragdoll mapping");
-    HK_ASSERT2(0, m_ragdollToHighResMapper, "Couldn't load ragdoll-to-high mapping");
+    ENGINE_ASSERT(m_highResToRagdollMapper, "Couldn't load high-to-ragdoll mapping");
+    ENGINE_ASSERT(m_ragdollToHighResMapper, "Couldn't load ragdoll-to-high mapping");
 
     // Create a list of bones in the lower body
     // We use this array to set the leg bones / lower body to keyframed and upper body to dynamic later.
@@ -99,7 +101,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
             m_lowerBodyBones[m_numLowerBodyBones++] = bones[i];
 
         LOGD("num of lower body bones = %d.", m_numLowerBodyBones);
-        HK_ASSERT(0, m_numLowerBodyBones <= MAX_LOWER_BODY_BONE);
+        ENGINE_ASSERT(m_numLowerBodyBones <= MAX_LOWER_BODY_BONE, "lower body bone num overflow.");
     }
 }
 

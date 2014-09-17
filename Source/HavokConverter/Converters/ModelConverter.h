@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "ComponentConverter.h"
+#include "Model.h"
 
 struct RigSkinData
 {

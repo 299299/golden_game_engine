@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "ComponentConverter.h"
+#include "PhysicsInstance.h"
 
 class PhysicsConverter   : public ComponentConverter
 {

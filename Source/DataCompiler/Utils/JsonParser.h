@@ -5,8 +5,6 @@
 #include "jsmn.h"
 #include "StringId.h"
 #include "MathDefs.h"
-#include "Prerequisites.h"
-#include "Entity.h"
 
 class JsonParser;
 class JsonValue

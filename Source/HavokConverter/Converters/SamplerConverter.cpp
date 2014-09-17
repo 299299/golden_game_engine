@@ -1,6 +1,7 @@
 #include "SamplerConverter.h"
 #include "ActorConverter.h"
 #include "HC_Utils.h"
+#include "Texture.h"
 
 SamplerConverter::SamplerConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

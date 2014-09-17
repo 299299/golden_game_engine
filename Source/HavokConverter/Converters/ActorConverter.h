@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include "jsonxx.h"
+#include "Actor.h"
 
 class ComponentConverter;
 class ActorConverter : public hkReferencedObject

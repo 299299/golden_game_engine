@@ -63,7 +63,7 @@ void ModelConverter::process(RigSkinData* skinData)
         transform_matrix(m_joints[i].m_x, invT);
     }
 
-    HK_ASSERT(0, m_joints.size() < 255);
+    ENGINE_ASSERT(m_joints.size() < 255, "joint size overflow = %d", m_joints.size());
 }
 
 void ModelConverter::loadMeshes(const std::vector<hkxMeshSection*>& meshes)
@@ -152,38 +152,9 @@ void ModelConverter::writeMesh(const std::string& fileName)
         memcpy(p, &m_joints[0], m_joints.size() * sizeof(Matrix));
     p += m_joints.size() * sizeof(Matrix);
 
-    HK_ASSERT(0, (head + memorySize) == p);
+    ENGINE_ASSERT((head + memorySize) == p, "error offset");
     write_file(fileName, head, memorySize);
-
-#if 0
-    char* blob = 0;
-    uint32_t fileLen = read_file(fileName, &blob);
-    HK_ASSERT(0, blob);
-
-    //mesh2 load inplace buffer to check.
-    Mesh* mesh2 = (Mesh*)load_resource_mesh(blob, memorySize);
-    HK_ASSERT(0, mesh2->m_numSubMeshes == m_meshes.size());
-    HK_ASSERT(0, mesh2->m_numJoints == m_joints.size());
-    SubMesh* submeshes2 = (SubMesh*)mesh2->m_submeshes;
-    for(uint32_t i=0; i<mesh2->m_numSubMeshes; ++i)
-    {
-        SubMesh& subMesh = submeshes2[i];
-        MeshConverter* mesh = m_meshes[i];
-        HK_ASSERT(0, subMesh.m_vertexSize == mesh->getVertexBufferSize());
-        HK_ASSERT(0, subMesh.m_indexSize == mesh->getIndexBufferSize());
-        HK_ASSERT(0, subMesh.m_vertexOffset == submeshes[i].m_vertexOffset);
-        HK_ASSERT(0, subMesh.m_indexOffset == submeshes[i].m_indexOffset);
-        //mesh->dumpVerterx(blob + subMesh.m_vertexOffset);
-    }
-    Matrix* joints = (Matrix*)mesh2->m_jointMatrix;
-    for(uint32_t i=0; i<mesh2->m_numJoints; ++i)
-    {
-        HK_ASSERT(0, memcmp(&joints[i], &m_joints[i], sizeof(Matrix)) == 0);
-    }
-    free(blob);
-#endif
     free(pMesh);
-    
 }
 
 void ModelConverter::postProcess()

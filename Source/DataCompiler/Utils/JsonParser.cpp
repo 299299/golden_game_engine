@@ -2,6 +2,7 @@
 #include "Log.h"
 #include "MathDefs.h"
 #include "Utils.h"
+#include "EngineAssert.h"
 
 JsonValue JsonValue::JSON_INVALID_VALUE(JSMN_INVALID_VALUE, 0);
 

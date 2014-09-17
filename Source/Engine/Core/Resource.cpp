@@ -107,7 +107,7 @@ void ResourcePackage::loadGroup(int index)
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
     ResourceFactory* fac = g_resourceMgr.findFactory(type);
-    HK_ASSERT(0, fac);
+    ENGINE_ASSERT(fac, "ResourceFactory not found.");
 
     char* pThis = (char*)this;
     group.m_factory = fac;
@@ -161,7 +161,7 @@ void ResourcePackage::loadGroupBundled(int index)
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
     ResourceFactory* fac = g_resourceMgr.findFactory(type);
-    HK_ASSERT(0, fac);
+    ENGINE_ASSERT(fac, "ResourceFactory not found.");
 
     char* pThis = (char*)this;
     group.m_factory = fac;

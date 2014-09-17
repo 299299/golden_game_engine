@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Win32Context.h"
 #include "DataDef.h"
+#include "EngineAssert.h"
 #include <bx/fpumath.h>
 #include <stdio.h>
 
@@ -32,7 +33,7 @@ void ShadingEnviroment::lookup()
     for (uint32_t i=0; i<m_numColorgradingTextures; ++i)
     {
         m_colorGradingTextures[i] = FIND_RESOURCE(Raw3DTexture, m_colorgradingTextureNames[i]);
-        HK_ASSERT(0, m_colorGradingTextures[i]);
+        ENGINE_ASSERT(m_colorGradingTextures[i], "can not find color-grading texture.");
     }
 }
 

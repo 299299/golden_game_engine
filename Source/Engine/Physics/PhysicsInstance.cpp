@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "Log.h"
 #include "PhysicsAutoLock.h"
+#include "EngineAssert.h"
 //==================================================================
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
 #include <Physics2012/Dynamics/World/hkpWorld.h>
@@ -33,7 +34,7 @@ void PhysicsInstance::init(const void* resource)
             }
 
             m_numData = numOfRbs;
-            HK_ASSERT(0, m_numData <= MAX_PHYSICS_SYSTEM_NUM);
+            ENGINE_ASSERT(m_numData <= MAX_PHYSICS_SYSTEM_NUM, "physics num overflow = %d", m_numData);
             for(int i=0; i<m_numData; ++i)
             {
                 hkpRigidBody* rb = tmp_rbs[i]->clone();
@@ -49,7 +50,7 @@ void PhysicsInstance::init(const void* resource)
     case kSystemComplex:
         {
             m_numData = phyData->getPhysicsSystems().getSize();
-            HK_ASSERT(0, m_numData <= MAX_PHYSICS_SYSTEM_NUM);
+            ENGINE_ASSERT(m_numData <= MAX_PHYSICS_SYSTEM_NUM, "physics num overflow = %d", m_numData);
             for(int i=0; i < m_numData; ++i)
             {
                 m_data[i] = phyData->getPhysicsSystems()[i]->clone(hkpPhysicsSystem::CLONE_DEFAULT);

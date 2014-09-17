@@ -1,5 +1,6 @@
 #pragma once
 #include "ComponentConverter.h"
+#include "AnimRig.h"
 
 struct RigSkinData;
 class AnimRigConverter : public ComponentConverter

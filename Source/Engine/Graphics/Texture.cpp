@@ -2,14 +2,14 @@
 #include "Resource.h"
 #include "MemorySystem.h"
 #include "ShaderInc.h"
-#include <string.h>
+#include "EngineAssert.h"
 
 void Texture::bringIn(uint32_t flags, uint8_t skip)
 {
     if(bgfx::isValid(m_handle))
         return;
     m_handle = bgfx::createTexture(bgfx::makeRef(m_blob, m_size), flags, skip, &m_info);
-    HK_ASSERT(0, bgfx::isValid(m_handle));
+    ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
 void Texture::bringOut()
@@ -26,7 +26,7 @@ void Raw2DTexture::bringIn()
         return;
     const bgfx::Memory* memory = bgfx::makeRef(m_blob, m_size);
     m_handle = bgfx::createTexture2D(m_width, m_height, m_numMips, (bgfx::TextureFormat::Enum)m_format,m_flags, memory);
-    HK_ASSERT(0, bgfx::isValid(m_handle));
+    ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
 void Raw2DTexture::bringOut()
@@ -42,7 +42,7 @@ void Raw3DTexture::bringIn()
     if(bgfx::isValid(m_handle)) return;
     const bgfx::Memory* memory = bgfx::makeRef(m_blob, m_size);
     m_handle = bgfx::createTexture3D(m_width, m_height, m_depth, m_numMips, (bgfx::TextureFormat::Enum)m_format,m_flags, memory);
-    HK_ASSERT(0, bgfx::isValid(m_handle));
+    ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
 void Raw3DTexture::bringOut()

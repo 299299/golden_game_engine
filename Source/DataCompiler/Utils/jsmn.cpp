@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "jsmn.h"
-#include "Prerequisites.h"
+#include "EngineAssert.h"
 
 #ifdef JSMN_NEXT_LINKS
 #   ifndef JSMN_PARENT_LINKS
@@ -17,7 +17,7 @@ static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser, jsmntok_t *tokens, size_
 
 #ifndef JSMN_HUGE_FILES
     // this assert will fail if you are trying to parse huge file without JSMN_HUGE_FILES define!
-    HK_ASSERT2(0, parser->toknext + 1 < JSMN_INVALID_VALUE, "huge file toknext error!");
+    ENGINE_ASSERT(parser->toknext + 1 < JSMN_INVALID_VALUE, "huge file toknext error!");
 #endif
     
     tok = &tokens[parser->toknext++];

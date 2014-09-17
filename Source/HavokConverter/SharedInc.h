@@ -172,25 +172,15 @@
 #include <fstream>
 #include <io.h>
 #include <algorithm>
-#include "jsonxx.h"
 #include <bgfx.h>
 #include <bx/fpumath.h>
 #include <bx/bx.h>
+#include <bx/platform.h>
 #include <bx/commandline.h>
 
 //components
-#include "AnimRig.h"
-#include "PhysicsInstance.h"
-#include "ProxyInstance.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "Model.h"
-#include "Light.h"
-#include "bounds.h"
-#include "Graphics.h"
-#include "Level.h"
-#include "Actor.h"
-
+#include "jsonxx.h"
 #include "DataDef.h"
 #include "ShaderInc.h"
 #include "Utils.h"
+#include "EngineAssert.h"

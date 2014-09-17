@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "ComponentConverter.h"
+#include "Mesh.h"
 
 struct VertexDeclData
 {

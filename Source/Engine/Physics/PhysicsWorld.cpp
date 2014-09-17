@@ -11,6 +11,7 @@
 #include "Resource.h"
 #include "id_array.h"
 #include "config.h"
+#include "EngineAssert.h"
 //===========================================
 //          COMPONENTS
 #include "PhysicsInstance.h"
@@ -265,7 +266,7 @@ int PhysicsWorld::getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBod
 
 void PhysicsWorld::checkStatus()
 {
-    HK_ASSERT2(0, (m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
+    ENGINE_ASSERT((m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
 }
 
 
@@ -361,7 +362,7 @@ int PhysicsWorld::addRaycastJob(const float* from, const float* to, int32_t filt
     if(!m_raycasts) return -1;
     int retHandle = m_numRaycasts;
     RaycastJob* job = m_raycasts + (m_numRaycasts++);
-    HK_ASSERT(0, m_numRaycasts < MAX_RAYCAST_PERFRAME);
+    ENGINE_ASSERT(m_numRaycasts < MAX_RAYCAST_PERFRAME, "raycast overflow");
     bx::vec3Move(job->m_from, from);
     bx::vec3Move(job->m_to, to);
     job->m_filterInfo = filterInfo;

@@ -1,6 +1,6 @@
 #include "StringId.h"
 #include "MathDefs.h"
-#include "Prerequisites.h"
+#include "EngineAssert.h"
 #include "Log.h"
 #include <ctype.h>
 
@@ -28,11 +28,7 @@ void insert_string_id(uint32_t key, const char* value)
         g_stringTable[key] = mem;
     }
     else {
-        if(strcmp(value, iter->second))
-        {
-            LOGE("hash string collision %s --- %s", value, iter->second);
-            HK_ASSERT(0, 0);
-        }
+        ENGINE_ASSERT(!strcmp(value, iter->second), "hash collision %s --- %s", value, iter->second);
     }
 }
 #endif
@@ -85,7 +81,7 @@ StringId::StringId(const char* stringValue)
 #ifdef _DEBUG
 uint32_t static_hash(const char* s, uint32_t value)
 {
-    HK_ASSERT(0, StringId::calculate(s) == value);
+    ENGINE_ASSERT(StringId::calculate(s) == value, "static_hash failed.");
     return value;
 }
 #endif

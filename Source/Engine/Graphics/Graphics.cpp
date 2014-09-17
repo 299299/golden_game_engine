@@ -427,11 +427,11 @@ void FrameBuffer::create()
     {
         FrameBufferTexture& texInfo = m_texInfo[i];
         m_textures[i] = bgfx::createTexture2D(m_realSize[0], m_realSize[1], 1, texInfo.m_format, texInfo.m_flag);
-        HK_ASSERT(0, bgfx::isValid(m_textures[i]));
+        ENGINE_ASSERT(bgfx::isValid(m_textures[i]), "bgfx::isValid(m_textures[i])");
     }
 
     m_handle = bgfx::createFrameBuffer(m_numTextures, m_textures, true);
-    HK_ASSERT(0, bgfx::isValid(m_handle));
+    ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
 void FrameBuffer::begin(uint32_t viewId)
