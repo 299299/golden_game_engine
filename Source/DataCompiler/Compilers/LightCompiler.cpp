@@ -32,20 +32,5 @@ bool LightCompiler::readJSON( const JsonValue& root )
     light.m_coneAngle = JSON_GetFloat(root.GetValue("cone_angle"), 0.46f);
     light.m_attenScale = JSON_GetFloat(root.GetValue("atten_scale"), 0.0);
     light.m_hasShadow = JSON_GetBool(root.GetValue("shadow"));
-    
-    if(!write_file(m_output, &light, sizeof(light)))
-    {
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == sizeof(LightResource));
-    LightResource* light2 = (LightResource*)buf;
-    HK_ASSERT(0, light2->m_hasShadow == light.m_hasShadow);
-    HK_ASSERT(0, light2->m_type == light.m_type);
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &light, sizeof(light));
 }

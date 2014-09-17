@@ -164,7 +164,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
 
     fwrite(p, 1, memSize, fp);
     free(p);
-    HK_ASSERT(0, (memSize == (offset - p)));
+    ENGINE_ASSERT((memSize == (offset - p)), "offset error");
 
     if(bundled)
     {
@@ -179,7 +179,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
                 char* fileBuf = 0;
                 uint32_t fileSize = read_file(fileName, &fileBuf);
                 uint32_t memSize = HK_NEXT_MULTIPLE_OF(16, fileSize);
-                HK_ASSERT(0, fileBuf);
+                ENGINE_ASSERT(fileBuf, "bundle file [%s] not found.", fileName.c_str());
                 fwrite(fileBuf, 1, fileSize, fp);
                 if(memSize>fileSize)
                     fwrite(g_temp_buf, 1, memSize-fileSize, fp);

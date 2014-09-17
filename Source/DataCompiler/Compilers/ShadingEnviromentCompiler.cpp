@@ -88,16 +88,5 @@ bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
         shading.m_colorGradingIndex = JSON_GetInt(colorGradingValue.GetValue("grading_index"));
     }
 
-    if(!write_file(m_output, &shading, sizeof(shading)))
-        return false;
-
-#if COMPILER_LOAD_TEST
-    char* buf = 0;
-    uint32_t size = read_file(m_output, &buf);
-    ShadingEnviroment* shading2 = (ShadingEnviroment*)buf;
-    HK_ASSERT(0, shading2->m_skyShaderName == shading.m_skyShaderName);
-    HK_ASSERT(0, shading2->m_numColorgradingTextures == shading.m_numColorgradingTextures);
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &shading, sizeof(shading));
 }

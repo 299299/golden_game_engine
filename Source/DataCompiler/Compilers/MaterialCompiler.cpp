@@ -209,24 +209,7 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     m->m_state = renderState;
     m->m_flags = flags;
     
-    if(!write_file(m_output, p, memSize))
-    {
-        free(p); 
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == memSize);
-    LOGD("dummping material %s.", m_output.c_str());
-    Material* m1  = (Material*)load_resource_material(buf, fileLen);
-    HK_ASSERT(0, m1->m_numSamplers == m->m_numSamplers);
-    HK_ASSERT(0, m1->m_state == m->m_state);
-    HK_ASSERT(0, m1->m_flags == m->m_flags);
-    free(buf);
-#endif
-
+    bool bRet = write_file(m_output, p, memSize);
     free(p);
-    return true;
+    return bRet;
 }

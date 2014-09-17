@@ -393,7 +393,6 @@ int _tmain(int argc, _TCHAR* argv[])
             fixPathSlash(g_config.m_inputDir);
             addBackSlash(g_config.m_inputDir);
             g_config.m_topFolder = get_top_folder(g_config.m_inputDir);
-            HK_ASSERT(0, g_config.m_topFolder.length());
             g_config.m_outputDir = input_to_output(g_config.m_inputDir);
         }
         else
@@ -405,8 +404,9 @@ int _tmain(int argc, _TCHAR* argv[])
             g_config.m_outputDir = outputFolderChar;
             addBackSlash(g_config.m_inputDir);
             g_config.m_topFolder = get_top_folder(g_config.m_inputDir);
-            HK_ASSERT(0, g_config.m_topFolder.length());
+            
         }
+        ENGINE_ASSERT(g_config.m_topFolder.length(), "top folder error.");
         fixPathSlash(g_config.m_outputDir);
         addBackSlash(g_config.m_outputDir);
         std::string secondFolder = remove_top_folder(g_config.m_outputDir);

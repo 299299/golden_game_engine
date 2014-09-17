@@ -1,6 +1,5 @@
 #include "ActorCompiler.h"
 #include "DC_Utils.h"
-#include "EngineAssert.h"
 
 ActorCompiler::ActorCompiler()
 {

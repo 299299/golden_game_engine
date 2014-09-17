@@ -103,7 +103,7 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     level->m_lights = (LevelLight*)offset;
     level->m_lightOffset = (uint32_t)(offset - p);
     offset += (sizeof(LevelLight) * numOfLights);
-    HK_ASSERT(0, offset == p + memSize);
+    ENGINE_ASSERT(offset == p + memSize, "offset error.");
 
     for (uint32_t i = 0; i < numOfEntities; ++i)
     {

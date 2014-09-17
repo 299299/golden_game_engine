@@ -196,7 +196,7 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
         }
     }    
     
-    HK_ASSERT(0, p == head + memSize);
+    ENGINE_ASSERT(p == head + memSize, "offset error");
     bool bRet = write_file(m_output, head, memSize);
     free(head);
     return bRet;

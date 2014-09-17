@@ -28,21 +28,7 @@ bool LookIKCompiler::readJSON( const JsonValue& root )
     lookat.m_rigName = StringId(rigFile.c_str());
     addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
 
-    if(!write_file(m_output, &lookat, sizeof(lookat)))
-    {
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == sizeof(LookAtResource));
-    LookAtResource* lookat2 = (LookAtResource*)buf;
-    HK_ASSERT(0, lookat2->m_rigName == lookat.m_rigName);
-    HK_ASSERT(0, lookat2->m_targetGain == lookat.m_targetGain);
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &lookat, sizeof(lookat));
 }
 
 bool ReachIKCompiler::readJSON( const JsonValue& root )
@@ -69,21 +55,7 @@ bool ReachIKCompiler::readJSON( const JsonValue& root )
     reach.m_rigName = StringId(rigFile.c_str());
     addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
 
-    if(!write_file(m_output, &reach, sizeof(reach)))
-    {
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == sizeof(ReachResource));
-    ReachResource* reach2 = (ReachResource*)buf;
-    HK_ASSERT(0, reach2->m_rigName == reach.m_rigName);
-    HK_ASSERT(0, reach2->m_index == reach.m_index);
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &reach, sizeof(reach));
 }
 
 bool FootIKCompiler::readJSON( const JsonValue& root )
@@ -125,19 +97,5 @@ bool FootIKCompiler::readJSON( const JsonValue& root )
     foot.m_rigName = StringId(rigFile.c_str());
     addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
 
-    if(!write_file(m_output, &foot, sizeof(foot)))
-    {
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == sizeof(FootResource));
-    FootResource* foot2 = (FootResource*)buf;
-    HK_ASSERT(0, foot2->m_rigName == foot.m_rigName);
-    HK_ASSERT(0, foot2->m_raycastType == foot.m_raycastType);
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &foot, sizeof(foot));
 }

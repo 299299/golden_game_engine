@@ -51,23 +51,5 @@ bool ModelCompiler::readJSON( const JsonValue& root )
         }
     }
     
-    if(!write_file(m_output, &model, sizeof(model)))
-    {
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == sizeof(model));
-    ModelResource* model2 = (ModelResource*)load_resource_model(buf, fileLen);
-    HK_ASSERT(0, model2->m_numMaterials == model.m_numMaterials);
-    HK_ASSERT(0, model2->m_meshName == model.m_meshName);
-    for (uint32_t i=0; i<model2->m_numMaterials; ++i)
-    {
-        HK_ASSERT(0, model2->m_materialNames[i] == model.m_materialNames[i]);
-    }
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &model, sizeof(model));
 }

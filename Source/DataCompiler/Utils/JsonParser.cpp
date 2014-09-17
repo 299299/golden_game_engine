@@ -32,8 +32,9 @@ jsmnerr_t JsonParser::ParseJsonString(const char* pJsonString, unsigned strSize,
 //-------------------------------------------------------------------------------------------
 bool JsonValue::IsNull() const
 {
-    HK_ASSERT(0, m_internalTokenIndex != JSMN_INVALID_VALUE);
-    HK_ASSERT(0, m_pParser);
+    ENGINE_ASSERT(m_internalTokenIndex != JSMN_INVALID_VALUE, "m_internalTokenIndex != JSMN_INVALID_VALUE");
+    ENGINE_ASSERT(m_pParser, "m_pParser");
+
     const jsmntok_t* kToken = m_pParser->InternalGetToken(m_internalTokenIndex);
 
     if (kToken->type == JSMN_PRIMITIVE)
@@ -46,11 +47,11 @@ bool JsonValue::IsNull() const
 //-------------------------------------------------------------------------------------------
 unsigned JsonValue::GetElementsCount() const
 {
-    HK_ASSERT(0, m_internalTokenIndex != JSMN_INVALID_VALUE);
-    HK_ASSERT(0, m_pParser);
+    ENGINE_ASSERT(m_internalTokenIndex != JSMN_INVALID_VALUE, "m_internalTokenIndex != JSMN_INVALID_VALUE");
+    ENGINE_ASSERT(m_pParser, "m_pParser");
 
     const jsmntok_t* kToken = m_pParser->InternalGetToken(m_internalTokenIndex);
-    HK_ASSERT(0, kToken->type == JSMN_OBJECT || kToken->type == JSMN_ARRAY);
+    ENGINE_ASSERT(kToken->type == JSMN_OBJECT || kToken->type == JSMN_ARRAY, "token type[%d] not object or array", kToken->type);
 
     if (kToken->type == JSMN_OBJECT)
     {
@@ -63,11 +64,13 @@ unsigned JsonValue::GetElementsCount() const
 //-------------------------------------------------------------------------------------------
 JsonValue JsonValue::operator[](unsigned index) const
 {
-    HK_ASSERT(0, index < GetElementsCount());
-    HK_ASSERT(0, m_internalTokenIndex != JSMN_INVALID_VALUE);
-    HK_ASSERT(0, m_pParser);
-    HK_ASSERT(0, m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_OBJECT || 
-                 m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_ARRAY);
+    ENGINE_ASSERT(index < GetElementsCount(), "index overflow [%d] >= [%d]",
+                 index, GetElementsCount());
+    ENGINE_ASSERT(m_internalTokenIndex != JSMN_INVALID_VALUE, "m_internalTokenIndex != JSMN_INVALID_VALUE");
+    ENGINE_ASSERT(m_pParser, "m_pParser");
+    ENGINE_ASSERT(m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_OBJECT || 
+                 m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_ARRAY,
+                 "type [%d] not object or array", m_pParser->InternalGetToken(m_internalTokenIndex)->type);
 
     jsmn_uint_t nextIndex = m_internalTokenIndex + 1;
 
@@ -110,7 +113,7 @@ uint32_t JSON_GetString(const JsonValue& jsValue,
     if(!jsValue.IsValid())
     {
         uint32_t strLen = strlen(defaultValue);
-        HK_ASSERT(0, maxLen >= strLen);
+        ENGINE_ASSERT(maxLen >= strLen, "string len overflow [%d] >= [%d]", maxLen, strLen);
         strcpy_s(outString, maxLen, defaultValue);
         return strLen;
     }

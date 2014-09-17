@@ -53,22 +53,7 @@ bool ProxyCompiler::readJSON(const JsonValue& root)
     proxy.m_layerName = JSON_GetStringId(root.GetValue("collision_layer"), StringId("character_proxy"));
 
     JSON_GetFloats(root.GetValue("gravity"), proxy.m_gravity, 3);
-
-    if(!write_file(m_output, &proxy, sizeof(proxy)))
-    {
-        return false;
-    }
-
-#ifdef COMPILER_LOAD_TEST
-    char* buf = 0;
-    size_t fileLen = read_file(m_output, &buf);  
-    HK_ASSERT(0, fileLen == sizeof(ProxyResource));
-    ProxyResource* proxy2 = (ProxyResource*)load_resource_proxy(buf, fileLen);
-    HK_ASSERT(0, proxy2->m_radius == proxy.m_radius);
-    HK_ASSERT(0, proxy2->m_standHeight == proxy.m_standHeight);
-    free(buf);
-#endif
-    return true;
+    return write_file(m_output, &proxy, sizeof(proxy));
 }
 
 int PhysicsConfigCompiler::findFilterIndex(const std::string& name) const
@@ -89,7 +74,7 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
     JsonValue filtersValue = root.GetValue("collision_filters");
     if(filtersValue.IsValid()) numOfFilters = filtersValue.GetElementsCount();
 
-    HK_ASSERT(0, numOfFilters <= 32);
+    ENGINE_ASSERT(numOfFilters <= 32, "collsion filter num overflow = %d", numOfFilters);
     
     PhysicsConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
