@@ -2,6 +2,7 @@
 #include "memory.h"
 #include "linear_allocator.h"
 #include "Log.h"
+#include "StringId.h"
 //=================================================================
 #include "Prerequisites.h"
 #include <Common/Base/System/hkBaseSystem.h>
@@ -12,6 +13,8 @@
 #include <Common/Base/Monitor/hkMonitorStream.h>
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 //=================================================================
+
+#define STRING_TABLE_FILE                           ("string_table.txt")
 
 static void errorReport(const char* msg, void* userArgGivenToInit)
 {
@@ -50,6 +53,7 @@ void MemorySystem::init(int havok_frame_size, int monitor_size, bool init_havok,
     register_allocator(kMemoryCategoryCommon, &default_allocator());
 #ifndef _RETAIL
     register_allocator(kMemoryCategoryDebug, &g_debugAllocator);
+    load_string_table(STRING_TABLE_FILE);
 #endif
 
     extern void init_component_names();
@@ -58,6 +62,9 @@ void MemorySystem::init(int havok_frame_size, int monitor_size, bool init_havok,
 
 void MemorySystem::quit()
 {
+#ifndef _RETAIL
+    save_string_table(STRING_TABLE_FILE);
+#endif
     if(m_havokInited)
     {
         hkBaseSystem::quit();

@@ -68,7 +68,7 @@ void findNodesRec(  hkxNode* theNode,
     }
 }
 
-Entity_Config* createConfig( const std::string& input, const std::string& outFolder )
+Actor_Config* createConfig( const std::string& input, const std::string& outFolder )
 {
     extern ResourceFileDataBase g_havokDB;
     std::string hkxFileName = input;
@@ -88,7 +88,7 @@ Entity_Config* createConfig( const std::string& input, const std::string& outFol
         LOGI("ignore hkx file %s.", hkxFileName.c_str());
         return 0;
     }
-    Entity_Config* config = new Entity_Config;
+    Actor_Config* config = new Actor_Config;
     config->m_time = fileTime;
     config->m_input = hkxFileName;
     config->m_exportName = entityName;

@@ -383,7 +383,6 @@ int _tmain(int argc, _TCHAR* argv[])
     
     if (!isFolderExist("data")) createFolder("data");
     g_database.load(DC_DATABASE);
-    load_string_table(STRING_TABLE_FILE);
 
     if(mode != kDC_PackageUpdateOnly)
     {
@@ -486,7 +485,6 @@ int _tmain(int argc, _TCHAR* argv[])
     clear_resources();
     g_database.m_files.clear();
     g_compilerBuilder.clear();
-    save_string_table(STRING_TABLE_FILE);
     g_memoryMgr.quit();
 
     LOGD("******************************************************");

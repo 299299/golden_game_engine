@@ -40,9 +40,9 @@ struct HAVOK_Config
 
 extern HAVOK_Config             g_config;
 
-struct Entity_Config
+struct Actor_Config
 {
-    Entity_Config()
+    Actor_Config()
         :m_loader(0)
         ,m_exportClass("level_geometry")
         ,m_exportMode("model")

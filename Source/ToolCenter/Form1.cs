@@ -98,11 +98,12 @@ namespace ToolCenter
                 {
                     string[] errorMsg = 
                     {
+                        "",
                         "havok load error",
                         "input argument error",
                         "save output error"
                     };
-                    msg += errorMsg[hRetCode];
+                    msg += errorMsg[hRetCode] + "\n";
                 }
             }
 
@@ -117,9 +118,10 @@ namespace ToolCenter
                 {
                     string[] errorMsg = 
                     {
+                        "",
                         "input argument error",
                     };
-                    msg += errorMsg[hRetCode];
+                    msg += errorMsg[dRetCode];
                 }
             }
             
@@ -141,7 +143,7 @@ namespace ToolCenter
                     Utils.DeleteFolder(subFolder);
                 }
             }
-            Utils.DeleteFolder(Utils.getIntermediateDir() + "core\\entity");
+            Utils.DeleteFolder(Utils.getIntermediateDir() + "core\\actor");
             Utils.DeleteFolder(Utils.getApplicationDir() + "data");
             Utils.DeleteFile("data_compiler_database.txt");
             Utils.DeleteFile("havok_convert_database");

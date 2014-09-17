@@ -267,7 +267,7 @@ class NagaMayaUtil(object):
         self.readMayaDatabase(self.mayaDataBaseFile)
 
     def getHkxFolder(self, packageName):
-        return self.nagaPath + 'DCC_Export/havok/' + packageName + '/'
+        return self.nagaPath + 'DCC_Export/Havok/' + packageName + '/'
 
     def getLevelFile(self, packageName):
         levelOut = self.intermediatePath + packageName + '/'
@@ -281,7 +281,7 @@ class NagaMayaUtil(object):
             return ''
         node = nodeList[0]
         entityType = getAD_EntityType(node)
-        root = self.nagaPath + 'DCC_Export/havok/'
+        root = self.nagaPath + 'DCC_Export/Havok/'
         dirs = os.listdir(root)
         for dirName in dirs:
             dirName = os.path.join(root, dirName)

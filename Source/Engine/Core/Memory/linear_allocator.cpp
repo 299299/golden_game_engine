@@ -23,9 +23,8 @@ LinearAllocator::~LinearAllocator()
     if (m_backing)
     {
         m_backing->deallocate(m_physical_start);
+        ENGINE_ASSERT(m_offset == 0, "Memory leak of %ld bytes, maybe you forgot to call clear()?", m_offset);
     }
-
-    ENGINE_ASSERT(m_offset == 0, "Memory leak of %ld bytes, maybe you forgot to call clear()?", m_offset);
 }
 
 //-----------------------------------------------------------------------------

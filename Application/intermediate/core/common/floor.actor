@@ -1,5 +1,5 @@
 {
-    "class": "prop",
+    "class": "level_geometry",
     "components": [
         {
             "name": "core/common/floor",

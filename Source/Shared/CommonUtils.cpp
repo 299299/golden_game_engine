@@ -39,10 +39,7 @@ void addError(const char* fmt, ...)
 {
     hkCriticalSectionLock _l(&g_errorCS);
     ++g_errorNum;
-    if(g_errorMsg.size() >= MAX_ERROR_TO_SHOW)
-    {
-        return;
-    }
+    if(g_errorMsg.size() >= MAX_ERROR_TO_SHOW) return;
     va_list args;
     va_start(args, fmt);
     vsprintf_s(msgBuffer, fmt, args);

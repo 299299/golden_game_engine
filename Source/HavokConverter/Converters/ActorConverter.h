@@ -15,6 +15,7 @@ public:
     virtual std::string combieFileName() const {
         return m_name + "." + getFormatExt();
     }
+    virtual std::string getResourceName() const;
 
     virtual void process(void* pData) = 0;
     virtual void postProcess();
@@ -26,7 +27,7 @@ public:
     void setName(const std::string& name) { m_name = name; };
     void setClass(const std::string& cls) { m_class = cls; };
 
-    Entity_Config*                          m_config;
+    Actor_Config*                          m_config;
     std::vector<ComponentConverter*>        m_components;
     std::string                             m_name;
     std::string                             m_class;

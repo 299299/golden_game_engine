@@ -28,7 +28,7 @@ void insert_string_id(uint32_t key, const char* value)
         g_stringTable[key] = mem;
     }
     else {
-        ENGINE_ASSERT(!strcmp(value, iter->second), "hash collision %s --- %s", value, iter->second);
+        ENGINE_ASSERT(!strcmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
     }
 }
 #endif
@@ -100,7 +100,7 @@ void load_string_table(const char* fName)
 {
     FILE* fp = fopen(fName, "r");
     if(!fp) {
-        LOGW(__FUNCTION__ "can not open file %s", fName);
+        LOGW(__FUNCTION__ " can not open file %s", fName);
         return;
     }
     TIMELOG("load string table");
@@ -119,7 +119,7 @@ void save_string_table(const char* fName)
 {
     FILE* fp = fopen(fName, "w");
     if(!fp) {
-        LOGE(__FUNCTION__ "can not open file %s", fName);
+        LOGE(__FUNCTION__ " can not open file %s", fName);
         return;
     }
     

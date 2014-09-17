@@ -18,5 +18,7 @@ private:
     std::vector<hkxNode*>                       m_sceneNodes;
     std::vector<hkxNode*>                       m_meshNodes;
     std::vector<hkxNode*>                       m_lightNodes;
-    std::vector<ActorConverter*>                m_levelActors;
+    std::vector<ActorConverter*>                m_levelMeshes;
+    std::vector<ActorConverter*>                m_levelLights;
+    std::vector<Actor_Config*>                  m_configs;
 };

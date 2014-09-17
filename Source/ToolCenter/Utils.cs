@@ -68,20 +68,20 @@ namespace ToolCenter
         static public int Run(string workdingDir, string exeFile, string arguments = "", bool bWait = true)
         {
             Process process = new Process();
-            process.StartInfo.FileName = exeFile;
-            process.StartInfo.Arguments = arguments;
-            process.StartInfo.WorkingDirectory = workdingDir;
             try
             {
+                process.StartInfo.FileName = exeFile;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.WorkingDirectory = workdingDir;
                 process.Start();
-                if (bWait) 
-                    process.WaitForExit();
+                if (bWait) process.WaitForExit();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(workdingDir + exeFile, ex.Message);
             }
             if (process == null || !bWait) return 0;
+            if (!process.HasExited) return 0;
             return process.ExitCode;
         }
 

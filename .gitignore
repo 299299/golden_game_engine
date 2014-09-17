@@ -51,8 +51,8 @@ havok_convert_database.txt
 data_compiler_database.txt
 maya_export_database.txt
 data_compiler_result.txt
-Application/intermediate/core/entity/
-Application/intermediate/preview/entity/
+Application/intermediate/core/actor/
+Application/intermediate/preview/actor/
 Application/intermediate/world0
 Application/intermediate/world1
 Application/intermediate/world2

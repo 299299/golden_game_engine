@@ -20,12 +20,12 @@
 
 struct HavokThreadContext
 {
-    std::vector<Entity_Config*>         m_files;
+    std::vector<Actor_Config*>          m_files;
     int                                 m_threadId;
 };
 
 HAVOK_Config                            g_config;
-static  std::vector<Entity_Config*>     g_havokFiles;
+static  std::vector<Actor_Config*>      g_havokFiles;
 ResourceFileDataBase                    g_havokDB;
 
 void showHelp()
@@ -42,7 +42,7 @@ void showHelp()
             "--packuv pack uv\n"
             "--debug to wait for vs debug attach when lunch\n");
 }
-void havok_convert(Entity_Config* config)
+void havok_convert(Actor_Config* config)
 {
     LOGI("havok convert %s ---> %s", config->m_input.c_str(), config->m_output.c_str());
     config->m_loader = new hkLoader;
@@ -56,9 +56,7 @@ void havok_convert(Entity_Config* config)
     }
 
     config->m_rlc = rlc;
-    if(!isFolderExist(config->m_exportFolder)) 
-        createFolder(config->m_exportFolder);
-
+    if(!isFolderExist(config->m_exportFolder)) createFolder(config->m_exportFolder);
     hkxEnvironment* env = LOAD_OBJECT(rlc, hkxEnvironment);
     if(env)
     {
@@ -138,7 +136,7 @@ void pre_process()
         std::string outFolder = std::string(INTERMEDIATE_PATH) + packageName + "/";
         for (size_t i=0; i<hkxFiles.size(); ++i)
         {
-            Entity_Config* config = createConfig(hkxFiles[i], outFolder);
+            Actor_Config* config = createConfig(hkxFiles[i], outFolder);
             if(config) g_havokFiles.push_back(config);
         }
     }
@@ -148,7 +146,7 @@ void post_process()
 {
     for(size_t i=0; i<g_havokFiles.size(); ++i)
     {
-        const Entity_Config* file = g_havokFiles[i];
+        const Actor_Config* file = g_havokFiles[i];
         g_havokDB.insertResourceFile(file->m_input, file->m_time);
         delete file;
     }
@@ -167,7 +165,7 @@ int32_t thread_compile(void* _userData)
 }
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
     DWORD timeMS = ::GetTickCount();
     //======================================================
@@ -237,7 +235,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 HavokThreadContext& contex = contexts[i];
                 contex.m_threadId = i;
                 contex.m_files.resize(elementNum);
-                memcpy(&contex.m_files[0], &g_havokFiles[currIndex], elementNum*sizeof(Entity_Config*));
+                memcpy(&contex.m_files[0], &g_havokFiles[currIndex], elementNum*sizeof(Actor_Config*));
                 currIndex += elementNum;
                 if(i == 0) continue;
                 threads[i] = new bx::Thread();
@@ -259,11 +257,11 @@ int _tmain(int argc, _TCHAR* argv[])
     }
     else
     {
-        Entity_Config config;
+        Actor_Config config;
         const char* input = cmdline.findOption('f');
         const char* output = cmdline.findOption('o');
         if(input && output) {
-            Entity_Config* cfg = createConfig(input, output);
+            Actor_Config* cfg = createConfig(input, output);
             if(cfg) havok_convert(cfg);
             delete cfg;
         }
@@ -279,7 +277,7 @@ int _tmain(int argc, _TCHAR* argv[])
     timeMS = ::GetTickCount() - timeMS;
     LOGD("******************************************************");
     LOGD("******************************************************");
-    LOGD("* TOTAL TIME COST = %d[MS] *", timeMS);
+    LOGD("* TOTAL TIME COST = %d[MS] RET CODE = %d *", timeMS, g_config.m_exitCode);
     LOGD("******************************************************");
     LOGD("******************************************************");
 

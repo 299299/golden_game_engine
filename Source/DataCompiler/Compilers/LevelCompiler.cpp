@@ -64,6 +64,10 @@ bool LevelCompiler::readJSON( const JsonValue& root )
             index = iter->second;
         }
         actorIndices[i] = index;
+
+        bool bpacked = JSON_GetBool(actorValue.GetValue("packed"), false);
+        if(!bpacked) continue;
+        createChildCompiler(ActorResource::getName(), actorValue);
     }
 
     uint32_t numOfResources = resourceNames.size();

@@ -53,9 +53,17 @@ LevelConverter::LevelConverter()
 
 LevelConverter::~LevelConverter()
 {
-    for (size_t i=0; i<m_levelActors.size(); ++i)
+    for (size_t i=0; i<m_levelMeshes.size(); ++i)
     {
-        SAFE_REMOVEREF(m_levelActors[i]);
+        SAFE_REMOVEREF(m_levelMeshes[i]);
+    }
+    for (size_t i=0; i<m_levelLights.size(); ++i)
+    {
+        SAFE_REMOVEREF(m_levelLights[i]);
+    }
+    for (size_t i=0; i<m_configs.size(); ++i)
+    {
+        SAFE_DELETE(m_configs[i]);
     }
 }
 
@@ -85,18 +93,40 @@ void LevelConverter::process(hkxScene* scene)
             //hack here for skydome materil
             actor->setType(kModelSky);
         }
-        actor->setName(m_name + "_" + node->m_name.cString());
+        Actor_Config* cfg = new Actor_Config;
+        cfg->m_assetFolder = m_config->m_assetFolder;
+        cfg->m_workspaceFolder = m_config->m_workspaceFolder;
+        cfg->m_exportFolder = m_config->m_exportFolder;
+        cfg->m_exportName = m_name + "_" + node->m_name.cString();
+        cfg->m_rootPath = m_config->m_rootPath;
+        cfg->m_assetPath = m_config->m_assetPath;
+        cfg->m_exportClass = "level_geometry";
+        actor->m_config = cfg;
+        actor->setName(cfg->m_exportName);
+        actor->setClass(cfg->m_exportClass);
         actor->process(node);
-        m_levelActors.push_back(actor);
+        m_levelMeshes.push_back(actor);
+        m_configs.push_back(cfg);
     }
 
     for(size_t i=0; i<m_lightNodes.size(); ++i)
     {
         hkxNode* node = m_lightNodes[i];
         StaticModelConverter* actor = new StaticModelConverter();
-        actor->setName(m_name + "_" + node->m_name.cString());
+        Actor_Config* cfg = new Actor_Config;
+        cfg->m_assetFolder = m_config->m_assetFolder;
+        cfg->m_workspaceFolder = m_config->m_workspaceFolder;
+        cfg->m_exportFolder = m_config->m_exportFolder;
+        cfg->m_exportName = m_name + "_" + node->m_name.cString();
+        cfg->m_rootPath = m_config->m_rootPath;
+        cfg->m_assetPath = m_config->m_assetPath;
+        cfg->m_exportClass = "level_geometry";
+        actor->m_config = cfg;
+        actor->setName(cfg->m_exportName);
+        actor->setClass(cfg->m_exportClass);
         actor->process(node);
-        m_levelActors.push_back(actor);
+        m_levelLights.push_back(actor);
+        m_configs.push_back(cfg);
     }
 }
 
@@ -126,14 +156,27 @@ jsonxx::Object LevelConverter::serializeToJson() const
         actorList << actor;
     }
 
-    for(size_t i=0; i<m_levelActors.size(); ++i)
+    for(size_t i=0; i<m_levelMeshes.size(); ++i)
     {
-        jsonxx::Object actorObject = m_levelActors[i]->serializeToJson();
+        ActorConverter* mesh = m_levelMeshes[i];
+        jsonxx::Object actorObject = mesh->serializeToJson();
         json_transform(actorObject, m_meshNodes[i], m_scene);
+        actorObject << "packed" << true;
+        actorObject << "type" << mesh->getResourceName();
         actorList << actorObject;
     }
 
-    levelObject << "actor" << actorList;
+    for(size_t i=0; i<m_levelLights.size(); ++i)
+    {
+        ActorConverter* light = m_levelLights[i];
+        jsonxx::Object actorObject = light->serializeToJson();
+        json_transform(actorObject, m_lightNodes[i], m_scene);
+        actorObject << "packed" << true;
+        actorObject << "type" << light->getResourceName();
+        actorList << actorObject;
+    }
+
+    levelObject << "actors" << actorList;
     return levelObject;
 }
 

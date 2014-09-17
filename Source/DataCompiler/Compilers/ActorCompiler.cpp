@@ -22,6 +22,7 @@ ActorCompiler::~ActorCompiler()
 
 bool ActorCompiler::readJSON(const JsonValue& root)
 {
+    __super::readJSON(root);
     JsonValue compsValue = root.GetValue("components");
     if(!compsValue.IsValid())
     {

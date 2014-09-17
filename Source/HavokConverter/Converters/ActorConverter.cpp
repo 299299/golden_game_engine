@@ -114,3 +114,8 @@ void ActorConverter::serializeToFileSplit( const char* fileName )
     s << obj.json();
     LOGI(obj.json().c_str());
 }
+
+std::string ActorConverter::getResourceName() const
+{
+    return m_config->m_rootPath + m_name;
+}

@@ -1,6 +1,6 @@
 {
     "name":"sun-light",
-    "class":"static-environment",
+    "class":"level_geometry",
     "components":
     [
         {
