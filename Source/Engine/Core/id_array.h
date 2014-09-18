@@ -232,9 +232,10 @@ struct DynamicIdArray
 
     void init(uint32_t capacity, Allocator& allocator)
     {
+        m_alloactor = &allocator;
         uint32_t memSize = sizeof(Id) + sizeof(uint16_t) * 2 + sizeof(T);
         memSize *= capacity;
-        char* p = allocator.allocate(memSize, 16);
+        char* p = (char*)allocator.allocate(memSize, 16);
         m_objects = (T*)p;
         p += sizeof(T) * capacity;
         m_sparse = (Id*) p;
@@ -248,7 +249,7 @@ struct DynamicIdArray
 
     void destroy()
     {
-        allocator.deallocate(m_objects);
+        m_alloactor->deallocate(m_objects);
     }
 
     bool has(Id id)
@@ -325,4 +326,5 @@ struct DynamicIdArray
     uint16_t*   m_dense_to_sparse;
     T*          m_objects;
     uint32_t    m_capacity;
+    Allocator*  m_alloactor;
 };

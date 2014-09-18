@@ -239,18 +239,18 @@ void ActorWorld::destroy_actor( ActorId actorId )
 
 Actor* ActorWorld::get_actor( ActorId id )
 {
-    if(!g_actorBuckets[id.m_class].has(id)) return 0;
-    return &g_actorBuckets[id.m_class].get(id);
+    if(!g_actorBuckets[id.m_class].has(id.m_id)) return 0;
+    return &g_actorBuckets[id.m_class].get(id.m_id);
 }
 
 uint32_t ActorWorld::num_actors( uint32_t type )
 {
-    return g_actorBuckets[id.m_class].size();
+    return g_actorBuckets[type].size();
 }
 
 Actor* ActorWorld::get_actors( uint32_t type )
 {
-    return g_actorBuckets[id.m_class].begin();
+    return g_actorBuckets[type].begin();
 }
 
 void ActorWorld::frame_start(float dt)
