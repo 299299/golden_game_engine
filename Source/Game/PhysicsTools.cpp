@@ -17,15 +17,13 @@ static hkpMouseSpringAction*        g_mouseSpring = 0;
 static float                        g_lastMouseDist = 0;
 static float                        g_cameraRayDist = 100;
 
-void getCameraRay(hkVector4& outFrom, 
-    hkVector4& outTo, 
-    hkVector4& outDir)
+void getCameraRay(hkVector4& outFrom, hkVector4& outTo, hkVector4& outDir)
 {
     int32_t x = g_win32Context.m_mx;
     int32_t y = g_win32Context.m_my;
     float pos2d[3] = {(float)x, (float)y, g_cameraRayDist};
     float camTo[3] = {0, 0, 0};
-    g_camera.project2DPosTo3D(camTo, pos2d);
+    g_camera.project_2d_to_3d(camTo, pos2d);
     transform_vec3(outFrom, g_camera.m_eye);
     transform_vec3(outTo, camTo);
     outDir.setSub(outTo, outFrom);

@@ -45,7 +45,7 @@ ENGINE_NATIVE_ALIGN struct Actor
     StringId                m_resourceName;
     char*                   m_values;
 
-    void    init(const ActorResource* resource);
+    void    init(const ActorResource* resource, const hkQsTransform& t);
     void    destroy();
     void    teleport_transform(const hkQsTransform& t);
     void    transform_renders(const hkQsTransform& t);
@@ -77,6 +77,7 @@ struct ActorWorld
 
     void        clear();
     void        clear_actors(Actor* actors, uint32_t num);
+    ActorId     create_actor(const StringId& resourceName, const hkQsTransform& t);
     ActorId     create_actor(const void* actorResource, const hkQsTransform& t);
     void        destroy_actor(ActorId id);
     Actor*      get_actor(ActorId id);

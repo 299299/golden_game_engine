@@ -58,14 +58,14 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         int index = find_component_type(StringId(type.c_str()));
         if(index < 0)
         {
-            LOGE("error component type --> %s", type.c_str());
+            addError("error component type --> %s", type.c_str());
             continue;
         }
 
         StringId& resourceName = actor->m_resourceNames[index];
         if(!resourceName.isZero())
         {
-            LOGE("only one component one type !!!! %s", m_name.c_str());
+            addError("only one component one type !!!! %s", m_name.c_str());
             continue;
         }
     

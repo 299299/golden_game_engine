@@ -60,3 +60,5 @@ DCC_Export/havok/preview
 DCC_Export/havok/world0
 DCC_Export/havok/world1
 DCC_Export/havok/world2
+DataCompiler.exe
+HavokConverter.exe

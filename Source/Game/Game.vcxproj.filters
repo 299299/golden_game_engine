@@ -9,9 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="states">
-      <UniqueIdentifier>{c6a72405-47e2-460f-ae36-fcca43b54ef6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Remote.h">
@@ -19,18 +16,6 @@
     </ClInclude>
     <ClInclude Include="InputController.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadingState.h">
-      <Filter>states</Filter>
-    </ClInclude>
-    <ClInclude Include="RemoteViewerState.h">
-      <Filter>states</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderViewerState.h">
-      <Filter>states</Filter>
-    </ClInclude>
-    <ClInclude Include="TestGameState.h">
-      <Filter>states</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -48,18 +33,6 @@
     </ClCompile>
     <ClCompile Include="RemoteCommands.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RemoteViewerState.cpp">
-      <Filter>states</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderViewerState.cpp">
-      <Filter>states</Filter>
-    </ClCompile>
-    <ClCompile Include="TestGameState.cpp">
-      <Filter>states</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadingState.cpp">
-      <Filter>states</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsTools.cpp">
       <Filter>源文件</Filter>

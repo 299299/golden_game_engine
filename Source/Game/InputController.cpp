@@ -4,8 +4,6 @@
 #include "PhysicsAutoLock.h"
 #include "Camera.h"
 #include "AnimRig.h"
-#include "Entity.h"
-#include "EntityManager.h"
 #include "Win32Context.h"
 #include "XBoxInput.h"
 #include "MathDefs.h"

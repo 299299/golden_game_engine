@@ -83,7 +83,6 @@ ENGINE_NATIVE_ALIGN struct LookAtInstance
     bool                        m_enabled;
 
     void init(const void* resource);
-    void destroy() {};
     void setTransform(const hkQsTransform& t) {};
     void setEnabled(bool bEnable) { m_enabled = bEnable; };
     
@@ -100,7 +99,6 @@ ENGINE_NATIVE_ALIGN struct ReachInstance
     bool                        m_enabled;
 
     void init(const void* resource);
-    void destroy() {}; 
     void setTransform(const hkQsTransform& t) {};
     void setEnabled(bool bEnable) { m_enabled = bEnable; };
 

@@ -6,13 +6,11 @@
 #include "Resource.h"
 #include "Camera.h"
 #include "ShadingEnviroment.h"
-#include "EntityManager.h"
+#include "Actor.h"
 #include "Graphics.h"
 #include "DebugDraw.h"
-#include "Scene.h"
 #include "WebServerTool.h"
 #include "Utils.h"
-#include "Entity.h"
 #include "Level.h"
 //======================================================
 #include <bx/bx.h>
@@ -20,7 +18,7 @@
 #include <Common/Base/Container/String/hkString.h>
 
 using namespace gamedevwebtools;
-char            g_entityName[256] = {0};
+char            g_actorName[256] = {0};
 char            g_levelName[256] = {0};
 
 void str_chr_remove(const char* input, char* output, char flag)
@@ -40,13 +38,13 @@ void find_package_path(const char* input, char* packagePath)
 //======================================================================
 // reload functions
 typedef void (*__command_func__)(const char* data1, const char* data2);
-void add_entity(const char* data1, const char* data2)
+void add_actor(const char* data1, const char* data2)
 {
-    g_entityMgr.addInstance(StringId(data1), hkQsTransform::getIdentity());
+    g_actorWorld.create_actor(StringId(data1), hkQsTransform::getIdentity());
 }
-void clear_scene(const char* data1, const char* data2)
+void clear_actors(const char* data1, const char* data2)
 {
-    g_entityMgr.clearInstances(INVALID_U32);
+    g_actorWorld.clear();
 }
 void reload_resource(const char* data1, const char* data2)
 {
@@ -123,8 +121,8 @@ struct RemoteCommand
 #define REMOTE_CMD(func) {func, #func}
 static RemoteCommand gCommands[] = 
 {
-    REMOTE_CMD(clear_scene), 
-    REMOTE_CMD(add_entity), 
+    REMOTE_CMD(clear_actors), 
+    REMOTE_CMD(add_actor), 
     REMOTE_CMD(reload_resource),
     REMOTE_CMD(reload_resource_file),
     REMOTE_CMD(list_resources),

@@ -1,45 +1,10 @@
 #include "Engine.h"
 #include "Log.h"
-#include "Component.h"
 #include "WebServerTool.h"
 #include "MemorySystem.h"
 #include "Utils.h"
 #include "linear_allocator.h"
 //==================================================
-//RESOURCE
-#include "Resource.h"
-#include "Animation.h"
-#include "PhysicsInstance.h"
-#include "ProxyInstance.h"
-#include "AnimRig.h"
-#include "IK.h"
-#include "Ragdoll.h"
-#include "Entity.h"
-#include "Texture.h"
-#include "Shader.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "Model.h"
-#include "Light.h"
-#include "Entity.h"
-#include "EntityManager.h"
-#include "ShadingEnviroment.h"
-#include "AnimFSM.h"
-#include "Level.h"
-//==================================================
-#include "PhysicsWorld.h"
-#include "AnimationSystem.h"
-#include "Scene.h"
-#include "LevelGeometry.h"
-#include "Prop.h"
-#include "Character.h"
-//==================================================
-
-#include "GameFSM.h"
-#include "LoadingState.h"
-#include "RemoteViewerState.h"
-#include "RenderViewerState.h"
-#include "TestGameState.h"
 #include <Windows.h>
 #include <tchar.h>
 #include <bx/bx.h>
@@ -136,43 +101,30 @@ int _tmain(int argc, _TCHAR* argv[])
     extern void regster_resource_factories();
     regster_resource_factories();
 
-    LoadingState* loadingState = new LoadingState;
-    loadingState->setLoadingPackage("data/core.package");
-    g_gameFSM.addState(loadingState);
-
-    extern char g_entityName[];
+    extern char g_actorName[];
     extern char g_levelName[];
+
+    if(loadEntityName) strcpy(g_actorName, loadEntityName);
+    if(loadLevelName) strcpy(g_levelName, loadLevelName);
 
     switch(cfg.m_mode)
     {
     case 0:
         {
-            TestGameState* pState = new TestGameState();
-            g_gameFSM.addState(pState);
-            loadingState->setLoadingFinishState(pState->m_nameId);
             break;
         }
     case 1:
         {
-            RemoteViewerState* pState = new RemoteViewerState();
-            g_gameFSM.addState(pState);
-            loadingState->setLoadingFinishState(pState->m_nameId);
-            if(loadEntityName) strcpy(g_entityName, loadEntityName);
-            if(loadLevelName) strcpy(g_levelName, loadLevelName);
             break;
         }
     case 2:
         {
-            RenderViewerState* pState = new RenderViewerState();
-            g_gameFSM.addState(pState);
-            loadingState->setLoadingFinishState(pState->m_nameId);
             break;
         }
     default:
         break;    
     }
 
-    g_gameFSM.changeState(StringId(loadingState->getName()));
     g_engine.run();
     quitWebServerTool();
     g_engine.quit();
@@ -180,13 +132,10 @@ int _tmain(int argc, _TCHAR* argv[])
 }
 
 //===========================================================
-static  char                                    g_frameBuf[1024*1024*5];//5M Frame Mem
-static LinearAllocator  g_frameAllocator("frame_memory", g_frameBuf, sizeof(g_frameBuf));
-static  char                                    g_staticBuf[1024*1024*3];//3M Static Mem
-static LinearAllocator  g_staticAllocator("static_memory", g_staticBuf, sizeof(g_staticBuf));
+static char             g_frameBuf[1024*1024*5];//5M Frame Mem
+static LinearAllocator  g_frameAllocator(g_frameBuf, sizeof(g_frameBuf));
 
 void registerMemoryAllocators()
 {
-    g_memoryMgr.registerAllocator(kMemoryCategoryFrame, &g_frameAllocator);
-    g_memoryMgr.registerAllocator(kMemoryCategoryStatic, &g_staticAllocator);
+    g_memoryMgr.register_allocator(kMemoryCategoryFrame, &g_frameAllocator);
 }

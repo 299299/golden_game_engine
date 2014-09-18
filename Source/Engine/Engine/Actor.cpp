@@ -59,7 +59,7 @@ void Actor::teleport_transform( const hkQsTransform& t )
     transform_renders(t);
 }
 
-void Actor::init( const ActorResource* resource )
+void Actor::init( const ActorResource* resource, const hkQsTransform& t)
 {
     extern Id create_componet(uint32_t type, const void* resource);
 
@@ -70,6 +70,7 @@ void Actor::init( const ActorResource* resource )
         if(res) m_components[i] = create_componet(i, res);
     }
     m_values = COMMON_ALLOC(char, m_resource->m_valueSize);
+    teleport_transform(t);
 }
 
 void Actor::destroy()
@@ -225,9 +226,14 @@ ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     ActorId id;
     id.m_class = actorResource->m_class;
     Actor actor;
-    actor.init(actorResource);
+    actor.init(actorResource, t);
     id.m_id = g_actorBuckets[id.m_class].create(actor);
     return id;
+}
+
+ActorId ActorWorld::create_actor( const StringId& resourceName, const hkQsTransform& t )
+{
+    return create_actor(FIND_RESOURCE(ActorResource, resourceName), t);
 }
 
 void ActorWorld::destroy_actor( ActorId actorId )

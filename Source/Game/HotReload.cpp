@@ -2,15 +2,12 @@
 #include "Log.h"
 //===========================================
 #include "AnimationSystem.h"
-#include "Scene.h"
-#include "EntityManager.h"
 #include "PhysicsWorld.h"
 #include "PhysicsAutoLock.h"
 //===========================================
 #include "ShadingEnviroment.h"
 #include "AnimRig.h"
 #include "Animation.h"
-#include "ComponentManager.h"
 #include "Graphics.h"
 #include "Model.h"
 #include "Shader.h"
@@ -22,11 +19,9 @@
 #include "Ragdoll.h"
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
-#include "Entity.h"
 #include "AnimFSM.h"
-#include "GameFSM.h"
-#include "GameState.h"
 #include "Level.h"
+#include "Actor.h"
 #include <bx/bx.h>
 //==========================================================================================
 #include <Animation/Animation/Animation/hkaAnimation.h>
@@ -38,13 +33,18 @@ static void* g_tmpResourceArray[1024*10];
 const uint32_t resourceMax = BX_COUNTOF(g_tmpResourceArray);
 static ResourceInfo** result = (ResourceInfo**)g_tmpResourceArray;
 
+extern int find_component_type(const StringId& typeName);
+extern uint32_t num_components(uint32_t type);
+extern void* get_components(uint32_t type);
+
 //===================================================================================================
 template <typename T, typename U> void reload_component_resource(void* oldResource, void* newResource)
 {
     T* oldCompResource = (T*)oldResource;
     T* newCompResource = (T*)newResource;
-    uint32_t componentNum = g_componentMgr.numComponents(T::getType());
-    U* components = (U*)g_componentMgr.listComponents(T::getType());
+    int type = find_component_type(T::getType());
+    uint32_t componentNum = num_components(type);
+    U* components = (U*)get_components(type);
     LOGI("component %s instance num = %d", T::getName(), componentNum);
     for(size_t i=0; i<componentNum; ++i)
     {
@@ -55,6 +55,19 @@ template <typename T, typename U> void reload_component_resource(void* oldResour
 template <typename T, typename U> void register_component_resource_reload_callback()
 {
     g_resourceMgr.registerReloadCallback(T::getType(), reload_component_resource<T, U>);
+}
+void reload_light_resource(void* oldResource, void* newResource)
+{
+    LightResource* oldLight = (LightResource*)oldResource;
+    LightResource* newLight = (LightResource*)newResource;
+    uint32_t num = num_components(kComponentLight);
+    LightInstance* lights = (LightInstance*)get_components(kComponentLight);
+    for (uint32_t i=0; i<num; ++i)
+    {
+        LightInstance& light = lights[i];
+        if(light.m_resource == oldLight)
+            light.m_resource = newLight;
+    }
 }
 //===================================================================================================
 
@@ -124,12 +137,7 @@ void reload_shading_enviroment(void* oldResource, void* newResource)
 {
     ShadingEnviroment* oldShading = (ShadingEnviroment*)oldResource;
     ShadingEnviroment* newShading = (ShadingEnviroment*)newResource;
-    for(int i=0; i<g_gameFSM.m_numStates; ++i)
-    {
-        GameState* state = g_gameFSM.m_states[i];
-        if(state->m_shading == oldShading)
-            state->m_shading = newShading;
-    }
+    
 }
 void reload_material_resource(void* oldResource, void* newResource)
 {
@@ -150,9 +158,8 @@ void reload_material_resource(void* oldResource, void* newResource)
         }
     }
 
-    ComponentFactory* fac = g_componentMgr.findFactory(ModelResource::getType());
-    numOfModels = fac->numComponents();
-    ModelInstance* models = (ModelInstance*)fac->listComponents();
+    numOfModels = num_components(kComponentModel);
+    ModelInstance* models = (ModelInstance*)get_components(kComponentModel);
     LOGD("total num of model instances = %d", numOfModels);
     for(uint32_t i=0; i<numOfModels; ++i)
     {
@@ -216,17 +223,6 @@ void reload_mesh_resource(void* oldResource, void* newResource)
         if(model->m_mesh == oldMesh)
             model->m_mesh = newMesh;
     }
-
-    ComponentFactory* fac = g_componentMgr.findFactory(ModelResource::getType());
-    numOfModels = fac->numComponents();
-    ModelInstance* models = (ModelInstance*)fac->listComponents();
-    LOGD("total num of model instances = %d", numOfModels);
-    for(uint32_t i=0; i<numOfModels; ++i)
-    {
-        ModelInstance& model = models[i];
-        if(model.m_mesh == oldMesh)
-            model.m_mesh = newMesh;
-    }
 }
 void reload_program_resource(void* oldResource, void* newResource)
 {
@@ -286,26 +282,23 @@ void reload_shader_resource(void* oldResource, void* newResource)
 }
 
 
-void reload_entity_resource(void* oldResource, void* newResource)
+void reload_actor_resource(void* oldResource, void* newResource)
 {
-    EntityResource* oldEntity = (EntityResource*)oldResource;
-    EntityResource* newEntity = (EntityResource*)newResource;
-    EntityInstance** tmphead = (EntityInstance**)(g_tmpResourceArray);
+    ActorResource* oldActor = (ActorResource*)oldResource;
+    ActorResource* newActor = (ActorResource*)newResource;
 
-    for(uint32_t i=0; i<kEntityClassNum; ++i)
+    for(uint32_t i=0; i<kActorClassNum; ++i)
     {
-        EntityBucket* bucket = g_entityMgr.getBucket(i);
-        uint32_t num = bucket->list_entities(tmphead, resourceMax);
+        Actor* actors = g_actorWorld.get_actors(i);
+        uint32_t num = g_actorWorld.num_actors(i);
         for(uint32_t j=0; j<num; ++j)
         {
-            EntityInstance* inst = tmphead[j];
-            if(inst->m_resource == oldEntity)
+            Actor& actor = actors[j];
+            if(actor.m_resource == oldActor)
             {
-                hkQsTransform t = inst->m_transform;
-                uint32_t oldId = inst->m_id;
-                bucket->remove_entity(inst->m_id);
-                uint32_t newId = bucket->add_entity(newEntity, t);
-                LOGI("actor %d --> %d", oldId, newId);
+                hkQsTransform t = actor.m_transform;
+                actor.destroy();
+                actor.init(newActor, t);
             }
         }
     }
@@ -319,16 +312,16 @@ void resource_hot_reload_init()
     g_resourceMgr.registerReloadCallback(Texture::getType(), reload_texture_resource);
     g_resourceMgr.registerReloadCallback(Raw3DTexture::getType(), reload_texture_3d_resource);
     g_resourceMgr.registerReloadCallback(Mesh::getType(), reload_mesh_resource);
-    g_resourceMgr.registerReloadCallback(EntityResource::getType(), reload_entity_resource);
+    g_resourceMgr.registerReloadCallback(ActorResource::getType(), reload_actor_resource);
     g_resourceMgr.registerReloadCallback(Material::getType(), reload_material_resource);
     g_resourceMgr.registerReloadCallback(Shader::getType(), reload_shader_resource);
     g_resourceMgr.registerReloadCallback(ShaderProgram::getType(), reload_program_resource);
     g_resourceMgr.registerReloadCallback(Level::getType(), reload_level_resource);
     g_resourceMgr.registerReloadCallback(Animation::getType(), reload_animation_resource);
     g_resourceMgr.registerReloadCallback(AnimRig::getType(), reload_anim_rig_resource);
+    g_resourceMgr.registerReloadCallback(LightResource::getType(), reload_light_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
-    register_component_resource_reload_callback<LightResource, LightInstance>();
     register_component_resource_reload_callback<RagdollResource,RagdollInstance>();
     register_component_resource_reload_callback<AnimRig, AnimRigInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();

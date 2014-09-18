@@ -97,23 +97,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="InputController.h" />
-    <ClInclude Include="LoadingState.h" />
     <ClInclude Include="Remote.h" />
-    <ClInclude Include="RemoteViewerState.h" />
-    <ClInclude Include="RenderViewerState.h" />
-    <ClInclude Include="TestGameState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HotReload.cpp" />
     <ClCompile Include="InputController.cpp" />
-    <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="PhysicsTools.cpp" />
     <ClCompile Include="RemoteCommands.cpp" />
-    <ClCompile Include="RemoteViewerState.cpp" />
-    <ClCompile Include="RenderViewerState.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="TestGameState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="path.cfg" />
