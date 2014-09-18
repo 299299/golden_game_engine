@@ -23,7 +23,7 @@ public:
     virtual size_t allocated_size() = 0;
 
     /// Default memory alignment in bytes.
-    static const size_t DEFAULT_ALIGN = 4;
+    static const size_t DEFAULT_ALIGN = 16;
 
 private:
 

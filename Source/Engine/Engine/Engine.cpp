@@ -147,6 +147,7 @@ void Engine::subSystemsInit()
     g_physicsWorld.init();
     g_animMgr.init();
     g_script.init();
+    g_actorWorld.init();
 }
 
 void Engine::coreShutdown()
@@ -160,7 +161,7 @@ void Engine::coreShutdown()
 void Engine::subSystemsShutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
-    g_actorWorld.clear();
+    g_actorWorld.destroy();
     g_script.quit();
     g_animMgr.quit();
     g_physicsWorld.quit();

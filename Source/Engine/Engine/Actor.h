@@ -72,6 +72,9 @@ struct ActorId
 
 struct ActorWorld
 {
+    void        init();
+    void        destroy();
+
     void        clear();
     void        clear_actors(Actor* actors, uint32_t num);
     ActorId     create_actor(const void* actorResource, const hkQsTransform& t);

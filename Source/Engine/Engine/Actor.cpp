@@ -7,11 +7,7 @@
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
 #include "MemorySystem.h"
-
-static IdArray<MAX_LEVEL_GEOMETRY, Actor>       g_levelGeometries;
-static IdArray<MAX_PROP, Actor>                 g_props;
-static IdArray<MAX_CHARACTER, Actor>            g_characters;
-
+#include "memory.h"
 
 bool ActorResource::has_key(const StringId& k) const
 {
@@ -188,17 +184,31 @@ void Actor::set_key(const StringId& k, const float* v)
 }
 
 ActorWorld g_actorWorld;
+static DynamicIdArray<Actor> g_actorBuckets[kActorClassNum];
+
+void ActorWorld::init()
+{
+    g_actorBuckets[kLevelGeometry].init(MAX_LEVEL_GEOMETRY, default_allocator());
+    g_actorBuckets[kProp].init(MAX_PROP, default_allocator());
+    g_actorBuckets[kCharacter].init(MAX_CHARACTER, default_allocator());
+}
+
+
+void ActorWorld::destroy()
+{
+    clear();
+    for(uint32_t i=0; i<kActorClassNum; ++i)
+    {
+        g_actorBuckets[i].destroy();
+    }
+}
 
 void ActorWorld::clear()
 {
-    clear_actors(id_array::begin(g_levelGeometries), id_array::size(g_levelGeometries));
-    g_levelGeometries.clear();
-
-    clear_actors(id_array::begin(g_props), id_array::size(g_props));
-    g_props.clear();
-
-    clear_actors(id_array::begin(g_characters), id_array::size(g_characters));
-    g_characters.clear();
+    for(uint32_t i=0; i<kActorClassNum; ++i)
+    {
+        clear_actors(g_actorBuckets[i].begin(), g_actorBuckets[i].size());
+    }
 }
 
 void ActorWorld::clear_actors(Actor* actors, uint32_t num)
@@ -216,20 +226,7 @@ ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     id.m_class = actorResource->m_class;
     Actor actor;
     actor.init(actorResource);
-    switch(id.m_class)
-    {
-    case kLevelGeometry:
-        id.m_id = id_array::create(g_levelGeometries, actor);
-        break;
-    case kProp:
-        id.m_id = id_array::create(g_props, actor);
-        break;
-    case kCharacter:
-        id.m_id = id_array::create(g_characters, actor);
-        break;
-    default:
-        return ActorId();
-    }
+    id.m_id = g_actorBuckets[id.m_class].create(actor);
     return id;
 }
 
@@ -237,69 +234,23 @@ void ActorWorld::destroy_actor( ActorId actorId )
 {
     uint32_t classId = actorId.m_class;
     Id id = actorId.m_id;
-    switch(classId)
-    {
-    case kLevelGeometry:
-        if(!id_array::has(g_levelGeometries, id)) return;
-        id_array::get(g_levelGeometries, id).destroy();
-        id_array::destroy(g_levelGeometries, id);
-        break;
-    case kProp:
-        if(!id_array::has(g_props, id)) return;
-        id_array::get(g_props, id).destroy();
-        id_array::destroy(g_props, id);
-        break;
-    case kCharacter:
-        if(!id_array::has(g_characters, id)) return;
-        id_array::get(g_characters, id).destroy();
-        id_array::destroy(g_characters, id);
-        break;
-    default:
-        return;
-    }
+    g_actorBuckets[classId].destroy(id);
 }
 
 Actor* ActorWorld::get_actor( ActorId id )
 {
-    switch(id.m_class)
-    {
-    case kLevelGeometry:
-        if(!id_array::has(g_levelGeometries, id.m_id)) return 0;
-        return &id_array::get(g_levelGeometries, id.m_id);
-        break;
-    case kProp:
-        if(!id_array::has(g_props, id.m_id)) return 0;
-        return &id_array::get(g_props, id.m_id);
-        break;
-    case kCharacter:
-        if(!id_array::has(g_characters, id.m_id)) return 0;
-        return &id_array::get(g_characters, id.m_id);
-        break;
-    default:
-        return 0;
-    }
+    if(!g_actorBuckets[id.m_class].has(id)) return 0;
+    return &g_actorBuckets[id.m_class].get(id);
 }
 
 uint32_t ActorWorld::num_actors( uint32_t type )
 {
-    switch(type)
-    {
-    case kLevelGeometry: return id_array::size(g_levelGeometries);
-    case kProp: return id_array::size(g_props);
-    case kCharacter: return id_array::size(g_characters);
-    default: return 0;
-    }
+    return g_actorBuckets[id.m_class].size();
 }
 
 Actor* ActorWorld::get_actors( uint32_t type )
 {
-    switch(type)
-    {
-    case kLevelGeometry: return id_array::begin(g_levelGeometries);
-    case kProp: return id_array::begin(g_props);
-    case kCharacter: return id_array::begin(g_characters);
-    default: return 0;
-    }
+    return g_actorBuckets[id.m_class].begin();
 }
 
 void ActorWorld::frame_start(float dt)
@@ -319,12 +270,12 @@ void ActorWorld::step( float dt )
 
 void ActorWorld::post_step( float dt )
 {
-    g_physicsWorld.sync_actors(id_array::begin(g_props), id_array::size(g_props));
+    g_physicsWorld.sync_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
 }
 
 void ActorWorld::draw()
 {
-    g_animMgr.skinActors(id_array::begin(g_characters), id_array::size(g_characters));
+    g_animMgr.skinActors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
 }
 
 
