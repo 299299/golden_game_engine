@@ -13,6 +13,7 @@ public:
     virtual jsonxx::Object serializeToJsonSplit() const;
 private:
     void process(hkxScene* scene);
+    virtual void postProcess();
 private:
     hkxScene*                                   m_scene;
     std::vector<hkxNode*>                       m_sceneNodes;

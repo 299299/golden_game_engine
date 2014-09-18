@@ -184,3 +184,15 @@ jsonxx::Object LevelConverter::serializeToJsonSplit() const
 {
     return serializeToJson();
 }
+
+void LevelConverter::postProcess()
+{
+    for(size_t i=0; i<m_levelMeshes.size(); ++i)
+    {
+        m_levelMeshes[i]->postProcess();
+    }
+    for(size_t i=0; i<m_levelLights.size(); ++i)
+    {
+        m_levelLights[i]->postProcess();
+    }
+}

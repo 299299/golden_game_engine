@@ -28,7 +28,7 @@ void insert_string_id(uint32_t key, const char* value)
         g_stringTable[key] = mem;
     }
     else {
-        ENGINE_ASSERT(!strcmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
+        ENGINE_ASSERT(!hkString::strCasecmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
     }
 }
 #endif
