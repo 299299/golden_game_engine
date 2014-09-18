@@ -134,6 +134,9 @@ void Engine::coreInit()
 void Engine::subSystemsInit()
 {
     TIMELOG("Engine Subsystem Init");
+    extern void regster_resource_factories();
+    regster_resource_factories();
+
     if(!m_cfg.m_headless) g_win32Context.createWindow(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
     else g_engineMode = 1;
 

@@ -98,8 +98,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
     registerMemoryAllocators();
     g_engine.init(cfg);
-    extern void regster_resource_factories();
-    regster_resource_factories();
 
     extern char g_actorName[];
     extern char g_levelName[];
