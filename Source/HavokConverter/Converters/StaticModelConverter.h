@@ -8,7 +8,7 @@ public:
     StaticModelConverter();
     ~StaticModelConverter();
     virtual void process(void* pData);
-    void process(hkxNode* node);
+    void processNode(hkxNode* node);
     void setType(int modelType) { m_type = modelType; };
 
 private:

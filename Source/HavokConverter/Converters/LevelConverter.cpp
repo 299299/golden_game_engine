@@ -104,7 +104,7 @@ void LevelConverter::process(hkxScene* scene)
         actor->m_config = cfg;
         actor->setName(cfg->m_exportName);
         actor->setClass(cfg->m_exportClass);
-        actor->process(node);
+        actor->processNode(node);
         m_levelMeshes.push_back(actor);
         m_configs.push_back(cfg);
     }
@@ -124,7 +124,7 @@ void LevelConverter::process(hkxScene* scene)
         actor->m_config = cfg;
         actor->setName(cfg->m_exportName);
         actor->setClass(cfg->m_exportClass);
-        actor->process(node);
+        actor->processNode(node);
         m_levelLights.push_back(actor);
         m_configs.push_back(cfg);
     }

@@ -24,10 +24,10 @@ void StaticModelConverter::process(void* pData)
 void StaticModelConverter::process(hkxScene* scene)
 {
     m_scene = scene;
-    process(m_scene->m_rootNode);
+    processNode(m_scene->m_rootNode);
 }
 
-void StaticModelConverter::process( hkxNode* node )
+void StaticModelConverter::processNode( hkxNode* node )
 {
     std::vector<hkxNode*> meshNodes;
     findNodesRec(node, &hkxMeshClass, meshNodes);
