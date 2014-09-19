@@ -83,7 +83,7 @@ void AnimationSystem::kickInJobs()
     jobPointers.reserve( numSkeletons );
     for ( uint32_t i = 0; i < numSkeletons; ++i )
     {
-        m_animJobs[i].pushBack(&( m_animJobs[i]));
+        jobPointers.pushBack(&( m_animJobs[i]));
     }
     g_threadMgr.getJobQueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
 }
@@ -93,7 +93,7 @@ void AnimationSystem::tickFinishJobs()
     uint32_t numSkeletons = id_array::size(m_rigs);
     if(!numSkeletons) return;
     PROFILE(AnimationFinishJobs);
-    for(int i=0; i<numSkeletons;++i)
+    for(uint32_t i=0; i<numSkeletons;++i)
     {
         m_animJobs[i].destroy();
     }

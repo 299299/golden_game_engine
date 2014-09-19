@@ -281,7 +281,7 @@ void ActorWorld::post_step( float dt )
 
 void ActorWorld::draw()
 {
-    g_animMgr.skinActors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
+    g_animMgr.skin_actors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
 }
 
 

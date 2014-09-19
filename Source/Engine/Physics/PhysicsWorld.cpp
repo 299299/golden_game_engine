@@ -46,6 +46,7 @@
 #include <Physics2012/Collide/Query/Multithreaded/RayCastQuery/hkpRayCastQueryJobQueueUtils.h>
 //========================================================================================
 
+static int  m_status = 0;
 static void check_status()
 {
     ENGINE_ASSERT((m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
@@ -54,7 +55,6 @@ static void set_status(int newStatus)
 {
     m_status = newStatus;
 }
-static int  m_status = 0;
 
 /// The Havok Physics contact listener is added to the Havok Physics world to provide collision information. 
 /// It responds to collision callbacks, collects the collision information and sends messages to the 
