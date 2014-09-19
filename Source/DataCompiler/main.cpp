@@ -18,6 +18,7 @@
 #include "ShadingEnviromentCompiler.h"
 #include "AnimFSMCompiler.h"
 #include "LevelCompiler.h"
+#include "ScriptCompiler.h"
 #include <bx/tinystl/allocator.h>
 #include <bx/tinystl/unordered_map.h>
 #include <bx/thread.h>
@@ -77,6 +78,7 @@ static const char* g_resourceTypeNames[] =
     AnimFSM::getName(),
     SHADER_INCLUDE_EXT,
     "dds",
+    ScriptResource::getName(),
 };
 static __create_compiler__ g_funtions[] =
 {
@@ -103,6 +105,7 @@ static __create_compiler__ g_funtions[] =
     create_compiler<AnimFSMCompiler>,
     create_compiler<ShaderIncludeCompiler>,
     create_compiler<DDSCompiler>,
+    create_compiler<ScriptCompiler>(),
 };
 
 void init_factories()

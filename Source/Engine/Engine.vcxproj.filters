@@ -216,9 +216,6 @@
     <ClCompile Include="..\ThirdParty\stb_image\stb_image_.cpp">
       <Filter>ThirdParty\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="Script\ScriptSystem.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="Script\ScriptAPI.cpp">
       <Filter>Script</Filter>
     </ClCompile>
@@ -368,6 +365,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Actor.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Script.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -721,9 +721,6 @@
     <ClInclude Include="Graphics\Gui.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Script\ScriptSystem.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="..\ThirdParty\gamemonkey\gmArrayLib.h">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClInclude>
@@ -898,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Actor.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\Script.h">
+      <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

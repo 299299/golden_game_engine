@@ -9,7 +9,7 @@
 #include "XBoxInput.h"
 #include "Graphics.h"
 #include "Profiler.h"
-#include "ScriptSystem.h"
+#include "Script.h"
 #include "Actor.h"
 //=================================================================
 #include "Log.h"

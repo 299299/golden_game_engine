@@ -174,6 +174,7 @@ const char*   physics_type_names[] =
 #include "ShadingEnviroment.h"
 #include "Level.h"
 #include "Actor.h"
+#include "Script.h"
 //-----------------------------------------------------------------
 extern void* load_resource_texture(const char*, uint32_t);
 extern void  bringout_resource_texture(void*);
@@ -236,6 +237,11 @@ extern void  lookup_resource_actor(void*);
 extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
+extern void* load_resource_script(const char* data, uint32_t size);
+extern void  bringin_resource_script(void* resource);
+extern void  bringout_resource_script(void* resource);
+//-----------------------------------------------------------------
+
 static ResourceFactory g_resourceFactories[] = 
 {
     {load_resource_texture, 0, 0, 0, bringout_resource_texture, Texture::getName()},
@@ -259,6 +265,7 @@ static ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::getName()},
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::getName()},
     {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::getName()},
+    {load_resource_script, 0, 0, bringin_resource_script, bringout_resource_script, ScriptResource::getName()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::getName()},
 };
 void regster_resource_factories()
@@ -314,6 +321,12 @@ extern void*    get_physics_proxy(Id);
 extern uint32_t num_physics_proxies();
 extern void*    get_physics_proxies();
 //-----------------------------------------------------------------
+extern Id       create_script_object(const void*);
+extern void     destroy_script_object(Id);
+extern void*    get_script_object(Id);
+extern uint32_t num_script_objects();
+extern void*    get_script_objects();
+//-----------------------------------------------------------------
 struct ComponentFactory
 {
     Id          (*create)(const void*);
@@ -330,6 +343,7 @@ static ComponentFactory g_componentFactories[] =
     create_anim_fsm, destroy_anim_fsm, get_anim_fsm, num_anim_fsms, get_anim_fsms,
     create_physics_object, destroy_physics_object, get_physics_object, num_physics_objects, get_physics_objects,
     create_physics_proxy, destroy_physics_proxy, get_physics_proxy, num_physics_proxies, get_physics_proxies,
+    create_script_object, destroy_script_object, get_script_object, num_script_objects, get_script_objects,
 };
 StringId g_componentTypes[kComponentTypeNum];
 const char* g_componentTypeNames[kComponentTypeNum];
@@ -373,6 +387,9 @@ void init_component_names()
 
     g_componentTypeNames[kComponentAnimFSM] = AnimFSM::getName();
     g_componentTypes[kComponentAnimFSM] = AnimFSM::getType();
+
+    g_componentTypeNames[kComponentScript] = ScriptResource::getName();
+    g_componentTypes[kComponentScript] = ScriptResource::getType();
 };
 int find_component_type(const StringId& typeName)
 {

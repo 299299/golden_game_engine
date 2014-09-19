@@ -11,7 +11,7 @@
 #define MAX_ANIM_FSM            64
 #define MAX_ANIM_RIG            64
 
-#define MAX_DEBUG_LINES         1000
+#define MAX_DEBUG_LINES         1024
 #define MAX_DEBUG_TEXTS         300
 
 #define MAX_RESOURCE_TYPES      64
@@ -24,5 +24,7 @@
 #define MAX_LEVEL_GEOMETRY      512
 #define MAX_PROP                128
 #define MAX_CHARACTER           32
+
+#define MAX_SCRIPT_OBJECT       256
 
 #define RESOURCE_MAP_NUM        16384
