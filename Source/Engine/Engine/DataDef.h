@@ -71,5 +71,3 @@ enum ComponentType
     kComponentTypeNum
 };
 
-#define RESOURCE_WORKER_THREAD_ID                   (1)
-

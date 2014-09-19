@@ -66,7 +66,6 @@ struct PhysicsWorld
     void clearWorld();
     inline hkpWorld* getWorld() const { return m_world;};
 
-    void postSimulationCallback();
     int  getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen = 100);
 
     void addToWorld(PhysicsInstance* instance);
@@ -85,16 +84,15 @@ private:
     void updateVDB(float dt);
     void checkStatus();
     void kickInRaycastJob();
+    void postSimulation();
 public:
     hkpWorld*                               m_world;;
-    PhysicsPostSimlator*                    m_postCallback;
     HavokContactListener*                   m_contactListener;
     CollisionEvent**                        m_collisionEvents;
     RaycastJob*                             m_raycasts;
     hkSemaphore*                            m_raycastSem;
     uint32_t                                m_numCollisionEvents;
     uint32_t                                m_numRaycasts;
-    int                                     m_status;
     //======================================================================
     PhysicsConfig*                          m_config;
 };

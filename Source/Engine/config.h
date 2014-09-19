@@ -24,3 +24,5 @@
 #define MAX_LEVEL_GEOMETRY      512
 #define MAX_PROP                128
 #define MAX_CHARACTER           32
+
+#define RESOURCE_MAP_NUM        16384

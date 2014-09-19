@@ -5,6 +5,8 @@
 #include "DataDef.h"
 #include "Utils.h"
 #include "EngineAssert.h"
+#include "config.h"
+//=====================================================
 #include <bx/readerwriter.h>
 //=====================================================
 #include <Common/Base/Thread/Thread/hkThread.h>
@@ -24,7 +26,7 @@ static hkCriticalSection        g_resourceCS;
 static hkCriticalSection        g_statusCS;
 static volatile bool            g_running = true;
 
-#define RESOURCE_MAP_NUM        (16384)
+#define RESOURCE_WORKER_THREAD_ID                   (1)
 typedef hkPointerMap<hkUint64, void*> ResourceMap;
 static  ResourceMap*            g_resourceMap = 0;
 

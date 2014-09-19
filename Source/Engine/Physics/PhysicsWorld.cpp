@@ -46,15 +46,15 @@
 #include <Physics2012/Collide/Query/Multithreaded/RayCastQuery/hkpRayCastQueryJobQueueUtils.h>
 //========================================================================================
 
-class PhysicsPostSimlator : public hkpWorldPostSimulationListener
+static void check_status()
 {
-public:
-    PhysicsPostSimlator(PhysicsWorld* world): m_world(world) {}
-    virtual void postSimulationCallback( hkpWorld* world ){ m_world->postSimulationCallback(); }
-private:
-    PhysicsWorld*   m_world;
-};
-
+    ENGINE_ASSERT((m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
+}
+static void set_status(int newStatus)
+{
+    m_status = newStatus;
+}
+static int  m_status = 0;
 
 /// The Havok Physics contact listener is added to the Havok Physics world to provide collision information. 
 /// It responds to collision callbacks, collects the collision information and sends messages to the 
@@ -104,8 +104,6 @@ void PhysicsWorld::init()
 {
     m_config = 0;
     m_world = 0;
-    m_postCallback = 0;
-    m_status = 0;
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     m_raycastSem = new hkSemaphoreBusyWait(0, 1000);
@@ -120,7 +118,7 @@ void PhysicsWorld::quit()
 
 void PhysicsWorld::frameStart()
 {
-    m_status = kTickFrameStart;
+    set_status(kTickFrameStart);
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     g_collisionEvtMap.clear();
@@ -157,8 +155,6 @@ void PhysicsWorld::createWorld(PhysicsConfig* config)
     hkpAgentRegisterUtil::registerAllAgents( m_world->getCollisionDispatcher() );
     // We need to register all modules we will be running multi-threaded with the job queue
     m_world->registerWithJobQueue( g_threadMgr.getJobQueue() );
-    m_postCallback = new PhysicsPostSimlator(this);
-    m_world->addWorldPostSimulationListener(m_postCallback);
     g_threadMgr.vdbAddWorld(m_world);
 
     hkpGroupFilter* pGroupFilter = new hkpGroupFilter();
@@ -197,7 +193,7 @@ void PhysicsWorld::createPlane(float size)
     boxRigidBody->removeReference();
 }
 
-void PhysicsWorld::postSimulationCallback()
+void PhysicsWorld::postSimulation()
 {
     PROFILE(Physics_PostCallback);
     PHYSICS_LOCKREAD(m_world);
@@ -222,19 +218,18 @@ void PhysicsWorld::postSimulationCallback()
 
 void PhysicsWorld::destroyWorld()
 {
-    checkStatus();
+    check_status();
 
     if(!m_world)
         return;
     m_world->markForWrite();
     g_threadMgr.vdbRemoveWorld(m_world);
     SAFE_DELETE(m_world);
-    SAFE_DELETE(m_postCallback);
 }
 
 int PhysicsWorld::getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen)
 {
-    checkStatus();
+    check_status();
 
     PHYSICS_LOCKREAD(m_world);
     int retNum = 0;
@@ -264,16 +259,11 @@ int PhysicsWorld::getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBod
     return retNum;
 }
 
-void PhysicsWorld::checkStatus()
-{
-    ENGINE_ASSERT((m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
-}
-
 
 void PhysicsWorld::kickInJobs( float timeStep )
 {
     PROFILE(Physics_KickInJobs);
-    m_status = kTickProcessing;
+    set_status(kTickProcessing);
     kickInRaycastJob();
     m_world->initMtStep( g_threadMgr.getJobQueue(),timeStep );
 }
@@ -281,15 +271,16 @@ void PhysicsWorld::kickInJobs( float timeStep )
 void PhysicsWorld::tickFinishJobs( float timeStep )
 {
     PROFILE(Physics_TickFinishJobs);
-    m_status = kTickFinishedJobs;
+    set_status(kTickFinishedJobs);
     m_world->finishMtStep(g_threadMgr.getJobQueue(), g_threadMgr.getThreadPool());
     if(m_numRaycasts) m_raycastSem->acquire();
+    postSimulation();
 }
 
 
 void PhysicsWorld::addToWorld(PhysicsInstance* instance)
 {
-    checkStatus();
+    check_status();
     PHYSICS_LOCKWRITE(m_world);
 
     switch(instance->m_systemType)
@@ -319,7 +310,7 @@ void PhysicsWorld::addToWorld(PhysicsInstance* instance)
 
 void PhysicsWorld::removeFromWorld(PhysicsInstance* instance)
 {
-    checkStatus();
+    check_status();
     PHYSICS_LOCKWRITE(m_world);
     switch(instance->m_systemType)
     {
@@ -359,6 +350,7 @@ void PhysicsWorld::addCollisionEvent(uint64_t key, const CollisionEvent& evt)
 
 int PhysicsWorld::addRaycastJob(const float* from, const float* to, int32_t filterInfo)
 {
+    check_status();
     if(!m_raycasts) return -1;
     int retHandle = m_numRaycasts;
     RaycastJob* job = m_raycasts + (m_numRaycasts++);
@@ -434,6 +426,7 @@ int PhysicsWorld::getFilterLayer(const StringId& name) const
 
 void PhysicsWorld::sync_actors( struct Actor* actors, uint32_t num )
 {
+    check_status();
     hkQsTransform t;
     hkTransform t1;
     for (uint32_t i=0; i<num; ++i)
@@ -452,6 +445,7 @@ void PhysicsWorld::sync_actors( struct Actor* actors, uint32_t num )
 //-----------------------------------------------------------------
 Id create_physics_object(const void* resource)
 {
+    check_status();
     PhysicsInstance inst;
     inst.init(resource);
     return id_array::create(m_objects, inst);
@@ -459,8 +453,8 @@ Id create_physics_object(const void* resource)
 
 void destroy_physics_object(Id id)
 {
-    if(!id_array::has(m_objects, id))
-        return;
+    check_status();
+    if(!id_array::has(m_objects, id)) return;
     PhysicsInstance& inst = id_array::get(m_objects, id);
     inst.destroy();
     id_array::destroy(m_objects, id);
@@ -485,6 +479,7 @@ void* get_physics_objects()
 
 Id create_physics_proxy(const void* resource)
 {
+    check_status();
     ProxyInstance inst;
     inst.init(resource);
     return id_array::create(m_proxies, inst);
@@ -492,8 +487,8 @@ Id create_physics_proxy(const void* resource)
 
 void destroy_physics_proxy(Id id)
 {
-    if(!id_array::has(m_proxies, id))
-        return;
+    check_status();
+    if(!id_array::has(m_proxies, id)) return;
     ProxyInstance& inst = id_array::get(m_proxies, id);
     inst.destroy();
     id_array::destroy(m_proxies, id);

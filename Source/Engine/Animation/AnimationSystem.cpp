@@ -36,79 +36,71 @@
 #include <Common/Base/Types/Geometry/Aabb/hkAabb.h>
 //=======================================================================================
 
-struct AnimJobs
-{
-    HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR( HK_MEMORY_CLASS_USER, AnimJobs );
-    hkArray<hkaSampleBlendJob> m_jobs;
-};
-
 AnimationSystem g_animMgr;
 static IdArray<MAX_ANIM_FSM, AnimFSMInstance>      m_fsms;
 static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
-static AnimJobs*                                   g_animJobs = 0;
+static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
+static int                                         m_status = 0;
+
+static void check_status()
+{
+    ENGINE_ASSERT((m_status != kTickProcessing),  "AnimSystem Status is Processing!!!");
+}
+static void set_status(int newStatus)
+{
+    m_status = newStatus;
+}
 
 void AnimationSystem::init()
 {
     m_status = 0;
     hkaSampleBlendJobQueueUtils::registerWithJobQueue( g_threadMgr.getJobQueue());
-    g_animJobs = new AnimJobs;
-    g_animJobs->m_jobs.reserve(100);
 }
 
 void AnimationSystem::quit()
 {
-    SAFE_DELETE(g_animJobs);
-}
-
-void AnimationSystem::checkStatus()
-{
-    ENGINE_ASSERT((m_status != kTickProcessing),  "AnimSystem Status is Processing!!!");
+    
 }
 
 void AnimationSystem::frameStart()
 {
-    m_status = kTickFrameStart;
+    set_status(kTickFrameStart);
 }
 
 void AnimationSystem::kickInJobs()
 {
     uint32_t numSkeletons = id_array::size(m_rigs);
-    if(numSkeletons == 0)
-        return;
+    if(numSkeletons == 0) return;
     PROFILE(Animation_KickInJobs);
-    m_status = kTickProcessing;
-    hkArray<hkaSampleBlendJob>& jobs = g_animJobs->m_jobs;
-    jobs.clear();
-    jobs.setSize(numSkeletons);
+    set_status(kTickProcessing);
     AnimRigInstance* rigs = id_array::begin(m_rigs);
     for (uint32_t i=0; i<numSkeletons;++i)
     {
         AnimRigInstance& instance = rigs[i];
-        g_animJobs->m_jobs[i].build(instance.m_skeleton, instance.m_pose, true);
+        m_animJobs[i].build(instance.m_skeleton, instance.m_pose, true);
     }
     hkLocalArray<hkJob*> jobPointers( numSkeletons );
     jobPointers.reserve( numSkeletons );
     for ( uint32_t i = 0; i < numSkeletons; ++i )
     {
-        jobPointers.pushBack(&( jobs[i]));
+        m_animJobs[i].pushBack(&( m_animJobs[i]));
     }
     g_threadMgr.getJobQueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
 }
 
 void AnimationSystem::tickFinishJobs()
 {
-    if(!id_array::size(m_rigs))
-        return;
+    uint32_t numSkeletons = id_array::size(m_rigs);
+    if(!numSkeletons) return;
     PROFILE(AnimationFinishJobs);
-    m_status = kTickProcessing;
-    hkArray<hkaSampleBlendJob>& jobs = g_animJobs->m_jobs;
-    for(int i=0; i<jobs.getSize();++i)
+    for(int i=0; i<numSkeletons;++i)
     {
-        jobs[i].destroy();
+        m_animJobs[i].destroy();
     }
+    set_status(kTickFinishedJobs);
 }
 
-void AnimationSystem::skinActors( Actor* actors, uint32_t num )
+void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 {
     extern void* get_anim_rig(Id);
     extern void* get_render_model(Id);
@@ -206,6 +198,7 @@ void* get_anim_fsms()
 
 Id create_anim_rig( const void* resource )
 {
+    check_status();
     AnimRigInstance inst;
     inst.init(resource);
     return id_array::create(m_rigs, inst);
@@ -213,6 +206,7 @@ Id create_anim_rig( const void* resource )
 
 void destroy_anim_rig( Id id )
 {
+    check_status();
     if(!id_array::has(m_rigs, id)) return;
     AnimRigInstance& inst = id_array::get(m_rigs, id);
     inst.destroy();

@@ -24,11 +24,7 @@ struct AnimationSystem
     void    frameStart();
     void    kickInJobs();
     void    tickFinishJobs();
-    void    checkStatus();
-
-    void    skinActors(Actor* actors, uint32_t num);
-private:
-    int                                         m_status;
+    void    skin_actors(Actor* actors, uint32_t num);
 };
 extern AnimationSystem g_animMgr;
 
