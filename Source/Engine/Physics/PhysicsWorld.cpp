@@ -496,8 +496,7 @@ void destroy_physics_proxy(Id id)
 
 void* get_physics_proxy(Id id)
 {
-    if(!id_array::has(m_proxies, id))
-        return 0;
+    if(!id_array::has(m_proxies, id)) return 0;
     return &id_array::get(m_proxies, id);
 }
 
