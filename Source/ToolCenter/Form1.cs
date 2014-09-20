@@ -142,6 +142,11 @@ namespace ToolCenter
                 {
                     Utils.DeleteFolder(subFolder);
                 }
+                string[] files = Directory.GetFiles(folder, "*.*", SearchOption.TopDirectoryOnly);
+                foreach (string file in files)
+                {
+                    Utils.DeleteFile(file);
+                }
             }
             Utils.DeleteFolder(Utils.getIntermediateDir() + "core\\actor");
             Utils.DeleteFolder(Utils.getApplicationDir() + "data");

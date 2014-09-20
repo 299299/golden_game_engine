@@ -4,6 +4,8 @@
 #include "MemorySystem.h"
 #include "Utils.h"
 #include "linear_allocator.h"
+#include "Script.h"
+#include "Resource.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -122,6 +124,11 @@ int _tmain(int argc, _TCHAR* argv[])
     default:
         break;    
     }
+
+    g_resourceMgr.loadPackageAndWait("data/core.package");
+    
+    extern Id create_script_object(const void*);
+    create_script_object(FIND_RESOURCE(ScriptResource, StringId("core/scripts/test")));
 
     g_engine.run();
     quitWebServerTool();

@@ -123,6 +123,8 @@ struct ResourceManager
     void init();
     void quit();
 
+    void offline_all_resources();
+
     ResourceFactory* findFactory(const StringId& type);
     int findFactoryIndex(const StringId& type);
     void registerFactory(const ResourceFactory& factory);

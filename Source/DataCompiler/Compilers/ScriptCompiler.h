@@ -6,6 +6,5 @@ class ScriptCompiler : public BaseCompiler
 {
 public:
     virtual std::string getFormatExt() const { return ScriptResource::getName(); };
-    virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool process(const std::string& input, const std::string& output);
 };

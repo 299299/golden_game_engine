@@ -105,7 +105,7 @@ static __create_compiler__ g_funtions[] =
     create_compiler<AnimFSMCompiler>,
     create_compiler<ShaderIncludeCompiler>,
     create_compiler<DDSCompiler>,
-    create_compiler<ScriptCompiler>(),
+    create_compiler<ScriptCompiler>,
 };
 
 void init_factories()
@@ -341,6 +341,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     g_memoryMgr.init(0,0,false,false);
+    g_script.init();
 
     showHelp();
     LOG_INIT("DataCompilerLog.html", MSG_TITLE);
@@ -488,6 +489,7 @@ int _tmain(int argc, _TCHAR* argv[])
     clear_resources();
     g_database.m_files.clear();
     g_compilerBuilder.clear();
+    g_script.quit();
     g_memoryMgr.quit();
 
     LOGD("******************************************************");

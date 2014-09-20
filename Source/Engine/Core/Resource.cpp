@@ -376,6 +376,7 @@ void ResourceManager::quit()
 
     for(size_t i=0; i<m_numPackages; ++i)
     {
+        m_packages[i]->destroyAllResources();
         m_packages[i]->destroy();
         COMMON_DEALLOC(m_packages[i]);
     }
@@ -645,6 +646,16 @@ void ResourceManager::loadPackageAndWait(const char* packageName)
     flushPackage(name);
 }
 
+
+void ResourceManager::offline_all_resources()
+{
+    setRunning(false);
+    for (uint32_t i=0; i<m_numPackages; ++i)
+    {
+        m_packages[i]->removeAllResources();
+        m_packages[i]->bringOutAllresources();
+    }
+}
 //==================================================================================
 #ifdef RESOURCE_RELOAD
 #include <unordered_map>
@@ -778,6 +789,8 @@ void ResourceManager::reloadResource(const StringId& type, bool bFireCallbacks)
         }
     }
 }
+
+
 #endif
 
 

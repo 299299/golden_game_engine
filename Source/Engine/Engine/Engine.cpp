@@ -164,11 +164,11 @@ void Engine::coreShutdown()
 void Engine::subSystemsShutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
+    g_resourceMgr.offline_all_resources();
     g_actorWorld.destroy();
     g_script.quit();
     g_animMgr.quit();
     g_physicsWorld.quit();
-    g_resourceMgr.destroyAllResources();
     Graphics::quit();
     g_resourceMgr.quit();
 }

@@ -1,6 +1,0 @@
-{
-    "color":[255, 255, 255],
-    "type":"directional",
-    "direction":[0, -1, -1],
-    "shadow":true
-}

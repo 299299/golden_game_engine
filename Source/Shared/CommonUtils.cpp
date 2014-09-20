@@ -302,7 +302,8 @@ uint32_t read_file(const std::string& fileName, char** outBuf)
     LARGE_INTEGER nFileLen;
     GetFileSizeEx(hFile, &nFileLen);
     DWORD fileSize = (DWORD)nFileLen.QuadPart;
-    char* p = (char*)malloc(fileSize);
+    char* p = (char*)malloc(fileSize + 1);
+    memset(p, 0x00, fileSize + 1);
     DWORD readLen = 0;
     ReadFile(hFile, p, fileSize, &readLen, 0);
     if(readLen != fileSize)

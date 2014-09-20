@@ -3,54 +3,37 @@
 #include "id_array.h"
 #include "config.h"
 #include <gamemonkey/gmThread.h>
+#include <gamemonkey/gmStreamBuffer.h>
 
 static IdArray<MAX_SCRIPT_OBJECT, ScriptInstance> g_scriptObjects;
 
 void* load_resource_script(const char* data, uint32_t size)
 {
     ScriptResource* script = (ScriptResource*)data;
-    script->m_code = (char*)data;
+    script->m_code = (char*)data + sizeof(ScriptResource);
     return script;
 }
 
 void bringin_resource_script(void* resource)
 {
     ScriptResource* script = (ScriptResource*)resource;
+    gmStreamBufferStatic stream(script->m_code, script->m_codeSize);
+    script->m_rootFunction = g_script.m_vm->BindLibToFunction(stream);
+    if(!script->m_rootFunction) g_script.printError();
 }
 
 void bringout_resource_script(void* resource)
 {
     ScriptResource* script = (ScriptResource*)resource;
+    //script->m_rootFunction->Destruct(g_script.m_vm);
 }
 
-Id create_script_object(const void* resource)
-{
-    ScriptInstance inst;
-    inst.init(resource);
-    return id_array::create(g_scriptObjects, inst);
-}
-void destroy_script_object(Id id)
-{
-    if(!id_array::has(g_scriptObjects, id)) return;
-    id_array::destroy(g_scriptObjects, id);
-}
-void* get_script_object(Id id)
-{
-    if(!id_array::has(g_scriptObjects, id)) return 0;
-    return &id_array::get(g_scriptObjects, id);
-}
-uint32_t num_script_objects()
-{
-    return id_array::size(g_scriptObjects);
-}
-void* get_script_objects()
-{
-    return id_array::begin(g_scriptObjects);
-}
 
 void ScriptInstance::init( const void* resource )
 {
     m_resource = (const ScriptResource*)resource;
+    bool bOK = g_script.m_vm->ExecuteFunction(m_resource->m_rootFunction, &m_threadId, true);
+
 }
 
 ScriptSystem g_script;
@@ -80,7 +63,7 @@ void ScriptSystem::quit()
     delete m_vm;
 }
 
-void ScriptSystem::handleErrors()
+void ScriptSystem::printError()
 {
     bool firstErr = true;
 
@@ -100,3 +83,36 @@ void ScriptSystem::handleErrors()
 
     compileLog.Reset();
 }
+
+void ScriptSystem::update()
+{
+    m_vm->Execute(16);
+}
+
+
+//-----------------------------------------------------------------------
+Id create_script_object(const void* resource)
+{
+    ScriptInstance inst;
+    inst.init(resource);
+    return id_array::create(g_scriptObjects, inst);
+}
+void destroy_script_object(Id id)
+{
+    if(!id_array::has(g_scriptObjects, id)) return;
+    id_array::destroy(g_scriptObjects, id);
+}
+void* get_script_object(Id id)
+{
+    if(!id_array::has(g_scriptObjects, id)) return 0;
+    return &id_array::get(g_scriptObjects, id);
+}
+uint32_t num_script_objects()
+{
+    return id_array::size(g_scriptObjects);
+}
+void* get_script_objects()
+{
+    return id_array::begin(g_scriptObjects);
+}
+//-----------------------------------------------------------------------

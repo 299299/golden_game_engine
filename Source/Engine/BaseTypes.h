@@ -75,6 +75,11 @@ struct Id
     {
         return id != other.id || index != other.index;
     }
+
+    bool is_valid() const
+    {
+        return id != INVALID_ID;
+    }
 };
 
 

@@ -33,10 +33,9 @@ void Level::unload()
 
 void Level::lookup()
 {
-    extern StringId g_componentTypes[];
     for (uint32_t i = 0; i < m_numResources; ++i)
     {
-        m_resources[i].m_resource = g_resourceMgr.findResource(g_componentTypes[i], m_resources[i].m_name);
+        m_resources[i].m_resource = g_resourceMgr.findResource(ActorResource::getType(), m_resources[i].m_name);
     }
 }
 
