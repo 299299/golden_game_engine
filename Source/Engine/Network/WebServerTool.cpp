@@ -21,6 +21,12 @@ void quitWebServerTool()
     SAFE_DELETE(g_webServerTool);
 }
 
+void frame_start_websocket( float dt )
+{
+    if(!g_webServerTool) return;
+    g_webServerTool->frame_start(dt);
+}
+
 void WebServerTool::start(uint32_t netPort)
 {
     LOGI("WebServerTool-->start %d", netPort);
@@ -76,18 +82,6 @@ void WebServerTool::onLogMessage(int logLevel, const char* logMsg)
     send(Message("logging.msg", 
          Message::Field("lvl",logLevel),
          Message::Field("msg",logMsg)));
-}
-
-
-void* WebServerTool::onMalloc(size_t size)
-{
-    return COMMON_ALLOC(char, size);
-}
-
-
-void WebServerTool::onFree(void *ptr)
-{
-    COMMON_DEALLOC(ptr);
 }
 
 void WebServerTool::onRequestQuit()

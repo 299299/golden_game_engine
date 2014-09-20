@@ -2,8 +2,11 @@
 #include "Log.h"
 #include "id_array.h"
 #include "config.h"
+#include <Windows.h>
 #include <gamemonkey/gmThread.h>
 #include <gamemonkey/gmStreamBuffer.h>
+
+#define GC_TIME (2.0f)
 
 static IdArray<MAX_SCRIPT_OBJECT, ScriptInstance> g_scriptObjects;
 
@@ -31,9 +34,16 @@ void bringout_resource_script(void* resource)
 
 void ScriptInstance::init( const void* resource )
 {
+    m_threadId = -1;
     m_resource = (const ScriptResource*)resource;
     bool bOK = g_script.m_vm->ExecuteFunction(m_resource->m_rootFunction, &m_threadId, true);
+}
 
+void ScriptInstance::destroy()
+{
+    if(m_threadId < 0) return;
+    g_script.m_vm->KillThread(m_threadId);
+    m_threadId = -1;
 }
 
 ScriptSystem g_script;
@@ -48,10 +58,13 @@ static bool GM_CDECL machine_callback(gmMachine * a_machine, gmMachineCommand a_
 static void GM_CDECL print_callback(gmMachine * a_machine, const char * a_string)
 {
     LOGI("[GM] print %s.", a_string);
+    OutputDebugString(a_string);
+    OutputDebugString("\n");
 }
 
 void ScriptSystem::init()
 {
+    m_time = 0.0f;
     m_vm = new gmMachine();
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
@@ -84,9 +97,15 @@ void ScriptSystem::printError()
     compileLog.Reset();
 }
 
-void ScriptSystem::update()
+void ScriptSystem::update(float dt)
 {
     m_vm->Execute(16);
+    m_time += dt;
+    if(m_time > GC_TIME)
+    {
+        m_time -= GC_TIME;
+        m_vm->CollectGarbage();
+    }
 }
 
 

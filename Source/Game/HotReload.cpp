@@ -22,6 +22,7 @@
 #include "AnimFSM.h"
 #include "Level.h"
 #include "Actor.h"
+#include "Script.h"
 #include <bx/bx.h>
 //==========================================================================================
 #include <Animation/Animation/Animation/hkaAnimation.h>
@@ -56,6 +57,29 @@ template <typename T, typename U> void register_component_resource_reload_callba
 {
     g_resourceMgr.registerReloadCallback(T::getType(), reload_component_resource<T, U>);
 }
+//----------------------------------------------------------------------------------------------
+template <typename T, typename U> void reload_component_resource_(void* oldResource, void* newResource)
+{
+    T* oldCompResource = (T*)oldResource;
+    T* newCompResource = (T*)newResource;
+    int type = find_component_type(T::getType());
+    uint32_t componentNum = num_components(type);
+    U* components = (U*)get_components(type);
+    LOGI("component %s instance num = %d", T::getName(), componentNum);
+    for(size_t i=0; i<componentNum; ++i)
+    {
+        if(components[i].m_resource == oldCompResource)
+        {
+            components[i].destroy();
+            components[i].init(newCompResource); //---> no destroy?? may memleak
+        }
+    }
+}
+template <typename T, typename U> void register_component_resource_reload_callback_()
+{
+    g_resourceMgr.registerReloadCallback(T::getType(), reload_component_resource_<T, U>);
+}
+//----------------------------------------------------------------------------------------------
 void reload_light_resource(void* oldResource, void* newResource)
 {
     LightResource* oldLight = (LightResource*)oldResource;
@@ -115,11 +139,6 @@ void reload_animation_resource(void* oldResource, void* newResource)
             anim->createMirrorAnimation(newAnimation);
         }
     }
-}
-
-void reload_anim_rig_resource(void* oldResource, void* newResource)
-{
-
 }
 
 //===============================================================================
@@ -318,18 +337,19 @@ void resource_hot_reload_init()
     g_resourceMgr.registerReloadCallback(ShaderProgram::getType(), reload_program_resource);
     g_resourceMgr.registerReloadCallback(Level::getType(), reload_level_resource);
     g_resourceMgr.registerReloadCallback(Animation::getType(), reload_animation_resource);
-    g_resourceMgr.registerReloadCallback(AnimRig::getType(), reload_anim_rig_resource);
     g_resourceMgr.registerReloadCallback(LightResource::getType(), reload_light_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
-    register_component_resource_reload_callback<RagdollResource,RagdollInstance>();
-    register_component_resource_reload_callback<AnimRig, AnimRigInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();
     register_component_resource_reload_callback<ReachResource, ReachInstance>();
-    register_component_resource_reload_callback<FootResource, FootInstance>();
-    register_component_resource_reload_callback<PhysicsResource, PhysicsInstance>();
-    register_component_resource_reload_callback<ProxyResource, ProxyInstance>();
-    register_component_resource_reload_callback<AnimFSM, AnimFSMInstance>();
+
+    register_component_resource_reload_callback_<RagdollResource,RagdollInstance>();
+    register_component_resource_reload_callback_<AnimRig, AnimRigInstance>();
+    register_component_resource_reload_callback_<FootResource, FootInstance>();
+    register_component_resource_reload_callback_<PhysicsResource, PhysicsInstance>();
+    register_component_resource_reload_callback_<ProxyResource, ProxyInstance>();
+    register_component_resource_reload_callback_<AnimFSM, AnimFSMInstance>();
+    register_component_resource_reload_callback_<ScriptResource, ScriptInstance>();
 }
 
 

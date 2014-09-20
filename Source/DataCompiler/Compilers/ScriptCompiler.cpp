@@ -9,11 +9,22 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     char* buf = 0;
     if(!read_file(input, &buf)) return false;
     
+    gmMachine* vm = g_script.m_vm;
     gmStreamBufferDynamic stream;
-    int nErrors = g_script.m_vm->CompileStringToLib(buf, stream);
+    int nErrors = vm->CompileStringToLib(buf, stream);
     if(nErrors > 0)
     {
-        g_script.printError();
+        gmLog & compileLog = vm->GetLog();
+        bool firstErr = true;
+        std::string scriptErr;
+        const char* msg = compileLog.GetEntry(firstErr);
+        scriptErr += msg;
+        while(msg)	
+        {
+            msg = compileLog.GetEntry(firstErr);
+            if(msg) scriptErr += msg;
+        }
+        addError("Script %s compile err: %s", input.c_str(), scriptErr.c_str());
         return false;
     }
 

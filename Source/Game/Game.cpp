@@ -89,6 +89,8 @@ int _tmain(int argc, _TCHAR* argv[])
             return 0;
         }
         initWebServerTool(6161);
+        extern void init_remote_commands();
+        init_remote_commands();
     }
 
     static const char* window_names[] =
@@ -100,6 +102,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
     registerMemoryAllocators();
     g_engine.init(cfg);
+
+    extern void resource_hot_reload_init();
+    resource_hot_reload_init();
 
     extern char g_actorName[];
     extern char g_levelName[];

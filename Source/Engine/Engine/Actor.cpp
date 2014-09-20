@@ -4,6 +4,7 @@
 #include "Resource.h"
 #include "Model.h"
 #include "Light.h"
+#include "Script.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
 #include "MemorySystem.h"

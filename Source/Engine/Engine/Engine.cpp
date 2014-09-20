@@ -11,6 +11,7 @@
 #include "Profiler.h"
 #include "Script.h"
 #include "Actor.h"
+#include "WebServerTool.h"
 //=================================================================
 #include "Log.h"
 #include "DataDef.h"
@@ -89,6 +90,7 @@ void Engine::frame(float timeStep)
     g_memoryMgr.clear(kMemoryCategoryFrame);
     if(m_updating)
     {
+        frame_start_websocket(timeStep);
         g_actorWorld.frame_start(timeStep);
         {
             PROFILE(Game_PreStep);
@@ -97,6 +99,7 @@ void Engine::frame(float timeStep)
         {
             PROFILE(Game_Step);
             g_actorWorld.step(timeStep);
+            g_script.update(timeStep);
         }
         {
             PROFILE(Game_PostStep);

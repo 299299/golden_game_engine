@@ -164,4 +164,8 @@ void console_command(const gamedevwebtools::Message &message)
     gCommands[command].m_func(data1, data2);   
 }
 
-
+void init_remote_commands()
+{
+    if(!g_webServerTool) return;
+    g_webServerTool->connect("remote.command", console_command);
+}

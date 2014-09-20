@@ -17,6 +17,8 @@ ENGINE_NATIVE_ALIGN struct ScriptResource
 struct ScriptInstance
 {
     void init(const void* resource);
+    void destroy();
+
     const ScriptResource*       m_resource;
     int                         m_threadId;
 };
@@ -26,11 +28,12 @@ struct ScriptSystem
 {
     void init();
     void quit();
-    void update();
+    void update(float dt);
     void printError();
 
     gmMachine*              m_vm;
     int                     m_threadId;
+    float                   m_time;
 };
 
 extern ScriptSystem g_script;

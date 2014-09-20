@@ -7,10 +7,6 @@ struct WebServerTool : public gamedevwebtools::Service
     void start(uint32_t netPort);
     void frame_start(float dt);
     void onLogMessage(int logLevel, const char* logMsg);
-
-    virtual void *onMalloc(size_t size);
-    virtual void onFree(void *ptr);
-
     virtual void onError(const char *errorString);
     virtual void onNewClient();
 
@@ -28,3 +24,4 @@ struct WebServerTool : public gamedevwebtools::Service
 extern WebServerTool* g_webServerTool;
 void initWebServerTool(uint32_t netPort);
 void quitWebServerTool();
+void frame_start_websocket(float dt);
