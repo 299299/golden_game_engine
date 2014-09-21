@@ -2,8 +2,12 @@ local test_func = function()
 {
     while(true)
     {
-        sleep(2);
+        sleep(5);
         print("############# HELLO GAME MONKEY ! ####################");
+        if(input.is_key_down(input.ESC))
+        {
+            shut_down();
+        }
     }
 };
 test_func();

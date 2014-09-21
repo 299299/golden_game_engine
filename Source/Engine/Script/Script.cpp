@@ -69,6 +69,8 @@ void ScriptSystem::init()
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
     gmMachine::s_printCallback = print_callback;
+    extern void register_script_api(gmMachine* machine);
+    register_script_api(m_vm);
 }
 
 void ScriptSystem::quit()
@@ -99,7 +101,7 @@ void ScriptSystem::printError()
 
 void ScriptSystem::update(float dt)
 {
-    m_vm->Execute(16);
+    int nThreadCount = m_vm->Execute(16);
     m_time += dt;
     if(m_time > GC_TIME)
     {
