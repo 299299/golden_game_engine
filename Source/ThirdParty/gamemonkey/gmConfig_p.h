@@ -25,7 +25,9 @@
 
 // These two are for MSVS 2005 security consciousness until safe std lib funcs are available
 #pragma warning(disable : 4996) // Deprecated functions
+#ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE // Allow old unsecure standard library functions, Disable some 'warning C4996 - function was deprecated'
+#endif
 
 #include <malloc.h> // alloca
 #include <new>

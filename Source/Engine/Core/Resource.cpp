@@ -381,8 +381,8 @@ void ResourceManager::quit()
         COMMON_DEALLOC(m_packages[i]);
     }
     clearRequestQueue(); 
-    COMMON_DEALLOC(m_resMapBuffer);
     SAFE_DELETE(g_resourceMap);
+    COMMON_DEALLOC(m_resMapBuffer);
     SAFE_DELETE(m_thread);
     SAFE_DELETE(m_semaphore);
 }

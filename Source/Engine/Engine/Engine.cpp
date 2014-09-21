@@ -113,7 +113,6 @@ void Engine::frame(float timeStep)
         return;
 
     PROFILE(Game_Render);
-    //
 }
 
 void Engine::applyFrameLimit(double timeMS)

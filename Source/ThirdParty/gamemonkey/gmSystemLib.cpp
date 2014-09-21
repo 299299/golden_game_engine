@@ -861,20 +861,20 @@ static gmFunctionEntry s_systemLib[] =
             %b : Abbreviated month name<BR>
             %B : Full month name<BR>
             %c : Date and time representation appropriate for locale<BR>
-            %d : Day of month as decimal number (01 – 31)<BR>
-            %H : Hour in 24-hour format (00 – 23)<BR>
-            %I : Hour in 12-hour format (01 – 12)<BR>
-            %j : Day of year as decimal number (001 – 366)<BR>
-            %m : Month as decimal number (01 – 12)<BR>
-            %M : Minute as decimal number (00 – 59)<BR>
+            %d : Day of month as decimal number (01 ?31)<BR>
+            %H : Hour in 24-hour format (00 ?23)<BR>
+            %I : Hour in 12-hour format (01 ?12)<BR>
+            %j : Day of year as decimal number (001 ?366)<BR>
+            %m : Month as decimal number (01 ?12)<BR>
+            %M : Minute as decimal number (00 ?59)<BR>
             %p : Current locale’s A.M./P.M. indicator for 12-hour clock<BR>
-            %S : Second as decimal number (00 – 59)<BR>
-            %U : Week of year as decimal number, with Sunday as first day of week (00 – 53)<BR>
-            %w : Weekday as decimal number (0 – 6; Sunday is 0)<BR>
-            %W : Week of year as decimal number, with Monday as first day of week (00 – 53)<BR>
+            %S : Second as decimal number (00 ?59)<BR>
+            %U : Week of year as decimal number, with Sunday as first day of week (00 ?53)<BR>
+            %w : Weekday as decimal number (0 ?6; Sunday is 0)<BR>
+            %W : Week of year as decimal number, with Monday as first day of week (00 ?53)<BR>
             %x : Date representation for current locale<BR>
             %X : Time representation for current locale<BR>
-            %y : Year without century, as decimal number (00 – 99)<BR>
+            %y : Year without century, as decimal number (00 ?99)<BR>
             %Y : Year with century, as decimal number<BR>
             %z, %Z : Time-zone name or abbreviation; no characters if time zone is unknown<BR>
             %% : Percent sign<BR>
