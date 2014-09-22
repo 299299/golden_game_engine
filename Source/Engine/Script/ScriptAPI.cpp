@@ -5,6 +5,7 @@
 #include "EngineAssert.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
+#include <imgui/imgui.h>
 
 #ifdef GetObject
 #undef GetObject
@@ -16,6 +17,8 @@ struct gmVariableEntry
     gmVariable  m_value;
 };
 
+//-------------------------------------------------------------------------
+// CORE
 static int GM_CDECL script_shutdown_game(gmThread* a_thread)
 {
     g_engine.shutdown();
@@ -37,7 +40,10 @@ static int GM_CDECL id_to_string(gmThread* a_thread)
     return GM_OK;
 }
 #endif
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+// INPUT
 static int GM_CDECL input_is_key_down(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -45,6 +51,7 @@ static int GM_CDECL input_is_key_down(gmThread* a_thread)
     a_thread->PushInt(g_win32Context.m_keyStatus[key_code]);
     return GM_OK;
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 // RESOURCE
@@ -88,6 +95,14 @@ static int GM_CDECL resource_package_flush(gmThread* a_thread)
     g_resourceMgr.flushPackage(StringId(pack_name), max_num);
     return GM_OK;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// GUI
+
+
+
+
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)

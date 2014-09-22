@@ -326,22 +326,24 @@ void Graphics::frame_start()
 {
     g_debugDrawMgr.frame_start();
     g_guiMgr.frame_start();
+
+    if(g_win32Context.m_sizeChanged)
+    {
+        int w = g_win32Context.m_width;
+        int h = g_win32Context.m_height;
+        bgfx::reset(w, h, g_resetFlag);
+        for (uint32_t i=0; i<g_numFrameBuffers; ++i)
+        {
+            FrameBuffer& fb = g_frameBuffers[i];
+            if(!fb.m_scaled) continue;
+            fb.resize(w, h);
+        }
+    }
 }
 
 void Graphics::frame_end()
 {
     g_guiMgr.frame_end();
-}
-
-void Graphics::resize( int w, int h )
-{
-    bgfx::reset(w, h, g_resetFlag);
-    for (uint32_t i=0; i<g_numFrameBuffers; ++i)
-    {
-        FrameBuffer& fb = g_frameBuffers[i];
-        if(!fb.m_scaled) continue;
-        fb.resize(w, h);
-    }
 }
 
 void postProcessSubmit(ShadingEnviroment* env)

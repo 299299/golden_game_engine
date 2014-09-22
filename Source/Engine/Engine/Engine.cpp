@@ -27,11 +27,6 @@ int       g_engineMode = 0;
 uint32_t  g_frameLostNum = 0;
 Engine    g_engine;
 
-static void windowSizeCallback(uint32_t w, uint32_t h)
-{
-    Graphics::resize(w, h);
-}
-
 void Engine::init( const EngineConfig& cfg )
 {
     m_running = true;
@@ -141,12 +136,6 @@ void Engine::subSystemsInit()
 
     if(!m_cfg.m_headless) g_win32Context.createWindow(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
     else g_engineMode = 1;
-
-    Win32InputCallback cb = 
-    {
-        windowSizeCallback, 0, 0, 0
-    };
-    g_win32Context.registerCallback(cb);
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init();

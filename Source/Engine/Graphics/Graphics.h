@@ -99,10 +99,6 @@ struct Graphics
     static void update(ShadingEnviroment* env, float dt);
     static void frame_start();
     static void frame_end();
-
-    //must called before draw !!
-    static void resize(int w, int h);
-
     static void screenSpaceQuad(float _textureWidth, float _textureHeight, float _width = 1.0f, float _height = 1.0f);
 
     static void setTexture(int slot, bgfx::TextureHandle handle);

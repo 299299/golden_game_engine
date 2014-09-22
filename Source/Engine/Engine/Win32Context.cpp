@@ -94,9 +94,24 @@ void Win32Context::destroyWindow()
     DestroyWindow(m_parentHwnd);
 }
 
-void Win32Context::pollWin32Events()
+void Win32Context::reset()
+{
+    m_lastWidth = m_width;
+    m_lastHeight = m_height;
+    m_sizeChanged = false;
+    m_mosueMoved = false;
+    m_last_mx = m_mx;
+    m_last_my = m_my;
+    memset(m_keyJustPressed, 0x00, sizeof(m_keyJustPressed));
+    memset(m_mouseJustPressed, 0x00, sizeof(m_mouseJustPressed));
+}
+
+void Win32Context::frame_start()
 {
     if(m_exit) return;
+
+    reset();
+
 	MSG msg;
     while (0 != PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE) )
     {
@@ -105,16 +120,12 @@ void Win32Context::pollWin32Events()
     }
     
     if(m_lastWidth != m_width || m_lastHeight != m_height)
-    {
-        for (int i=0; i<m_numCallbacks; ++i)
-        {
-            if(m_callbacks[i].m_sizedCallback)
-                m_callbacks[i].m_sizedCallback(m_width, m_height);
-        }
-        m_lastWidth = m_width;
-        m_lastHeight = m_height;
-    }
+        m_sizeChanged = true;
+
+    if(m_last_mx != m_mx || m_last_my != m_my)
+        m_mosueMoved = true;
 }
+
 
 bool Win32Context::isWindowActive() const
 {
@@ -346,15 +357,8 @@ switch (_id)
 
     case WM_MOUSEMOVE:
         {
-            int32_t mx = GET_X_LPARAM(_lparam);
-            int32_t my = GET_Y_LPARAM(_lparam);
-            m_mx = mx;
-            m_my = my;
-            for (int i=0; i<m_numCallbacks; ++i)
-            {
-                if(m_callbacks[i].m_mouseMoveCallback)
-                    m_callbacks[i].m_mouseMoveCallback(mx, my);
-            }
+            m_mx = GET_X_LPARAM(_lparam);
+            m_my = GET_Y_LPARAM(_lparam);
         }
         break;
 
@@ -362,14 +366,10 @@ switch (_id)
     case WM_LBUTTONUP:
     case WM_LBUTTONDBLCLK:
         {
-            int32_t mx = GET_X_LPARAM(_lparam);
-            int32_t my = GET_Y_LPARAM(_lparam);
+            m_mx = GET_X_LPARAM(_lparam);
+            m_my = GET_Y_LPARAM(_lparam);
             m_mouseStatus[kMouseLeft] = _id == WM_LBUTTONDOWN;
-            for (int i=0; i<m_numCallbacks; ++i)
-            {
-                if(m_callbacks[i].m_mouseCallback)
-                    m_callbacks[i].m_mouseCallback(mx, my, kMouseLeft, _id == WM_LBUTTONDOWN);
-            }
+            m_mouseJustPressed[kMouseLeft] = m_mouseStatus[kMouseLeft];
         }
         break;
 
@@ -377,14 +377,10 @@ switch (_id)
     case WM_MBUTTONUP:
     case WM_MBUTTONDBLCLK:
         {
-            int32_t mx = GET_X_LPARAM(_lparam);
-            int32_t my = GET_Y_LPARAM(_lparam);
+            m_mx = GET_X_LPARAM(_lparam);
+            m_my = GET_Y_LPARAM(_lparam);
             m_mouseStatus[kMouseMiddle] = _id == WM_MBUTTONDOWN;
-            for (int i=0; i<m_numCallbacks; ++i)
-            {
-                if(m_callbacks[i].m_mouseCallback)
-                    m_callbacks[i].m_mouseCallback(mx, my, kMouseMiddle, _id == WM_MBUTTONDOWN);
-            }
+            m_mouseJustPressed[kMouseMiddle] = m_mouseStatus[kMouseMiddle];      
         }
         break;
 
@@ -392,14 +388,10 @@ switch (_id)
     case WM_RBUTTONDOWN:
     case WM_RBUTTONDBLCLK:
         {
-            int32_t mx = GET_X_LPARAM(_lparam);
-            int32_t my = GET_Y_LPARAM(_lparam);
+            m_mx = GET_X_LPARAM(_lparam);
+            m_my = GET_Y_LPARAM(_lparam);
             m_mouseStatus[kMouseRight] = _id == WM_RBUTTONDOWN;
-            for (int i=0; i<m_numCallbacks; ++i)
-            {
-                if(m_callbacks[i].m_mouseCallback)
-                    m_callbacks[i].m_mouseCallback(mx, my, kMouseRight, _id == WM_RBUTTONDOWN);
-            }   
+            m_mouseJustPressed[kMouseRight] = m_mouseStatus[kMouseRight];
         }
         break;
 
@@ -409,11 +401,7 @@ switch (_id)
     case WM_SYSKEYUP:
         {
             m_keyStatus[_wparam] = (_id == WM_KEYDOWN || _id == WM_SYSKEYDOWN);
-            for (int i=0; i<m_numCallbacks; ++i)
-            {
-                if(m_callbacks[i].m_keyCallback)
-                    m_callbacks[i].m_keyCallback(_wparam, _id == WM_KEYDOWN || _id == WM_SYSKEYDOWN);
-            }
+            m_keyJustPressed[_wparam] = m_keyStatus[_wparam];
         }
         break;
 
@@ -422,17 +410,4 @@ switch (_id)
     }
 
     return DefWindowProc(_hwnd, _id, _wparam, _lparam);
-}
-
-int Win32Context::registerCallback( Win32InputCallback cb )
-{
-    int ret = m_numCallbacks;
-    m_callbacks[m_numCallbacks++] = cb;
-    return ret;
-}
-
-void Win32Context::unregisterCallback( int index )
-{
-    --m_numCallbacks;
-    m_callbacks[index] = m_callbacks[m_numCallbacks];
 }
