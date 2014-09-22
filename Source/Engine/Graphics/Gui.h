@@ -11,7 +11,6 @@ struct Gui
     void destroy();
 };
 
-
 extern Gui g_guiMgr;
 extern int g_dbgTexIndex;
 
