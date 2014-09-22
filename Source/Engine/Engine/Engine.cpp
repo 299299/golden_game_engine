@@ -55,7 +55,7 @@ void Engine::run()
     while (m_running)
     {
         PROFILE_BEGIN();
-        g_win32Context.pollWin32Events();
+        g_win32Context.frame_start();
         if(g_win32Context.isWindowClosed()) 
         {
             m_running = false;

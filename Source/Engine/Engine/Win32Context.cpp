@@ -99,7 +99,7 @@ void Win32Context::reset()
     m_lastWidth = m_width;
     m_lastHeight = m_height;
     m_sizeChanged = false;
-    m_mosueMoved = false;
+    m_mouseMoved = false;
     m_last_mx = m_mx;
     m_last_my = m_my;
     memset(m_keyJustPressed, 0x00, sizeof(m_keyJustPressed));
@@ -123,7 +123,7 @@ void Win32Context::frame_start()
         m_sizeChanged = true;
 
     if(m_last_mx != m_mx || m_last_my != m_my)
-        m_mosueMoved = true;
+        m_mouseMoved = true;
 }
 
 

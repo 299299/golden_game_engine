@@ -4,7 +4,7 @@
 
 class gmFunctionObject;
 class gmMachine;
-class gmVariable;
+struct gmVariable;
 class gmTableObject;
 class gmFunctionObject;
 

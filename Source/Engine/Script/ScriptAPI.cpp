@@ -109,12 +109,12 @@ static int GM_CDECL resource_package_flush(gmThread* a_thread)
     return GM_OK;
 }
 
-static int GM_CDECL resource_find(gmThread* g_thread)
+static int GM_CDECL resource_find(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(res_type, 0);
     GM_CHECK_INT_PARAM(res_name, 0);
-    a_thread->PushInt(g_resourceMgr.findResource(StringId(res_type), StringId(res_name)));
+    a_thread->PushInt((int)g_resourceMgr.findResource(StringId(res_type), StringId(res_name)));
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -127,6 +127,7 @@ static int GM_CDECL gui_dbg_print(gmThread* a_thread)
     GM_CHECK_INT_PARAM(color, 0);
     GM_CHECK_STRING_PARAM(text, 1);
     DBG_TEX_PRINTF(color, text);
+    return GM_OK;
 }
 
 static int GM_CDECL imgui_draw_text(gmThread* a_thread)
@@ -186,7 +187,7 @@ static int GM_CDECL imgui_border_button(gmThread* a_thread)
     GM_CHECK_INT_PARAM(border, 0);
     GM_CHECK_INT_PARAM(checked, 1);
     GM_CHECK_INT_PARAM(enabled, 2);
-    g_thread->PushInt(imguiBorderButton((ImguiBorder::Enum)border, checked, enabled));
+    a_thread->PushInt(imguiBorderButton((ImguiBorder::Enum)border, checked, enabled));
     return GM_OK;
 }
 
@@ -240,7 +241,7 @@ static int GM_CDECL imgui_button(gmThread* a_thread)
     GM_CHECK_STRING_PARAM(text, 0);
     GM_CHECK_INT_PARAM(enabled, 1);
     GM_CHECK_INT_PARAM(align, 1);
-    g_thread->PushInt(imguiButton(text, enabled, (ImguiAlign::Enum)align));
+    a_thread->PushInt(imguiButton(text, enabled, (ImguiAlign::Enum)align));
     return GM_OK;
 }
 
@@ -249,7 +250,7 @@ static int GM_CDECL imgui_item(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_STRING_PARAM(text, 0);
     GM_CHECK_INT_PARAM(enabled, 1);
-    g_thread->PushInt(imguiItem(text, enabled));
+    a_thread->PushInt(imguiItem(text, enabled));
     return GM_OK;
 }
 
@@ -270,7 +271,7 @@ static int GM_CDECL imgui_collapse(gmThread* a_thread)
     GM_CHECK_STRING_PARAM(sub_text, 1);
     GM_CHECK_INT_PARAM(checked, 2);
     GM_CHECK_INT_PARAM(enabled, 3);
-    g_thread->PushInt(imguiCollapse(text, sub_text, checked, enabled));
+    a_thread->PushInt(imguiCollapse(text, sub_text, checked, enabled));
     return GM_OK;
 }
 
@@ -295,7 +296,7 @@ static int GM_CDECL imgui_value(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(text, 0);
-    imgui_value(text);
+    imguiValue(text);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -358,7 +359,7 @@ static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
     GM_CHECK_INT_PARAM(depth, 7);
     hkQsTransform t;
     t.m_translation.set(x0, y0, z0);
-    t.m_rotation.setFormEulerAngles(x1, y1, z1);
+    t.m_rotation.setFromEulerAngles(x1, y1, z1);
     g_debugDrawMgr.addAxis(t, size, depth);
     return GM_OK;
 }

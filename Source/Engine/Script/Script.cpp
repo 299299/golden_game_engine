@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <gamemonkey/gmThread.h>
 #include <gamemonkey/gmStreamBuffer.h>
+#include <gamemonkey/gmCall.h>
 
 #define GC_TIME (2.0f)
 
@@ -83,11 +84,11 @@ void ScriptSystem::quit()
 
 void ScriptSystem::ready()
 {
-    m_coreTable = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
-    m_update_func = m_coreTable->Get(m_vm, "update").GetFunctionObjectSafe();
-    m_pre_step_func = m_coreTable->Get(m_vm, "pre_step").GetFunctionObjectSafe();
-    m_post_step_func = m_coreTable->Get(m_vm, "post_step").GetFunctionObjectSafe();
-    m_render_func = m_coreTable->Get(m_vm, "render").GetFunctionObjectSafe();
+    m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
+    m_update_func = m_core_table->Get(m_vm, "update").GetFunctionObjectSafe();
+    m_pre_step_func = m_core_table->Get(m_vm, "pre_step").GetFunctionObjectSafe();
+    m_post_step_func = m_core_table->Get(m_vm, "post_step").GetFunctionObjectSafe();
+    m_render_func = m_core_table->Get(m_vm, "render").GetFunctionObjectSafe();
     print_error();
 }
 
@@ -137,7 +138,8 @@ void ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_p
 
 #define CALL_STEP_FUNC(func_obj)\
         if(!func_obj) return; \
-        call.BeginFunction(m_vm, func_obj, gmVariable(m_coreTable));\
+        gmCall call; \
+        call.BeginFunction(m_vm, func_obj, gmVariable(m_core_table));\
         gmVariable dtParam(dt);\
         call.AddParam(dtParam);\
         call.End();\
@@ -168,7 +170,11 @@ void ScriptSystem::post_step(float dt)
 
 void ScriptSystem::render()
 {
-    CALL_STEP_FUNC(m_render_func);
+    if(!m_render_func) return;
+    gmCall call;
+    call.BeginFunction(m_vm, m_render_func, gmVariable(m_core_table));
+    call.End();
+    print_error();
 }
 
 //-----------------------------------------------------------------------
