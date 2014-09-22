@@ -53,6 +53,25 @@ static int GM_CDECL rgba_to_int(gmThread* a_thread)
     a_thread->PushInt(imguiRGBA(r,g,b,a));
     return GM_OK;
 }
+static int GM_CDECL string_to_id(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_STRING_PARAM(str, 0);
+    a_thread->PushInt(StringId::calculate(str));
+    return GM_OK;
+}
+static int GM_CDECL get_window_size(gmThread* a_thread)
+{
+    a_thread->PushInt(g_win32Context.m_width);
+    a_thread->PushInt(g_win32Context.m_height);
+    return GM_OK;
+}
+static int GM_CDECL subsystems_ready(gmThread* a_thread)
+{
+    Graphics::ready();
+    g_debugDrawMgr.ready();
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -61,7 +80,50 @@ static int GM_CDECL input_is_key_down(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(key_code, 0);
-    a_thread->PushInt(g_win32Context.m_keyStatus[key_code]);
+    a_thread->PushInt(g_win32Context.isKeyDown(key_code));
+    return GM_OK;
+}
+
+static int GM_CDECL input_is_key_just_pressed(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(key_code, 0);
+    a_thread->PushInt(g_win32Context.isKeyJustPressed(key_code));
+    return GM_OK;
+}
+
+static int GM_CDECL input_is_mouse_down(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(mouse_btn, 0);
+    a_thread->PushInt(g_win32Context.isMouseDown(mouse_btn));
+    return GM_OK;
+}
+
+static int GM_CDECL input_is_mouse_just_pressed(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(mouse_btn, 0);
+    a_thread->PushInt(g_win32Context.isMouseJustPressed(mouse_btn));
+    return GM_OK;
+}
+
+static int GM_CDECL input_mouse_pos(gmThread* a_thread)
+{
+    a_thread->PushInt(g_win32Context.m_mx);
+    a_thread->PushInt(g_win32Context.m_my);
+    return GM_OK;
+}
+static int GM_CDECL input_mouse_last_pos(gmThread* a_thread)
+{
+    a_thread->PushInt(g_win32Context.m_last_mx);
+    a_thread->PushInt(g_win32Context.m_last_my);
+    return GM_OK;
+}
+
+static int GM_CDECL input_is_mouse_moved(gmThread* a_thread)
+{
+    a_thread->PushInt(g_win32Context.m_mouseMoved);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -452,6 +514,8 @@ void register_script_api(gmMachine* machine)
     {
         {"shut_down", script_shutdown_game },
         {"string_to_id", string_to_id},
+        {"get_window_size", get_window_size },
+        {"subsystems_ready", subsystems_ready},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
 #endif
@@ -485,6 +549,12 @@ void register_script_api(gmMachine* machine)
     static gmFunctionEntry s_script_binding[] =  
     {
         {"is_key_down", input_is_key_down },
+        {"is_key_just_pressed", input_is_key_just_pressed },
+        {"is_mosue_down", input_is_mouse_down },
+        {"is_mouse_just_pressed", input_is_mouse_just_pressed },
+        {"mouse_pos", input_mouse_pos },
+        {"mouse_last_pos", input_mouse_last_pos },
+        {"is_mouse_moved", input_is_mouse_moved },
     };
     static gmVariableEntry s_input_values[] =
     {
