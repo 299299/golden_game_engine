@@ -166,6 +166,6 @@ bool ShaderIncludeCompiler::checkProcessing()
         return false;
     }
     if(m_mode != 0) return true;
-    if(m_packageName == "core" || m_packageName == "preview") return true;
+    if(is_common_package(m_packageName)) return true;
     return true;
 }

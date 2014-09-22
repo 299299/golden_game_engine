@@ -635,6 +635,7 @@ uint32_t  ResourceManager::findResourcesTypeOf(const StringId& type, ResourceInf
 
 void ResourceManager::loadPackageAndWait(const char* packageName)
 {
+    TIMELOG("load_package_and_wait %s", packageName);
     StringId name(packageName);
     if(loadPackage(packageName))
     {

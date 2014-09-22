@@ -1,6 +1,10 @@
 global make_splash_state = function()
 {
-    local splash_state = {};
+    local splash_state = 
+    {
+        x = 0.0,
+        y = 0.0,
+    };
 
     splash_state.init  = function()
     {
@@ -14,10 +18,27 @@ global make_splash_state = function()
 
     splash_state.pre_step = function(dt)
     {
-        local state = .game_fsm.GetCurrState();
-        if(?state)
+        if(input.is_key_down(input.ESC))
         {
-            state.pre_step(dt);
+            shut_down();
+        }
+
+        local move_speed = 50.0;
+        if(input.is_key_down(input.LEFT))
+        {
+            .x -= move_speed * dt;
+        }
+        if(input.is_key_down(input.RIGHT))
+        {
+            .x += move_speed * dt;
+        }
+        if(input.is_key_down(input.UP))
+        {
+            .y -= move_speed * dt;
+        }
+        if(input.is_key_down(input.DOWN))
+        {
+            .y += move_speed * dt;
         }
     };
 
@@ -33,10 +54,20 @@ global make_splash_state = function()
 
     splash_state.render = function()
     {
-        
+        gui.draw_rect(.x, .y, 64.0, 64.0, rgba_to_int(0,255,0));
+        graphics.draw(0);
     };
 
-    return splash_state;
-}
+    splash_state.on_enter = function(prev_state_name, prev_state_obj)
+    {
 
-make_splash_state();
+    };
+
+    splash_state.on_exit = function(a_state_name, next_state_obj)
+    {
+
+    };
+
+    splash_state.init();
+    return splash_state;
+};

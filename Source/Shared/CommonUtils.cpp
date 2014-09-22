@@ -481,6 +481,11 @@ void fixPathSlash( std::string& inout )
     string_replace(inout, "\\", "/");
 }
 
+bool is_common_package( const std::string& pack_name )
+{
+    return pack_name == "core" || pack_name == "preview" || pack_name == "boot";
+}
+
 
 
 

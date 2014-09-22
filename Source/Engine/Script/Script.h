@@ -14,6 +14,8 @@ ENGINE_NATIVE_ALIGN struct ScriptResource
     const char*             m_code;
     uint32_t                m_codeSize;
     gmFunctionObject*       m_rootFunction;
+
+    int execute() const;
 };
 
 

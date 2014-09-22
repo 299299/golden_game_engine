@@ -24,6 +24,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
             msg = compileLog.GetEntry(firstErr);
             if(msg) scriptErr += msg;
         }
+        compileLog.Reset();
         addError("Script %s compile err: %s", input.c_str(), scriptErr.c_str());
         return false;
     }

@@ -6,6 +6,7 @@
 #include "Gui.h"
 #include "Graphics.h"
 #include "DebugDraw.h"
+#include "Profiler.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -45,19 +46,12 @@ static int GM_CDECL id_to_string(gmThread* a_thread)
 #endif
 static int GM_CDECL rgba_to_int(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(4);
+    GM_CHECK_NUM_PARAMS(3);
     GM_CHECK_INT_PARAM(r, 0);
     GM_CHECK_INT_PARAM(g, 1);
     GM_CHECK_INT_PARAM(b, 2);
-    GM_CHECK_INT_PARAM(a, 3);
+    GM_INT_PARAM(a, 3, 255);
     a_thread->PushInt(imguiRGBA(r,g,b,a));
-    return GM_OK;
-}
-static int GM_CDECL string_to_id(gmThread* a_thread)
-{
-    GM_CHECK_NUM_PARAMS(1);
-    GM_CHECK_STRING_PARAM(str, 0);
-    a_thread->PushInt(StringId::calculate(str));
     return GM_OK;
 }
 static int GM_CDECL get_window_size(gmThread* a_thread)
@@ -253,7 +247,7 @@ static int GM_CDECL imgui_draw_round_rect(gmThread* a_thread)
 
 static int GM_CDECL imgui_draw_rect(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(6);
+    GM_CHECK_NUM_PARAMS(5);
     GM_CHECK_FLOAT_PARAM(x, 0);
     GM_CHECK_FLOAT_PARAM(y, 1);
     GM_CHECK_FLOAT_PARAM(w, 2);
@@ -537,6 +531,7 @@ void register_script_api(gmMachine* machine)
         {"string_to_id", string_to_id},
         {"get_window_size", get_window_size },
         {"subsystems_ready", subsystems_ready},
+        {"rgba_to_int", rgba_to_int },
         {"begin_profile", begin_profile},
         {"end_profile", end_profile},
         {"show_profile", show_profile},
@@ -597,6 +592,10 @@ void register_script_api(gmMachine* machine)
         {"F10", gmVariable(VK_F10)},
         {"F11", gmVariable(VK_F11)},
         {"F12", gmVariable(VK_F12)},
+        {"LEFT", gmVariable(VK_LEFT)},
+        {"RIGHT", gmVariable(VK_RIGHT)},
+        {"UP", gmVariable(VK_UP)},
+        {"DOWN", gmVariable(VK_DOWN)},
     };
     machine->RegisterLibrary(s_script_binding, BX_COUNTOF(s_script_binding), "input");
     register_enum_values(machine, "input", s_input_values, BX_COUNTOF(s_input_values));

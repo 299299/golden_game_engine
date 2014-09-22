@@ -6,6 +6,9 @@
 #include "linear_allocator.h"
 #include "Script.h"
 #include "Resource.h"
+#include "DebugDraw.h"
+#include "Graphics.h"
+#include "Script.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -42,8 +45,6 @@ BOOL checkSingleProcess()
     }
     else return TRUE;
 }
-
-void registerMemoryAllocators();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -100,7 +101,9 @@ int _tmain(int argc, _TCHAR* argv[])
     cfg.m_webServer = cfg.m_mode == 1;
     cfg.m_windowTitle = window_names[cfg.m_mode];
 
-    registerMemoryAllocators();
+    extern void register_memory_allocators();
+    register_memory_allocators();
+
     g_engine.init(cfg);
 
     extern void resource_hot_reload_init();
@@ -112,29 +115,12 @@ int _tmain(int argc, _TCHAR* argv[])
     if(loadEntityName) strcpy(g_actorName, loadEntityName);
     if(loadLevelName) strcpy(g_levelName, loadLevelName);
 
-    switch(cfg.m_mode)
-    {
-    case 0:
-        {
-            break;
-        }
-    case 1:
-        {
-            break;
-        }
-    case 2:
-        {
-            break;
-        }
-    default:
-        break;    
-    }
-
     g_resourceMgr.loadPackageAndWait("data/core.package");
-    
-    extern Id create_script_object(const void*);
-    create_script_object(FIND_RESOURCE(ScriptResource, StringId("core/scripts/test")));
 
+    Graphics::ready();
+    g_debugDrawMgr.ready();
+    g_script.ready();
+    
     g_engine.run();
     quitWebServerTool();
     g_engine.quit();
@@ -145,7 +131,7 @@ int _tmain(int argc, _TCHAR* argv[])
 static char             g_frameBuf[1024*1024*5];//5M Frame Mem
 static LinearAllocator  g_frameAllocator(g_frameBuf, sizeof(g_frameBuf));
 
-void registerMemoryAllocators()
+void register_memory_allocators()
 {
     g_memoryMgr.register_allocator(kMemoryCategoryFrame, &g_frameAllocator);
 }

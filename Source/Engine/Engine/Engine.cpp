@@ -86,6 +86,7 @@ void Engine::frame(float timeStep)
     if(m_updating)
     {
         frame_start_websocket(timeStep);
+        Graphics::frame_start();
         g_actorWorld.frame_start(timeStep);
         {
             PROFILE(Game_PreStep);
@@ -102,6 +103,8 @@ void Engine::frame(float timeStep)
             g_actorWorld.post_step(timeStep);
             g_script.post_step(timeStep);
         }
+
+        Graphics::frame_end();
         g_threadMgr.updateVDB(timeStep);
     }
 

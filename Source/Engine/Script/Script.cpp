@@ -3,6 +3,7 @@
 #include "id_array.h"
 #include "config.h"
 #include "EngineAssert.h"
+#include "Resource.h"
 #include <Windows.h>
 #include <gamemonkey/gmThread.h>
 #include <gamemonkey/gmStreamBuffer.h>
@@ -24,7 +25,7 @@ void bringin_resource_script(void* resource)
     ScriptResource* script = (ScriptResource*)resource;
     gmStreamBufferStatic stream(script->m_code, script->m_codeSize);
     script->m_rootFunction = g_script.m_vm->BindLibToFunction(stream);
-    if(!script->m_rootFunction) g_script.print_error();
+    g_script.print_error();
 }
 
 void bringout_resource_script(void* resource)
@@ -33,13 +34,18 @@ void bringout_resource_script(void* resource)
     //script->m_rootFunction->Destruct(g_script.m_vm);
 }
 
+int ScriptResource::execute() const
+{
+    int nThreadId = -1;
+    g_script.m_vm->ExecuteFunction(m_rootFunction, &nThreadId, true);
+    g_script.print_error();
+    return nThreadId;
+}
 
 void ScriptInstance::init( const void* resource )
 {
-    m_threadId = -1;
     m_resource = (const ScriptResource*)resource;
-    bool bOK = g_script.m_vm->ExecuteFunction(m_resource->m_rootFunction, &m_threadId, true);
-    if(!bOK) g_script.print_error();
+    m_threadId= m_resource->execute();
 }
 
 void ScriptInstance::destroy()
@@ -79,12 +85,24 @@ void ScriptSystem::init()
 
 void ScriptSystem::quit()
 {
+    if(m_core_table)
+    {
+        gmCall call;
+        call.BeginTableFunction(m_vm, "shutdown", m_core_table, gmVariable(m_core_table));
+        call.End();
+        print_error();
+    }
     delete m_vm;
 }
 
 void ScriptSystem::ready()
 {
+    ((ScriptResource*)FIND_RESOURCE(ScriptResource, StringId("core/scripts/state_machine")))->execute();
+    ((ScriptResource*)FIND_RESOURCE(ScriptResource, StringId("core/scripts/splash_state")))->execute();
+    ScriptResource* res = (ScriptResource*)FIND_RESOURCE(ScriptResource, StringId("core/scripts/core"));
+    res->execute();
     m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
+    ENGINE_ASSERT(m_core_table, "get g_core failed.");
     m_update_func = m_core_table->Get(m_vm, "update").GetFunctionObjectSafe();
     m_pre_step_func = m_core_table->Get(m_vm, "pre_step").GetFunctionObjectSafe();
     m_post_step_func = m_core_table->Get(m_vm, "post_step").GetFunctionObjectSafe();
@@ -101,7 +119,7 @@ void ScriptSystem::print_error()
 
     if ( msg )
     {
-        LOGE("#############################\n[GameMonkey Run-time Error]:");
+        LOGE("[GameMonkey Run-time Error]:");
     }
 
     while(msg)	
@@ -152,7 +170,12 @@ void ScriptSystem::pre_step(float dt)
 
 void ScriptSystem::update(float dt)
 {
-    CALL_STEP_FUNC(m_update_func);
+    if(m_update_func)
+    {
+        gmCall call;
+        call.BeginFunction(m_vm, m_render_func, gmVariable(m_core_table));
+        call.End();
+    }
     int nThreadCount = m_vm->Execute(16);
     m_time += dt;
     if(m_time > GC_TIME)
@@ -203,3 +226,5 @@ void* get_script_objects()
     return id_array::begin(g_scriptObjects);
 }
 //-----------------------------------------------------------------------
+
+

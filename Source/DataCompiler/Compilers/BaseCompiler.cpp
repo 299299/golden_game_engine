@@ -77,7 +77,7 @@ bool BaseCompiler::checkProcessing()
         m_skipped = true;
         return false;
     }
-    if(m_packageName == "core" || m_packageName == "preview") return true;
+    if(is_common_package(m_packageName)) return true;
     std::string resourceName = get_resource_name(m_output);
     for (size_t i=0; i<g_levels.size(); ++i)
     {

@@ -1,14 +1,18 @@
 
 local create_core = function()
 {
-    local core = {};
+    local core = 
+    {
+        game_fsm = null,
+    };
 
     core.init = function()
     {
         print("game core init.");
-        core.game_fsm = MakeStateMachine();
-        core.game_fsm.add_state("splash_state", make_splash_state());
-        core.game_fsm.change_to("splash_state");
+        .game_fsm = make_state_machine();
+        local state = make_splash_state();
+        .game_fsm.add_state("splash_state", state);
+        .game_fsm.change_to("splash_state");
     };
 
     core.shutdown = function()
@@ -19,8 +23,8 @@ local create_core = function()
 
     core.pre_step = function(dt)
     {
-        local state = .game_fsm.GetCurrState();
-        if(?state)
+        local state = .game_fsm.get_cur_state();
+        if( state != null )
         {
             state.pre_step(dt);
         }
@@ -28,13 +32,13 @@ local create_core = function()
 
     core.update = function(dt)
     {
-        .game_fsm.Update(dt);
+        .game_fsm.update(dt);
     };
 
     core.post_step = function(dt)
     {
-        local state = .game_fsm.GetCurrState();
-        if(?state)
+        local state = .game_fsm.get_cur_state();
+        if( state != null )
         {
             state.post_step(dt);
         }
@@ -42,12 +46,14 @@ local create_core = function()
 
     core.render = function()
     {
-        local state = .game_fsm.GetCurrState();
-        if(?state)
+        local state = .game_fsm.get_cur_state();
+        if( state != null )
         {
             state.render();
         }
     };
+
+    return core;
 };
 
 global g_core = create_core();

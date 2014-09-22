@@ -57,6 +57,7 @@ int         find_char(const char* data, uint32_t size, char c);
 void        msgBox(const char* text, const char* title);
 std::string get_last_string(const std::string& input, char c, int count);
 bool        str_begin_with(const std::string& str1, const std::string& str2);
+bool        is_common_package(const std::string& pack_name);
 
 typedef tinystl::unordered_map<uint32_t, uint64_t> ResourceFileMap;
 struct ResourceFileDataBase
