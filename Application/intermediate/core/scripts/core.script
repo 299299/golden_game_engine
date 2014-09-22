@@ -1,0 +1,54 @@
+
+local create_core = function()
+{
+    local core = {};
+
+    core.init = function()
+    {
+        print("game core init.");
+        core.game_fsm = MakeStateMachine();
+        core.game_fsm.add_state("splash_state", make_splash_state());
+        core.game_fsm.change_to("splash_state");
+    };
+
+    core.shutdown = function()
+    {
+        print("game core shutdown.");
+        .game_fsm.release();
+    };
+
+    core.pre_step = function(dt)
+    {
+        local state = .game_fsm.GetCurrState();
+        if(?state)
+        {
+            state.pre_step(dt);
+        }
+    };
+
+    core.update = function(dt)
+    {
+        .game_fsm.Update(dt);
+    };
+
+    core.post_step = function(dt)
+    {
+        local state = .game_fsm.GetCurrState();
+        if(?state)
+        {
+            state.post_step(dt);
+        }
+    };
+
+    core.render = function()
+    {
+        local state = .game_fsm.GetCurrState();
+        if(?state)
+        {
+            state.render();
+        }
+    };
+};
+
+global g_core = create_core();
+g_core.init();

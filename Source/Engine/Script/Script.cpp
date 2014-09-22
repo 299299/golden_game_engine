@@ -2,6 +2,7 @@
 #include "Log.h"
 #include "id_array.h"
 #include "config.h"
+#include "EngineAssert.h"
 #include <Windows.h>
 #include <gamemonkey/gmThread.h>
 #include <gamemonkey/gmStreamBuffer.h>
@@ -22,7 +23,7 @@ void bringin_resource_script(void* resource)
     ScriptResource* script = (ScriptResource*)resource;
     gmStreamBufferStatic stream(script->m_code, script->m_codeSize);
     script->m_rootFunction = g_script.m_vm->BindLibToFunction(stream);
-    if(!script->m_rootFunction) g_script.printError();
+    if(!script->m_rootFunction) g_script.print_error();
 }
 
 void bringout_resource_script(void* resource)
@@ -37,6 +38,7 @@ void ScriptInstance::init( const void* resource )
     m_threadId = -1;
     m_resource = (const ScriptResource*)resource;
     bool bOK = g_script.m_vm->ExecuteFunction(m_resource->m_rootFunction, &m_threadId, true);
+    if(!bOK) g_script.print_error();
 }
 
 void ScriptInstance::destroy()
@@ -64,13 +66,14 @@ static void GM_CDECL print_callback(gmMachine * a_machine, const char * a_string
 
 void ScriptSystem::init()
 {
-    m_time = 0.0f;
+    memset(this, 0x00, sizeof(ScriptSystem));
     m_vm = new gmMachine();
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
     gmMachine::s_printCallback = print_callback;
     extern void register_script_api(gmMachine* machine);
     register_script_api(m_vm);
+    print_error();
 }
 
 void ScriptSystem::quit()
@@ -78,7 +81,17 @@ void ScriptSystem::quit()
     delete m_vm;
 }
 
-void ScriptSystem::printError()
+void ScriptSystem::ready()
+{
+    m_coreTable = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
+    m_update_func = m_coreTable->Get(m_vm, "update").GetFunctionObjectSafe();
+    m_pre_step_func = m_coreTable->Get(m_vm, "pre_step").GetFunctionObjectSafe();
+    m_post_step_func = m_coreTable->Get(m_vm, "post_step").GetFunctionObjectSafe();
+    m_render_func = m_coreTable->Get(m_vm, "render").GetFunctionObjectSafe();
+    print_error();
+}
+
+void ScriptSystem::print_error()
 {
     bool firstErr = true;
 
@@ -99,8 +112,45 @@ void ScriptSystem::printError()
     compileLog.Reset();
 }
 
+void ScriptSystem::call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param)
+{
+    gmTableObject* table = m_vm->GetGlobals()->Get(m_vm, a_obj_name).GetTableObjectSafe();
+    if(table) {
+        LOGE("not find table %s", a_obj_name);
+        return;
+    }
+    gmCall call;
+    call.BeginTableFunction(m_vm, a_func_name, table, gmVariable(table));
+    if ( a_param ) call.AddParam( *a_param );
+    call.End();
+    print_error();
+}
+
+void ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_param)
+{
+    gmCall call;
+    call.BeginGlobalFunction(m_vm, a_func_name);
+    if(a_param) call.AddParam(*a_param);
+    call.End();
+    print_error();
+}
+
+#define CALL_STEP_FUNC(func_obj)\
+        if(!func_obj) return; \
+        call.BeginFunction(m_vm, func_obj, gmVariable(m_coreTable));\
+        gmVariable dtParam(dt);\
+        call.AddParam(dtParam);\
+        call.End();\
+        print_error();
+
+void ScriptSystem::pre_step(float dt)
+{
+    CALL_STEP_FUNC(m_pre_step_func);
+}
+
 void ScriptSystem::update(float dt)
 {
+    CALL_STEP_FUNC(m_update_func);
     int nThreadCount = m_vm->Execute(16);
     m_time += dt;
     if(m_time > GC_TIME)
@@ -108,8 +158,18 @@ void ScriptSystem::update(float dt)
         m_time -= GC_TIME;
         m_vm->CollectGarbage();
     }
+    print_error();
 }
 
+void ScriptSystem::post_step(float dt)
+{
+    CALL_STEP_FUNC(m_post_step_func);
+}
+
+void ScriptSystem::render()
+{
+    CALL_STEP_FUNC(m_render_func);
+}
 
 //-----------------------------------------------------------------------
 Id create_script_object(const void* resource)

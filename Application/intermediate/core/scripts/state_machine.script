@@ -1,0 +1,89 @@
+global MakeStateMachine = function()
+{
+    local StateMachine = 
+    {
+        // collection of all states
+        states = {}, 
+
+        // current state
+        curr_state = null,
+        curr_state_name = "",
+    };
+
+    // get funcs
+    StateMachine.get_cur_state = function() { return .curr_state; };
+    StateMachine.get_cur_state_name = function() { return .curr_state_name; };
+
+    // change to a new state
+    StateMachine.change_to = function( a_state_name )
+    {
+        local next_state_obj = .GetState(a_state_name);
+        local prev_state_obj = .curr_state;
+        local prev_state_name = .curr_state_name;
+
+        if ( ?.curr_state )
+        {
+            .curr_state.OnExit( a_state_name, next_state_obj );
+        }
+
+        // go towards next state
+        .curr_state_name = a_state_name;
+        .curr_state = next_state_obj;
+        .curr_state.time_duration = 0.0f;
+        .curr_state.OnEnter( prev_state_name, prev_state_obj );
+    };
+
+    // add a state into the machine
+    StateMachine.add_state = function(a_state_name, a_state_obj)
+    {
+        assert(!.HasState(a_state_name));
+        assert(?a_state_name);
+        assert(?a_state_obj);
+
+        .states[a_state_name] = a_state_obj;
+        a_state_obj.name = a_state_name;
+        a_state_obj.parent = this;
+    };
+
+    StateMachine.get_state = function(a_state_name)
+    {
+        local state = .states[a_state_name];
+        assert(?state);
+        return state;
+    };
+
+    StateMachine.has_state = function(a_state_name)
+    {
+        return ?.states[a_state_name];
+    };
+    
+    // need to call the state machine Update manually
+    StateMachine.update = function(dt)
+    {
+        if (?.curr_state)
+        {
+            .curr_state.update();
+            .curr_state.time_duration += dt;
+        }
+    };
+
+    StateMachine.release = function()
+    {
+        foreach( state in .states )
+        {
+            state.parent = null;
+            state.release();
+        }
+
+        .states = null;
+        .curr_state = null;
+        .owner = null;
+    };
+
+    StateMachine.init = function()
+    {
+    };
+
+    StateMachine.init();    
+    return StateMachine;
+};

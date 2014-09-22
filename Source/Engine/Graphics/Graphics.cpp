@@ -203,7 +203,7 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     bgfx::setViewName(kGUIViewId, "gui");
 }
 
-void Graphics::postInit()
+void Graphics::ready()
 {
     extern  int  g_engineMode;
     if(g_engineMode == 1)

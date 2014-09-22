@@ -4,6 +4,8 @@
 #include "Resource.h"
 #include "EngineAssert.h"
 #include "Gui.h"
+#include "Graphics.h"
+#include "DebugDraw.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -184,7 +186,7 @@ static int GM_CDECL imgui_border_button(gmThread* a_thread)
     GM_CHECK_INT_PARAM(border, 0);
     GM_CHECK_INT_PARAM(checked, 1);
     GM_CHECK_INT_PARAM(enabled, 2);
-    imguiBorderButton((ImguiBorder::Enum)border, checked, enabled);
+    g_thread->PushInt(imguiBorderButton((ImguiBorder::Enum)border, checked, enabled));
     return GM_OK;
 }
 
@@ -238,7 +240,7 @@ static int GM_CDECL imgui_button(gmThread* a_thread)
     GM_CHECK_STRING_PARAM(text, 0);
     GM_CHECK_INT_PARAM(enabled, 1);
     GM_CHECK_INT_PARAM(align, 1);
-    imguiButton(text, enabled, (ImguiAlign::Enum)align);
+    g_thread->PushInt(imguiButton(text, enabled, (ImguiAlign::Enum)align));
     return GM_OK;
 }
 
@@ -247,7 +249,7 @@ static int GM_CDECL imgui_item(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_STRING_PARAM(text, 0);
     GM_CHECK_INT_PARAM(enabled, 1);
-    imguiItem(text, enabled);
+    g_thread->PushInt(imguiItem(text, enabled));
     return GM_OK;
 }
 
@@ -268,7 +270,7 @@ static int GM_CDECL imgui_collapse(gmThread* a_thread)
     GM_CHECK_STRING_PARAM(sub_text, 1);
     GM_CHECK_INT_PARAM(checked, 2);
     GM_CHECK_INT_PARAM(enabled, 3);
-    imguiCollapse(text, sub_text, checked, enabled);
+    g_thread->PushInt(imguiCollapse(text, sub_text, checked, enabled));
     return GM_OK;
 }
 
@@ -296,13 +298,146 @@ static int GM_CDECL imgui_value(gmThread* a_thread)
     imgui_value(text);
     return GM_OK;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+// DRAW
+static int GM_CDECL graphics_draw(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(shading_env_addr, 0);
+    Graphics::draw((ShadingEnviroment*)shading_env_addr);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(8);
+    GM_CHECK_FLOAT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_INT_PARAM(color, 6);
+    GM_CHECK_FLOAT_PARAM(depth, 7);
+    float start[] = {x0, y0, z0};
+    float end[] = {x1, y1, z1};
+    g_debugDrawMgr.addLine(start, end, color, depth);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_aabb(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(8);
+    GM_CHECK_FLOAT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_INT_PARAM(color, 6);
+    GM_CHECK_INT_PARAM(depth, 7);
+    float min[] = {x0, y0, z0};
+    float max[] = {x1, y1, z1};
+    g_debugDrawMgr.addAabb(min, max, color, depth);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
+{
+    //TODO
+    GM_CHECK_NUM_PARAMS(8);
+    GM_CHECK_FLOAT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_FLOAT_PARAM(size, 6);
+    GM_CHECK_INT_PARAM(depth, 7);
+    hkQsTransform t;
+    t.m_translation.set(x0, y0, z0);
+    t.m_rotation.setFormEulerAngles(x1, y1, z1);
+    g_debugDrawMgr.addAxis(t, size, depth);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(6);
+    GM_CHECK_FLOAT_PARAM(x, 0);
+    GM_CHECK_FLOAT_PARAM(y, 1);
+    GM_CHECK_FLOAT_PARAM(z, 2);
+    GM_CHECK_FLOAT_PARAM(size, 3);
+    GM_CHECK_INT_PARAM(color, 4);
+    GM_CHECK_INT_PARAM(depth, 5);
+    float pos[] = {x, y, z};
+    g_debugDrawMgr.addCross(pos, size, color, depth);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_3d_text(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_FLOAT_PARAM(x, 0);
+    GM_CHECK_FLOAT_PARAM(y, 1);
+    GM_CHECK_FLOAT_PARAM(z, 2);
+    GM_CHECK_STRING_PARAM(text, 3);
+    GM_CHECK_INT_PARAM(color, 4);
+    float pos[] = {x, y, z};
+    g_debugDrawMgr.add3DText(pos, text, color);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_sphere(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(6);
+    GM_CHECK_FLOAT_PARAM(x, 0);
+    GM_CHECK_FLOAT_PARAM(y, 1);
+    GM_CHECK_FLOAT_PARAM(z, 2);
+    GM_CHECK_FLOAT_PARAM(radius, 3);
+    GM_CHECK_INT_PARAM(color, 4);
+    GM_CHECK_INT_PARAM(depth, 5);
+    float pos[] = {x, y, z};
+    g_debugDrawMgr.addCross(pos, radius, color, depth);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_circle(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(9);
+    GM_CHECK_FLOAT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_FLOAT_PARAM(radius, 6);
+    GM_CHECK_INT_PARAM(color, 7);
+    GM_CHECK_INT_PARAM(depth, 8);
+    float pos[] = {x0, y0, z0};
+    float normal[] = {x1, y1, z1};
+    g_debugDrawMgr.addCircle(pos, normal, radius, color, depth);
+    return GM_OK;
+}
+
+static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(4);
+    GM_CHECK_INT_PARAM(grid_num, 0);
+    GM_CHECK_FLOAT_PARAM(grid_width, 1);
+    GM_CHECK_INT_PARAM(color, 2);
+    GM_CHECK_INT_PARAM(depth, 3);
+    g_debugDrawMgr.addGrid(grid_num, grid_width, color, depth);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
 {
     gmTableObject* table = machine->GetGlobals();
-    if(libName) table = machine->GetGlobals()->Get(machine, libName).GetTableObjectSafe();
+    if(libName) table = table->Get(machine, libName).GetTableObjectSafe();
     ENGINE_ASSERT(table, "can not find script table %s", libName);
     for(size_t i = 0; i < numEntries; ++i)
         table->Set(machine, entries[i].m_name, entries[i].m_value);
@@ -412,6 +547,21 @@ void register_script_api(gmMachine* machine)
     };
     machine->RegisterLibrary(s_gui_binding, BX_COUNTOF(s_gui_binding), "gui");
     register_enum_values(machine, "gui", s_gui_values, BX_COUNTOF(s_gui_values));
+
+    //----------------------------------------------------------
+    // GRAPHICS
+    static gmFunctionEntry s_graphics_binding[] =
+    {
+        {"draw", graphics_draw},
+        {"debug_add_line", debug_draw_add_line},
+        {"debug_add_aabb", debug_draw_add_aabb},
+        {"debug_add_axis", debug_draw_add_axis},
+        {"debug_add_3d_text", debug_draw_add_3d_text},
+        {"debug_add_sphere", debug_draw_add_sphere},
+        {"debug_add_sphere", debug_draw_add_circle},
+        {"debug_add_grid", debug_draw_add_grid},
+    };
+    machine->RegisterLibrary(s_graphics_binding, BX_COUNTOF(s_graphics_binding), "graphics");
 
 
 }

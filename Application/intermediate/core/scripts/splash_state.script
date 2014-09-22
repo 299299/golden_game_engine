@@ -1,0 +1,42 @@
+global make_splash_state = function()
+{
+    local splash_state = {};
+
+    splash_state.init  = function()
+    {
+
+    };
+
+    splash_state.release  = function()
+    {
+
+    };
+
+    splash_state.pre_step = function(dt)
+    {
+        local state = .game_fsm.GetCurrState();
+        if(?state)
+        {
+            state.pre_step(dt);
+        }
+    };
+
+    splash_state.update = function(dt)
+    {
+        
+    };
+
+    splash_state.post_step = function(dt)
+    {
+        
+    };
+
+    splash_state.render = function()
+    {
+        
+    };
+
+    return splash_state;
+}
+
+make_splash_state();

@@ -29,7 +29,7 @@ struct DebugDrawManager
     void addAabb(const float* min, const float* max, uint32_t color, bool bDepth);
     void addAxis(const hkQsTransform& t, float size = 0.25f, bool bDepth = false);
     void addCross(const float* pos, float size, uint32_t color, bool bDepth);
-    void add3DText(const char* text, const float* pos, uint32_t color);
+    void add3DText(const float* pos, const char* text, uint32_t color);
     void addSphere(const float* pos, float radius, uint32_t color, bool bDepth);
     void addCircle(const float* pos, const float* normal, float raidus, uint32_t color, bool bDepth);
     void addTriangle(const float* v0, const float* v1, const float* v2, uint32_t color, bool bDepth);
