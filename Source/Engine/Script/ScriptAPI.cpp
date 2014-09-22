@@ -70,8 +70,29 @@ static int GM_CDECL subsystems_ready(gmThread* a_thread)
 {
     Graphics::ready();
     g_debugDrawMgr.ready();
+    return GM_OK;
 }
-
+static int GM_CDECL begin_profile(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_STRING_PARAM(name, 0);
+    g_profiler.BeginBlock(name);
+    return GM_OK;
+}
+static int GM_CDECL end_profile(gmThread* a_thread)
+{
+    g_profiler.EndBlock();
+    return GM_OK;
+}
+static int GM_CDECL show_profile(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_INT_PARAM(show_unused, 0);
+    GM_CHECK_INT_PARAM(show_total, 1);
+    GM_CHECK_INT_PARAM(max_depth, 2);
+    g_profiler.Dump(show_unused, show_total, max_depth);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -516,6 +537,9 @@ void register_script_api(gmMachine* machine)
         {"string_to_id", string_to_id},
         {"get_window_size", get_window_size },
         {"subsystems_ready", subsystems_ready},
+        {"begin_profile", begin_profile},
+        {"end_profile", end_profile},
+        {"show_profile", show_profile},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
 #endif
