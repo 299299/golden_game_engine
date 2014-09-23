@@ -210,9 +210,9 @@ void Graphics::ready()
         return;
 
     TIMELOG("Graphics::PostInit");
-    g_postProcess.m_blurShader = findShader("hdr_blur")->m_handle;
-    g_postProcess.m_brightShader = findShader("hdr_bright")->m_handle;
-    g_postProcess.m_combineShader = findShader("hdr_combine")->m_handle;
+    g_postProcess.m_blurShader = find_shader("hdr_blur")->m_handle;
+    g_postProcess.m_brightShader = find_shader("hdr_bright")->m_handle;
+    g_postProcess.m_combineShader = find_shader("hdr_combine")->m_handle;
     g_status = 2;
     g_debugDrawMgr.ready();
 }
@@ -359,7 +359,7 @@ void postProcessSubmit(ShadingEnviroment* env)
 
     FrameBuffer* fb = g_postProcess.m_brightFB;
     fb->begin(kHDRBrightViewId);
-    Graphics::setTexture(TEX_COLOR_SLOT, colorTex);
+    Graphics::set_texture(TEX_COLOR_SLOT, colorTex);
     bgfx::setProgram(g_postProcess.m_brightShader);
     fb->end(kHDRBrightViewId);
 
@@ -374,7 +374,7 @@ void postProcessSubmit(ShadingEnviroment* env)
 
         // horizontalBlur
         hfb->begin(hViewId);
-        Graphics::setTexture(TEX_COLOR_SLOT, current->m_handle);
+        Graphics::set_texture(TEX_COLOR_SLOT, current->m_handle);
         bgfx::setProgram(g_postProcess.m_blurShader);
         dirParams[0] = 1.0f;
         dirParams[1] = 0.0f;
@@ -383,7 +383,7 @@ void postProcessSubmit(ShadingEnviroment* env)
 
         //verticalBlur
         vfb->begin(vViewId);
-        Graphics::setTexture(TEX_COLOR_SLOT, hfb->m_handle);
+        Graphics::set_texture(TEX_COLOR_SLOT, hfb->m_handle);
         bgfx::setProgram(g_postProcess.m_blurShader);
         dirParams[0] = 0.0f;
         dirParams[1] = 1.0f;
@@ -394,15 +394,15 @@ void postProcessSubmit(ShadingEnviroment* env)
     }
 
     bgfx::setViewRect(kCombineViewId, 0, 0, width, height);
-    Graphics::setTexture(TEX_COLOR_SLOT, colorTex);
+    Graphics::set_texture(TEX_COLOR_SLOT, colorTex);
     for (int i = 1; i <= N_PASSES; ++i)
     {
-        Graphics::setTexture(i, g_postProcess.m_blurFB[i-1][1]->m_handle);
+        Graphics::set_texture(i, g_postProcess.m_blurFB[i-1][1]->m_handle);
     }
-    Graphics::setTexture(N_PASSES+1, env->getCurrentColorGradingTex());
+    Graphics::set_texture(N_PASSES+1, env->get_colorgrading_tex());
     bgfx::setProgram(g_postProcess.m_combineShader);
     bgfx::setState(postprocess_state);
-    Graphics::screenSpaceQuad((float)width, (float)height);
+    Graphics::screenspace_quad((float)width, (float)height);
     bgfx::submit(kCombineViewId);
 }
 
@@ -441,21 +441,21 @@ void FrameBuffer::begin(uint32_t viewId)
 void FrameBuffer::end(uint32_t viewId)
 {
     bgfx::setState(postprocess_state);
-    Graphics::screenSpaceQuad((float)m_realSize[0], (float)m_realSize[1]);
+    Graphics::screenspace_quad((float)m_realSize[0], (float)m_realSize[1]);
     bgfx::submit(viewId);
 }
 
-void Graphics::setTexture( int slot, bgfx::TextureHandle handle )
+void Graphics::set_texture( int slot, bgfx::TextureHandle handle )
 {
     bgfx::setTexture(slot, g_uniformPerObject.m_tex[slot], handle);
 }
 
-void Graphics::setTexture( int slot, bgfx::FrameBufferHandle handle )
+void Graphics::set_texture( int slot, bgfx::FrameBufferHandle handle )
 {
     bgfx::setTexture(slot, g_uniformPerObject.m_tex[slot], handle);
 }
 
-void Graphics::screenSpaceQuad(float _textureWidth, float _textureHeight, float _width, float _height)
+void Graphics::screenspace_quad(float _textureWidth, float _textureHeight, float _width, float _height)
 {
     if (!bgfx::checkAvailTransientVertexBuffer(3, PosTexCoord0Vertex::ms_decl))
     {

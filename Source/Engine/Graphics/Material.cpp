@@ -17,24 +17,24 @@ void Material::lookup()
     }
 }
 
-void Material::bringIn()
+void Material::bringin()
 {
     for (uint32_t i=0; i<m_numSamplers; ++i)
     {
         MatSampler& sampler = m_samplers[i];
         Texture* tex = sampler.m_texture;
         if(!tex) continue;
-        tex->bringIn(sampler.m_flags);
+        tex->bringin(sampler.m_flags);
     }
 }
 
-void Material::changeTexture( int slot, const StringId& tex )
+void Material::change_texture( int slot, const StringId& tex )
 {
     MatSampler& sampler = m_samplers[slot];
     Texture* texture = FIND_RESOURCE(Texture, tex);
     if(!texture) return;
     sampler.m_texture = texture;
-    texture->bringIn(sampler.m_flags);
+    texture->bringin(sampler.m_flags);
 }
 
 void Material::submit() const
@@ -46,11 +46,11 @@ void Material::submit() const
     {
         const MatSampler& sampler = m_samplers[i];
         if(!sampler.m_texture) continue;
-        Graphics::setTexture(sampler.m_type, sampler.m_texture->m_handle);
+        Graphics::set_texture(sampler.m_type, sampler.m_texture->m_handle);
     }
     // Set shadow map.
     extern ShadowMap            g_shadowMap;
-    Graphics::setTexture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
+    Graphics::set_texture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
 
     extern UniformPerObject     g_uniformPerObject;
     bgfx::setUniform(g_uniformPerObject.m_uv, m_offsetAndRepeat);
@@ -75,7 +75,7 @@ void Material::submit() const
     bgfx::setState(m_state);
 }
 
-void Material::submitShadow() const
+void Material::submit_shadow() const
 {
     if(!m_shadowShader) return;
 
@@ -83,25 +83,10 @@ void Material::submitShadow() const
     bgfx::setState(SHADOW_RENDER_STATE);
 }
 
-void Material::dump()
-{
-    LOGI("dump material ------------------>");
-    LOGI("shader = %s, shadow-shader = %s", stringid_lookup(m_shaderName), stringid_lookup(m_shadowShaderName));
-    LOGI("uv--> %f,%f,%f,%f", m_offsetAndRepeat[0], m_offsetAndRepeat[1], m_offsetAndRepeat[2], m_offsetAndRepeat[3]);
-    LOGI("diffuse--> %f,%f,%f,%f", m_diffuse[0], m_diffuse[1], m_diffuse[2], m_diffuse[3]);
-    LOGI("specular--> %f,%f,%f,%f", m_specular[0], m_specular[1], m_specular[2], m_specular[3]);
-    LOGI("params1--> %f,%f,%f,%f", m_params1[0], m_params1[1], m_params1[2], m_params1[3]);
-    LOGI("opacity--> %f,%f,%f,%f", m_opacityParams[0], m_opacityParams[1], m_opacityParams[2], m_opacityParams[3]);
-    LOGI("state = %llu, num-samplers = %u, flags = %d", m_state, m_numSamplers, m_flags);
-}
-
 void* load_resource_material(const char* data, uint32_t size)
 {
     Material* m = (Material*)data;
     m->m_samplers = (MatSampler*)(data + sizeof(Material));
-#ifdef DUMP_RESOURCE
-    m->dump();
-#endif
     return m;
 }
 
@@ -114,5 +99,5 @@ void lookup_resource_material(void * resource)
 void bringin_resource_material( void* resource )
 {
     Material* mat = (Material*)resource;
-    mat->bringIn();
+    mat->bringin();
 }

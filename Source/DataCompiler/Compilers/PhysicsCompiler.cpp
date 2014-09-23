@@ -39,7 +39,7 @@ bool ProxyCompiler::readJSON(const JsonValue& root)
     ProxyResource proxy;
     memset(&proxy, 0x00, sizeof(proxy));
 
-    vec3Make(proxy.m_gravity, 0, -9.8f, 0);
+    vec3_make(proxy.m_gravity, 0, -9.8f, 0);
     proxy.m_radius = JSON_GetFloat(root.GetValue("radius"), 0.5f);
     proxy.m_standHeight = JSON_GetFloat(root.GetValue("stand_height"), 2.0f);
     proxy.m_friction = JSON_GetFloat(root.GetValue("friction"), 0.9f);

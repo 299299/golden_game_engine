@@ -210,7 +210,7 @@ void reload_texture_resource(void* oldResource, void* newResource)
                 sampler.m_texture = newTex;
             }
         }
-        mat->bringIn();
+        mat->bringin();
     }
 }
 void reload_texture_3d_resource(void* oldResource, void* newResource)
@@ -287,10 +287,10 @@ void reload_shader_resource(void* oldResource, void* newResource)
            program->m_ps == oldShader)
         {
             bgfx::ProgramHandle oldHandle = program->m_handle;
-            program->bringOut();
+            program->bringout();
             if(program->m_vs == oldShader) program->m_vs = newShader;
             if(program->m_ps == oldShader) program->m_ps = newShader;
-            program->bringIn();
+            program->bringin();
             bgfx::ProgramHandle newHandle = program->m_handle;
             
             CHECK_PROGRAM_HANDLE(g_postProcess.m_brightShader);

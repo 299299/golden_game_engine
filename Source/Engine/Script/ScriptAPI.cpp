@@ -401,7 +401,7 @@ static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
     GM_CHECK_FLOAT_PARAM(depth, 7);
     float start[] = {x0, y0, z0};
     float end[] = {x1, y1, z1};
-    g_debugDrawMgr.addLine(start, end, color, depth);
+    g_debugDrawMgr.add_line(start, end, color, depth);
     return GM_OK;
 }
 
@@ -418,7 +418,7 @@ static int GM_CDECL debug_draw_add_aabb(gmThread* a_thread)
     GM_CHECK_INT_PARAM(depth, 7);
     float min[] = {x0, y0, z0};
     float max[] = {x1, y1, z1};
-    g_debugDrawMgr.addAabb(min, max, color, depth);
+    g_debugDrawMgr.add_aabb(min, max, color, depth);
     return GM_OK;
 }
 
@@ -437,7 +437,7 @@ static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
     hkQsTransform t;
     t.m_translation.set(x0, y0, z0);
     t.m_rotation.setFromEulerAngles(x1, y1, z1);
-    g_debugDrawMgr.addAxis(t, size, depth);
+    g_debugDrawMgr.add_axis(t, size, depth);
     return GM_OK;
 }
 
@@ -451,7 +451,7 @@ static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
     GM_CHECK_INT_PARAM(color, 4);
     GM_CHECK_INT_PARAM(depth, 5);
     float pos[] = {x, y, z};
-    g_debugDrawMgr.addCross(pos, size, color, depth);
+    g_debugDrawMgr.add_cross(pos, size, color, depth);
     return GM_OK;
 }
 
@@ -464,7 +464,7 @@ static int GM_CDECL debug_draw_add_3d_text(gmThread* a_thread)
     GM_CHECK_STRING_PARAM(text, 3);
     GM_CHECK_INT_PARAM(color, 4);
     float pos[] = {x, y, z};
-    g_debugDrawMgr.add3DText(pos, text, color);
+    g_debugDrawMgr.add_text_3d(pos, text, color);
     return GM_OK;
 }
 
@@ -478,7 +478,7 @@ static int GM_CDECL debug_draw_add_sphere(gmThread* a_thread)
     GM_CHECK_INT_PARAM(color, 4);
     GM_CHECK_INT_PARAM(depth, 5);
     float pos[] = {x, y, z};
-    g_debugDrawMgr.addCross(pos, radius, color, depth);
+    g_debugDrawMgr.add_sphere(pos, radius, color, depth);
     return GM_OK;
 }
 
@@ -496,7 +496,7 @@ static int GM_CDECL debug_draw_add_circle(gmThread* a_thread)
     GM_CHECK_INT_PARAM(depth, 8);
     float pos[] = {x0, y0, z0};
     float normal[] = {x1, y1, z1};
-    g_debugDrawMgr.addCircle(pos, normal, radius, color, depth);
+    g_debugDrawMgr.add_cycle(pos, normal, radius, color, depth);
     return GM_OK;
 }
 
@@ -507,7 +507,7 @@ static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
     GM_CHECK_FLOAT_PARAM(grid_width, 1);
     GM_CHECK_INT_PARAM(color, 2);
     GM_CHECK_INT_PARAM(depth, 3);
-    g_debugDrawMgr.addGrid(grid_num, grid_width, color, depth);
+    g_debugDrawMgr.add_grid(grid_num, grid_width, color, depth);
     return GM_OK;
 }
 //-------------------------------------------------------------------------

@@ -146,11 +146,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         bx::vec3Add(bbox.m_max, maxTmp, adVSize);
         bx::vec3Sub(bbox.m_min, minTmp, adVSize);
         transform_matrix(model->m_transform, t);
-        transformAabb(model->m_aabb.m_min, 
-            model->m_aabb.m_max, 
-            model->m_transform,
-            bbox.m_min, 
-            bbox.m_max);
+        transform_aabb(model->m_aabb.m_min, model->m_aabb.m_max, model->m_transform, bbox.m_min, bbox.m_max);
         //ProxyInstance* proxy = (ProxyInstance*)lookup_component_proxy(m_locomotion.m_physics);
         //model->m_transform.t_y() += proxy->m_resource->m_offset;
         REMOVE_BITS(model->m_flag, kNodeTransformDirty);

@@ -99,8 +99,7 @@ struct Graphics
     static void update(ShadingEnviroment* env, float dt);
     static void frame_start();
     static void frame_end();
-    static void screenSpaceQuad(float _textureWidth, float _textureHeight, float _width = 1.0f, float _height = 1.0f);
-
-    static void setTexture(int slot, bgfx::TextureHandle handle);
-    static void setTexture(int slot, bgfx::FrameBufferHandle handle);
+    static void screenspace_quad(float _textureWidth, float _textureHeight, float _width = 1.0f, float _height = 1.0f);
+    static void set_texture(int slot, bgfx::TextureHandle handle);
+    static void set_texture(int slot, bgfx::FrameBufferHandle handle);
 };

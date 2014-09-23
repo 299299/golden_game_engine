@@ -2,21 +2,21 @@
 #include "Resource.h"
 #include "Log.h"
 
-void Shader::bringIn()
+void Shader::bringin()
 {
     if(bgfx::isValid(m_handle)) return;
     m_handle = bgfx::createShader(bgfx::makeRef(m_blob, m_size));
     if(!bgfx::isValid(m_handle)) LOGE("Shader bringin error!");
 }
 
-void Shader::bringOut()
+void Shader::bringout()
 {
     if(!bgfx::isValid(m_handle)) return;
     bgfx::destroyShader(m_handle);
     m_handle.idx = bgfx::invalidHandle;
 }
 
-void ShaderProgram::bringIn()
+void ShaderProgram::bringin()
 {
     if(bgfx::isValid(m_handle)) return;
     if(!m_vs || !m_ps) return;
@@ -24,7 +24,7 @@ void ShaderProgram::bringIn()
     if(!bgfx::isValid(m_handle)) LOGE("ShaderProgram bringin error!");
 }
 
-void ShaderProgram::bringOut()
+void ShaderProgram::bringout()
 {
     if(!bgfx::isValid(m_handle))
         return;
@@ -51,13 +51,13 @@ void* load_resource_shader(const char* data, uint32_t size)
 void bringin_resource_shader(void* resource)
 {
     Shader* shader = (Shader*)resource;
-    shader->bringIn();
+    shader->bringin();
 }
 
 void bringout_resource_shader(void* resource)
 {
     Shader* shader = (Shader*)resource;
-    shader->bringOut();
+    shader->bringout();
 }
 
 void lookup_resource_shader_program(void* resource)
@@ -69,16 +69,16 @@ void lookup_resource_shader_program(void* resource)
 void bringin_resource_shader_program(void* resource)
 {
     ShaderProgram* program = (ShaderProgram*)resource;
-    program->bringIn();
+    program->bringin();
 }
 
 void bringout_resource_shader_program(void* resource)
 {
     ShaderProgram* program = (ShaderProgram*)resource;
-    program->bringOut();
+    program->bringout();
 }
 
-ShaderProgram* findShader( const char* name )
+ShaderProgram* find_shader( const char* name )
 {
     char buf[256];
     sprintf_s(buf, PROGRAM_PATH"%s", name);

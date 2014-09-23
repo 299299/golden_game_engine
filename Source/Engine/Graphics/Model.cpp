@@ -41,7 +41,7 @@ void ModelInstance::submit()
     }
 }
 
-void ModelInstance::submitShadow()
+void ModelInstance::submit_shadow()
 {
     const Mesh* mesh = m_resource->m_mesh;
     const SubMesh* submeshes = mesh->m_submeshes;
@@ -52,7 +52,7 @@ void ModelInstance::submitShadow()
     for (uint32_t i=0; i<m_numMaterials; ++i)
     {
         bgfx::setTransform(t, num);
-        m_materials[i]->submitShadow();
+        m_materials[i]->submit_shadow();
         submeshes[i].submit();
         bgfx::submit(kShadowViewId);
     }
@@ -63,22 +63,21 @@ void ModelInstance::update()
 	if(!HAS_BITS(m_flag, kNodeTransformDirty)) return;
     const Mesh* mesh = m_resource->m_mesh;
 	const Aabb& modelAabb = mesh->m_aabb;
-	transformAabb(m_aabb.m_min, m_aabb.m_max, m_transform, modelAabb.m_min, modelAabb.m_max);
+	transform_aabb(m_aabb.m_min, m_aabb.m_max, m_transform, modelAabb.m_min, modelAabb.m_max);
 	REMOVE_BITS(m_flag, kNodeTransformDirty);
 }
 
-void ModelInstance::allocSkinningMat()
+void ModelInstance::alloc_skinning_mat()
 {
     m_skinMatrix = FRAME_ALLOC(float, m_resource->m_mesh->m_numJoints * 16);
 }
 
-bool ModelInstance::checkIntersection( 
-    const float* rayOrig, 
-    const float* rayDir, 
-    float* intsPos,
-    float* outNormal ) const
+bool ModelInstance::check_intersection( const float* rayOrig, 
+                                        const float* rayDir, 
+                                        float* intsPos,
+                                        float* outNormal ) const
 {
-    if(!rayAABBIntersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max)) 
+    if(!ray_aabb_intersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max)) 
         return false;
 
     const Mesh* mesh = m_resource->m_mesh;
@@ -106,10 +105,10 @@ bool ModelInstance::checkIntersection(
 
     for(uint32_t i=0; i<mesh->m_numSubMeshes; ++i)
     {
-        const char* vertData = (const char*)mesh->getVertexData(i);
-        uint32_t vertNum = mesh->getVertexNum(i);
-        const uint16_t* indexData = mesh->getIndexData(i);
-        uint32_t indexNum = mesh->getIndexNum(i);
+        const char* vertData = (const char*)mesh->get_vertex_data(i);
+        uint32_t vertNum = mesh->get_vertex_num(i);
+        const uint16_t* indexData = mesh->get_index_data(i);
+        uint32_t indexNum = mesh->get_index_num(i);
         for( uint32_t j = 0; j < indexNum; j += 3 )
         {
             uint16_t index0 = indexData[j + 0];
@@ -118,7 +117,7 @@ bool ModelInstance::checkIntersection(
             memcpy(vert0, vertData + decl.getStride() * index0 + posOffset, sizeof(vert0));
             memcpy(vert1, vertData + decl.getStride() * index1 + posOffset, sizeof(vert1));
             memcpy(vert2, vertData + decl.getStride() * index2 + posOffset, sizeof(vert2));
-            if(rayTriangleIntersection( orig, dir, vert0, vert1, vert2, tmpPos))
+            if(ray_triangle_intersection( orig, dir, vert0, vert1, vert2, tmpPos))
             {
                 intersection = true;
                 float sub1[3], sub2[3];
@@ -196,7 +195,7 @@ void ModelWorld::submit_shadows()
 {
     for(uint32_t i=0; i<m_numShadows; ++i)
     {
-        m_shadowsToDraw[i]->submitShadow();
+        m_shadowsToDraw[i]->submit_shadow();
     }
 }
 
@@ -212,7 +211,7 @@ void ModelWorld::cull_models(const Frustum& frust)
         ModelInstance* model = begin + i;
         if(model->m_flag & kNodeInvisible)
             continue;
-        bool bVisible = !frust.cullBox(model->m_aabb.m_min, model->m_aabb.m_max);
+        bool bVisible = !frust.cull_box(model->m_aabb.m_min, model->m_aabb.m_max);
         model->m_visibleThisFrame = bVisible;
         if(!bVisible) continue;
         m_modelsToDraw[m_numModels++] = model;
@@ -232,7 +231,7 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
         uint32_t flag = model->m_flag;
         if((flag & kNodeInvisible) || (flag & kNodeNoShadow))
             continue;
-        bool bVisible = !lightFrust.cullBox(model->m_aabb.m_min, model->m_aabb.m_max);
+        bool bVisible = !lightFrust.cull_box(model->m_aabb.m_min, model->m_aabb.m_max);
         if(!bVisible) continue;
         m_shadowsToDraw[m_numShadows++] = model;
     }

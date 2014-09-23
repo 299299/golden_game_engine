@@ -61,10 +61,10 @@ ENGINE_NATIVE_ALIGN struct Material
     DECLARE_RESOURCE(material);
 
     void lookup();
-    void bringIn();
-    void changeTexture(int slot, const StringId& tex);
+    void bringin();
+    void change_texture(int slot, const StringId& tex);
     void submit() const;
-    void submitShadow() const;
+    void submit_shadow() const;
 
     float                               m_offsetAndRepeat[4];
     float                               m_diffuse[4];
@@ -86,8 +86,6 @@ ENGINE_NATIVE_ALIGN struct Material
     uint8_t                             m_numSamplers;
     uint8_t                             m_flags;
     char                                m_padding[2];
-
-    void dump();
 };
 
 

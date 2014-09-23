@@ -6,8 +6,8 @@ ENGINE_NATIVE_ALIGN struct Texture
 {
     DECLARE_RESOURCE(texture);
 
-    void bringIn(uint32_t flags, uint8_t skip = 0);
-    void bringOut();
+    void bringin(uint32_t flags, uint8_t skip = 0);
+    void bringout();
     
     bgfx::TextureHandle         m_handle;
     bgfx::TextureInfo           m_info;
@@ -19,8 +19,8 @@ ENGINE_NATIVE_ALIGN struct Raw2DTexture
 {
     DECLARE_RESOURCE(texture_2d);
 
-    void bringIn();
-    void bringOut();
+    void bringin();
+    void bringout();
 
     char*                       m_blob;
     uint32_t                    m_size;
@@ -38,8 +38,8 @@ ENGINE_NATIVE_ALIGN struct Raw3DTexture
 {
     DECLARE_RESOURCE(texture_3d);
 
-    void bringIn();
-    void bringOut();
+    void bringin();
+    void bringout();
 
     char*                       m_blob;
     uint32_t                    m_size;

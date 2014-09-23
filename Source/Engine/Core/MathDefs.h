@@ -148,13 +148,11 @@ inline int ftoi_r( double val )
     return u.ival[0];         // Needs to be [1] for big-endian
 }
 
-float nearestDistToAABB( const float* pos, const float* min, const float* max );
-bool rayAABBIntersection( const float* rayOrig, const float* rayDir, const float* min, const float* max );
-bool rayTriangleIntersection( float* intsPoint, const float* rayOrig, const float* rayDir, 
-                              const float* vert0, const float* vert1, const float* vert2);
+float neareast_to_aabb( const float* pos, const float* min, const float* max );
+bool ray_aabb_intersection( const float* rayOrig, const float* rayDir, const float* min, const float* max );
+bool ray_triangle_intersection( float* intsPoint, const float* rayOrig, const float* rayDir, const float* vert0, const float* vert1, const float* vert2);
 
-inline void buildPlane(float* plane, const float a, const float b, 
-                       const float c, const float d)
+inline void build_plane(float* plane, const float a, const float b, const float c, const float d)
 {
     float normal[3];
     normal[0] = a;
@@ -165,53 +163,33 @@ inline void buildPlane(float* plane, const float a, const float b,
     plane[3] = d * invLen;
 }
 
-inline float planeDistToPoint(const float* __restrict plane, const float* __restrict point)
+inline float plane_dist_to_point(const float* __restrict plane, const float* __restrict point)
 {
     return bx::vec3Dot(plane, point) + plane[3];
 }
 
-inline void vec3Make(float* __restrict _result, const float a, const float b, const float c)
+inline void vec3_make(float* __restrict _result, const float a, const float b, const float c)
 {
     _result[0] = a;
     _result[1] = b;
     _result[2] = c;
 }
 
-inline void getAabbCorner(float* __restrict corner,
-                          const float* __restrict min, 
-                          const float* __restrict max, 
-                          int index)
-{
-    switch( index )
-    {
-    case 0: vec3Make(corner, min[0], min[1], max[2]); break;
-    case 1: vec3Make(corner, max[0], min[1], max[2]); break;
-    case 2: vec3Make(corner, max[0], max[1], max[2]); break;
-    case 3: vec3Make(corner, min[0], max[1], max[2]); break;
-    case 4: vec3Make(corner, min[0], min[1], min[2]); break;
-    case 5: vec3Make(corner, max[0], min[1], min[2]); break;
-    case 6: vec3Make(corner, max[0], max[1], min[2]); break;
-    case 7: vec3Make(corner, min[0], max[1], min[2]); break;
-    default:
-        break;
-    }
-}
-
-inline void vec3Min(float* __restrict _result, const float* __restrict _a, const float* __restrict _b)
+inline void vec3_min(float* __restrict _result, const float* __restrict _a, const float* __restrict _b)
 {
     _result[0] = bx::fmin(_a[0], _b[0]);
     _result[1] = bx::fmin(_a[1], _b[1]);
     _result[2] = bx::fmin(_a[2], _b[2]);
 }
 
-inline void vec3Max(float* __restrict _result, const float* __restrict _a, const float* __restrict _b)
+inline void vec3_max(float* __restrict _result, const float* __restrict _a, const float* __restrict _b)
 {
     _result[0] = bx::fmax(_a[0], _b[0]);
     _result[1] = bx::fmax(_a[1], _b[1]);
     _result[2] = bx::fmax(_a[2], _b[2]);
 }
 
-inline void transformAabb(float* outMin, float* outMax, const float* mtx, const float* min, const float* max)
+inline void transform_aabb(float* outMin, float* outMax, const float* mtx, const float* min, const float* max)
 {
     // Efficient algorithm for transforming an AABB, taken from Graphics Gems
     for( uint32_t i = 0; i < 3; ++i )
@@ -231,85 +209,14 @@ inline void transformAabb(float* outMin, float* outMax, const float* mtx, const 
 
 struct Frustum
 {
-    void buildViewFrustum( const float* mtx, float fov,
-                           float aspect, float nearPlane, float farPlane )
-    {
-        float ymax = nearPlane * tanf( bx::toRad( fov / 2 ) );
-        float xmax = ymax * aspect;
-        buildViewFrustum( mtx, -xmax, xmax, -ymax, ymax, nearPlane, farPlane );
-    }
-
-    void buildViewFrustum( const float* mtx, float left, float right, float bottom, float top, 
-                           float nearPlane, float farPlane );
-
-    void buildViewFrustum( const float* viewmtx, const float* projmtx );
-
-    void buildBoxFrustum( const float* mtx, float left, float right, float bottom, float top, float front, float back );
-
-    bool cullSphere( const float* pos, float radius ) const
-    {
-        // Check the distance of the center to the planes
-        for( uint32_t i = 0; i < 6; ++i )
-        {
-            if(planeDistToPoint(m_planes[i].m_data, pos) > radius) 
-                return true;
-        }
-        return false;
-    }
-
-    bool cullBox( const float* min, const float* max ) const
-    {
-        // Idea for optimized AABB testing from www.lighthouse3d.com
-        for( uint32_t i = 0; i < 6; ++i )
-        {
-            const float* n = m_planes[i].m_data;
-            float positive[3] = { min[0], min[1], min[2] };
-            if( n[0] <= 0 ) positive[0] = max[0];
-            if( n[1] <= 0 ) positive[1] = max[1];
-            if( n[2] <= 0 ) positive[2] = max[2];
-            if(planeDistToPoint(n, positive) > 0) 
-                return true;
-        }
-        
-        return false;
-    }
-
-    bool cullFrustum( const Frustum &frust ) const
-    {
-        for( uint32_t i = 0; i < 6; ++i )
-        {
-            bool allOut = true;
-            
-            for( uint32_t j = 0; j < 8; ++j )
-            {
-                if(planeDistToPoint(m_planes[i].m_data, frust.m_corners[j].m_vec) < 0) 
-                {
-                    allOut = false;
-                    break;
-                }
-            }
-
-            if( allOut ) return true;
-        }
-        return false;
-    }
-
-    void calcAABB( float* min, float* max ) const
-    {
-        min[0] = MAX_FLOAT; min[1] = MAX_FLOAT; min[2] = MAX_FLOAT;
-        max[0] = -MAX_FLOAT; max[1] = -MAX_FLOAT; max[2] = -MAX_FLOAT;
-        
-        for( uint32_t i = 0; i < 8; ++i )
-        {
-            const Vec3& corner = m_corners[i];
-            min[0] = bx::fmin(corner.m_vec[0], min[0]);
-            min[1] = bx::fmin(corner.m_vec[1], min[1]);
-            min[2] = bx::fmin(corner.m_vec[2], min[2]);
-            max[0] = bx::fmax(corner.m_vec[0], max[0]);
-            max[1] = bx::fmax(corner.m_vec[1], max[1]);
-            max[2] = bx::fmax(corner.m_vec[2], max[2]);
-        }
-    }
+    void build_view_frustum( const float* mtx, float fov, float aspect, float nearPlane, float farPlane );
+    void build_view_frustum( const float* mtx, float left, float right, float bottom, float top, float nearPlane, float farPlane );
+    void build_view_frustum( const float* viewmtx, const float* projmtx );
+    void build_box_frustum( const float* mtx, float left, float right, float bottom, float top, float front, float back );
+    bool cull_sphere( const float* pos, float radius ) const;
+    bool cull_box( const float* min, const float* max ) const;
+    bool cull_frustum( const Frustum &frust ) const;
+    void calc_aabb( float* min, float* max ) const;
 
     Plane   m_planes[6];
     Vec3    m_corners[8];
@@ -318,7 +225,7 @@ struct Frustum
 
 
 
-inline float lowPassFilter(float unfilteredInput, float lastFramesFilteredInput, float rc, float dt)
+inline float low_pass_filter(float unfilteredInput, float lastFramesFilteredInput, float rc, float dt)
 {
     float a = dt / (rc + dt);
     return (1 - a) * lastFramesFilteredInput + a * unfilteredInput;

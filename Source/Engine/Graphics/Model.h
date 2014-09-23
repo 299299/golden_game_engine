@@ -38,11 +38,11 @@ struct ModelInstance
 
     void init(const void* resource);
     void submit();
-    void submitShadow();
+    void submit_shadow();
 
     void update();
-    void allocSkinningMat();
-    bool checkIntersection( const float* rayOrig, 
+    void alloc_skinning_mat();
+    bool check_intersection( const float* rayOrig, 
                             const float* rayDir, 
                             float* intsPos,
                             float* outNormal ) const;

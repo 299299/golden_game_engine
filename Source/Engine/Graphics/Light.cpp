@@ -69,7 +69,7 @@ void LightWorld::submit_lights(ShadingEnviroment* env)
         s_lightType[i] = res->m_type;
         bx::vec3Move(color.m_vec, light->m_color);
         if(s_lightType[i] == kLightDirectional) bx::vec3Move(vec.m_vec, light->m_dir);
-        else vec3Make(vec.m_vec, light->m_transform[12], light->m_transform[13], light->m_transform[14]);
+        else vec3_make(vec.m_vec, light->m_transform[12], light->m_transform[13], light->m_transform[14]);
         info.m_vec[0] = res->m_fallOff;
         info.m_vec[1] = res->m_intensity;
         info.m_vec[2] = res->m_coneAngle;
@@ -130,7 +130,7 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
 
     bx::mtxLookAt(m_shadowView, shadowEye, shadowAt);
     bx::mtxOrtho(m_shadowProj, -shadowArea, shadowArea, -shadowArea, shadowArea, -shadowSize, shadowSize);
-    m_shadowFrustum.buildViewFrustum(m_shadowView, m_shadowProj);
+    m_shadowFrustum.build_view_frustum(m_shadowView, m_shadowProj);
 }
 
 

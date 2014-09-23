@@ -22,13 +22,13 @@ ENGINE_NATIVE_ALIGN struct Mesh
 {
     DECLARE_RESOURCE(mesh);
 
-    void bringIn();
-    void bringOut();
+    void bringin();
+    void bringout();
 
-    uint32_t  getVertexNum(uint32_t index) const;
-    const void* getVertexData(uint32_t index) const;
-    uint32_t getIndexNum(uint32_t index) const;
-    const uint16_t* getIndexData(uint32_t index) const;
+    uint32_t  get_vertex_num(uint32_t index) const;
+    const void* get_vertex_data(uint32_t index) const;
+    uint32_t get_index_num(uint32_t index) const;
+    const uint16_t* get_index_data(uint32_t index) const;
 
     bgfx::VertexDecl            m_decl;
     Aabb                        m_aabb;
@@ -42,9 +42,6 @@ ENGINE_NATIVE_ALIGN struct Mesh
     uint8_t                     m_numSubMeshes;
     uint8_t                     m_numJoints;
     char                        m_padding[2];
-
-
-    void dump();
 };
 
 

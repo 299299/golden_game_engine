@@ -8,10 +8,10 @@
 
 void json_transform(const JsonValue& jValue, float* t, float* r, float* s)
 {
-    vec3Make(t, 0,0,0);
-    vec3Make(r, 0,0,0);
+    vec3_make(t, 0,0,0);
+    vec3_make(r, 0,0,0);
     r[3] = 1;
-    if(s) vec3Make(s, 1,1,1);
+    if(s) vec3_make(s, 1,1,1);
 
     JSON_GetFloats(jValue.GetValue("translation"), t, 3);
     int nRet = JSON_GetFloats(jValue.GetValue("rotation"), r, 4);

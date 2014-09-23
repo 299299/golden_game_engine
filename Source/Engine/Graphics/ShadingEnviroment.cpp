@@ -37,7 +37,7 @@ void ShadingEnviroment::lookup()
     }
 }
 
-bgfx::TextureHandle ShadingEnviroment::getCurrentColorGradingTex() const
+bgfx::TextureHandle ShadingEnviroment::get_colorgrading_tex() const
 {
     return m_colorGradingTextures[m_colorGradingIndex]->m_handle;
 }

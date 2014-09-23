@@ -20,7 +20,7 @@ void Camera::update(const float* eye, const float* at)
     bx::vec3Move(m_at, at);
     bx::mtxLookAt(m_view, eye, at);
     bx::mtxProj(m_proj, m_fov, g_win32Context.m_aspectRatio, m_near, m_far);
-    m_frustum.buildViewFrustum(m_view, m_proj);
+    m_frustum.build_view_frustum(m_view, m_proj);
 }
 
 void Camera::update(const float* transform)
@@ -33,7 +33,7 @@ void Camera::update(const float* transform)
     bx::mtxInverse(m_view, transform);
 #endif
     bx::mtxProj(m_proj, m_fov, g_win32Context.m_aspectRatio, m_near, m_far);
-    m_frustum.buildViewFrustum(m_view, m_proj);
+    m_frustum.build_view_frustum(m_view, m_proj);
 }
 
 bool Camera::project_3d_to_2d(float* out2DPos, const float* in3DPos)

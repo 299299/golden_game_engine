@@ -59,7 +59,7 @@ void RemoteViewerState::init()
 void RemoteViewerState::onFirstEnter( GameState* pPrevState )
 {
     extern DebugFPSCamera  g_fpsCamera;
-    vec3Make(g_fpsCamera.m_eye, 0, 10, -10);
+    vec3_make(g_fpsCamera.m_eye, 0, 10, -10);
     g_fpsCamera.sync();
     m_shading = FIND_RESOURCE(ShadingEnviroment, StringId("core/common/default"));
 

@@ -17,7 +17,7 @@ bool LookIKCompiler::readJSON( const JsonValue& root )
     LookAtResource lookat;
     memset(&lookat, 0x00, sizeof(lookat));
 
-    vec3Make(lookat.m_fwdLS, 0, 0, 1);
+    vec3_make(lookat.m_fwdLS, 0, 0, 1);
     JSON_GetFloats(root.GetValue("forward-ls"), lookat.m_fwdLS, 3);
 
     lookat.m_lookAtLimit = JSON_GetFloat(root.GetValue("lookat-limit"), 3.1415926f / 4.0f);
@@ -37,7 +37,7 @@ bool ReachIKCompiler::readJSON( const JsonValue& root )
     ReachResource reach;
     memset(&reach, 0x00, sizeof(reach));
 
-    vec3Make(reach.m_elbowAxis, 0, 1, 0);
+    vec3_make(reach.m_elbowAxis, 0, 1, 0);
     JSON_GetFloats(root.GetValue("elbow_axis"), reach.m_elbowAxis, 3);
 
     reach.m_hingeLimitAngle[0] = 0;
@@ -64,9 +64,9 @@ bool FootIKCompiler::readJSON( const JsonValue& root )
     FootResource foot;
     memset(&foot, 0x00, sizeof(foot));
 
-    vec3Make(foot.m_leftKneeAxisLS, 0, 0, 1);
-    vec3Make(foot.m_rightKneeAxisLS, 0, 0, 1);
-    vec3Make(foot.m_footEndLS, 0, 0, 0.2f);
+    vec3_make(foot.m_leftKneeAxisLS, 0, 0, 1);
+    vec3_make(foot.m_rightKneeAxisLS, 0, 0, 1);
+    vec3_make(foot.m_footEndLS, 0, 0, 0.2f);
 
     JSON_GetFloats(root.GetValue("left_knee_axis"), foot.m_leftKneeAxisLS, 3);
     JSON_GetFloats(root.GetValue("right_knee_axis"), foot.m_rightKneeAxisLS, 3);

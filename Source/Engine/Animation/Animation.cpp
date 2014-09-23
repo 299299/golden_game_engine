@@ -239,7 +239,7 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
             poseT.setTransformedPos(worldFromModel, poseMS[parentIndex].m_translation);
             transform_vec3(end, poseT);
         }
-        g_debugDrawMgr.addLine(start, end, color, false);
+        g_debugDrawMgr.add_line(start, end, color, false);
     }
 }
 

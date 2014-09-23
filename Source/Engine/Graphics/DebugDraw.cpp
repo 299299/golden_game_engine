@@ -46,7 +46,7 @@ void DebugDrawManager::init()
 void DebugDrawManager::ready()
 {
     m_ready = true;
-    m_shader = findShader("debug")->m_handle;
+    m_shader = find_shader("debug")->m_handle;
 }
 
 void DebugDrawManager::frame_start()
@@ -107,7 +107,7 @@ void DebugDrawManager::draw( uint32_t lineNum, DebugLine* lines, bool bDepth)
     bgfx::submit(kDebugDrawViewId);
 }
 
-void DebugDrawManager::addLine( const float* start, const float* end, uint32_t color, bool bDepth)
+void DebugDrawManager::add_line( const float* start, const float* end, uint32_t color, bool bDepth)
 {
     int index = bDepth ? 0 : 1;
     uint32_t& numLines = m_numLines[index];
@@ -123,60 +123,60 @@ void DebugDrawManager::addLine( const float* start, const float* end, uint32_t c
     line->m_color = color;
 }
 
-void DebugDrawManager::addAabb( const float* min, const float* max, uint32_t color, bool bDepth)
+void DebugDrawManager::add_aabb( const float* min, const float* max, uint32_t color, bool bDepth)
 {
     float start[3], end[3];
     //1.
-    vec3Make(start, min[0], min[1], min[2]);
-    vec3Make(end, max[0], min[1], min[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, min[0], min[1], min[2]);
+    vec3_make(end, max[0], min[1], min[2]);
+    add_line(start, end, color, bDepth);
     //2.
-    vec3Make(start, max[0], min[1], min[2]);
-    vec3Make(end, max[0], max[1], min[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, max[0], min[1], min[2]);
+    vec3_make(end, max[0], max[1], min[2]);
+    add_line(start, end, color, bDepth);
     //3.
-    vec3Make(start, max[0], max[1], min[2]);
-    vec3Make(end, min[0], max[1], min[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, max[0], max[1], min[2]);
+    vec3_make(end, min[0], max[1], min[2]);
+    add_line(start, end, color, bDepth);
     //4.
-    vec3Make(start, min[0], max[1], min[2]);
-    vec3Make(end, min[0], min[1], min[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, min[0], max[1], min[2]);
+    vec3_make(end, min[0], min[1], min[2]);
+    add_line(start, end, color, bDepth);
     //5.
-    vec3Make(start, min[0], min[1], min[2]);
-    vec3Make(end, min[0], min[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, min[0], min[1], min[2]);
+    vec3_make(end, min[0], min[1], max[2]);
+    add_line(start, end, color, bDepth);
     //6.
-    vec3Make(start, max[0], min[1], min[2]);
-    vec3Make(end, max[0], min[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, max[0], min[1], min[2]);
+    vec3_make(end, max[0], min[1], max[2]);
+    add_line(start, end, color, bDepth);
     //7.
-    vec3Make(start, max[0], max[1], min[2]);
-    vec3Make(end, max[0], max[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, max[0], max[1], min[2]);
+    vec3_make(end, max[0], max[1], max[2]);
+    add_line(start, end, color, bDepth);
     //8.
-    vec3Make(start, min[0], max[1], min[2]);
-    vec3Make(end, min[0], max[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, min[0], max[1], min[2]);
+    vec3_make(end, min[0], max[1], max[2]);
+    add_line(start, end, color, bDepth);
     //9.
-    vec3Make(start, min[0], min[1], max[2]);
-    vec3Make(end, max[0], min[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, min[0], min[1], max[2]);
+    vec3_make(end, max[0], min[1], max[2]);
+    add_line(start, end, color, bDepth);
     //9.
-    vec3Make(start, max[0], min[1], max[2]);
-    vec3Make(end, max[0], max[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, max[0], min[1], max[2]);
+    vec3_make(end, max[0], max[1], max[2]);
+    add_line(start, end, color, bDepth);
     //10.
-    vec3Make(start, max[0], max[1], max[2]);
-    vec3Make(end, min[0], max[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, max[0], max[1], max[2]);
+    vec3_make(end, min[0], max[1], max[2]);
+    add_line(start, end, color, bDepth);
     //11.
-    vec3Make(start, min[0], max[1], max[2]);
-    vec3Make(end, min[0], min[1], max[2]);
-    addLine(start, end, color, bDepth);
+    vec3_make(start, min[0], max[1], max[2]);
+    vec3_make(end, min[0], min[1], max[2]);
+    add_line(start, end, color, bDepth);
 }
 
-void DebugDrawManager::addAxis( const hkQsTransform& t, float size , bool bDepth)
+void DebugDrawManager::add_axis( const hkQsTransform& t, float size , bool bDepth)
 {
     const hkVector4& start_pos = t.m_translation;
     hkVector4 x_end;
@@ -190,12 +190,12 @@ void DebugDrawManager::addAxis( const hkQsTransform& t, float size , bool bDepth
     transform_vec3(xPos, x_end);
     transform_vec3(yPos, y_end);
     transform_vec3(zPos, z_end);
-    addLine(pos, xPos, RGBA(255,0,0,255), bDepth);
-    addLine(pos, yPos, RGBA(0,255,0,255), bDepth);
-    addLine(pos, zPos, RGBA(0,0,255,255), bDepth);
+    add_line(pos, xPos, RGBA(255,0,0,255), bDepth);
+    add_line(pos, yPos, RGBA(0,255,0,255), bDepth);
+    add_line(pos, zPos, RGBA(0,0,255,255), bDepth);
 }
 
-void DebugDrawManager::addCross( const float* pos, float size, uint32_t color, bool bDepth)
+void DebugDrawManager::add_cross( const float* pos, float size, uint32_t color, bool bDepth)
 {
     float halfSize = size/2.0f;
     float start[3], end[3];
@@ -205,11 +205,11 @@ void DebugDrawManager::addCross( const float* pos, float size, uint32_t color, b
         bx::vec3Move(end, pos);
         start[i] -= halfSize;
         end[i] += halfSize;
-        addLine(start, end, color, bDepth);
+        add_line(start, end, color, bDepth);
     }
 }
 
-void DebugDrawManager::add3DText( const float* pos, const char* text, uint32_t color )
+void DebugDrawManager::add_text_3d( const float* pos, const char* text, uint32_t color )
 {
     float pos2D[2] = {0,0};
     bool bFlag = g_camera.project_3d_to_2d(pos2D, pos);
@@ -224,7 +224,7 @@ void DebugDrawManager::add3DText( const float* pos, const char* text, uint32_t c
     dbgText.m_text[textLen] = '\0';
 }
 
-void DebugDrawManager::addSphere( const float* center, float radius, uint32_t color, bool bDepth)
+void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t color, bool bDepth)
 {
     const uint32_t deg_step = 15;
     float tmp1[3], tmp2[3];
@@ -239,25 +239,25 @@ void DebugDrawManager::addSphere( const float* center, float radius, uint32_t co
         const float end0[] =  {cosf(rad1) * radius, 0, -sinf(rad1) * radius};
         bx::vec3Add(tmp1, start0, center);
         bx::vec3Add(tmp2, end0, center);
-        addLine(tmp1, tmp2, color, bDepth);
+        add_line(tmp1, tmp2, color, bDepth);
 
         // XY plane
         const float start1[] = {cosf(rad0) * radius, sinf(rad0) * radius, 0};
         const float end1[] =  {cosf(rad1) * radius, sinf(rad1) * radius, 0};
         bx::vec3Add(tmp1, start1, center);
         bx::vec3Add(tmp2, end1, center);
-        addLine(tmp1, tmp2, color, bDepth);
+        add_line(tmp1, tmp2, color, bDepth);
 
         // YZ plane
         const float start2[] = {0, sinf(rad0) * radius, -cosf(rad0) * radius};
         const float end2[] =  {0, sinf(rad1) * radius, -cosf(rad1) * radius};
         bx::vec3Add(tmp1, start2, center);
         bx::vec3Add(tmp2, end2, center);
-        addLine(tmp1, tmp2, color, bDepth);
+        add_line(tmp1, tmp2, color, bDepth);
     }
 }
 
-void DebugDrawManager::addCircle( const float* pos, const float* d, float r, uint32_t color, bool bDepth)
+void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uint32_t color, bool bDepth)
 {
     hkQuaternion	orientation;
     hkVector4		normal;
@@ -283,40 +283,40 @@ void DebugDrawManager::addCircle( const float* pos, const float* d, float r, uin
         c.add4(o);
         transform_vec3(start, p);
         transform_vec3(end, c);
-        addLine(start, end, color, bDepth);
+        add_line(start, end, color, bDepth);
         p=c;
     }
 
     p.setAddMul4(o, normal, r/4.0f);
     transform_vec3(start, p);
-    addLine(pos, start, color, bDepth);
+    add_line(pos, start, color, bDepth);
 }
 
-void DebugDrawManager::addTriangle( const float* v0, const float* v1, const float* v2, uint32_t color, bool bDepth)
+void DebugDrawManager::add_triangle( const float* v0, const float* v1, const float* v2, uint32_t color, bool bDepth)
 {
-    addLine(v0,v1,color, bDepth);
-    addLine(v1,v2,color, bDepth);
-    addLine(v2,v0,color, bDepth);
+    add_line(v0,v1,color, bDepth);
+    add_line(v1,v2,color, bDepth);
+    add_line(v2,v0,color, bDepth);
 }
 
-void DebugDrawManager::addFrustum( const Frustum& frustum, uint32_t color, bool bDepth)
+void DebugDrawManager::add_frustum( const Frustum& frustum, uint32_t color, bool bDepth)
 {
     const Vec3* vertices = frustum.m_corners;
-    addLine(vertices[0].m_vec, vertices[1].m_vec, color, bDepth);
-    addLine(vertices[1].m_vec, vertices[2].m_vec, color, bDepth);
-    addLine(vertices[2].m_vec, vertices[3].m_vec, color, bDepth);
-    addLine(vertices[3].m_vec, vertices[0].m_vec, color, bDepth);
-    addLine(vertices[4].m_vec, vertices[5].m_vec, color, bDepth);
-    addLine(vertices[5].m_vec, vertices[6].m_vec, color, bDepth);
-    addLine(vertices[6].m_vec, vertices[7].m_vec, color, bDepth);
-    addLine(vertices[7].m_vec, vertices[4].m_vec, color, bDepth);
-    addLine(vertices[0].m_vec, vertices[4].m_vec, color, bDepth);
-    addLine(vertices[1].m_vec, vertices[5].m_vec, color, bDepth);
-    addLine(vertices[2].m_vec, vertices[6].m_vec, color, bDepth);
-    addLine(vertices[3].m_vec, vertices[7].m_vec, color, bDepth);
+    add_line(vertices[0].m_vec, vertices[1].m_vec, color, bDepth);
+    add_line(vertices[1].m_vec, vertices[2].m_vec, color, bDepth);
+    add_line(vertices[2].m_vec, vertices[3].m_vec, color, bDepth);
+    add_line(vertices[3].m_vec, vertices[0].m_vec, color, bDepth);
+    add_line(vertices[4].m_vec, vertices[5].m_vec, color, bDepth);
+    add_line(vertices[5].m_vec, vertices[6].m_vec, color, bDepth);
+    add_line(vertices[6].m_vec, vertices[7].m_vec, color, bDepth);
+    add_line(vertices[7].m_vec, vertices[4].m_vec, color, bDepth);
+    add_line(vertices[0].m_vec, vertices[4].m_vec, color, bDepth);
+    add_line(vertices[1].m_vec, vertices[5].m_vec, color, bDepth);
+    add_line(vertices[2].m_vec, vertices[6].m_vec, color, bDepth);
+    add_line(vertices[3].m_vec, vertices[7].m_vec, color, bDepth);
 }
 
-void DebugDrawManager::addGrid( int gridsNum, float gridWidth, uint32_t color, bool bDepth )
+void DebugDrawManager::add_grid( int gridsNum, float gridWidth, uint32_t color, bool bDepth )
 {
     float start = -gridsNum * gridWidth * 0.5f;
     float startPt[3], endPt[3];
@@ -325,21 +325,21 @@ void DebugDrawManager::addGrid( int gridsNum, float gridWidth, uint32_t color, b
     {
         for( int z = 0; z < gridsNum; ++z )
         {
-            vec3Make(startPt, start+x*gridWidth, 0, start+z*gridWidth );
-            vec3Make(endPt, start+(x+1)*gridWidth, 0, start+z*gridWidth );
-            addLine(startPt, endPt, color, bDepth);
+            vec3_make(startPt, start+x*gridWidth, 0, start+z*gridWidth );
+            vec3_make(endPt, start+(x+1)*gridWidth, 0, start+z*gridWidth );
+            add_line(startPt, endPt, color, bDepth);
 
-            vec3Make(startPt, start+x*gridWidth, 0, start+z*gridWidth );
-            vec3Make(endPt, start+x*gridWidth, 0, start+(z+1)*gridWidth );
-            addLine(startPt, endPt, color, bDepth);
+            vec3_make(startPt, start+x*gridWidth, 0, start+z*gridWidth );
+            vec3_make(endPt, start+x*gridWidth, 0, start+(z+1)*gridWidth );
+            add_line(startPt, endPt, color, bDepth);
         }
     }
 
-    vec3Make( startPt, -start, 0, start );
-    vec3Make( endPt, -start, 0, -start );
-    addLine(startPt, endPt, color, bDepth);
+    vec3_make( startPt, -start, 0, start );
+    vec3_make( endPt, -start, 0, -start );
+    add_line(startPt, endPt, color, bDepth);
 
-    vec3Make( startPt, start, 0, -start );
-    vec3Make( endPt, -start, 0, -start );
-    addLine(startPt, endPt, color, bDepth);
+    vec3_make( startPt, start, 0, -start );
+    vec3_make( endPt, -start, 0, -start );
+    add_line(startPt, endPt, color, bDepth);
 }

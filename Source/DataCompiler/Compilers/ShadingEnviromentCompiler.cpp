@@ -25,12 +25,12 @@ bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
     memcpy(shading.m_bloomParams, bloomParams, sizeof(bloomParams));
     float dofParams[] = {1.0f, 2.0f, 2.5f, 10.0f};
     memcpy(shading.m_dofParams, dofParams, sizeof(dofParams));
-    vec3Make(shading.m_ambientSkyColor, 0.37f, 0.55f, 0.66f);
+    vec3_make(shading.m_ambientSkyColor, 0.37f, 0.55f, 0.66f);
     shading.m_ppParams[2] = 0.2f;
     shading.m_ppParams[3] = 0.25f;
     shading.m_shadowAreaSize = 30.0f;
     shading.m_shadowFar = 100;
-    vec3Make(shading.m_shadowParams, 0.01f, 0.001f, 0.0f);
+    vec3_make(shading.m_shadowParams, 0.01f, 0.001f, 0.0f);
 
     JsonValue fogValue = root.GetValue("fog");
     if(fogValue.IsValid())

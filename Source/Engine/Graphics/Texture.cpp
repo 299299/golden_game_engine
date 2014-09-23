@@ -4,7 +4,7 @@
 #include "ShaderInc.h"
 #include "EngineAssert.h"
 
-void Texture::bringIn(uint32_t flags, uint8_t skip)
+void Texture::bringin(uint32_t flags, uint8_t skip)
 {
     if(bgfx::isValid(m_handle))
         return;
@@ -12,7 +12,7 @@ void Texture::bringIn(uint32_t flags, uint8_t skip)
     ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
-void Texture::bringOut()
+void Texture::bringout()
 {
     if(!bgfx::isValid(m_handle)) 
         return;
@@ -20,7 +20,7 @@ void Texture::bringOut()
     m_handle.idx = bgfx::invalidHandle;
 }
 
-void Raw2DTexture::bringIn()
+void Raw2DTexture::bringin()
 {
     if(bgfx::isValid(m_handle)) 
         return;
@@ -29,7 +29,7 @@ void Raw2DTexture::bringIn()
     ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
-void Raw2DTexture::bringOut()
+void Raw2DTexture::bringout()
 {
     if(!bgfx::isValid(m_handle)) 
         return;
@@ -37,7 +37,7 @@ void Raw2DTexture::bringOut()
     m_handle.idx = bgfx::invalidHandle;
 }
 
-void Raw3DTexture::bringIn()
+void Raw3DTexture::bringin()
 {
     if(bgfx::isValid(m_handle)) return;
     const bgfx::Memory* memory = bgfx::makeRef(m_blob, m_size);
@@ -45,7 +45,7 @@ void Raw3DTexture::bringIn()
     ENGINE_ASSERT(bgfx::isValid(m_handle), "bgfx::isValid(m_handle)");
 }
 
-void Raw3DTexture::bringOut()
+void Raw3DTexture::bringout()
 {
     if(!bgfx::isValid(m_handle)) 
         return;
@@ -63,7 +63,7 @@ void* load_resource_texture(const char* data, uint32_t size)
 void  bringout_resource_texture(void* resource)
 {
     Texture* texture = (Texture*)resource;
-    texture->bringOut();
+    texture->bringout();
 }
 
 void* load_resource_texture2d( const char* data, uint32_t size)
@@ -76,13 +76,13 @@ void* load_resource_texture2d( const char* data, uint32_t size)
 void bringin_resource_texture2d( void* resource )
 {
     Raw2DTexture* tex2d = (Raw2DTexture*)resource;
-    tex2d->bringIn();
+    tex2d->bringin();
 }
 
 void bringout_resource_texture2d( void* resource )
 {
     Raw2DTexture* tex2d = (Raw2DTexture*)resource;
-    tex2d->bringOut();
+    tex2d->bringout();
 }
 
 void* load_resource_texture3d( const char* data, uint32_t size)
@@ -95,11 +95,11 @@ void* load_resource_texture3d( const char* data, uint32_t size)
 void bringin_resource_texture3d( void* resource )
 {
     Raw3DTexture* tex3d = (Raw3DTexture*)resource;
-    tex3d->bringIn();
+    tex3d->bringin();
 }
 
 void bringout_resource_texture3d( void* resource )
 {
     Raw3DTexture* tex3d = (Raw3DTexture*)resource;
-    tex3d->bringOut();
+    tex3d->bringout();
 }

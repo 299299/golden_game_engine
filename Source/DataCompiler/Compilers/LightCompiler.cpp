@@ -18,7 +18,7 @@ bool LightCompiler::readJSON( const JsonValue& root )
     memset(&light, 0x00, sizeof(light));
     
     extern const char*  g_lightTypeNames[];
-    vec3Make(light.m_color, 255, 255, 255);
+    vec3_make(light.m_color, 255, 255, 255);
     JSON_GetFloats(root.GetValue("color"), light.m_color, 3);
     for(uint32_t i=0; i<3; ++i)
     {

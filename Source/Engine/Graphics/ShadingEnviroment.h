@@ -16,7 +16,7 @@ ENGINE_NATIVE_ALIGN struct ShadingEnviroment
     void submit();
     void lookup();
 
-    bgfx::TextureHandle getCurrentColorGradingTex() const;
+    bgfx::TextureHandle get_colorgrading_tex() const;
 
     float                               m_ambientSkyColor[3];
     float                               m_ambientGroundColor[3];

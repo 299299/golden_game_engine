@@ -19,8 +19,8 @@ ENGINE_NATIVE_ALIGN struct Shader
     bgfx::ShaderHandle          m_handle;
     char                        m_padding[2];
         
-    void bringIn();
-    void bringOut();
+    void bringin();
+    void bringout();
 };
 
 ENGINE_NATIVE_ALIGN struct ShaderProgram
@@ -28,8 +28,8 @@ ENGINE_NATIVE_ALIGN struct ShaderProgram
     DECLARE_RESOURCE(program);
 
     void lookup();
-    void bringIn();
-    void bringOut();
+    void bringin();
+    void bringout();
 
     bgfx::ProgramHandle         m_handle;
     Shader*                     m_ps;
@@ -38,4 +38,4 @@ ENGINE_NATIVE_ALIGN struct ShaderProgram
     StringId                    m_vsName;
 };
 
-ShaderProgram* findShader(const char* name);
+ShaderProgram* find_shader(const char* name);

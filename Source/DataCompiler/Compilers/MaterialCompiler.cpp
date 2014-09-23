@@ -31,8 +31,8 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     
     m->m_numSamplers = samplerNum;
     
-    vec3Make(m->m_diffuse, 255, 255, 255);
-    vec3Make(m->m_specular, 255, 255, 255);
+    vec3_make(m->m_diffuse, 255, 255, 255);
+    vec3_make(m->m_specular, 255, 255, 255);
 
      char programName[256];
     std::string programFile = JSON_GetString(root.GetValue("shader"));
@@ -177,9 +177,9 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
             case kFlagTranslucency:
                 {
                     TranslucencyInfo& translucency = m->m_translucency;
-                    vec3Make(translucency.m_rampOuterColor, 1.0f, 0.64f, 0.25f);
-                    vec3Make(translucency.m_rampMediumColor, 1.0f, 0.21f, 0.14f);
-                    vec3Make(translucency.m_rampInnerColor, 0.25f, 0.05f, 0.02f);
+                    vec3_make(translucency.m_rampOuterColor, 1.0f, 0.64f, 0.25f);
+                    vec3_make(translucency.m_rampMediumColor, 1.0f, 0.21f, 0.14f);
+                    vec3_make(translucency.m_rampInnerColor, 0.25f, 0.05f, 0.02f);
                     JSON_GetFloats(flagValue.GetValue("ramp_outer_color"),translucency.m_rampOuterColor, 3);
                     JSON_GetFloats(flagValue.GetValue("ramp_medium_color"),translucency.m_rampMediumColor, 3);
                     JSON_GetFloats(flagValue.GetValue("ramp_inner_color"),translucency.m_rampInnerColor, 3);

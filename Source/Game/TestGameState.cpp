@@ -74,7 +74,7 @@ TestGameState::~TestGameState()
 void TestGameState::onFirstEnter(GameState* pPrevState)
 {
     extern DebugFPSCamera  g_fpsCamera;
-    vec3Make(g_fpsCamera.m_eye, 0, 10, -10);
+    vec3_make(g_fpsCamera.m_eye, 0, 10, -10);
     g_fpsCamera.sync();
 
     Win32InputCallback cb = 
