@@ -50,22 +50,22 @@ void reload_resource(const char* data1, const char* data2)
 {
     StringId resType(data1);
     StringId resName(data2);
-    if(resType.isZero())
+    if(resType.is_zero())
     {
         LOGE("reload resource error, resource type is zero");
         return;
     }
-    if(resName.isZero())
+    if(resName.is_zero())
     {
         LOGI("reload resources of type %s", data1);
-        g_resourceMgr.reloadResource(resType);
+        g_resourceMgr.reload_resource(resType);
     }
     else
     {
         LOGI("reload resources type %s, name = %s", data1, data2);
         char pathBuf[256];
         sprintf_s(pathBuf, "data/%s.%s", data2, data1);
-        g_resourceMgr.reloadResource(resType, resName, pathBuf);
+        g_resourceMgr.reload_resource(resType, resName, pathBuf);
     }
 }
 void reload_resource_file(const char* data1, const char* data2)
@@ -77,7 +77,7 @@ void reload_resource_file(const char* data1, const char* data2)
     memset(resourceName, 0x00, sizeof(resourceName));
     str_chr_remove(tmp, resourceName, '.');
     const char* ext = strchr(tmp, '.') + 1;
-    g_resourceMgr.reloadResource(StringId(ext), StringId(resourceName), data1);
+    g_resourceMgr.reload_resource(StringId(ext), StringId(resourceName), data1);
 }
 void list_resources(const char* data1, const char* data2)
 {
@@ -89,7 +89,7 @@ void list_resources(const char* data1, const char* data2)
     for(uint32_t i=0; i<g_resourceMgr.m_numPackages; ++i)
     {
         const ResourcePackage* package = g_resourceMgr.m_packages[i];
-        const ResourceGroup* group = package->findGroup(resType);
+        const ResourceGroup* group = package->find_group(resType);
         if(!group) continue;
         for(uint32_t j=0; j<group->m_numResources; ++j)
         {

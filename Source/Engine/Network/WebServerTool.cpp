@@ -37,14 +37,13 @@ void WebServerTool::start(uint32_t netPort)
     Service::NetworkOptions netOpts;
     netOpts.maxConnectedClients = 2;
     netOpts.port = 6161;
-    //netOpts.blockUntilFirstClient = true;
     init(info,netOpts,1);
     
-    connect("application.service.quit", *this ,&WebServerTool::onRequestQuit);
-    connect("application.service.activate",*this ,&WebServerTool::onRequestActive);
-    connect("application.service.step",*this ,&WebServerTool::onRequestStep);
-    connect("input.keydown",*this,&WebServerTool::onKeyDown);
-    connect("input.keyup",*this,&WebServerTool::onKeyUp);
+    connect("application.service.quit", *this ,&WebServerTool::on_request_quit);
+    connect("application.service.activate",*this ,&WebServerTool::on_request_active);
+    connect("application.service.step",*this ,&WebServerTool::on_request_step);
+    connect("input.keydown",*this,&WebServerTool::on_request_keydown);
+    connect("input.keyup",*this,&WebServerTool::on_request_keyup);
 }
 
 
@@ -77,24 +76,24 @@ void WebServerTool::frame_start(float dt)
     update();
 }
 
-void WebServerTool::onLogMessage(int logLevel, const char* logMsg)
+void WebServerTool::on_log_message(int logLevel, const char* logMsg)
 {
     send(Message("logging.msg", 
          Message::Field("lvl",logLevel),
          Message::Field("msg",logMsg)));
 }
 
-void WebServerTool::onRequestQuit()
+void WebServerTool::on_request_quit()
 {
     g_engine.shutdown();
 }
 
-void WebServerTool::onRequestActive()
+void WebServerTool::on_request_active()
 {
     g_engine.setUpdate(!g_engine.isUpdating());
 }
 
-void WebServerTool::onRequestStep()
+void WebServerTool::on_request_step()
 {
     g_engine.frame(1.0f/60.0f);
 }
@@ -110,14 +109,14 @@ void WebServerTool::onNewClient()
     LOGD("WebServerTool NewClient.");
 }
 
-void WebServerTool::onKeyDown(const Message &message)
+void WebServerTool::on_request_keydown(const Message &message)
 {
     int keyCode = message.fields()[0].asInteger();
     LOGD("OnKeyDown = %d", keyCode);
     g_win32Context.m_keyStatus[keyCode] = true;
 }
 
-void WebServerTool::onKeyUp(const Message &message)
+void WebServerTool::on_request_keyup(const Message &message)
 {
     int keyCode = message.fields()[0].asInteger();
     LOGD("OnKeyDown = %d", keyCode);

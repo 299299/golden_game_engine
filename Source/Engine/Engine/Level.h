@@ -68,7 +68,6 @@ ENGINE_NATIVE_ALIGN struct Level
     void  unload();
     void  update();
     void  flush();
-    LevelObject* findObject(const StringId& name)  const;
 };
 
 

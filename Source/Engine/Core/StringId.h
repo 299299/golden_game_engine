@@ -8,7 +8,7 @@ struct StringId
     explicit StringId(const char* stringValue);
 
     inline uint32_t value() const { return m_value; };
-    inline bool isZero() const { return (m_value == 0); };
+    inline bool is_zero() const { return (m_value == 0); };
     inline bool operator == (const StringId& rhs) const { return m_value == rhs.m_value; }
     inline bool operator != (const StringId& rhs) const { return m_value != rhs.m_value; }
     inline bool operator < (const StringId& rhs) const { return m_value < rhs.m_value; }

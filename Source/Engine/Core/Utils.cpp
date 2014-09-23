@@ -14,7 +14,7 @@
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
 //================================================================
 
-int findEnumIndex(const char* name, const char** enum_names)
+int find_enum_index(const char* name, const char** enum_names)
 {
     const char** enumPtr = enum_names;
     int tmpIndex = 0;
@@ -30,56 +30,6 @@ int findEnumIndex(const char* name, const char** enum_names)
         ++enumPtr;
     }
     return retValue;
-}
-
-static void fileListAdd(FileList& list, const char* path)
-{
-	if (list.size >= FileList::MAX_FILES)
-		return;
-    if(path[0] == '.')
-        return;
-	int n = strlen(path);
-	list.files[list.size] = new char[n+1];
-	strcpy(list.files[list.size], path);
-	list.size++;
-}
-
-static void fileListClear(FileList& list)
-{
-	for (int i = 0; i < list.size; ++i)
-		delete [] list.files[i];
-	list.size = 0;
-}
-
-FileList::FileList() : size(0)
-{
-	memset(files, 0, sizeof(char*)*MAX_FILES);
-}
-
-FileList::~FileList()
-{
-	fileListClear(*this);
-}
-
-void scanDirectory(const char* path, const char* ext, FileList& list)
-{
-	fileListClear(list);
-
-	_finddata_t dir;
-	char pathWithExt[260];
-	long fh;
-	strcpy(pathWithExt, path);
-	strcat(pathWithExt, "/*");
-	strcat(pathWithExt, ext);
-	fh = _findfirst(pathWithExt, &dir);
-	if (fh == -1L)
-		return;
-	do
-	{
-		fileListAdd(list, dir.name);
-	}
-	while (_findnext(fh, &dir) == 0);
-	_findclose(fh);
 }
 
 void* load_havok_inplace(void* data, uint32_t size)
@@ -131,7 +81,7 @@ IniReader::~IniReader()
     delete []m_data;
 }
 
-uint32_t IniReader::findValue( const char* key, char* bufOut ) const
+uint32_t IniReader::find_value( const char* key, char* bufOut ) const
 {
     for (uint32_t i=0; i<m_numKeys;++i)
     {

@@ -3,18 +3,7 @@
 
 class hkRootLevelContainer;
 
-int findEnumIndex(const char* name, const char** enum_names);
-
-struct FileList
-{
-    static const int MAX_FILES = 256;
-    FileList();
-    ~FileList();
-    char* files[MAX_FILES];
-    int size;
-};
-void scanDirectory(const char* path, const char* ext, FileList& list);
-
+int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
 void unload_havok_inplace(void* data, uint32_t size);
 
@@ -36,5 +25,5 @@ struct IniReader
 
     IniReader(const char* fileName);
     ~IniReader();
-    uint32_t findValue(const char* key, char* bufOut) const;
+    uint32_t find_value(const char* key, char* bufOut) const;
 };

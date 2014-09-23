@@ -6,15 +6,15 @@ struct WebServerTool : public gamedevwebtools::Service
 {
     void start(uint32_t netPort);
     void frame_start(float dt);
-    void onLogMessage(int logLevel, const char* logMsg);
+    void on_log_message(int logLevel, const char* logMsg);
     virtual void onError(const char *errorString);
     virtual void onNewClient();
 
-    void onRequestQuit();
-    void onRequestActive();
-    void onRequestStep();
-    void onKeyDown(const gamedevwebtools::Message &message);
-    void onKeyUp(const gamedevwebtools::Message &message);
+    void on_request_quit();
+    void on_request_active();
+    void on_request_step();
+    void on_request_keydown(const gamedevwebtools::Message &message);
+    void on_request_keyup(const gamedevwebtools::Message &message);
 
     float                   m_updateTimer;
     float                   m_elapsedTime;

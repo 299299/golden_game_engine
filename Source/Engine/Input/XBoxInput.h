@@ -9,23 +9,24 @@ public:
     ~XInput();
     void update(float timeStep);
     void vibrate(int index, float leftVal, float rightVal, float fTime);
-    bool isButtonDown(int index, int button) const;
+    bool is_button_down(int index, int button) const;
+    bool is_button_just_pressed(int index, int button) const;
     
-    float getLeftTrigger(int index) const;
-    float getRightTrigger(int index) const;
+    float get_left_trigger(int index) const;
+    float get_right_trigger(int index) const;
 
-    inline const float* getLSRaw(int index) const { return m_LSRaw[index]; };
-    inline const float* getRSRaw(int index) const { return m_RSRaw[index]; };
+    const float* get_ls_raw(int index) const { return m_LSRaw[index]; };
+    const float* get_rs_raw(int index) const { return m_RSRaw[index]; };
 
-    inline const float* getLSSmooth(int index) const { return m_LSSmooth[index]; };
-    inline const float* getRSSmooth(int index) const { return m_RSSmooth[index]; };
+    const float* get_ls_smooth(int index) const { return m_LSSmooth[index]; };
+    const float* get_rs_smooth(int index) const { return m_RSSmooth[index]; };
 
-    int  getConnectedNum() const;
-    inline bool isConnected(int index) const { return m_deviceStatus[index]; };
+    int  get_connected_num() const;
+    bool is_connected(int index) const { return m_deviceStatus[index]; };
 
 private:
-    void updateStick(int index, float timeStep);
-    bool checkDevices(float timeStep);
+    void update_stick(int index, float timeStep);
+    bool check_devices(float timeStep);
 
 private:
     float                       m_deviceTimer;

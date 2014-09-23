@@ -35,7 +35,7 @@ void Level::lookup()
 {
     for (uint32_t i = 0; i < m_numResources; ++i)
     {
-        m_resources[i].m_resource = g_resourceMgr.findResource(ActorResource::getType(), m_resources[i].m_name);
+        m_resources[i].m_resource = g_resourceMgr.find_resource(ActorResource::getType(), m_resources[i].m_name);
     }
 }
 
@@ -71,15 +71,6 @@ void Level::flush()
     m_loadedObjects = m_numObject;
 }
 
-LevelObject* Level::findObject( const StringId& name ) const
-{
-    for (uint32_t i=0; i<m_numObject; ++i)
-    {
-        if(m_objects[i].m_name == name)
-            return &m_objects[i];
-    }
-    return 0;
-}
 
 void*  load_resource_level(const char* data, uint32_t size)
 {

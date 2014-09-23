@@ -54,7 +54,7 @@ static void set_status(int newStatus)
 void AnimationSystem::init()
 {
     m_status = 0;
-    hkaSampleBlendJobQueueUtils::registerWithJobQueue( g_threadMgr.getJobQueue());
+    hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 }
 
 void AnimationSystem::quit()
@@ -85,7 +85,7 @@ void AnimationSystem::kick_in_jobs()
     {
         jobPointers.pushBack(&( m_animJobs[i]));
     }
-    g_threadMgr.getJobQueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
+    g_threadMgr.get_jobqueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
 }
 
 void AnimationSystem::tick_finished_jobs()

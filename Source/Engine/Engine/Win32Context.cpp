@@ -21,7 +21,7 @@ Win32Context::Win32Context()
     m_frame = true;
 }
 
-void Win32Context::createWindow(const char* title, uint32_t w, uint32_t h)
+void Win32Context::create_window(const char* title, uint32_t w, uint32_t h)
 {
     SetDllDirectory(".");
 
@@ -88,7 +88,7 @@ void Win32Context::createWindow(const char* title, uint32_t w, uint32_t h)
     m_lastHeight = h;
 }
 
-void Win32Context::destroyWindow()
+void Win32Context::destroy_window()
 {
     DestroyWindow(m_hwnd);
     DestroyWindow(m_parentHwnd);
@@ -127,7 +127,7 @@ void Win32Context::frame_start()
 }
 
 
-bool Win32Context::isWindowActive() const
+bool Win32Context::is_window_active() const
 {
     HWND hwnd = GetForegroundWindow();
     return (hwnd == m_hwnd) || (hwnd == m_parentHwnd);

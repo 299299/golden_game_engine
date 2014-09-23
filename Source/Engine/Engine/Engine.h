@@ -23,16 +23,16 @@ struct Engine
     void run();
     
     void frame(float timeStep);
-    bool isRunning() const { return m_running;};
+    bool running() const { return m_running;};
     void shutdown() { m_running = false;};
-    bool isUpdating() const { return m_updating; };
-    void setUpdate(bool bUpdate) { m_updating = bUpdate; };
+    bool updating() const { return m_updating; };
+    void set_update(bool bUpdate) { m_updating = bUpdate; };
 
-    void applyFrameLimit(double timeMS);
-    void coreInit();
-    void subSystemsInit();
-    void coreShutdown();
-    void subSystemsShutdown();
+    void apply_framelimit(double timeMS);
+    void core_init();
+    void subsystem_init();
+    void core_shutdown();
+    void subsystem_shutdown();
 
     EngineConfig                            m_cfg;
     bool                                    m_running;

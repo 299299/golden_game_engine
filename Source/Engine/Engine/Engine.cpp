@@ -34,14 +34,14 @@ void Engine::init( const EngineConfig& cfg )
     m_cfg = cfg;
     LOG_INIT("EngineLog.html", "ENGINE");
     HiresTimer::Init();
-    coreInit();
-    subSystemsInit();
+    core_init();
+    subsystem_init();
 }
 
 void Engine::quit()
 {
-    subSystemsShutdown();
-    coreShutdown();
+    subsystem_shutdown();
+    core_shutdown();
     LOG_TERM();
 }
 
@@ -56,7 +56,7 @@ void Engine::run()
     {
         PROFILE_BEGIN();
         g_win32Context.frame_start();
-        if(g_win32Context.isWindowClosed()) 
+        if(g_win32Context.is_window_closed()) 
         {
             m_running = false;
             return;
@@ -66,7 +66,7 @@ void Engine::run()
         double timeMS = (double)m_timer.GetUSec(false) / 1000.0;
         g_frameTimeMS = timeMS;
         g_totalSeconds += (float)(timeMS/1000.0);
-        if(timeMS < fixTimeMS) applyFrameLimit(fixTimeMS - timeMS);
+        if(timeMS < fixTimeMS) apply_framelimit(fixTimeMS - timeMS);
         else ++g_frameLostNum;
         PROFILE_END();
     }
@@ -105,7 +105,7 @@ void Engine::frame(float timeStep)
         }
 
         Graphics::frame_end();
-        g_threadMgr.updateVDB(timeStep);
+        g_threadMgr.vdb_update(timeStep);
     }
 
     if(g_engineMode == 1)
@@ -115,14 +115,14 @@ void Engine::frame(float timeStep)
     g_script.render();
 }
 
-void Engine::applyFrameLimit(double timeMS)
+void Engine::apply_framelimit(double timeMS)
 {
     PROFILE(FrameLimit);
     if(timeMS < 1.0) return;
     ::Sleep((DWORD)timeMS);
 }
 
-void Engine::coreInit()
+void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
     g_memoryMgr.init(1024*1024*4, 1024*1024*2, true, m_cfg.m_checkMemory);
@@ -133,13 +133,13 @@ void Engine::coreInit()
 #endif
 }
 
-void Engine::subSystemsInit()
+void Engine::subsystem_init()
 {
     TIMELOG("Engine Subsystem Init");
     extern void regster_resource_factories();
     regster_resource_factories();
 
-    if(!m_cfg.m_headless) g_win32Context.createWindow(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
+    if(!m_cfg.m_headless) g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
     else g_engineMode = 1;
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
@@ -149,7 +149,7 @@ void Engine::subSystemsInit()
     g_actorWorld.init();
 }
 
-void Engine::coreShutdown()
+void Engine::core_shutdown()
 {
     TIMELOG("Engine Core Shutdown");
     g_threadMgr.quit();
@@ -157,7 +157,7 @@ void Engine::coreShutdown()
     g_win32Context.destroyWindow();
 }
 
-void Engine::subSystemsShutdown()
+void Engine::subsystem_shutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
     g_resourceMgr.offline_all_resources();

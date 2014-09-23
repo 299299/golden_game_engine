@@ -107,7 +107,7 @@ void PhysicsWorld::init()
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     m_raycastSem = new hkSemaphoreBusyWait(0, 1000);
-    hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.getJobQueue());
+    hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 }
 
 void PhysicsWorld::quit()
@@ -154,8 +154,8 @@ void PhysicsWorld::create_world(PhysicsConfig* config)
     PHYSICS_LOCKWRITE(m_world);
     hkpAgentRegisterUtil::registerAllAgents( m_world->getCollisionDispatcher() );
     // We need to register all modules we will be running multi-threaded with the job queue
-    m_world->registerWithJobQueue( g_threadMgr.getJobQueue() );
-    g_threadMgr.vdbAddWorld(m_world);
+    m_world->registerWithJobQueue( g_threadMgr.get_jobqueue() );
+    g_threadMgr.vdb_add_world(m_world);
 
     hkpGroupFilter* pGroupFilter = new hkpGroupFilter();
     // first disable collisions between all groups (group 0 should not be disabled, see docs)
@@ -266,7 +266,7 @@ void PhysicsWorld::kickin_jobs( float timeStep )
     PROFILE(Physics_KickInJobs);
     set_status(kTickProcessing);
     kickin_raycast_jobs();
-    m_world->initMtStep( g_threadMgr.getJobQueue(),timeStep );
+    m_world->initMtStep( g_threadMgr.get_jobqueue(),timeStep );
 }
 
 void PhysicsWorld::tick_finished_jobs( float timeStep )
@@ -274,7 +274,7 @@ void PhysicsWorld::tick_finished_jobs( float timeStep )
     if(!m_world) return;
     PROFILE(Physics_TickFinishJobs);
     set_status(kTickFinishedJobs);
-    m_world->finishMtStep(g_threadMgr.getJobQueue(), g_threadMgr.getThreadPool());
+    m_world->finishMtStep(g_threadMgr.get_jobqueue(), g_threadMgr.get_threadpool());
     if(m_numRaycasts) m_raycastSem->acquire();
     post_simulation();
 }
@@ -410,7 +410,7 @@ void PhysicsWorld::kickin_raycast_jobs()
         m_numRaycasts, m_world->m_broadPhase, m_raycastSem);
     m_world->unmarkForRead();
 
-    g_threadMgr.getJobQueue()->addJob(*worldRayCastJob, hkJobQueue::JOB_LOW_PRIORITY);
+    g_threadMgr.get_jobqueue()->addJob(*worldRayCastJob, hkJobQueue::JOB_LOW_PRIORITY);
 }
 
 

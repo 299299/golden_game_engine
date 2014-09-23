@@ -15,17 +15,17 @@ public:
     void init(bool bCreateVDB);
     void quit();
     
-    hkJobQueue* getJobQueue() const { return mJobQueue;};
-    hkThreadPool* getThreadPool() const { return mThreadPool;};
-    uint32_t getMainThreadId() const { return mMainThreadId; };
-    bool checkMainThread() const;
+    hkJobQueue* get_jobqueue() const { return mJobQueue;};
+    hkThreadPool* get_threadpool() const { return mThreadPool;};
+    uint32_t get_main_threadid() const { return mMainThreadId; };
+    bool check_main_thread() const;
 
-    void processAllJobs();
+    void process_all_jobs();
     void wait();
 
-    void vdbAddWorld(hkpWorld* pWorld);
-    void vdbRemoveWorld(hkpWorld* pWord);
-    void updateVDB(float timeStep);
+    void vdb_add_world(hkpWorld* pWorld);
+    void vdb_remove_world(hkpWorld* pWord);
+    void vdb_update(float timeStep);
 private:
     hkJobQueue*                                     mJobQueue;
     hkThreadPool*                                   mThreadPool;

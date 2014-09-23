@@ -272,7 +272,7 @@ void regster_resource_factories()
 {
     for (uint32_t i = 0; i < BX_COUNTOF(g_resourceFactories); ++i)
     {
-        g_resourceMgr.registerFactory(g_resourceFactories[i]);
+        g_resourceMgr.register_factory(g_resourceFactories[i]);
     }
 }
 int get_resource_order(const StringId& type)

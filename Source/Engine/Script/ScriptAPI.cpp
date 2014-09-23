@@ -95,7 +95,7 @@ static int GM_CDECL input_is_key_down(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(key_code, 0);
-    a_thread->PushInt(g_win32Context.isKeyDown(key_code));
+    a_thread->PushInt(g_win32Context.is_key_down(key_code));
     return GM_OK;
 }
 
@@ -103,7 +103,7 @@ static int GM_CDECL input_is_key_just_pressed(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(key_code, 0);
-    a_thread->PushInt(g_win32Context.isKeyJustPressed(key_code));
+    a_thread->PushInt(g_win32Context.is_key_just_pressed(key_code));
     return GM_OK;
 }
 
@@ -111,7 +111,7 @@ static int GM_CDECL input_is_mouse_down(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(mouse_btn, 0);
-    a_thread->PushInt(g_win32Context.isMouseDown(mouse_btn));
+    a_thread->PushInt(g_win32Context.is_mouse_down(mouse_btn));
     return GM_OK;
 }
 
@@ -119,7 +119,7 @@ static int GM_CDECL input_is_mouse_just_pressed(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(mouse_btn, 0);
-    a_thread->PushInt(g_win32Context.isMouseJustPressed(mouse_btn));
+    a_thread->PushInt(g_win32Context.is_mouse_just_pressed(mouse_btn));
     return GM_OK;
 }
 
@@ -157,7 +157,7 @@ static int GM_CDECL resource_package_load_and_wait(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(pack_name, 0);
-    g_resourceMgr.loadPackageAndWait(pack_name);
+    g_resourceMgr.load_package_and_wait(pack_name);
     return GM_OK;
 }
 
@@ -165,7 +165,7 @@ static int GM_CDECL resource_package_unload(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(pack_name, 0);
-    g_resourceMgr.unloadPackage(StringId(pack_name));
+    g_resourceMgr.unload_package(StringId(pack_name));
     return GM_OK;
 }
 
@@ -182,7 +182,7 @@ static int GM_CDECL resource_package_flush(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(pack_name, 0);
     GM_CHECK_INT_PARAM(max_num, 1);
-    g_resourceMgr.flushPackage(StringId(pack_name), max_num);
+    g_resourceMgr.flush_package(StringId(pack_name), max_num);
     return GM_OK;
 }
 
@@ -191,7 +191,7 @@ static int GM_CDECL resource_find(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(res_type, 0);
     GM_CHECK_INT_PARAM(res_name, 0);
-    a_thread->PushInt((int)g_resourceMgr.findResource(StringId(res_type), StringId(res_name)));
+    a_thread->PushInt((int)g_resourceMgr.find_resource(StringId(res_type), StringId(res_name)));
     return GM_OK;
 }
 //-------------------------------------------------------------------------

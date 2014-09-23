@@ -50,27 +50,27 @@ struct Win32Context
 
     Win32Context();
 
-    void createWindow(const char* title, uint32_t w, uint32_t h);
-    void destroyWindow();
+    void create_window(const char* title, uint32_t w, uint32_t h);
+    void destroy_window();
     void frame_start();
     void reset();
 
     //---------------------------------------------------------------
     // SET
-    void setMousePos(int32_t _mx, int32_t _my);
-    void setWindowSize(uint32_t _width, uint32_t _height);
-    void toggleWindowFrame();
+    void set_mouse_pos(int32_t _mx, int32_t _my);
+    void set_window_size(uint32_t _width, uint32_t _height);
+    void toggle_window_frame();
     //----------------------------------------------------------------
 
     //---------------------------------------------------------------
     // GET
-    bool isKeyJustPressed(int key_code) const { return m_keyJustPressed[key_code];};
-    bool isKeyDown(int key_code) const { return m_keyStatus[key_code];};
-    bool isSizeChanged() const { return m_sizeChanged; };
-    bool isMouseDown(int mouse_button) const { return m_mouseStatus[mouse_button];};
-    bool isMouseJustPressed(int mouse_button) const { return m_mouseStatus[mouse_button];};
-    bool isWindowClosed() const { return m_exit; };
-    bool isWindowActive() const;
+    bool is_key_just_pressed(int key_code) const { return m_keyJustPressed[key_code];};
+    bool is_key_down(int key_code) const { return m_keyStatus[key_code];};
+    bool is_size_changed() const { return m_sizeChanged; };
+    bool is_mouse_down(int mouse_button) const { return m_mouseStatus[mouse_button];};
+    bool is_mouse_just_pressed(int mouse_button) const { return m_mouseStatus[mouse_button];};
+    bool is_window_closed() const { return m_exit; };
+    bool is_window_active() const;
     //---------------------------------------------------------------
 
     LRESULT process(HWND _hwnd, UINT _id, WPARAM _wparam, LPARAM _lparam);

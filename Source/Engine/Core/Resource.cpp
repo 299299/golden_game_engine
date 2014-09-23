@@ -30,12 +30,12 @@ static volatile bool            g_running = true;
 typedef hkPointerMap<hkUint64, void*> ResourceMap;
 static  ResourceMap*            g_resourceMap = 0;
 
-static bool checkRunning()
+static bool is_running()
 {
     hkCriticalSectionLock _l(&g_runningCS);
     return g_running;
 }
-static void setRunning(bool bRunning)
+static void set_running(bool bRunning)
 {
     hkCriticalSectionLock _l(&g_runningCS);
     g_running = bRunning;
@@ -48,11 +48,6 @@ inline void unpackId(const hkUint64& key, StringId& type, StringId& name)
 {
     name = StringId((uint32_t)(key));
     type = StringId((uint32_t)(key >> 32));
-}
-
-char* ResourcePackage::allocMemory(uint32_t size)
-{
-    return (char*)m_allocator->allocate(size);
 }
 
 void ResourcePackage::init()
@@ -78,20 +73,20 @@ void ResourcePackage::load()
     {
         for (uint32_t i=0; i<m_numGroups; ++i)
         {
-            loadGroupBundled(i);
+            load_group_bundled(i);
         }
     }
     else
     {
         for (uint32_t i=0; i<m_numGroups; ++i)
         {
-            loadGroup(i);
+            load_group(i);
         }
     }
     
     
-    lookupAllResources();
-    setStatus(kResourceOffline);
+    lookup_all_resources();
+    set_status(kResourceOffline);
 }
 
 void ResourcePackage::destroy()
@@ -99,16 +94,16 @@ void ResourcePackage::destroy()
     COMMON_DEALLOC(m_allocator->get_start());
 }
 
-void ResourcePackage::loadGroup(int index)
+void ResourcePackage::load_group(int index)
 {
     TIMELOG(__FUNCTION__" load group %d.", index);
 
-    if(!checkRunning())
+    if(!is_running())
         return;
         
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
-    ResourceFactory* fac = g_resourceMgr.findFactory(type);
+    ResourceFactory* fac = g_resourceMgr.find_factory(type);
     ENGINE_ASSERT(fac, "ResourceFactory not found.");
 
     char* pThis = (char*)this;
@@ -120,10 +115,10 @@ void ResourcePackage::loadGroup(int index)
 
     for (uint32_t i=0; i<group.m_numResources; ++i)
     {
-        if(!checkRunning())
+        if(!is_running())
             return;
 
-        if(getStatus() == kResourceRequestUnload)
+        if(get_status() == kResourceRequestUnload)
             return;
 
         ResourceInfo& info = group.m_resources[i];
@@ -139,7 +134,7 @@ void ResourcePackage::loadGroup(int index)
 
         uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
         reader.seek(0, bx::Whence::Begin);
-        char* buffer = allocMemory(fileSize);
+        char* buffer = (char*)m_allocator->allocate(fileSize);
         if(!buffer) continue;
         
         reader.read(buffer, fileSize);
@@ -148,21 +143,21 @@ void ResourcePackage::loadGroup(int index)
         if(loadFunc) info.m_ptr = loadFunc(buffer, fileSize);
         else info.m_ptr = buffer; //---> MAGIC !
 
-        if(info.m_ptr) g_resourceMgr.insertResource(type, info.m_name, info.m_ptr);
+        if(info.m_ptr) g_resourceMgr.insert_resource(type, info.m_name, info.m_ptr);
         else LOGE("resource load error !!!! resource id = %d", i);
     }
 }
 
-void ResourcePackage::loadGroupBundled(int index)
+void ResourcePackage::load_group_bundled(int index)
 {
     TIMELOG(__FUNCTION__" load group %d.", index);
 
-    if(!checkRunning())
+    if(!is_running())
         return;
         
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
-    ResourceFactory* fac = g_resourceMgr.findFactory(type);
+    ResourceFactory* fac = g_resourceMgr.find_factory(type);
     ENGINE_ASSERT(fac, "ResourceFactory not found.");
 
     char* pThis = (char*)this;
@@ -172,15 +167,15 @@ void ResourcePackage::loadGroupBundled(int index)
 
     for (uint32_t i=0; i<group.m_numResources; ++i)
     {
-        if(!checkRunning())
+        if(!is_running())
             return;
-        if(getStatus() == kResourceRequestUnload)
+        if(get_status() == kResourceRequestUnload)
             return;
         ResourceInfo& info = group.m_resources[i];
         char* buffer = pThis + info.m_offset;
         if(loadFunc) info.m_ptr = loadFunc(buffer, info.m_size);
         else info.m_ptr = buffer;
-        if(info.m_ptr) g_resourceMgr.insertResource(type, info.m_name, info.m_ptr);
+        if(info.m_ptr) g_resourceMgr.insert_resource(type, info.m_name, info.m_ptr);
         else LOGE("resource load error !!!! resource id = %d", i);
     }
 }
@@ -193,7 +188,7 @@ void ResourcePackage::flush(int maxNum)
     bringInAllResources(maxNum);
 }
 
-void ResourcePackage::lookupAllResources()
+void ResourcePackage::lookup_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
     for(uint32_t i=0; i<m_numGroups; ++i)
@@ -212,7 +207,7 @@ void ResourcePackage::lookupAllResources()
     }
 }
 
-void ResourcePackage::destroyAllResources()
+void ResourcePackage::destroy_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
     for(uint32_t i=0; i<m_numGroups; ++i)
@@ -228,7 +223,7 @@ void ResourcePackage::destroyAllResources()
     }
 }
 
-void ResourcePackage::bringInGroupResource(ResourceGroup& group, int start, int end)
+void ResourcePackage::bringin_group_resource(ResourceGroup& group, int start, int end)
 {
     __RESOURCE_BRINGIN func_ = group.m_factory->m_bringInFunc;
     ResourceInfo* resources = group.m_resources;
@@ -236,7 +231,7 @@ void ResourcePackage::bringInGroupResource(ResourceGroup& group, int start, int 
         func_(resources[i].m_ptr);
 }
 
-void ResourcePackage::bringInAllResources(int maxNum)
+void ResourcePackage::bringin_all_resources(int maxNum)
 {
     if(maxNum < 0)
     {
@@ -245,7 +240,7 @@ void ResourcePackage::bringInAllResources(int maxNum)
         {
             ResourceGroup& group = m_groups[i];
             if(!group.m_factory->m_bringInFunc) continue;
-            bringInGroupResource(group, 0, group.m_numResources);
+            bringin_group_resource(group, 0, group.m_numResources);
         }
     }
     else
@@ -260,7 +255,7 @@ void ResourcePackage::bringInAllResources(int maxNum)
             {
                 int end = m_lastOnlineResource + maxNum;
                 m_lastOnLineGroup = i;
-                bringInGroupResource(group, m_lastOnlineResource, end);
+                bringin_group_resource(group, m_lastOnlineResource, end);
                 m_lastOnlineResource = end;
                 //LOGD("resource package max bring-in num[%d] !! cur-stats group[%d] resource[%d]",
                 //     maxNum, m_lastOnLineGroup, m_lastOnlineResource);
@@ -268,16 +263,16 @@ void ResourcePackage::bringInAllResources(int maxNum)
             }
             else
             {
-                bringInGroupResource(group, m_lastOnlineResource, numResources);
+                bringin_group_resource(group, m_lastOnlineResource, numResources);
                 m_lastOnlineResource = 0;
                 maxNum -= numNeedToBringIn;
             }
         }
     }
-    setStatus(kResourceOnline);
+    set_status(kResourceOnline);
 }
 
-void ResourcePackage::bringOutAllresources()
+void ResourcePackage::bringout_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
     for(uint32_t i=0; i<m_numGroups; ++i)
@@ -293,19 +288,19 @@ void ResourcePackage::bringOutAllresources()
     }
 }
 
-int ResourcePackage::getStatus() const
+int ResourcePackage::get_status() const
 {
     hkCriticalSectionLock _l(&g_statusCS);
     return m_status;
 }
 
-void ResourcePackage::setStatus( int status )
+void ResourcePackage::set_status( int status )
 {
     hkCriticalSectionLock _l(&g_statusCS);
     m_status = status;
 }
 
-void ResourcePackage::removeAllResources()
+void ResourcePackage::remove_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
     for(uint32_t i=0; i<m_numGroups; ++i)
@@ -313,20 +308,20 @@ void ResourcePackage::removeAllResources()
         ResourceGroup& group = m_groups[i];
         for(uint32_t j=0; j<group.m_numResources; ++j)
         {
-            g_resourceMgr.removeResource(group.m_type, group.m_resources[j]);
+            g_resourceMgr.remove_resource(group.m_type, group.m_resources[j]);
         }
     }
 }
 
 void ResourcePackage::unload()
 {
-    removeAllResources();
-    bringOutAllresources();
-    destroyAllResources();
+    remove_all_resources();
+    bringout_all_resources();
+    destroy_all_resources();
     m_numGroups = 0;
 }
 
-ResourceGroup* ResourcePackage::findGroup( const StringId& type ) const
+ResourceGroup* ResourcePackage::find_group( const StringId& type ) const
 {
     for (uint32_t i=0; i<m_numGroups;++i)
     {
@@ -336,9 +331,9 @@ ResourceGroup* ResourcePackage::findGroup( const StringId& type ) const
     return 0;
 }
 
-ResourceInfo* ResourcePackage::findResource( const StringId& type, const StringId& name ) const
+ResourceInfo* ResourcePackage::find_resource( const StringId& type, const StringId& name ) const
 {
-    ResourceGroup* group = findGroup(type);
+    ResourceGroup* group = find_group(type);
     if(!group) return 0;
     for (uint32_t i=0; i<group->m_numResources; ++i)
     {
@@ -361,7 +356,7 @@ void ResourceManager::init()
 
     m_semaphore = new hkSemaphore;
     m_thread = new hkThread;
-    m_thread->startThread(ioWorkLoop, this, "io_work_thread");
+    m_thread->startThread(io_work_loop, this, "io_work_thread");
     uint32_t pairSize = sizeof(hkUint64) * 2;
     uint32_t memSize = RESOURCE_MAP_NUM*pairSize;
     m_resMapBuffer = COMMON_ALLOC(char, memSize);
@@ -370,17 +365,18 @@ void ResourceManager::init()
 
 void ResourceManager::quit()
 {
-    setRunning(false);
+    set_running(false);
     m_semaphore->release();
     m_thread->joinThread();
 
     for(size_t i=0; i<m_numPackages; ++i)
     {
-        m_packages[i]->destroyAllResources();
+        m_packages[i]->destroy_all_resources();
         m_packages[i]->destroy();
         COMMON_DEALLOC(m_packages[i]);
     }
-    clearRequestQueue(); 
+    //clear request queue.
+    m_requestListHead = 0;
     SAFE_DELETE(g_resourceMap);
     COMMON_DEALLOC(m_resMapBuffer);
     SAFE_DELETE(m_thread);
@@ -388,34 +384,30 @@ void ResourceManager::quit()
 }
 
 
-ResourceFactory* ResourceManager::findFactory(const StringId& type)
+ResourceFactory* ResourceManager::find_factory(const StringId& type)
 { 
-    int index = findFactoryIndex(type);
-    return index >= 0 ? &m_factories[index] : 0;
-}
-
-int ResourceManager::findFactoryIndex( const StringId& type )
-{
+    int index = -1;
     for(uint32_t i=0; i<m_numFactories; ++i)
     {
         if(type == m_types[i])
-            return i;
+        {
+            index = i;
+            break;
+        }
     }
-    return -1;
+    return index >= 0 ? &m_factories[index] : 0;
 }
 
-void ResourceManager::registerFactory(const ResourceFactory& factory)
+void ResourceManager::register_factory(const ResourceFactory& factory)
 {
     m_types[m_numFactories] = StringId(factory.m_name); 
     m_factories[m_numFactories++] = factory;
     ENGINE_ASSERT(m_numFactories < MAX_RESOURCE_TYPES, "resource manager factories overflow.");
 }
 
-void* ResourceManager::findResource( const StringId& type, const StringId& name )
+void* ResourceManager::find_resource( const StringId& type, const StringId& name )
 {
-    if(name.isZero())
-        return 0;
-
+    if(name.is_zero()) return 0;
     hkCriticalSectionLock _l(&g_resourceCS);
     ResourceMap::Iterator it = g_resourceMap->findKey(packId(type, name));
     if(!g_resourceMap->isValid(it))
@@ -426,44 +418,32 @@ void* ResourceManager::findResource( const StringId& type, const StringId& name 
     return g_resourceMap->getValue(it);
 }
 
-void ResourceManager::insertResource( const StringId& type, const StringId& name, void* resource )
+void ResourceManager::insert_resource( const StringId& type, const StringId& name, void* resource )
 {
     hkCriticalSectionLock _l(&g_resourceCS);
     g_resourceMap->insert(packId(type, name), resource);
 }
 
-void ResourceManager::removeResource( const StringId& type, const ResourceInfo& info )
+void ResourceManager::remove_resource( const StringId& type, const ResourceInfo& info )
 {
     hkCriticalSectionLock _l(&g_resourceCS);
     g_resourceMap->remove(packId(type, info.m_name));
 }
 
-void ResourceManager::destroyAllResources()
-{
-    setRunning(false);
-    for(size_t i=0; i<m_numPackages; ++i)
-    {
-        m_packages[i]->unload();
-    }
-#ifdef RESOURCE_RELOAD
-    destroyReloadResources();
-#endif
-}
-
-void* ResourceManager::ioWorkLoop( void* p )
+void* ResourceManager::io_work_loop( void* p )
 {
     hkWorkerThreadContext context(RESOURCE_WORKER_THREAD_ID);
     ResourceManager* mgr = (ResourceManager*)p;
     hkSemaphore* pSemaphore = mgr->m_semaphore;
-    while(checkRunning())
+    while(is_running())
     {
         pSemaphore->acquire();
-        mgr->processRequests();
+        mgr->process_request();
     }
     return 0;
 }
 
-ResourcePackage* ResourceManager::findPackage(const StringId& name)
+ResourcePackage* ResourceManager::find_package(const StringId& name)
 {
     for(size_t i=0; i<m_numPackages; ++i)
     {
@@ -473,10 +453,10 @@ ResourcePackage* ResourceManager::findPackage(const StringId& name)
     return  0;
 }
 
-bool ResourceManager::loadPackage(const char* packageName)
+bool ResourceManager::load_package(const char* packageName)
 {
     StringId packageNameId = StringId(packageName);
-    ResourcePackage* package = findPackage(packageNameId);
+    ResourcePackage* package = find_package(packageNameId);
     if(package)
     {
         LOGW("package already exist --> %s", packageName);
@@ -491,22 +471,22 @@ bool ResourceManager::loadPackage(const char* packageName)
     request->m_data = blob + sizeof(ResourceRequest);
     request->m_dataLen = packageNameLen;
     memcpy(request->m_data, packageName, packageNameLen);
-    pushRequest(request); 
+    push_request(request); 
     m_semaphore->release();
     return true;
 }
 
-bool ResourceManager::unloadPackage(const StringId& packageName)
+bool ResourceManager::unload_package(const StringId& packageName)
 {
     for(size_t i=0; i<m_numPackages; ++i)
     {
         ResourcePackage* package = m_packages[i];
         if(package->m_name == packageName)
         {
-            if(package->getStatus() == kResourceLoading)
+            if(package->get_status() == kResourceLoading)
             {
                 LOGE("package %s is loading", stringid_lookup(package->m_name));
-                package->setStatus(kResourceRequestUnload);
+                package->set_status(kResourceRequestUnload);
                 return false;
             }
             package->unload();
@@ -519,25 +499,23 @@ bool ResourceManager::unloadPackage(const StringId& packageName)
     return true;
 }
 
-int ResourceManager::getPackageStatus(const StringId& packageName)
+int ResourceManager::get_package_status(const StringId& packageName)
 {
-    ResourcePackage* package = findPackage(packageName);
-    if(!package)
-        return kResourceError;
-    return package->getStatus();
+    ResourcePackage* package = find_package(packageName);
+    if(!package) return kResourceError;
+    return package->get_status();
 }
 
-void ResourceManager::flushPackage(const StringId& packageName, int maxNum)
+void ResourceManager::flush_package(const StringId& packageName, int maxNum)
 {
-    ResourcePackage* package = findPackage(packageName);
-    if(!package)
-        return;
+    ResourcePackage* package = find_package(packageName);
+    if(!package) return;
     package->flush(maxNum);
 }
 
-void ResourceManager::processRequests()
+void ResourceManager::process_request()
 {
-    while(checkRunning())
+    while(is_running())
     {
         if(!m_requestListHead)
         {
@@ -574,11 +552,15 @@ void ResourceManager::processRequests()
     }
 }
 
-void ResourceManager::pushRequest( ResourceRequest* request )
+void ResourceManager::push_request( ResourceRequest* request )
 {
     hkCriticalSectionLock _l(&g_queueCS);
-    if(!m_requestListHead) m_requestListHead = request;
-    else {
+    if(!m_requestListHead) 
+    {
+        m_requestListHead = request;
+    }
+    else 
+    {
         ResourceRequest* curRequest = m_requestListHead;
         ResourceRequest* nextRequest = m_requestListHead->m_next;
         while(nextRequest)
@@ -590,34 +572,7 @@ void ResourceManager::pushRequest( ResourceRequest* request )
     }
 }
 
-void ResourceManager::clearRequestQueue()
-{
-    hkCriticalSectionLock _l(&g_queueCS);
-    m_requestListHead = 0;
-}
-
-uint32_t  ResourceManager::findResourcesTypeOf(const StringId& type, void** resourceArray, uint32_t arrayLen)
-{
-    uint32_t retNum = 0;
-    ResourceMap::Iterator iter = g_resourceMap->getIterator();
-    while(g_resourceMap->isValid(iter))
-    {   
-        hkUint64 key = g_resourceMap->getKey(iter);
-        void* value = g_resourceMap->getValue(iter);
-        StringId resType, resName;
-        unpackId(key, resType, resName);
-        if(type == resType)
-        {
-            resourceArray[retNum++] = value;
-            if(retNum >= arrayLen)
-                return retNum;
-        }
-        iter = g_resourceMap->getNext(iter);
-    }
-    return retNum;
-}
-
-uint32_t  ResourceManager::findResourcesTypeOf(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen)
+uint32_t  ResourceManager::find_resources_type_of(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen)
 {
     uint32_t retNum = 0;
     for (uint32_t i = 0; i < m_numPackages; ++i)
@@ -633,28 +588,28 @@ uint32_t  ResourceManager::findResourcesTypeOf(const StringId& type, ResourceInf
     return retNum; 
 }
 
-void ResourceManager::loadPackageAndWait(const char* packageName)
+void ResourceManager::load_package_and_wait(const char* packageName)
 {
     TIMELOG("load_package_and_wait %s", packageName);
     StringId name(packageName);
-    if(loadPackage(packageName))
+    if(load_package(packageName))
     {
-        while(getPackageStatus(name) != kResourceOffline)
+        while(get_package_status(name) != kResourceOffline)
         {
             Sleep(0);
         }
     }
-    flushPackage(name);
+    flush_package(name);
 }
 
 
 void ResourceManager::offline_all_resources()
 {
-    setRunning(false);
+    set_running(false);
     for (uint32_t i=0; i<m_numPackages; ++i)
     {
-        m_packages[i]->removeAllResources();
-        m_packages[i]->bringOutAllresources();
+        m_packages[i]->remove_all_resources();
+        m_packages[i]->bringout_all_resources();
     }
 }
 //==================================================================================
@@ -671,7 +626,7 @@ ReloadResourceMap  g_reloadResources;
 typedef std::unordered_map<uint32_t, std::vector<__RESOURCE_RELOAD> > ReloadCallbackMap;
 ReloadCallbackMap g_reloadCallbacks;
 //===================================================================================
-void ResourceManager::destroyReloadResources()
+void ResourceManager::destroy_reload_resources()
 {
     for(ReloadResourceMap::iterator iter = g_reloadResources.begin(); iter != g_reloadResources.end(); ++iter)
     {
@@ -682,7 +637,7 @@ void ResourceManager::destroyReloadResources()
     }
     g_reloadResources.clear();
 }
-void  ResourceManager::registerReloadCallback(const StringId& type, __RESOURCE_RELOAD func)
+void  ResourceManager::register_reload_callback(const StringId& type, __RESOURCE_RELOAD func)
 {
     uint32_t key = type.value();
     ReloadCallbackMap::iterator iter = g_reloadCallbacks.find(key);
@@ -696,11 +651,11 @@ void  ResourceManager::registerReloadCallback(const StringId& type, __RESOURCE_R
         iter->second.push_back(func);
     }
 }
-void* ResourceManager::reloadResource( const StringId& type, const StringId& name, const char* pathName , bool bFireCallbacks)
+void* ResourceManager::reload_resource( const StringId& type, const StringId& name, const char* pathName , bool bFireCallbacks)
 {
     LOGD("start reloading resource path %s", pathName);
 
-    void* oldResource = findResource(type, name);
+    void* oldResource = find_resource(type, name);
     if(!oldResource)
     {
         LOGW(__FUNCTION__" old resource not exist ---> %s!", pathName);
@@ -715,7 +670,7 @@ void* ResourceManager::reloadResource( const StringId& type, const StringId& nam
         return 0;
     }
     
-    ResourceFactory* fac = findFactory(type);
+    ResourceFactory* fac = find_factory(type);
     if(!fac) {
         LOGE("can not find factory = %x", stringid_lookup(type));
         return 0;
@@ -747,7 +702,7 @@ void* ResourceManager::reloadResource( const StringId& type, const StringId& nam
     data.m_resource = newResource;
     data.m_fac = fac;
     g_reloadResources[key] = data;
-    insertResource(type, name, newResource);
+    insert_resource(type, name, newResource);
     
     if(bFireCallbacks)
     {
@@ -771,7 +726,7 @@ void* ResourceManager::reloadResource( const StringId& type, const StringId& nam
     return newResource;
 }
 
-void ResourceManager::reloadResource(const StringId& type, bool bFireCallbacks)
+void ResourceManager::reload_resource(const StringId& type, bool bFireCallbacks)
 {
     char name[256];
     for (uint32_t i = 0; i < m_numPackages; ++i)
@@ -786,7 +741,7 @@ void ResourceManager::reloadResource(const StringId& type, bool bFireCallbacks)
             char* nameAddr = (char*)package + info.m_offset;
             memcpy(name, nameAddr, info.m_size);
             name[info.m_size] = '\0';
-            reloadResource(type, info.m_name, name, bFireCallbacks);
+            reload_resource(type, info.m_name, name, bFireCallbacks);
         }
     }
 }

@@ -133,7 +133,7 @@ int JSON_GetEnum(const JsonValue& jsValue, const char** enum_names, int defaultV
 {
     char buffer[64];
     JSON_GetString(jsValue, buffer, sizeof(buffer));
-    int iRet = findEnumIndex(buffer, enum_names);
+    int iRet = find_enum_index(buffer, enum_names);
     return (iRet >= 0) ? iRet : defaultValue;
 }
 int JSON_GetInt(const JsonValue& jsValue, int defaultValue)
@@ -170,7 +170,7 @@ int JSON_GetFlags(const JsonValue& jsValue, const char** enum_names, int default
     for(unsigned i = 0; i<jsValue.GetElementsCount(); ++i)
     {
         JSON_GetString(jsValue[i], name, sizeof(name));
-        int index = findEnumIndex(name, enum_names);
+        int index = find_enum_index(name, enum_names);
         if(index < 0)
             continue;
         retValue |= ( 1 << index);
@@ -186,7 +186,7 @@ int JSON_GetFlags(const JsonValue& jsValue, const char** enum_names, int* flags,
     for(unsigned i = 0; i<jsValue.GetElementsCount(); ++i)
     {
         JSON_GetString(jsValue[i], name, sizeof(name));
-        int index = findEnumIndex(name, enum_names);
+        int index = find_enum_index(name, enum_names);
         if(index < 0)
             continue;
         retValue |= flags[index];

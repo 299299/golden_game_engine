@@ -67,7 +67,7 @@ void ThreadSystem::quit()
     SAFE_REMOVEREF(mThreadPool);
 }
 
-void ThreadSystem::processAllJobs()
+void ThreadSystem::process_all_jobs()
 {
     PROFILE(Thread_Process);
     mThreadPool->processJobQueue( mJobQueue );
@@ -80,29 +80,26 @@ void ThreadSystem::wait()
     mThreadPool->waitForCompletion();
 }
 
-void ThreadSystem::vdbAddWorld( hkpWorld* pWorld )
+void ThreadSystem::vdb_add_world( hkpWorld* pWorld )
 {
-    if(mPhysicsCtx)
-        mPhysicsCtx->addWorld(pWorld);
+    if(mPhysicsCtx) mPhysicsCtx->addWorld(pWorld);
 }
 
-void ThreadSystem::vdbRemoveWorld( hkpWorld* pWorld )
+void ThreadSystem::vdb_remove_world( hkpWorld* pWorld )
 {
-    if(mPhysicsCtx)
-        mPhysicsCtx->removeWorld(pWorld);
+    if(mPhysicsCtx) mPhysicsCtx->removeWorld(pWorld);
 }
 
-void ThreadSystem::updateVDB( float timeStep )
+void ThreadSystem::vdb_update( float timeStep )
 {
-    if(!mVDB)
-        return;
+    if(!mVDB) return;
     mPhysicsCtx->syncTimers( mThreadPool );
     mVDB->step(timeStep);
     hkMonitorStream::getInstance().reset();
     mThreadPool->clearTimerData();
 }
 
-bool ThreadSystem::checkMainThread() const
+bool ThreadSystem::check_main_thread() const
 {
     return mMainThreadId == ::GetCurrentThreadId();
 }

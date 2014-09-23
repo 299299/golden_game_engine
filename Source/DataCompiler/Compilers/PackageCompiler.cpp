@@ -16,7 +16,7 @@ PackageCompiler::~PackageCompiler()
     }
 }
 
-int PackageCompiler::findGroup(const std::string& ext) const
+int PackageCompiler::find_group(const std::string& ext) const
 {
     for(size_t i=0; i<m_groups.size(); ++i)
     {

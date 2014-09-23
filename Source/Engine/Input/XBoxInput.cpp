@@ -40,10 +40,8 @@ XInput::~XInput()
 
 void XInput::vibrate( int index, float leftVal, float rightVal, float fTime )
 {
-    if(!isConnected(index))
-        return;
-    if(fTime <= 0.0f)
-        return;
+    if(!is_connected(index)) return;
+    if(fTime <= 0.0f) return;
     leftVal = hkMath::clamp<float>(leftVal, 0.0f, 1.0f);
     rightVal = hkMath::clamp<float>(rightVal, 0.0f, 1.0f);
     XINPUT_VIBRATION tmpVibration;
@@ -53,14 +51,20 @@ void XInput::vibrate( int index, float leftVal, float rightVal, float fTime )
     XInputSetState(index, &tmpVibration);
 }
 
-bool XInput::isButtonDown(int index, int button ) const
+bool XInput::is_button_down(int index, int button ) const
 {
-    if(!isConnected(index))
-        return false;
+    if(!is_connected(index)) return false;
     return (g_states[index].Gamepad.wButtons & button) != 0;
 }
 
-bool XInput::checkDevices(float timeStep)
+bool XInput::is_button_just_pressed(int index, int button) const
+{
+    if(!is_connected(index)) return false;
+    //TODO
+    return false;
+}
+
+bool XInput::check_devices(float timeStep)
 {
     bool bRet = false;
     m_deviceTimer += timeStep;
@@ -83,15 +87,15 @@ bool XInput::checkDevices(float timeStep)
 
 void XInput::update( float timeStep )
 {
-    checkDevices(timeStep);
+    check_devices(timeStep);
 
     for (int i=0; i<XUSER_MAX_COUNT;++i)
     {
-        updateStick(i, timeStep);
+        udpate_stick(i, timeStep);
     }
 }
 
-int XInput::getConnectedNum() const
+int XInput::get_connected_num() const
 {
     int iRet = 0;
     for (int i=0; i<XUSER_MAX_COUNT;++i)
@@ -102,27 +106,23 @@ int XInput::getConnectedNum() const
     return iRet;
 }
 
-float XInput::getLeftTrigger( int index ) const
+float XInput::get_left_trigger( int index ) const
 {
-    if(!isConnected(index))
-        return 0.0f;
+    if(!is_connected(index)) return 0.0f;
     float t = (float)g_states[index].Gamepad.bLeftTrigger;
-    if(t <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
-        return 0.0f;
+    if(t <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD) return 0.0f;
     return (t - XINPUT_GAMEPAD_TRIGGER_THRESHOLD) / (255.0f - XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 }
 
-float XInput::getRightTrigger( int index ) const
+float XInput::get_right_triggers( int index ) const
 {
-    if(!isConnected(index))
-        return 0.0f;
+    if(!is_connected(index)) return 0.0f;
     float t = (float)g_states[index].Gamepad.bRightTrigger;
-    if(t <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
-        return 0.0f;
+    if(t <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD) return 0.0f;
     return (t - XINPUT_GAMEPAD_TRIGGER_THRESHOLD) / (255.0f - XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 }
 
-void caculateValue(short tx, short ty, float deadZone, float* outValue)
+void caculate_value(short tx, short ty, float deadZone, float* outValue)
 {
     float LX = (float)tx;
     float LY = (float)ty;
@@ -164,11 +164,11 @@ void caculateValue(short tx, short ty, float deadZone, float* outValue)
     outValue[1] = normalizedLY;
 }
 
-void XInput::updateStick( int index, float timeStep )
+void XInput::udpate_stick( int index, float timeStep )
 {
     const XINPUT_GAMEPAD& xGamePad = g_states[index].Gamepad;
-    caculateValue(xGamePad.sThumbLX,  xGamePad.sThumbLY,  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, m_LSSmooth[index]);
-    caculateValue(xGamePad.sThumbRX, xGamePad.sThumbRY,  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE, m_RSSmooth[index]);
+    caculate_value(xGamePad.sThumbLX,  xGamePad.sThumbLY,  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, m_LSSmooth[index]);
+    caculate_value(xGamePad.sThumbRX, xGamePad.sThumbRY,  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE, m_RSSmooth[index]);
 
     m_LSRaw[index][0] = (float)xGamePad.sThumbLX/32767.0f;
     m_LSRaw[index][1] = (float)xGamePad.sThumbLY/32767.0f;

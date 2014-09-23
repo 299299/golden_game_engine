@@ -74,27 +74,27 @@ ENGINE_NATIVE_ALIGN struct ResourcePackage
     void  init();
     void  destroy();
 
-    char* allocMemory(uint32_t size);
-    void load();
-    void unload();
-    void flush(int maxNum);
+    void  load();
+    void  unload();
+    void  flush(int maxNum);
     
-    void lookupAllResources();
-    void bringInAllResources(int maxNum);
-    void bringOutAllresources();
-    void destroyAllResources();
-    void removeAllResources();
+    
+    void  bringin_all_resources(int maxNum);
+    void  bringout_all_resources();
+    void  destroy_all_resources();
+    void  remove_all_resources();
 
-    int getStatus() const;
-    void setStatus(int status);
+    int  get_status() const;
+    void set_status(int status);
 
-    ResourceGroup* findGroup(const StringId& type) const;
-    ResourceInfo* findResource(const StringId& type, const StringId& name) const;
+    ResourceGroup* find_group(const StringId& type) const;
+    ResourceInfo* find_resource(const StringId& type, const StringId& name) const;
 
 private:
-    void loadGroup(int index);
-    void loadGroupBundled(int index);
-    void bringInGroupResource(ResourceGroup& group, int start, int end);
+    void load_group(int index);
+    void load_group_bundled(int index);
+    void bringin_group_resource(ResourceGroup& group, int start, int end);
+    void lookup_all_resources();
 };
 
 struct ResourceRequest
@@ -122,46 +122,46 @@ struct ResourceManager
 
     void init();
     void quit();
-
     void offline_all_resources();
 
-    ResourceFactory* findFactory(const StringId& type);
-    int findFactoryIndex(const StringId& type);
-    void registerFactory(const ResourceFactory& factory);
+    //--------------------------------------------------------------------
+    // Factory API
+    ResourceFactory* find_factory(const StringId& type);
+    void register_factory(const ResourceFactory& factory);
 
-    bool loadPackage(const char* packageName);
-    void loadPackageAndWait(const char* packageName);
-    bool unloadPackage(const StringId& packageName);
-    int  getPackageStatus(const StringId& packageName);
-    void flushPackage(const StringId& packageName, int maxNum = -1);
+    //--------------------------------------------------------------------
+    // Package API
+    bool load_package(const char* packageName);
+    void load_package_and_wait(const char* packageName);
+    bool unload_package(const StringId& packageName);
+    int  get_package_status(const StringId& packageName);
+    void flush_package(const StringId& packageName, int maxNum = -1);
 
-    void  insertResource(const StringId& type, const StringId& name, void* resource);
-    void* findResource(const StringId& type, const StringId& name);
-    void  removeResource(const StringId& type, const ResourceInfo& info);
-    void  destroyAllResources();
-    uint32_t  findResourcesTypeOf(const StringId& type, void** resourceArray, uint32_t arrayLen);
-    uint32_t  findResourcesTypeOf(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen);
-
-    void  processRequests();
-
-    void pushRequest(ResourceRequest* request);
-    void  clearRequestQueue();
-
+    //--------------------------------------------------------------------
+    // Resource API
+    void  insert_resource(const StringId& type, const StringId& name, void* resource);
+    void* find_resource(const StringId& type, const StringId& name);
+    void  remove_resource(const StringId& type, const ResourceInfo& info);
+    uint32_t  find_resources_type_of(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen);
 #ifdef RESOURCE_RELOAD
-    void* reloadResource(const StringId& type, const StringId& name, const char* pathName, bool bFireCallbacks = true);
-    void  destroyReloadResources();
-    void  registerReloadCallback(const StringId& type, __RESOURCE_RELOAD func);
-    void  reloadResource(const StringId& type, bool bFireCallbacks = true);
+    void* reload_resource(const StringId& type, const StringId& name, const char* pathName, bool bFireCallbacks = true);
+    void  destroy_reload_resources();
+    void  register_reload_callback(const StringId& type, __RESOURCE_RELOAD func);
+    void  reload_resource(const StringId& type, bool bFireCallbacks = true);
 #endif
 
-    static void* ioWorkLoop(void* p);
+    //--------------------------------------------------------------------
+    // Inner Thread API
+    static void* io_work_loop(void* p);
+    void  process_request();
 
 private:
-    ResourcePackage* findPackage(const StringId& name);
+    ResourcePackage* find_package(const StringId& name);
+    void push_request(ResourceRequest* request);
 };
 
 extern ResourceManager      g_resourceMgr;
 
-#define FIND_RESOURCE(className,name) ((className*)g_resourceMgr.findResource(className::getType(), name))
+#define FIND_RESOURCE(className,name) ((className*)g_resourceMgr.find_resource(className::getType(), name))
 
 

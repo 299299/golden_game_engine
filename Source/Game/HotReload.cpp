@@ -55,7 +55,7 @@ template <typename T, typename U> void reload_component_resource(void* oldResour
 }
 template <typename T, typename U> void register_component_resource_reload_callback()
 {
-    g_resourceMgr.registerReloadCallback(T::getType(), reload_component_resource<T, U>);
+    g_resourceMgr.register_reload_callback(T::getType(), reload_component_resource<T, U>);
 }
 //----------------------------------------------------------------------------------------------
 template <typename T, typename U> void reload_component_resource_(void* oldResource, void* newResource)
@@ -77,7 +77,7 @@ template <typename T, typename U> void reload_component_resource_(void* oldResou
 }
 template <typename T, typename U> void register_component_resource_reload_callback_()
 {
-    g_resourceMgr.registerReloadCallback(T::getType(), reload_component_resource_<T, U>);
+    g_resourceMgr.register_reload_callback(T::getType(), reload_component_resource_<T, U>);
 }
 //----------------------------------------------------------------------------------------------
 void reload_light_resource(void* oldResource, void* newResource)
@@ -130,7 +130,7 @@ void reload_animation_resource(void* oldResource, void* newResource)
     for (uint32_t i = 0; i < numOfAnimations; ++i)
     {
         Animation* anim = (Animation*)result[i]->m_ptr;
-        if(anim->m_mirroredFrom.isZero()) continue;
+        if(anim->m_mirroredFrom.is_zero()) continue;
         hkaMirroredAnimation* mirrorAnim = (hkaMirroredAnimation*)anim->m_animation;
         const hkaAnimationBinding* binding = mirrorAnim->getOriginalBinding();
         if(oldAnimation->m_binding == binding)
@@ -327,17 +327,17 @@ void reload_actor_resource(void* oldResource, void* newResource)
 
 void resource_hot_reload_init()
 {
-    g_resourceMgr.registerReloadCallback(ShadingEnviroment::getType(), reload_shading_enviroment);
-    g_resourceMgr.registerReloadCallback(Texture::getType(), reload_texture_resource);
-    g_resourceMgr.registerReloadCallback(Raw3DTexture::getType(), reload_texture_3d_resource);
-    g_resourceMgr.registerReloadCallback(Mesh::getType(), reload_mesh_resource);
-    g_resourceMgr.registerReloadCallback(ActorResource::getType(), reload_actor_resource);
-    g_resourceMgr.registerReloadCallback(Material::getType(), reload_material_resource);
-    g_resourceMgr.registerReloadCallback(Shader::getType(), reload_shader_resource);
-    g_resourceMgr.registerReloadCallback(ShaderProgram::getType(), reload_program_resource);
-    g_resourceMgr.registerReloadCallback(Level::getType(), reload_level_resource);
-    g_resourceMgr.registerReloadCallback(Animation::getType(), reload_animation_resource);
-    g_resourceMgr.registerReloadCallback(LightResource::getType(), reload_light_resource);
+    g_resourceMgr.register_reload_callback(ShadingEnviroment::getType(), reload_shading_enviroment);
+    g_resourceMgr.register_reload_callback(Texture::getType(), reload_texture_resource);
+    g_resourceMgr.register_reload_callback(Raw3DTexture::getType(), reload_texture_3d_resource);
+    g_resourceMgr.register_reload_callback(Mesh::getType(), reload_mesh_resource);
+    g_resourceMgr.register_reload_callback(ActorResource::getType(), reload_actor_resource);
+    g_resourceMgr.register_reload_callback(Material::getType(), reload_material_resource);
+    g_resourceMgr.register_reload_callback(Shader::getType(), reload_shader_resource);
+    g_resourceMgr.register_reload_callback(ShaderProgram::getType(), reload_program_resource);
+    g_resourceMgr.register_reload_callback(Level::getType(), reload_level_resource);
+    g_resourceMgr.register_reload_callback(Animation::getType(), reload_animation_resource);
+    g_resourceMgr.register_reload_callback(LightResource::getType(), reload_light_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();
