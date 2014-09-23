@@ -28,7 +28,7 @@ void LookAtInstance::init(const void* resource)
     m_lookAtLastTargetWS.setZero4();
 }
 
-void LookAtInstance::doLookAt(const hkVector4& targetPosWS, 
+void LookAtInstance::do_lookat(const hkVector4& targetPosWS, 
                               const hkQsTransform& worldFromModel, 
                               hkaPose& thePose)
 {
@@ -182,25 +182,14 @@ void ReachInstance::doReach(  const hkVector4& targetPosWS,
 void FootInstance::init(const void* resource)
 {
     m_resource = (const FootResource*)resource;
-    createSolver(m_resource->m_rig->m_skeleton);
     m_raycast = new AnimRaycastInterface();
     m_raycast->m_type = m_resource->m_raycastType;
-}
 
-void FootInstance::destroy()
-{
-    SAFE_DELETE(m_raycast);
-    SAFE_DELETE(m_solver[0]);
-    SAFE_DELETE(m_solver[1]);
-}
-
-void FootInstance::createSolver(hkaSkeleton* skel)
-{
     const FootResource* res = m_resource;
     const int* jointIndices = res->m_rig->m_humanJointIndices;
 
     hkaFootPlacementIkSolver::Setup setupData;
-
+    hkaSkeleton* skel = m_resource->m_rig->m_skeleton;
     // COMMON
     {
         setupData.m_skeleton = skel;
@@ -239,7 +228,15 @@ void FootInstance::createSolver(hkaSkeleton* skel)
     }
 }
 
-void  FootInstance::doFootIK(   bool isStanding,
+void FootInstance::destroy()
+{
+    SAFE_DELETE(m_raycast);
+    SAFE_DELETE(m_solver[0]);
+    SAFE_DELETE(m_solver[1]);
+}
+
+
+void  FootInstance::do_foot(   bool isStanding,
                                 const hkQsTransform& worldFromModel,
                                 hkaPose& poseInOut, 
                                 hkReal& verticalDisplacementInOut)
@@ -271,7 +268,7 @@ void  FootInstance::doFootIK(   bool isStanding,
     footPlacementInput.m_onOffGain = res->m_footOnOffGain;
     footPlacementInput.m_footPlacementOn = footIkOn;
 
-    int index = g_physicsWorld.getFilterLayer(res->m_raycastCollisionLayer);
+    int index = g_physicsWorld.get_layer(res->m_raycastCollisionLayer);
     if(index)
     {
         footPlacementInput.m_collisionFilterInfo  = hkpGroupFilter::calcFilterInfo(index);

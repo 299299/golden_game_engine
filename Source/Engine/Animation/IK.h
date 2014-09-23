@@ -83,10 +83,7 @@ ENGINE_NATIVE_ALIGN struct LookAtInstance
     bool                        m_enabled;
 
     void init(const void* resource);
-    void setTransform(const hkQsTransform& t) {};
-    void setEnabled(bool bEnable) { m_enabled = bEnable; };
-    
-    void  doLookAt(const hkVector4& targetPosWS,
+    void do_lookat(const hkVector4& targetPosWS,
                    const hkQsTransform& worldFromModel, 
                    hkaPose& thePose);
 };
@@ -99,11 +96,7 @@ ENGINE_NATIVE_ALIGN struct ReachInstance
     bool                        m_enabled;
 
     void init(const void* resource);
-    void setTransform(const hkQsTransform& t) {};
-    void setEnabled(bool bEnable) { m_enabled = bEnable; };
-
-    
-    void  doReach(const hkVector4& targetPosWS,
+    void do_reach(const hkVector4& targetPosWS,
                   const hkQsTransform& worldFromModel, 
                   hkaPose& thePose);
 };
@@ -119,11 +112,7 @@ ENGINE_NATIVE_ALIGN struct FootInstance
 
     void init(const void* resource);
     void destroy();
-    void setTransform(const hkQsTransform& t) {};
-    void setEnabled(bool bEnable) { m_enabled = bEnable; };
-
-    void  createSolver(hkaSkeleton* skel);
-    void  doFootIK( bool isStanding,
+    void do_foot( bool isStanding,
                     const hkQsTransform& worldFromModel,
                     hkaPose& poseInOut, 
                     hkReal& verticalDisplacementInOut);

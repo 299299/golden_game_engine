@@ -100,8 +100,8 @@ void ProxyResource::destroyShape()
 void ProxyInstance::init(const void* resource)
 {
     m_resource = (const ProxyResource*)resource;
-    hkpWorld* world = g_physicsWorld.getWorld();
-    int layerId = g_physicsWorld.getFilterLayer(m_resource->m_layerName);
+    hkpWorld* world = g_physicsWorld.world();
+    int layerId = g_physicsWorld.get_layer(m_resource->m_layerName);
     hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape, hkTransform::getIdentity(), hkpGroupFilter::calcFilterInfo(layerId,0));
     hkpCharacterProxyCinfo cpci;
     cpci.m_staticFriction = 0.0f;
@@ -156,7 +156,7 @@ void ProxyInstance::addToSimulation()
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     if(phantom->getWorld())
         return;
-    hkpWorld* world = g_physicsWorld.getWorld();
+    hkpWorld* world = g_physicsWorld.world();
     PHYSICS_LOCKWRITE(world);
     world->addPhantom(phantom);
 }

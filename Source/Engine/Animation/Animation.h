@@ -11,12 +11,12 @@ class hkaPose;
 #define ANIMATION_FRAME_FPS          (30.0f)
 #define ANIMATION_TIME_PERFRAME      (1.0f/30.0f)
 
-inline int timeToFrame(float fTime)
+inline int tim_to_frame(float fTime)
 {
     return (int)(fTime * ANIMATION_FRAME_FPS);
 }
 
-inline float frameToTime(int frame)
+inline float frame_to_time(int frame)
 {
     return frame * ANIMATION_TIME_PERFRAME;
 }
@@ -48,15 +48,14 @@ ENGINE_NATIVE_ALIGN struct Animation
     void lookup();
     void destroy();
 
-    int getFrames() const;
-    float getLength() const;
-    bool isMirrored() const { return !m_mirroredFrom.isZero();};
+    int get_frames() const;
+    float get_length() const;
+    bool mirrored() const { return !m_mirroredFrom.isZero();};
     
-    const AnimationBeat* findBeat(uint32_t type) const;
-    const AnimationBeat* findNextClosestBeat(float time, bool bLoop) const;
-    uint8_t collectTriggers(float curTime, float dt, AnimationTrigger* outTriggers) const;
-
-    void createMirrorAnimation(const Animation* orginalAnim);
+    const AnimationBeat* find_beat(uint32_t type) const;
+    const AnimationBeat* find_next_closest_beat(float time, bool bLoop) const;
+    uint8_t collect_triggers(float curTime, float dt, AnimationTrigger* outTriggers) const;
+    void create_mirrored_animation(const Animation* orginalAnim);
 
     StringId                        m_mirroredFrom;
     StringId                        m_rigName;
@@ -80,10 +79,6 @@ ENGINE_NATIVE_ALIGN struct Animation
 //======================================================================
 //          HELPER API
 //======================================================================
-hkReal caculateMotionVelocity(hkaDefaultAnimationControl* ac);
-// Compute the blend params that will produce the desired velocity
-void computeBlendParams(hkReal desiredVel, hkReal walkVel, hkReal runVel, 
-                        hkReal walkDur, hkReal runDur, hkReal& blend, 
-                        hkReal& walkSpeed, hkReal& runSpeed );
-void drawPoseVDB( const hkaPose& pose, const hkQsTransform& worldFromModel, int color=0x7fffffff, hkBool showLabels = false );
-void drawPose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color=0x7fffffff, hkBool showLabels = false );
+hkReal caculate_motion_velocity(hkaDefaultAnimationControl* ac);
+void draw_pose_vdb( const hkaPose& pose, const hkQsTransform& worldFromModel, int color=0x7fffffff, hkBool showLabels = false );
+void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color=0x7fffffff, hkBool showLabels = false );

@@ -62,12 +62,12 @@ void AnimationSystem::quit()
     
 }
 
-void AnimationSystem::frameStart()
+void AnimationSystem::frame_start()
 {
     set_status(kTickFrameStart);
 }
 
-void AnimationSystem::kickInJobs()
+void AnimationSystem::kick_in_jobs()
 {
     uint32_t numSkeletons = id_array::size(m_rigs);
     if(numSkeletons == 0) return;
@@ -88,7 +88,7 @@ void AnimationSystem::kickInJobs()
     g_threadMgr.getJobQueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
 }
 
-void AnimationSystem::tickFinishJobs()
+void AnimationSystem::tick_finished_jobs()
 {
     uint32_t numSkeletons = id_array::size(m_rigs);
     if(!numSkeletons) return;
@@ -156,7 +156,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         REMOVE_BITS(model->m_flag, kNodeTransformDirty);
 
 #ifndef _RETIAL
-        drawPose(*pose, t, RGBA(125,125,255,255));
+        draw_pose(*pose, t, RGBA(125,125,255,255));
 #endif
     }
     

@@ -62,17 +62,16 @@ ENGINE_NATIVE_ALIGN struct RagdollInstance
 {
     void init(const void* resource);
     void destroy();
-    void setTransform(const hkQsTransform& t);
-    void setEnabled(bool bEnable);
+    void set_transform(const hkQsTransform& t);
 
-    void addToSimulation();
-    void removeFromSimulation();
+    void add_to_simulation();
+    void remove_from_simulation();
 
     //=====================================================================================
-    hkVector4 doRagdoll(const hkQsTransform& worldFromModel, hkaPose& thePose,  float timeStep);
-    void doRagdollFeedback(const hkQsTransform& worldFromModel, hkaPose &thePose, float timeStep);
-    void stopRagdollFeedback();
-    void setMotors(float force, float tau, float propRecoveryVel, float conRecoveryVel);
+    hkVector4 do_ragdoll(const hkQsTransform& worldFromModel, hkaPose& thePose,  float timeStep);
+    void do_ragdoll_feedback(const hkQsTransform& worldFromModel, hkaPose &thePose, float timeStep);
+    void stop_ragdoll_feedback();
+    void set_motors(float force, float tau, float propRecoveryVel, float conRecoveryVel);
     //=====================================================================================
 
     const RagdollResource*                      m_resource;

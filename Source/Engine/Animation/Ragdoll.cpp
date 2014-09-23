@@ -28,7 +28,7 @@
 #include <Physics2012/Collide/Filter/Group/hkpGroupFilter.h>
 //==================================================================
 
-static int   findBoneIndex(const hkaSkeleton* skeleton, const StringId& boneName)
+static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneName)
 {
     for(int i=0;i<skeleton->m_bones.getSize();++i)
     {
@@ -38,7 +38,7 @@ static int   findBoneIndex(const hkaSkeleton* skeleton, const StringId& boneName
     }
     return -1;
 }
-bool boneInArray(hkInt16 boneId, const hkInt16* bones, uint8_t num)
+bool bone_in_array(hkInt16 boneId, const hkInt16* bones, uint8_t num)
 {
     for(uint8_t i=0; i<num; ++i)
     {
@@ -85,7 +85,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
         m_lowerBodyBones[m_numLowerBodyBones++] = 0;
 
         // Right Leg
-        const hkInt16 startRight = findBoneIndex(skeleton, m_rightLeg);
+        const hkInt16 startRight = find_bone_index(skeleton, m_rightLeg);
         m_lowerBodyBones[m_numLowerBodyBones++] = startRight;
         hkLocalArray<hkInt16> bones(100);
         hkaSkeletonUtils::getDescendants(*skeleton, startRight, bones);
@@ -93,7 +93,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
             m_lowerBodyBones[m_numLowerBodyBones++] = bones[i];
 
         // Left leg
-        const hkInt16 startLeft = findBoneIndex(skeleton, m_leftLeg);
+        const hkInt16 startLeft = find_bone_index(skeleton, m_leftLeg);
         m_lowerBodyBones[m_numLowerBodyBones++] = startLeft;
         bones.clear();
         hkaSkeletonUtils::getDescendants(*skeleton, startRight, bones);
@@ -109,9 +109,9 @@ void RagdollResource::load(hkRootLevelContainer* container)
 //                   INSTANCE
 //=====================================================================
 // Set quality and filter info for a ragdoll body part
-static void setDynamicWithCollisions(hkpRigidBody* rb, int,int,int);
-static void setDynamicWithoutCollisions(hkpRigidBody* rb,int);
-static void setKeyframedWithoutCollisions(hkpRigidBody* rb,int);
+static void set_dynamic_with_collisions(hkpRigidBody* rb, int,int,int);
+static void set_dynamic_without_collisions(hkpRigidBody* rb,int);
+static void set_keyframe_without_collisions(hkpRigidBody* rb,int);
 
 void RagdollInstance::init(const void* resource)
 {
@@ -120,14 +120,14 @@ void RagdollInstance::init(const void* resource)
     m_resource = (const RagdollResource*)resource;
     m_ragdoll = m_resource->m_ragdoll->clone(hkpConstraintInstance::CLONE_DATAS_WITH_MOTORS);
     
-    int dynamicLayer = g_physicsWorld.getFilterLayer(m_resource->m_dynamicLayer);
+    int dynamicLayer = g_physicsWorld.get_layer(m_resource->m_dynamicLayer);
 
     // Initialize collision/motion settings for the rigidbody ragdoll parts
     for ( int b =0; b < m_ragdoll->getNumBones(); b++)
     {
         hkpRigidBody* rb = m_ragdoll->getRigidBodyOfBone(b);
         // Initialize with quality type and collision filter
-        setDynamicWithCollisions( rb, b, m_ragdoll->getParentOfBone( b ), dynamicLayer );
+        set_dynamic_with_collisions( rb, b, m_ragdoll->getParentOfBone( b ), dynamicLayer );
     }
 
     // We turn off friction for all constraints - this helps the controllers match the animation pose better
@@ -166,21 +166,21 @@ void RagdollInstance::init(const void* resource)
 
 void RagdollInstance::destroy()
 {
-    removeFromSimulation();
+    remove_from_simulation();
     SAFE_DELETE(m_rigidBodyController);
     SAFE_REMOVEREF(m_ragdoll);
 }
 
-void RagdollInstance::addToSimulation()
+void RagdollInstance::add_to_simulation()
 {
     if(m_ragdoll->getWorld())
         return;
-    hkpWorld* hkWorld = g_physicsWorld.getWorld();
+    hkpWorld* hkWorld = g_physicsWorld.world();
     PHYSICS_LOCKWRITE(hkWorld);
     m_ragdoll->addToWorld(hkWorld, true);
 }
 
-void RagdollInstance::removeFromSimulation()
+void RagdollInstance::remove_from_simulation()
 {
     if(!m_ragdoll)
         return;
@@ -192,7 +192,7 @@ void RagdollInstance::removeFromSimulation()
 }
 
 // doRagdoll() : drives the ragdoll to the incoming pose and modifies that pose to reflect the ragdoll
-hkVector4 RagdollInstance::doRagdoll( const hkQsTransform& worldFromModel, 
+hkVector4 RagdollInstance::do_ragdoll( const hkQsTransform& worldFromModel, 
                                       hkaPose& thePose,  
                                       float timeStep )
 {
@@ -258,9 +258,9 @@ hkVector4 RagdollInstance::doRagdoll( const hkQsTransform& worldFromModel,
 // doRagdollFeedback() drives the rigid bodies that make up the ragdoll during non-death states. This is used for get hit effects, and
 // for bone collisions.
 // By default, the lower body is keyframed - it doesn't react, while the upper body is dynamic - it reacts.
-void RagdollInstance::doRagdollFeedback(const hkQsTransform& worldFromModel, 
-                                        hkaPose &thePose, 
-                                        float timeStep)
+void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel, 
+                                         hkaPose &thePose, 
+                                         float timeStep)
 {
     const RagdollResource* res = m_resource;
     // We start by mapping the animation pose to the low-res space
@@ -294,8 +294,8 @@ void RagdollInstance::doRagdollFeedback(const hkQsTransform& worldFromModel,
         const hkInt16* lowerBodyBones = res->m_lowerBodyBones;
         uint8_t numOfBones = res->m_numLowerBodyBones;
 
-        int keyframeLayer = g_physicsWorld.getFilterLayer(res->m_keyframeLayer);
-        int dynamicLayer = g_physicsWorld.getFilterLayer(res->m_dynamicLayer);
+        int keyframeLayer = g_physicsWorld.get_layer(res->m_keyframeLayer);
+        int dynamicLayer = g_physicsWorld.get_layer(res->m_dynamicLayer);
 
         // Set the properties (motion type and collision filter) of the rigid bodies representing the bones
         for (int i=0; i < m_ragdoll->getNumBones(); i++)
@@ -305,11 +305,11 @@ void RagdollInstance::doRagdollFeedback(const hkQsTransform& worldFromModel,
             // Bones in the legs are usually keyframed (unless the user has told us otherwise)
             // Rest of bones (upper body) are dynamic (for get-hit effects).
             // We put all of them in the same system to ignore collisions between bones
-            bool isLowerBodyBone = boneInArray(i, lowerBodyBones, numOfBones);
+            bool isLowerBodyBone = bone_in_array(i, lowerBodyBones, numOfBones);
             if (res->m_fixLegs && isLowerBodyBone)
-                setKeyframedWithoutCollisions( rb, keyframeLayer);
+                set_keyframe_without_collisions( rb, keyframeLayer);
             else
-                setDynamicWithoutCollisions( rb, dynamicLayer);
+                set_dynamic_without_collisions( rb, dynamicLayer);
             rb->setLinearVelocity( hkVector4::getZero() );
             rb->setAngularVelocity( hkVector4::getZero() );
         }
@@ -402,10 +402,10 @@ void RagdollInstance::doRagdollFeedback(const hkQsTransform& worldFromModel,
     }
 }
 
-void RagdollInstance::stopRagdollFeedback()
+void RagdollInstance::stop_ragdoll_feedback()
 {
     m_initFeedback = false;
-    int dynamicLayer = g_physicsWorld.getFilterLayer(m_resource->m_dynamicLayer);
+    int dynamicLayer = g_physicsWorld.get_layer(m_resource->m_dynamicLayer);
     for (int b=0; b<m_ragdoll->getNumBones(); b++ )
     {
         const int parentId = m_ragdoll->getParentOfBone(b);
@@ -416,7 +416,7 @@ void RagdollInstance::stopRagdollFeedback()
 // Currently in the toolchain all constraints for a single ragdoll share the same motor.
 // We could simply grab the first motor and set its params but instead
 // we iterate through all the constraints and build a proper list of motors to set.
-void RagdollInstance::setMotors(float force, float tau, float propRecoveryVel, float conRecoveryVel)
+void RagdollInstance::set_motors(float force, float tau, float propRecoveryVel, float conRecoveryVel)
 {
     hkLocalArray<hkpPositionConstraintMotor*> motors( m_ragdoll->getNumBones() );
     for ( int c =1; c < m_ragdoll->getNumBones(); c++)
@@ -467,7 +467,7 @@ void RagdollInstance::setMotors(float force, float tau, float propRecoveryVel, f
     }
 }
 
-void RagdollInstance::setTransform( const hkQsTransform& t )
+void RagdollInstance::set_transform( const hkQsTransform& t )
 {
     // Set the pose for the ragdoll bones
     {
@@ -503,20 +503,13 @@ void RagdollInstance::setTransform( const hkQsTransform& t )
     m_rigidBodyController->reinitialize();
 }
 
-void RagdollInstance::setEnabled( bool bEnable )
-{
-    if(bEnable) addToSimulation();
-    else removeFromSimulation();
-}
-
-
 
 //===================================================================================================
 //          HELPER FUNCTIONS
 
 // Given a rigid body (a ragdoll bone), make it dynamic, enable collisions with all bones except its parent,
 // and set the layer and quality properties accordingly
-static void setDynamicWithCollisions(hkpRigidBody* rb, int boneId, int parentId, int layerId)
+static void set_dynamic_with_collisions(hkpRigidBody* rb, int boneId, int parentId, int layerId)
 {
     const hkUint32 fi = hkpGroupFilter::calcFilterInfo(layerId, 1, boneId+1, parentId+1);
 
@@ -537,7 +530,7 @@ static void setDynamicWithCollisions(hkpRigidBody* rb, int boneId, int parentId,
 
 // Given a rigid body (a ragdoll bone), make it dynamic, disable collisions with all bones in the ragdoll (assign the same system with
 // no subsystems), and set the layer and quality properties accordingly
-static void setDynamicWithoutCollisions(hkpRigidBody* rb, int layerId)
+static void set_dynamic_without_collisions(hkpRigidBody* rb, int layerId)
 {
     const hkUint32 newFi = hkpGroupFilter::calcFilterInfo(layerId,1, 0, 0);
 
@@ -558,7 +551,7 @@ static void setDynamicWithoutCollisions(hkpRigidBody* rb, int layerId)
 
 // Given a rigid body (a ragdoll bone), make it keyframed, disable collisions with all bones in the ragdoll (assign the same system with
 // no subsystems), and set the layer and quality properties accordingly
-static void setKeyframedWithoutCollisions(hkpRigidBody* rb, int layerId)
+static void set_keyframe_without_collisions(hkpRigidBody* rb, int layerId)
 {
     const hkUint32 fi = hkpGroupFilter::calcFilterInfo(layerId, 1, 0, 0);
 

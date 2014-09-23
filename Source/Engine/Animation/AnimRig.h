@@ -41,8 +41,8 @@ ENGINE_NATIVE_ALIGN struct AnimRig
 {
     DECLARE_RESOURCE(rig);
 
-    int  findJointIndex(const StringId& jointName);
-    void createMirrorSkeleton();
+    int  find_joint_index(const StringId& jointName);
+    void create_mirrored_skeleton();
 
     int                             m_humanJointIndices[kBodyPartMax];
     hkaSkeleton*                    m_skeleton;
@@ -65,16 +65,8 @@ struct AnimRigInstance
     hkaAnimatedSkeleton*            m_skeleton;
 
     void init(const void* resource);
-    void setTransform(const hkQsTransform& t) {};
-    void setEnabled(bool bEnable) {};
-
     void destroy();
-    void reset();
-    void getRootmotion(float dt, hkQsTransform& motionOut);
-    int  getTriggers(int layer, float dt, AnimationTrigger* outTriggers);
-    void updateLocalClock(float dt);
-    void fireTransition(const StringId& t, int layerId = -1);
-    void updateLayers(float dt);
-    inline hkaPose& getPose() { return *m_pose; };
-    void testAnimation(const char* animFile);
+    int  get_triggers(int layer, float dt, AnimationTrigger* outTriggers);
+    void udpate_localcock(float dt);
+    void test_animation(const char* animFile);
 };

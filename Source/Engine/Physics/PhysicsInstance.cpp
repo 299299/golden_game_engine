@@ -61,23 +61,32 @@ void PhysicsInstance::init(const void* resource)
     addToSimulation();
 }
 
-void PhysicsInstance::setTransform(const hkQsTransform& t)
+void PhysicsInstance::set_transfrom(const hkQsTransform& t)
 {
     hkTransform tm;
     t.copyToTransformNoScale(tm);
     setTransform(tm);
 }
 
-void PhysicsInstance::setEnabled(bool bEnable)
+void PhysicsInstance::set_transfrom(const hkTransform& t)
 {
-    if(bEnable) addToSimulation();
-    else removeFromSimulation();
-}
+    PHYSICS_LOCKWRITE(g_physicsWorld.world());
+    switch(m_systemType)
+    {
+    case kSystemRBOnly:
+        {
+            ((hkpRigidBody*)m_data[0])->setTransform(t);
+        }
+        break;
 
+    default:
+        break;
+    }
+}
     
 void PhysicsInstance::destroy()
 {   
-    removeFromSimulation();
+    remove_from_simulation();
     switch(m_systemType)
     {
     case kSystemRBOnly:
@@ -109,27 +118,27 @@ void PhysicsInstance::destroy()
 }
 
 
-void PhysicsInstance::addToSimulation()
+void PhysicsInstance::add_to_simulation()
 {
     if(m_inWorld) return;
-    g_physicsWorld.addToWorld(this);
+    g_physicsWorld.add_to_world(this);
     m_inWorld = true;
 }
 
-void PhysicsInstance::removeFromSimulation()
+void PhysicsInstance::remove_from_simulation()
 {
     if(!m_inWorld) return;
-    g_physicsWorld.removeFromWorld(this);
+    g_physicsWorld.remove_from_world(this);
     m_inWorld = false;
 }
 
 
-void PhysicsInstance::postSimulation(hkpRigidBody* rb)
+void PhysicsInstance::post_simulation(hkpRigidBody* rb)
 {
     m_dirty = true;
 }
 
-void PhysicsInstance::fetchTransform(int index, hkTransform& outT)
+void PhysicsInstance::fetch_transform(int index, hkTransform& outT)
 {
     switch(m_systemType)
     {
@@ -144,21 +153,6 @@ void PhysicsInstance::fetchTransform(int index, hkTransform& outT)
     }
 }
 
-void PhysicsInstance::setTransform(const hkTransform& t)
-{
-    PHYSICS_LOCKWRITE(g_physicsWorld.getWorld());
-    switch(m_systemType)
-    {
-    case kSystemRBOnly:
-        {
-            ((hkpRigidBody*)m_data[0])->setTransform(t);
-        }
-        break;
-
-    default:
-        break;
-    }
-}
 
 void* load_resource_physics( const char* data, uint32_t size )
 {

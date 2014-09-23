@@ -15,7 +15,7 @@
 //==========================================================================================
 //      STATE
 //==========================================================================================
-const Transition* State::findTransition(const StringId& name) const
+const Transition* State::find_transition(const StringId& name) const
 {
     for(uint32_t i=0; i<m_numTransitions; ++i)
     {
@@ -52,7 +52,7 @@ void AnimFSMLayer::lookup()
 }
 
 
-const State* AnimFSMLayer::findState( StringId name ) const
+const State* AnimFSMLayer::find_state( StringId name ) const
 {
     for(uint32_t i=0; i<m_numStates; ++i)
     {
@@ -154,7 +154,7 @@ void RtState::destroy()
     }
 }
 
-void RtState::getRootmotion(float dt, hkQsTransform& motionOut)
+void RtState::get_rootmotion(float dt, hkQsTransform& motionOut)
 {
     hkQsTransform tmpMotion;
     for(uint32_t i=0; i<m_numAnimations; ++i)
@@ -166,7 +166,7 @@ void RtState::getRootmotion(float dt, hkQsTransform& motionOut)
     }
 }
 
-uint32_t RtState::collectTriggers(float dt, AnimationTrigger* outTriggers)
+uint32_t RtState::collect_triggers(float dt, AnimationTrigger* outTriggers)
 {
     uint32_t ret = 0;
     for(uint32_t i=0; i<m_numAnimations; ++i)
@@ -445,12 +445,12 @@ void RtLayer::getTransitionRootmotion(float dt, hkQsTransform& motionOut)
     {
     case kMotionBlendIgnoreSrc:
         {
-            nextState->getRootmotion(dt, motionOut);
+            nextState->get_rootmotion(dt, motionOut);
             break;
         }
     case kMotionBlendIgnoreDst:
         {
-            lastState->getRootmotion(dt, motionOut);
+            lastState->get_rootmotion(dt, motionOut);
             break;
         }
     case kMotionBlendIgnoreSrcRotation:
@@ -459,8 +459,8 @@ void RtLayer::getTransitionRootmotion(float dt, hkQsTransform& motionOut)
             srcMotion.setIdentity();
             hkQsTransform dstMotion;
             dstMotion.setIdentity();
-            lastState->getRootmotion(dt, srcMotion);
-            nextState->getRootmotion(dt, dstMotion);
+            lastState->get_rootmotion(dt, srcMotion);
+            nextState->get_rootmotion(dt, dstMotion);
 
             float dstWeight = easeInCtrl->getWeight();
             float scrWeight = easeOutCtrl->getWeight();
@@ -477,8 +477,8 @@ void RtLayer::getTransitionRootmotion(float dt, hkQsTransform& motionOut)
             srcMotion.setIdentity();
             hkQsTransform dstMotion;
             dstMotion.setIdentity();
-            lastState->getRootmotion(dt, srcMotion);
-            nextState->getRootmotion(dt, dstMotion);
+            lastState->get_rootmotion(dt, srcMotion);
+            nextState->get_rootmotion(dt, dstMotion);
 
             float dstWeight = easeInCtrl->getWeight();
             float scrWeight = easeOutCtrl->getWeight();
@@ -496,13 +496,13 @@ void RtLayer::getTransitionRootmotion(float dt, hkQsTransform& motionOut)
 }
 
 
-uint32_t RtLayer::collectTriggers(float dt, AnimationTrigger* outTriggers)
+uint32_t RtLayer::collect_triggers(float dt, AnimationTrigger* outTriggers)
 {
     if(!m_curState) return 0;
     return m_curState->collectTriggers(dt, outTriggers);
 }
 
-void RtLayer::sendEvent(const StringId& evtName)
+void RtLayer::send_event(const StringId& evtName)
 {
     if(!m_curState) return;
     const Transition* t = m_curState->m_state->findTransition(evtName);
@@ -510,7 +510,7 @@ void RtLayer::sendEvent(const StringId& evtName)
     doTransition(t);
 }
 
-bool RtLayer::isStateActive(const StringId& stateName) const
+bool RtLayer::is_state_active(const StringId& stateName) const
 {
     switch(m_status)
     {
@@ -524,7 +524,7 @@ bool RtLayer::isStateActive(const StringId& stateName) const
     }
 }
 
-bool RtLayer::isInState(const StringId& stateName) const
+bool RtLayer::is_in_state(const StringId& stateName) const
 {
     return m_curState->m_state->m_name == stateName;
 }
@@ -582,7 +582,7 @@ void AnimFSMInstance::update(float dt)
     }
 }
 
-uint32_t AnimFSMInstance::collectTriggers(float dt, AnimationTrigger* outTriggers)
+uint32_t AnimFSMInstance::collect_triggers(float dt, AnimationTrigger* outTriggers)
 {
     uint32_t ret = 0;
     for(uint32_t i=0; i<m_resource->m_numLayers; ++i)
@@ -594,17 +594,17 @@ uint32_t AnimFSMInstance::collectTriggers(float dt, AnimationTrigger* outTrigger
     return ret;
 }
 
-void AnimFSMInstance::sendEvent(const StringId& evtName, int index)
+void AnimFSMInstance::send_event(const StringId& evtName, int index)
 {
     if(index < 0)
     {
-        m_layers[index].sendEvent(evtName);
+        m_layers[index].send_event(evtName);
     }
     else
     {
         for(uint32_t i=0; i<m_resource->m_numLayers; ++i)
         {
-            m_layers[i].sendEvent(evtName);
+            m_layers[i].send_event(evtName);
         }
     }
 }
@@ -625,8 +625,8 @@ void AnimFSMInstance::sendEvent(const StringId& evtName, int index)
 // DUMPPING FUNCTIONS HIDE IN .CPP
 //*********************************************************************
 #ifndef _RETAIL
-#include "Graphics.h"
-void dumpState(const RtState* state, uint32_t color)
+#include "Gui.h"
+void dump_state(const RtState* state, uint32_t color)
 {
     const State* s = state->m_state;
     const char* stateName = stringid_lookup(s->m_name);
@@ -637,7 +637,7 @@ void dumpState(const RtState* state, uint32_t color)
         stringid_lookup(s->m_animNames[i]), state->m_weights[i]);
     }
 }
-void dumpTransition(const RtTransition& rt, uint32_t color)
+void dump_transition(const RtTransition& rt, uint32_t color)
 {
     const RtState* lastState = rt.m_lastState;
     const RtState* nextState = rt.m_nextState;
@@ -646,15 +646,15 @@ void dumpTransition(const RtTransition& rt, uint32_t color)
     hk_anim_ctrl* outCtrl = rt.m_easeOutCtrl;
     const char* eventName = stringid_lookup(t->m_event);
     const char* beatName = stringid_lookup(t->m_beat);
-    dumpState(lastState, color);
+    dump_state(lastState, color);
     DBG_TEX_PRINTF(color, "last state fade-out current weight = %f", inCtrl->getWeight());
     DBG_TEX_PRINTF(color, "transition event=%s, beat=%s, motion-type=%d, mode=%d", 
                         eventName, beatName, t->m_motionBlendType, t->m_mode);
     DBG_TEX_PRINTF(color, "next state fade-in current weight = %f", outCtrl->getWeight());
-    dumpState(nextState, color);
+    dump_state(nextState, color);
 }
 
-void dumpFSM(AnimFSMInstance* fsm)
+void dump_fsm(AnimFSMInstance* fsm)
 {
     uint32_t color = 0x4f;
     for(uint32_t i=0; i<fsm->m_resource->m_numLayers; ++i)
@@ -663,8 +663,8 @@ void dumpFSM(AnimFSMInstance* fsm)
         DBG_TEX_PRINTF(color, "==================layer[%d]====================", i);
         switch(layer.m_status)
         {
-        case kStateNormal: dumpState(layer.m_curState, color); break;
-        case kStateTransitioning: dumpTransition(layer.m_transition, color); break;
+        case kStateNormal: dump_state(layer.m_curState, color); break;
+        case kStateTransitioning: dump_transition(layer.m_transition, color); break;
         default:
             break;  
         }

@@ -73,7 +73,7 @@ AnimRaycastInterface::castPhysicsRay(const hkVector4& fromWS,
     // We only collect the closest hit
     hkpClosestRayHitCollector rayCollector;
     {
-        hkpWorld* world = g_physicsWorld.getWorld();
+        hkpWorld* world = g_physicsWorld.world();
         PHYSICS_LOCKREAD(world);
         world->castRay( raycastIn, rayCollector );
     }

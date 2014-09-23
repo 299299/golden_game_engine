@@ -79,7 +79,7 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
         evt.m_velocity = event.getSeparatingVelocity();
         
         uint64_t key = (uint64_t)dataA << 32 | (uint64_t)dataB;
-        g_physicsWorld.addCollisionEvent(key, evt);
+        g_physicsWorld.add_collision_event(key, evt);
     }
     virtual void collisionAddedCallback(const hkpCollisionEvent& event)
     {
@@ -113,10 +113,10 @@ void PhysicsWorld::init()
 void PhysicsWorld::quit()
 {
     delete m_raycastSem;
-    destroyWorld();
+    destroy_world();
 }
 
-void PhysicsWorld::frameStart()
+void PhysicsWorld::frame_start()
 {
     set_status(kTickFrameStart);
     m_numCollisionEvents = 0;
@@ -127,7 +127,7 @@ void PhysicsWorld::frameStart()
 }
 
 
-void PhysicsWorld::clearWorld()
+void PhysicsWorld::clear_world()
 {
     if(!m_world)
         return;
@@ -136,7 +136,7 @@ void PhysicsWorld::clearWorld()
     SAFE_DELETE(m_contactListener);
 }
 
-void PhysicsWorld::createWorld(PhysicsConfig* config)
+void PhysicsWorld::create_world(PhysicsConfig* config)
 {
     if(m_world) return;
     m_config = config;
@@ -175,7 +175,7 @@ void PhysicsWorld::createWorld(PhysicsConfig* config)
     m_world->addEntityListener( m_contactListener );
 }
 
-void PhysicsWorld::createPlane(float size)
+void PhysicsWorld::create_plane(float size)
 {
     PHYSICS_LOCKWRITE(m_world);
     hkVector4 planeSize(size, 2.0f, size);
@@ -193,7 +193,7 @@ void PhysicsWorld::createPlane(float size)
     boxRigidBody->removeReference();
 }
 
-void PhysicsWorld::postSimulation()
+void PhysicsWorld::post_simulation()
 {
     PROFILE(Physics_PostCallback);
     PHYSICS_LOCKREAD(m_world);
@@ -211,12 +211,12 @@ void PhysicsWorld::postSimulation()
             if (!user_data)
                 continue;
             PhysicsInstance* phy = (PhysicsInstance*)user_data;
-            phy->postSimulation(rigidBody);
+            phy->post_simulation(rigidBody);
         }
     }
 }
 
-void PhysicsWorld::destroyWorld()
+void PhysicsWorld::destroy_world()
 {
     check_status();
 
@@ -227,7 +227,7 @@ void PhysicsWorld::destroyWorld()
     SAFE_DELETE(m_world);
 }
 
-int PhysicsWorld::getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen)
+int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen)
 {
     check_status();
 
@@ -260,25 +260,27 @@ int PhysicsWorld::getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBod
 }
 
 
-void PhysicsWorld::kickInJobs( float timeStep )
+void PhysicsWorld::kickin_jobs( float timeStep )
 {
+    if(!m_world) return;
     PROFILE(Physics_KickInJobs);
     set_status(kTickProcessing);
-    kickInRaycastJob();
+    kickin_raycast_jobs();
     m_world->initMtStep( g_threadMgr.getJobQueue(),timeStep );
 }
 
-void PhysicsWorld::tickFinishJobs( float timeStep )
+void PhysicsWorld::tick_finished_jobs( float timeStep )
 {
+    if(!m_world) return;
     PROFILE(Physics_TickFinishJobs);
     set_status(kTickFinishedJobs);
     m_world->finishMtStep(g_threadMgr.getJobQueue(), g_threadMgr.getThreadPool());
     if(m_numRaycasts) m_raycastSem->acquire();
-    postSimulation();
+    post_simulation();
 }
 
 
-void PhysicsWorld::addToWorld(PhysicsInstance* instance)
+void PhysicsWorld::add_to_world(PhysicsInstance* instance)
 {
     check_status();
     PHYSICS_LOCKWRITE(m_world);
@@ -308,7 +310,7 @@ void PhysicsWorld::addToWorld(PhysicsInstance* instance)
     
 }
 
-void PhysicsWorld::removeFromWorld(PhysicsInstance* instance)
+void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
 {
     check_status();
     PHYSICS_LOCKWRITE(m_world);
@@ -336,7 +338,7 @@ void PhysicsWorld::removeFromWorld(PhysicsInstance* instance)
     }
 }
 
-void PhysicsWorld::addCollisionEvent(uint64_t key, const CollisionEvent& evt)
+void PhysicsWorld::add_collision_event(uint64_t key, const CollisionEvent& evt)
 {
     PROFILE(Physics_addCollisionEvent);
     if(g_collisionEvtMap.find(key) != g_collisionEvtMap.end())
@@ -348,7 +350,7 @@ void PhysicsWorld::addCollisionEvent(uint64_t key, const CollisionEvent& evt)
 }
 
 
-int PhysicsWorld::addRaycastJob(const float* from, const float* to, int32_t filterInfo)
+int PhysicsWorld::add_raycast_job(const float* from, const float* to, int32_t filterInfo)
 {
     check_status();
     if(!m_raycasts) return -1;
@@ -361,13 +363,13 @@ int PhysicsWorld::addRaycastJob(const float* from, const float* to, int32_t filt
     return retHandle;
 }
 
-RaycastJob* PhysicsWorld::getRaycastJob( int handle ) const
+RaycastJob* PhysicsWorld::get_raycast_job( int handle ) const
 {
     if(handle < 0) return 0;
     return &m_raycasts[handle];
 }
 
-void PhysicsWorld::kickInRaycastJob()
+void PhysicsWorld::kickin_raycast_jobs()
 {
     if(!m_numRaycasts) return;
 
@@ -412,7 +414,7 @@ void PhysicsWorld::kickInRaycastJob()
 }
 
 
-int PhysicsWorld::getFilterLayer(const StringId& name) const
+int PhysicsWorld::get_layer(const StringId& name) const
 {
     //if not found default filter is 0.
     if(!m_config) return 0;

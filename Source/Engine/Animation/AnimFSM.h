@@ -81,7 +81,7 @@ ENGINE_NATIVE_ALIGN struct State
     bool                m_looped;
     
     void                lookup();
-    const               Transition* findTransition(const StringId& name) const;
+    const               Transition* find_transition(const StringId& name) const;
     hk_anim_ctrl*       create_anim_ctrl(uint32_t index) const;
 };
 
@@ -96,7 +96,7 @@ ENGINE_NATIVE_ALIGN struct AnimFSMLayer
     uint32_t            m_stateOffset;
     
     void                lookup();
-    const               State* findState(StringId name) const;
+    const               State* find_state(StringId name) const;
 };
 
 ENGINE_NATIVE_ALIGN struct AnimFSM
@@ -124,14 +124,14 @@ struct RtState
     
     void init(const State* state);
     void destroy();
-    void getRootmotion(float dt, hkQsTransform& motionOut);
-    uint32_t collectTriggers(float dt, AnimationTrigger* outTriggers);
+    void get_rootmotion(float dt, hkQsTransform& motionOut);
+    uint32_t collect_triggers(float dt, AnimationTrigger* outTriggers);
     
     void add(hk_anim_skel* skeleton, float fLocalTime = 0.0f, float fSpeed = 1.0f);
     void remove(hk_anim_skel* skeleton);
-    void setWeight(float fBaseWeight);
-    void setPlaybackSpeed(float fSpeed);
-    void setLocalTime(float fLocalTime);
+    void set_weight(float fBaseWeight);
+    void set_playbackspeed(float fSpeed);
+    void set_localtime(float fLocalTime);
 };
 
 struct RtTransition
@@ -160,21 +160,21 @@ struct RtLayer
     bool                        m_dirty;
     char                        m_padding[2];
     
-    void markDirty() { m_dirty = true; };
+    void mark_dirty() { m_dirty = true; };
     void init(const AnimFSMLayer* resource);
     void destroy();
     void udpate(float dt);
-    void sendEvent(const StringId& evtName);
-    bool isStateActive(const StringId& stateName) const;
-    bool isInState(const StringId& stateName) const;
+    void send_event(const StringId& evtName);
+    bool is_state_active(const StringId& stateName) const;
+    bool is_in_state(const StringId& stateName) const;
     
-    void doTransition(const Transition* t);
-    void getRootmotion(float dt, hkQsTransform& motionOut);
-    uint32_t collectTriggers(float dt, AnimationTrigger* outTriggers);
+    void do_transition(const Transition* t);
+    void get_rootmotion(float dt, hkQsTransform& motionOut);
+    uint32_t collect_triggers(float dt, AnimationTrigger* outTriggers);
     
 private:
-    void changeStatus(uint8_t newStatus);
-    void getTransitionRootmotion(float dt, hkQsTransform& motionOut);
+    void change_status(uint8_t newStatus);
+    void get_transition_rootmotion(float dt, hkQsTransform& motionOut);
 };
 
 struct AnimFSMInstance
@@ -186,7 +186,7 @@ struct AnimFSMInstance
     void init(const void* resource);
     void destroy();
     void update(float dt);
-    uint32_t collectTriggers(float dt, AnimationTrigger* outTriggers);
-    void sendEvent(const StringId& evtName, int index = -1);
+    uint32_t collect_triggers(float dt, AnimationTrigger* outTriggers);
+    void send_event(const StringId& evtName, int index = -1);
 };
 

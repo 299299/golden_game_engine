@@ -38,7 +38,7 @@ void destroyMouseSpring()
 
     if(g_mouseSpring)
     {
-        hkpWorld* world = g_physicsWorld.getWorld();
+        hkpWorld* world = g_physicsWorld.world();
         PHYSICS_LOCKWRITE(world);
         world->removeAction(g_mouseSpring);
         g_mouseSpring = HK_NULL;
@@ -52,7 +52,7 @@ void createMouseSpring()
     hkVector4 rayOrigin, rayTo, rayDirection;
     getCameraRay(rayOrigin, rayTo, rayDirection);
 
-    hkpWorld* world = g_physicsWorld.getWorld();
+    hkpWorld* world = g_physicsWorld.world();
     hkpWorldRayCastInput input;
     input.m_from = rayOrigin;
     input.m_to = rayTo;
@@ -104,7 +104,7 @@ void moveMouseSpring()
     getCameraRay(rayOrigin, rayTo, rayDirection);
     hkVector4 pos;
     pos.setAddMul4(rayOrigin, rayDirection, g_lastMouseDist);
-    hkpWorld* world = g_physicsWorld.getWorld();
+    hkpWorld* world = g_physicsWorld.world();
     {
         PHYSICS_LOCKWRITE(world);
         g_mouseSpring->setMousePosition(pos);

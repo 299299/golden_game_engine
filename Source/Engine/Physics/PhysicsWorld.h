@@ -57,36 +57,35 @@ struct PhysicsWorld
     void init();
     void quit();
 
-    void frameStart();
-    void kickInJobs(float timeStep);
-    void tickFinishJobs(float timeStep);
+    void frame_start();
+    void kickin_jobs(float timeStep);
+    void tick_finished_jobs(float timeStep);
 
-    void createWorld(PhysicsConfig* config);
-    void destroyWorld();
-    void clearWorld();
-    inline hkpWorld* getWorld() const { return m_world;};
+    void create_world(PhysicsConfig* config);
+    void destroy_world();
+    void clear_world();
+    hkpWorld* world() const { return m_world;};
 
-    int  getContactingRigidBodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen = 100);
+    int  get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen = 100);
 
-    void addToWorld(PhysicsInstance* instance);
-    void removeFromWorld(PhysicsInstance* instance);
+    void add_to_world(PhysicsInstance* instance);
+    void remove_from_world(PhysicsInstance* instance);
     
-    void addCollisionEvent(uint64_t key, const CollisionEvent& evt);
-    int addRaycastJob(const float* from, const float* to, int32_t filterInfo = -1);
-    RaycastJob* getRaycastJob(int handle) const;
+    void add_collision_event(uint64_t key, const CollisionEvent& evt);
+    int add_raycast_job(const float* from, const float* to, int32_t filterInfo = -1);
+    RaycastJob* get_raycast_job(int handle) const;
 
-    int getFilterLayer(const StringId& name) const;
-    void createPlane(float size);
+    int get_layer(const StringId& name) const;
+    void create_plane(float size);
 
     void sync_actors(struct Actor* actors, uint32_t num);
 
 private:
-    void updateVDB(float dt);
-    void checkStatus();
-    void kickInRaycastJob();
-    void postSimulation();
+    void kickin_raycast_jobs();
+    void post_simulation();
+
 public:
-    hkpWorld*                               m_world;;
+    hkpWorld*                               m_world;
     HavokContactListener*                   m_contactListener;
     CollisionEvent**                        m_collisionEvents;
     RaycastJob*                             m_raycasts;

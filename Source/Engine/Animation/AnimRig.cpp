@@ -14,7 +14,7 @@
 //=======================================================================================
 
 
-int AnimRig::findJointIndex(const StringId& jointName)
+int AnimRig::find_joint_index(const StringId& jointName)
 {
     for(int i=0; i<m_jointNum; ++i)
     {
@@ -24,7 +24,7 @@ int AnimRig::findJointIndex(const StringId& jointName)
     return -1;
 }
 
-void AnimRig::createMirrorSkeleton()
+void AnimRig::ceate_mirrored_skeleton()
 {
     hkArray<hkStringPtr> ltag;
     hkArray<hkStringPtr> rtag;
@@ -49,29 +49,14 @@ void AnimRigInstance::destroy()
     SAFE_REMOVEREF(m_skeleton);
 }
 
-void AnimRigInstance::reset()
-{
-       
-}
-
-int AnimRigInstance::getTriggers(int layer, float dt, AnimationTrigger* outTriggers)
+int AnimRigInstance::get_triggers(int layer, float dt, AnimationTrigger* outTriggers)
 {
     return 0;
 }
 
-void AnimRigInstance::updateLocalClock(float dt)
+void AnimRigInstance::udpate_localcock(float dt)
 {
     m_skeleton->stepDeltaTime(dt);
-}
-
-void AnimRigInstance::updateLayers(float dt)
-{
-        
-}
-
-void AnimRigInstance::fireTransition(const StringId& t, int layerId)
-{
-        
 }
 
 void AnimRigInstance::init( const void* resource )
@@ -83,12 +68,7 @@ void AnimRigInstance::init( const void* resource )
     m_pose->syncModelSpace();
 }
 
-void AnimRigInstance::getRootmotion(float dt, hkQsTransform& motionOut)
-{
-    //TODO
-}
-
-void AnimRigInstance::testAnimation( const char* animFile )
+void AnimRigInstance::test_animation( const char* animFile )
 {
     Animation* anim = FIND_RESOURCE(Animation, StringId(animFile));
     hkaDefaultAnimationControl* ac = new hkaDefaultAnimationControl(anim->m_binding);

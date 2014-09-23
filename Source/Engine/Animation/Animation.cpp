@@ -35,7 +35,7 @@ void Animation::lookup()
     createMirrorAnimation(FIND_RESOURCE(Animation, m_mirroredFrom));
 }
 
-void Animation::createMirrorAnimation(const Animation* orginalAnim)
+void Animation::create_mirrored_animation(const Animation* orginalAnim)
 {
     destroy();
     AnimRig* rig = FIND_RESOURCE(AnimRig, m_rigName);
@@ -45,7 +45,7 @@ void Animation::createMirrorAnimation(const Animation* orginalAnim)
     m_animation = anim;
 }
 
-const AnimationBeat* Animation::findBeat(uint32_t type) const
+const AnimationBeat* Animation::find_beat(uint32_t type) const
 {
     for (uint32_t i = 0; i < m_numBeats; ++i)
     {
@@ -55,7 +55,7 @@ const AnimationBeat* Animation::findBeat(uint32_t type) const
     return 0;
 }
 
-const AnimationBeat* Animation::findNextClosestBeat(float time, bool bLoop) const
+const AnimationBeat* Animation::find_next_closest_beat(float time, bool bLoop) const
 {
     if(!m_numBeats || time >= getLength())
         return 0;
@@ -85,17 +85,17 @@ const AnimationBeat* Animation::findNextClosestBeat(float time, bool bLoop) cons
     }
 }
 
-int Animation::getFrames() const
+int Animation::get_frames() const
 {
     return m_animation->getNumOriginalFrames();
 }
 
-float Animation::getLength() const
+float Animation::get_length() const
 {
     return m_animation->m_duration;
 }
 
-uint8_t Animation::collectTriggers( float curTime, float dt, AnimationTrigger* outTriggers ) const
+uint8_t Animation::collect_triggers( float curTime, float dt, AnimationTrigger* outTriggers ) const
 {
     uint8_t retNum = 0;
     uint8_t startIndex = INVALID_U8;
@@ -168,7 +168,7 @@ void lookup_resource_animation( void * resource )
 //======================================================================
 //          HELPER API
 //======================================================================
-hkReal caculateMotionVelocity(hkaDefaultAnimationControl* ac)
+hkReal caculate_motion_velocity(hkaDefaultAnimationControl* ac)
 {
     hkaAnimation* animation = ac->getAnimationBinding()->m_animation;
     hkQsTransform animMotion;
@@ -176,28 +176,8 @@ hkReal caculateMotionVelocity(hkaDefaultAnimationControl* ac)
     return hkReal(animMotion.m_translation.length3()) / animation->m_duration;
 }
 
-void computeBlendParams(hkReal desiredVel, hkReal walkVel, hkReal runVel, 
-                        hkReal walkDur, hkReal runDur, hkReal& blend, 
-                        hkReal& walkSpeed, hkReal& runSpeed )
-{
-    // Analytical solution of blending aproximation
-    // Solution is second root of quadratic equation 
 
-    const hkReal runWalkRatio = runDur / walkDur;
-
-    const hkReal wVratio = walkVel*runWalkRatio;
-    const hkReal rVratio = runVel*runWalkRatio;
-    const hkReal rVratio2 = rVratio*runWalkRatio;
-    const hkReal dVratio = desiredVel*runWalkRatio;
-
-    blend = (-2.0f*wVratio+walkVel+rVratio2-sqrt(walkVel*walkVel-2.0f*walkVel*rVratio2+runVel*rVratio2*runWalkRatio*runWalkRatio+4.0f*(-walkVel*dVratio+wVratio*dVratio+rVratio2*desiredVel-rVratio2*dVratio)))/(2.0f*(walkVel-wVratio-rVratio+rVratio2));
-
-    blend = hkMath::clamp(blend, hkReal(0.f), hkReal(1.f) );
-    runSpeed  = (1.0f-blend) * runWalkRatio + blend;
-    walkSpeed = blend * (1.0f / runWalkRatio) + (1.0f - blend);
-}
-
-void drawPoseVDB(const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
+void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
 {
     const hkaSkeleton* skeleton = pose.getSkeleton();
 
@@ -235,7 +215,7 @@ void drawPoseVDB(const hkaPose& pose, const hkQsTransform& worldFromModel, int c
     }
 }
 
-void drawPose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
+void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
 {
     const hkaSkeleton* skeleton = pose.getSkeleton();
     const hkArray<hkInt16>& parentIndices = skeleton->m_parentIndices;
