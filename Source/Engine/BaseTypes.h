@@ -33,8 +33,8 @@
 #define ENGINE_NATIVE_ALIGN         ENGINE_ALIGN(16)
 
 #define DECLARE_RESOURCE(name)\
-        static const char* getName() {return #name; } \
-        static const StringId& getType() { static StringId type(getName()); return type; };
+        static const char* get_name() {return #name; } \
+        static const StringId& get_type() { static StringId type(get_name()); return type; };
 
 
 #ifdef _DEBUG

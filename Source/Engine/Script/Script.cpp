@@ -16,16 +16,27 @@ static IdArray<MAX_SCRIPT_OBJECT, ScriptInstance> g_scriptObjects;
 void* load_resource_script(const char* data, uint32_t size)
 {
     ScriptResource* script = (ScriptResource*)data;
-    script->m_code = (char*)data + sizeof(ScriptResource);
+    script->m_code = (char*)data + script->m_codeOffset;
     return script;
+}
+
+void lookup_resource_script(void* resource)
+{
+    ScriptResource* script = (ScriptResource*)data;
+    for (uint32_t i = 0; i < script->m_numIncs; ++i)
+    {
+        script->m_includes[i].m_script = FIND_RESOURCE(ScriptResource, script->m_includes[i].m_name);
+    }
 }
 
 void bringin_resource_script(void* resource)
 {
     ScriptResource* script = (ScriptResource*)resource;
-    gmStreamBufferStatic stream(script->m_code, script->m_codeSize);
-    script->m_rootFunction = g_script.m_vm->BindLibToFunction(stream);
-    g_script.print_error();
+    for (uint32_t i = 0; i < script->m_numIncs; ++i)
+    {
+        script->m_includes[i].m_script->pre_load();
+    }
+    script->pre_load();
 }
 
 void bringout_resource_script(void* resource)
@@ -40,6 +51,15 @@ int ScriptResource::execute() const
     g_script.m_vm->ExecuteFunction(m_rootFunction, &nThreadId, true);
     g_script.print_error();
     return nThreadId;
+}
+
+void ScriptResource::pre_load()
+{
+    if(m_threadId > 0) return;
+    gmStreamBufferStatic stream(m_code, m_codeSize);
+    m_rootFunction = g_script.m_vm->BindLibToFunction(stream);
+    g_script.print_error();
+    m_threadId = execute();
 }
 
 void ScriptInstance::init( const void* resource )
@@ -97,10 +117,6 @@ void ScriptSystem::quit()
 
 void ScriptSystem::ready()
 {
-    ((ScriptResource*)FIND_RESOURCE(ScriptResource, StringId("core/scripts/state_machine")))->execute();
-    ((ScriptResource*)FIND_RESOURCE(ScriptResource, StringId("core/scripts/splash_state")))->execute();
-    ScriptResource* res = (ScriptResource*)FIND_RESOURCE(ScriptResource, StringId("core/scripts/core"));
-    res->execute();
     m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
     ENGINE_ASSERT(m_core_table, "get g_core failed.");
     m_update_func = m_core_table->Get(m_vm, "update").GetFunctionObjectSafe();

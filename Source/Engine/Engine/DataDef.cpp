@@ -238,35 +238,36 @@ extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
 extern void* load_resource_script(const char* data, uint32_t size);
+extern void  lookup_resource_script(void* resource);
 extern void  bringin_resource_script(void* resource);
 extern void  bringout_resource_script(void* resource);
 //-----------------------------------------------------------------
 
 static ResourceFactory g_resourceFactories[] = 
 {
-    {load_resource_texture, 0, 0, 0, bringout_resource_texture, Texture::getName()},
-    {load_resource_texture2d, 0, 0, bringin_resource_texture2d, bringout_resource_texture2d, Raw2DTexture::getName()},
-    {load_resource_texture3d, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, Raw3DTexture::getName()},
-    {load_resource_mesh, 0, 0, bringin_resource_mesh, bringout_resource_mesh, Mesh::getName()},
-    {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, Shader::getName()},
-    {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, ShaderProgram::getName()},
-    {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, Animation::getName()},
-    {load_resource_anim_rig, destroy_resource_anim_rig, 0, 0, 0, AnimRig::getName()},
-    {load_resource_anim_fsm, 0, lookup_resource_anim_fsm, 0, 0, AnimFSM::getName()},
-    {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::getName()},
-    {0, 0, 0, 0, 0, LightResource::getName()},
-    {load_resource_model, 0, lookup_resource_model, 0, 0, ModelResource::getName()},
-    {0, 0, 0, 0, 0, PhysicsConfig::getName()},
-    {load_resource_physics, destroy_resource_physics, 0, 0, 0, PhysicsResource::getName()},
-    {load_resource_proxy, destroy_resource_proxy, 0, 0, 0, ProxyResource::getName()},
-    {load_resource_ragdoll, destroy_resource_ragdoll, 0, 0, 0, RagdollResource::getName()},
-    {0, 0, lookup_resource_lookat_ik, 0, 0, LookAtResource::getName()},
-    {0, 0, lookup_resource_reach_ik, 0, 0, ReachResource::getName()},
-    {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::getName()},
-    {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::getName()},
-    {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::getName()},
-    {load_resource_script, 0, 0, bringin_resource_script, bringout_resource_script, ScriptResource::getName()},
-    {load_resource_level, 0, lookup_resource_level, 0, 0, Level::getName()},
+    {load_resource_texture, 0, 0, 0, bringout_resource_texture, Texture::get_name()},
+    {load_resource_texture2d, 0, 0, bringin_resource_texture2d, bringout_resource_texture2d, Raw2DTexture::get_name()},
+    {load_resource_texture3d, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, Raw3DTexture::get_name()},
+    {load_resource_mesh, 0, 0, bringin_resource_mesh, bringout_resource_mesh, Mesh::get_name()},
+    {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, Shader::get_name()},
+    {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, ShaderProgram::get_name()},
+    {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, Animation::get_name()},
+    {load_resource_anim_rig, destroy_resource_anim_rig, 0, 0, 0, AnimRig::get_name()},
+    {load_resource_anim_fsm, 0, lookup_resource_anim_fsm, 0, 0, AnimFSM::get_name()},
+    {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::get_name()},
+    {0, 0, 0, 0, 0, LightResource::get_name()},
+    {load_resource_model, 0, lookup_resource_model, 0, 0, ModelResource::get_name()},
+    {0, 0, 0, 0, 0, PhysicsConfig::get_name()},
+    {load_resource_physics, destroy_resource_physics, 0, 0, 0, PhysicsResource::get_name()},
+    {load_resource_proxy, destroy_resource_proxy, 0, 0, 0, ProxyResource::get_name()},
+    {load_resource_ragdoll, destroy_resource_ragdoll, 0, 0, 0, RagdollResource::get_name()},
+    {0, 0, lookup_resource_lookat_ik, 0, 0, LookAtResource::get_name()},
+    {0, 0, lookup_resource_reach_ik, 0, 0, ReachResource::get_name()},
+    {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::get_name()},
+    {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::get_name()},
+    {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::get_name()},
+    {load_resource_script, 0, lookup_resource_script, bringin_resource_script, bringout_resource_script, ScriptResource::get_name()},
+    {load_resource_level, 0, lookup_resource_level, 0, 0, Level::get_name()},
 };
 void regster_resource_factories()
 {
@@ -370,26 +371,26 @@ void* get_components(uint32_t type)
 }
 void init_component_names()
 {
-    g_componentTypeNames[kComponentModel] = ModelResource::getName();
-    g_componentTypes[kComponentModel] = ModelResource::getType();
+    g_componentTypeNames[kComponentModel] = ModelResource::get_name();
+    g_componentTypes[kComponentModel] = ModelResource::get_type();
 
-    g_componentTypeNames[kComponentLight] = LightResource::getName();
-    g_componentTypes[kComponentLight] = LightResource::getType();
+    g_componentTypeNames[kComponentLight] = LightResource::get_name();
+    g_componentTypes[kComponentLight] = LightResource::get_type();
 
-    g_componentTypeNames[kComponentPhysics] = PhysicsResource::getName();
-    g_componentTypes[kComponentPhysics] = PhysicsResource::getType();
+    g_componentTypeNames[kComponentPhysics] = PhysicsResource::get_name();
+    g_componentTypes[kComponentPhysics] = PhysicsResource::get_type();
 
-    g_componentTypeNames[kComponentProxy] = ProxyResource::getName();
-    g_componentTypes[kComponentProxy] = ProxyResource::getType();
+    g_componentTypeNames[kComponentProxy] = ProxyResource::get_name();
+    g_componentTypes[kComponentProxy] = ProxyResource::get_type();
 
-    g_componentTypeNames[kComponentAnimRig] = AnimRig::getName();
-    g_componentTypes[kComponentAnimRig] = AnimRig::getType();
+    g_componentTypeNames[kComponentAnimRig] = AnimRig::get_name();
+    g_componentTypes[kComponentAnimRig] = AnimRig::get_type();
 
-    g_componentTypeNames[kComponentAnimFSM] = AnimFSM::getName();
-    g_componentTypes[kComponentAnimFSM] = AnimFSM::getType();
+    g_componentTypeNames[kComponentAnimFSM] = AnimFSM::get_name();
+    g_componentTypes[kComponentAnimFSM] = AnimFSM::get_type();
 
-    g_componentTypeNames[kComponentScript] = ScriptResource::getName();
-    g_componentTypes[kComponentScript] = ScriptResource::getType();
+    g_componentTypeNames[kComponentScript] = ScriptResource::get_name();
+    g_componentTypes[kComponentScript] = ScriptResource::get_type();
 };
 int find_component_type(const StringId& typeName)
 {

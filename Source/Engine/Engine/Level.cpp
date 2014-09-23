@@ -35,7 +35,7 @@ void Level::lookup()
 {
     for (uint32_t i = 0; i < m_numResources; ++i)
     {
-        m_resources[i].m_resource = g_resourceMgr.find_resource(ActorResource::getType(), m_resources[i].m_name);
+        m_resources[i].m_resource = FIND_RESOURCE(ActorResource, m_resources[i].m_name);
     }
 }
 

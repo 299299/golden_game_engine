@@ -7,15 +7,28 @@ class gmMachine;
 struct gmVariable;
 class gmTableObject;
 class gmFunctionObject;
+struct ScriptResource;
+
+struct ScriptInclude
+{
+    StringId                m_name;
+    ScriptResource*         m_script;
+};
 
 ENGINE_NATIVE_ALIGN struct ScriptResource
 {
     DECLARE_RESOURCE(script);
+
     const char*             m_code;
     uint32_t                m_codeSize;
     gmFunctionObject*       m_rootFunction;
+    ScriptInclude*          m_includes;
+    uint32_t                m_numIncs;
+    int                     m_threadId;
+    uint32_t                m_codeOffset;
 
     int execute() const;
+    void pre_load();
 };
 
 
