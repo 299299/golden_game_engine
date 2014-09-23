@@ -8,7 +8,7 @@ public:
     AnimRigCompiler();
     ~AnimRigCompiler();
 
-    virtual std::string getFormatExt() const { return AnimRig::getName(); };
+    virtual std::string getFormatExt() const { return AnimRig::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

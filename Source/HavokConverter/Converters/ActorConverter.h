@@ -10,8 +10,8 @@ public:
     ActorConverter();
     virtual ~ActorConverter();
 
-    virtual std::string getTypeName() const { return ActorResource::getName(); };
-    virtual std::string getFormatExt() const { return ActorResource::getName(); };
+    virtual std::string getTypeName() const { return ActorResource::get_name(); };
+    virtual std::string getFormatExt() const { return ActorResource::get_name(); };
     virtual std::string combieFileName() const {
         return m_name + "." + getFormatExt();
     }

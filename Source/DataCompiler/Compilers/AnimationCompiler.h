@@ -8,7 +8,7 @@ public:
     AnimationCompiler();
     ~AnimationCompiler();
 
-    virtual std::string getFormatExt() const { return Animation::getName(); };
+    virtual std::string getFormatExt() const { return Animation::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

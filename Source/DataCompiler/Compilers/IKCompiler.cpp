@@ -26,7 +26,7 @@ bool LookIKCompiler::readJSON( const JsonValue& root )
 
     std::string rigFile = JSON_GetString(root.GetValue("rig"));
     lookat.m_rigName = StringId(rigFile.c_str());
-    addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
+    addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
 
     return write_file(m_output, &lookat, sizeof(lookat));
 }
@@ -53,7 +53,7 @@ bool ReachIKCompiler::readJSON( const JsonValue& root )
 
     std::string rigFile = JSON_GetString(root.GetValue("rig"));
     reach.m_rigName = StringId(rigFile.c_str());
-    addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
+    addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
 
     return write_file(m_output, &reach, sizeof(reach));
 }
@@ -95,7 +95,7 @@ bool FootIKCompiler::readJSON( const JsonValue& root )
 
     std::string rigFile = JSON_GetString(root.GetValue("rig"));
     foot.m_rigName = StringId(rigFile.c_str());
-    addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
+    addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
 
     return write_file(m_output, &foot, sizeof(foot));
 }

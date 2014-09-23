@@ -22,7 +22,7 @@ void* load_resource_script(const char* data, uint32_t size)
 
 void lookup_resource_script(void* resource)
 {
-    ScriptResource* script = (ScriptResource*)data;
+    ScriptResource* script = (ScriptResource*)resource;
     for (uint32_t i = 0; i < script->m_numIncs; ++i)
     {
         script->m_includes[i].m_script = FIND_RESOURCE(ScriptResource, script->m_includes[i].m_name);

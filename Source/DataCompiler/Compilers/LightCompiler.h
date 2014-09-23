@@ -8,7 +8,7 @@ public:
     LightCompiler();
     ~LightCompiler();
 
-    virtual std::string getFormatExt() const { return LightResource::getName(); };
+    virtual std::string getFormatExt() const { return LightResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

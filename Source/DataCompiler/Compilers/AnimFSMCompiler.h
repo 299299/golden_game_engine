@@ -8,7 +8,7 @@ public:
     AnimFSMCompiler();
     ~AnimFSMCompiler();
 
-    virtual std::string getFormatExt() const { return AnimFSM::getName(); };
+    virtual std::string getFormatExt() const { return AnimFSM::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

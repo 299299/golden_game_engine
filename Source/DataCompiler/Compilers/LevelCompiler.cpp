@@ -58,7 +58,7 @@ bool LevelCompiler::readJSON( const JsonValue& root )
             resourceNames.push_back(key);
             index = (int)resourceNames.size() - 1;
             m_resourceKeys[key] = index;
-            addDependency("actor resource", name_to_file_path(typeName, ActorResource::getName()));
+            addDependency("actor resource", name_to_file_path(typeName, ActorResource::get_name()));
         }
         else {
             index = iter->second;
@@ -67,7 +67,7 @@ bool LevelCompiler::readJSON( const JsonValue& root )
 
         bool bpacked = JSON_GetBool(actorValue.GetValue("packed"), false);
         if(!bpacked) continue;
-        createChildCompiler(ActorResource::getName(), actorValue);
+        createChildCompiler(ActorResource::get_name(), actorValue);
     }
 
     uint32_t numOfResources = resourceNames.size();

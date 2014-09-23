@@ -78,8 +78,8 @@ Actor_Config* createConfig( const std::string& input, const std::string& outFold
     bool bLevel = str_begin_with(entityName, "Level");
     if(!bLevel) outputFolder += "actor/";
     std::string outputFile;
-    if(bLevel) outputFile = outputFolder + entityName + "." + Level::getName();
-    else outputFile = outputFolder + entityName + "."+ ActorResource::getName();
+    if(bLevel) outputFile = outputFolder + entityName + "." + Level::get_name();
+    else outputFile = outputFolder + entityName + "."+ ActorResource::get_name();
     uint64_t fileTime = 0;
     bool bFileChanged = g_havokDB.isFileChanged(hkxFileName, fileTime);
     bool bFileExist = isFileExist(outputFile);

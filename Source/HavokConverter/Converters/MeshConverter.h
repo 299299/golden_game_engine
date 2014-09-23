@@ -22,8 +22,8 @@ public:
     MeshConverter(ActorConverter* ownner);
     ~MeshConverter();
 
-    virtual std::string getTypeName() const { return Mesh::getName(); };
-    virtual std::string getFormatExt() const { return Mesh::getName(); };
+    virtual std::string getTypeName() const { return Mesh::get_name(); };
+    virtual std::string getFormatExt() const { return Mesh::get_name(); };
     
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;

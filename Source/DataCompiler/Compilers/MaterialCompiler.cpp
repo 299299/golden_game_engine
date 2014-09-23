@@ -40,7 +40,7 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     {
         sprintf_s(programName, PROGRAM_PATH"%s", programFile.c_str());
         m->m_shaderName = StringId(programName);
-        addDependency("shader", name_to_file_path(programName, ShaderProgram::getName()));
+        addDependency("shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
     else
     {
@@ -52,7 +52,7 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     {
         sprintf_s(programName, PROGRAM_PATH"%s", programFile.c_str());
         m->m_shadowShaderName = StringId(programName);
-        addDependency("shadow shader", name_to_file_path(programName, ShaderProgram::getName()));
+        addDependency("shadow shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
 
     uint64_t renderState = BGFX_STATE_RGB_WRITE 
@@ -133,7 +133,7 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
                 addChildCompiler(compiler);
             }
             sampler.m_textureName = StringId(textureFile.c_str());
-            addDependency("texture", name_to_file_path(textureFile, Texture::getName()));
+            addDependency("texture", name_to_file_path(textureFile, Texture::get_name()));
         }
     }
 

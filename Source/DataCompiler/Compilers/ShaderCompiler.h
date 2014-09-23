@@ -10,7 +10,7 @@ public:
     ~ShaderCompiler();
 
     virtual void preProcess();
-    virtual std::string getFormatExt() const { return Shader::getName(); };
+    virtual std::string getFormatExt() const { return Shader::get_name(); };
     virtual bool process(const std::string& input, const std::string& output);
 };
 
@@ -21,7 +21,7 @@ public:
     ProgramCompiler();
     ~ProgramCompiler();
 
-    virtual std::string getFormatExt() const { return ShaderProgram::getName(); };
+    virtual std::string getFormatExt() const { return ShaderProgram::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

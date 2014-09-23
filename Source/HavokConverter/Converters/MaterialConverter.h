@@ -13,8 +13,8 @@ public:
     MaterialConverter(ActorConverter* ownner);
     ~MaterialConverter();
 
-    virtual std::string getTypeName() const { return Material::getName(); };
-    virtual std::string getFormatExt() const { return Material::getName(); };
+    virtual std::string getTypeName() const { return Material::get_name(); };
+    virtual std::string getFormatExt() const { return Material::get_name(); };
     virtual std::string getResourceName() const;
 
     virtual void process(void* pData, int hint = 0);

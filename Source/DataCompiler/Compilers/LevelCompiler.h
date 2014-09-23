@@ -13,7 +13,7 @@ public:
     LevelCompiler();
     ~LevelCompiler();
 
-    virtual std::string getFormatExt() const { return Level::getName(); };
+    virtual std::string getFormatExt() const { return Level::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
     bool isResourceInLevel(const std::string& resourceName) const;

@@ -21,7 +21,7 @@ bool ModelCompiler::readJSON( const JsonValue& root )
 
     std::string meshFile = JSON_GetString(root.GetValue("mesh"));
     model.m_meshName = StringId(meshFile.c_str());
-    addDependency("mesh", name_to_file_path(meshFile, Mesh::getName()));
+    addDependency("mesh", name_to_file_path(meshFile, Mesh::get_name()));
     extern const char* g_viewGroupNames[];
     model.m_viewId = JSON_GetEnum(root.GetValue("view_group"), g_viewGroupNames, kSceneViewId);
 
@@ -47,7 +47,7 @@ bool ModelCompiler::readJSON( const JsonValue& root )
             }
             else materialFile = JSON_GetString(materialsValue[i]);
             model.m_materialNames[i] = StringId(materialFile.c_str());
-            addDependency("material", name_to_file_path(materialFile, Material::getName()));
+            addDependency("material", name_to_file_path(materialFile, Material::get_name()));
         }
     }
     

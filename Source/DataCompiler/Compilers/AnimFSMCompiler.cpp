@@ -191,7 +191,7 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
             {
                 const std::string& animName = in_state.m_animations[k];
                 state.m_animNames[k] = StringId(animName.c_str());
-                addDependency("animation", name_to_file_path(animName, Animation::getName()));
+                addDependency("animation", name_to_file_path(animName, Animation::get_name()));
             }
         }
     }    

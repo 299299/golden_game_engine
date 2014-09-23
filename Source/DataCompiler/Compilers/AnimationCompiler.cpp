@@ -56,11 +56,11 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     {
         std::string mirrorFile = JSON_GetString(root.GetValue("mirrored_from"));
         anim->m_mirroredFrom = StringId(mirrorFile.c_str());
-        addDependency("mirror animation", name_to_file_path(mirrorFile, Animation::getName()));
+        addDependency("mirror animation", name_to_file_path(mirrorFile, Animation::get_name()));
 
         std::string rigFile = JSON_GetString(root.GetValue("rig"));
         anim->m_rigName = StringId(rigFile.c_str());
-        addDependency("rig", name_to_file_path(rigFile, AnimRig::getName()));
+        addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
     }
 
     anim->m_numBeats = beatNum;

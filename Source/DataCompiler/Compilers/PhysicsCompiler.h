@@ -7,7 +7,7 @@
 class PhysicsCompiler : public BaseCompiler
 {
 public:
-    virtual std::string getFormatExt() const { return PhysicsResource::getName(); };
+    virtual std::string getFormatExt() const { return PhysicsResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };
@@ -15,7 +15,7 @@ public:
 class ProxyCompiler : public BaseCompiler
 {
 public:
-    virtual std::string getFormatExt() const { return ProxyResource::getName(); };
+    virtual std::string getFormatExt() const { return ProxyResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };
@@ -24,7 +24,7 @@ public:
 class PhysicsConfigCompiler : public BaseCompiler
 {
 public:
-    virtual std::string getFormatExt() const { return PhysicsConfig::getName(); };
+    virtual std::string getFormatExt() const { return PhysicsConfig::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 

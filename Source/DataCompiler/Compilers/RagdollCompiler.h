@@ -8,7 +8,7 @@ public:
     RagdollCompiler();
     ~RagdollCompiler();
 
-    virtual std::string getFormatExt() const { return RagdollResource::getName(); };
+    virtual std::string getFormatExt() const { return RagdollResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

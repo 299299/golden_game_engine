@@ -34,7 +34,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     const uint32_t key_len = include_keyword.length();
     std::vector<std::string> include_files;
     char* head = buf;
-    char* offset = strstr(head, '\n');
+    char* offset = strchr(head, '\n');
     while(offset)
     {
         uint32_t line_len = (uint32_t)(offset-head);
@@ -44,7 +44,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
         std::string include_file = std::string(head + key_len, line_len - key_len);
         include_files.push_back(include_file);
         head = offset + 1;
-        offset = strstr(head, '\n');
+        offset = strchr(head, '\n');
     }
 
     uint32_t numOfIncludes = include_files.size();
@@ -61,7 +61,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     {
         ScriptInclude& include = includes[i];
         include.m_name = StringId(include_files[i].c_str());
-        addDependency("include script", name_to_file_path(includes[i], ScriptResource::getName()));
+        addDependency("include script", name_to_file_path(include_files[i], ScriptResource::get_name()));
     }
     p += sizeof(ScriptInclude) * numOfIncludes;
     script->m_codeOffset = (uint32_t)(p - mem);

@@ -10,8 +10,8 @@ public:
     AnimRigConverter(ActorConverter* ownner);
     ~AnimRigConverter();
     
-    virtual std::string getTypeName() const { return AnimRig::getName(); };
-    virtual std::string getFormatExt() const { return AnimRig::getName(); };
+    virtual std::string getTypeName() const { return AnimRig::get_name(); };
+    virtual std::string getFormatExt() const { return AnimRig::get_name(); };
 
     virtual void process(void* pData, int hint = 0);
     virtual void postProcess();

@@ -8,7 +8,7 @@ public:
     LookIKCompiler() {};
     ~LookIKCompiler() {};
 
-    virtual std::string getFormatExt() const { return LookAtResource::getName(); };
+    virtual std::string getFormatExt() const { return LookAtResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };
@@ -19,7 +19,7 @@ public:
     ReachIKCompiler(){};
     ~ReachIKCompiler(){};
 
-    virtual std::string getFormatExt() const { return ReachResource::getName();};
+    virtual std::string getFormatExt() const { return ReachResource::get_name();};
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };
@@ -30,7 +30,7 @@ public:
     FootIKCompiler() {};
     ~FootIKCompiler() {};
 
-    virtual std::string getFormatExt() const { return FootResource::getName(); };
+    virtual std::string getFormatExt() const { return FootResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
 };

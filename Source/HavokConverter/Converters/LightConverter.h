@@ -10,8 +10,8 @@ public:
     LightConverter(ActorConverter* ownner);
     ~LightConverter();
 
-    virtual std::string getTypeName() const { return LightResource::getName(); };
-    virtual std::string getFormatExt() const { return LightResource::getName(); };
+    virtual std::string getTypeName() const { return LightResource::get_name(); };
+    virtual std::string getFormatExt() const { return LightResource::get_name(); };
 
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;

@@ -28,8 +28,8 @@ public:
     ModelConverter(ActorConverter* ownner);
     ~ModelConverter();
 
-    virtual std::string getTypeName() const { return ModelResource::getName(); };
-    virtual std::string getFormatExt() const { return ModelResource::getName(); };
+    virtual std::string getTypeName() const { return ModelResource::get_name(); };
+    virtual std::string getFormatExt() const { return ModelResource::get_name(); };
 
     virtual void process(void* pData, int hint = 0);
     virtual void postProcess();

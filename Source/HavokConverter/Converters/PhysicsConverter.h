@@ -10,8 +10,8 @@ public:
     PhysicsConverter(ActorConverter* ownner);
     ~PhysicsConverter();
 
-    virtual std::string getTypeName() const { return PhysicsResource::getName(); };
-    virtual std::string getFormatExt() const { return PhysicsResource::getName(); };
+    virtual std::string getTypeName() const { return PhysicsResource::get_name(); };
+    virtual std::string getFormatExt() const { return PhysicsResource::get_name(); };
     
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;

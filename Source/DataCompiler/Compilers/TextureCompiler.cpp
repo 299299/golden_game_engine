@@ -132,7 +132,7 @@ bool Texture3DCompiler::readJSON(const JsonValue& root)
     std::string outputLut = m_output;
     std::string outputPath = getFilePath(m_output);
     std::string fileName = getFileName(outputLut);
-    outputLut = outputPath + "/" + fileName + "." +Raw3DTexture::getName();
+    outputLut = outputPath + "/" + fileName + "." +Raw3DTexture::get_name();
     write_file(outputLut, p, memSize);
     free(p);
     stbi_image_free(image);

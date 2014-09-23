@@ -55,30 +55,30 @@ void showHelp()
 
 static const char* g_resourceTypeNames[] = 
 {
-    Animation::getName(),
-    AnimRig::getName(),
-    ActorResource::getName(),
-    LookAtResource::getName(),
-    ReachResource::getName(),
-    FootResource::getName(),
-    LightResource::getName(),
-    Material::getName(),
-    PhysicsConfig::getName(),
-    PhysicsResource::getName(),
-    ProxyResource::getName(),
-    RagdollResource::getName(),
-    ShaderProgram::getName(),
-    Texture::getName(),
-    Raw3DTexture::getName(),
-    Raw2DTexture::getName(),
-    Mesh::getName(),
-    ModelResource::getName(),
-    Shader::getName(),
-    ShadingEnviroment::getName(),
-    AnimFSM::getName(),
+    Animation::get_name(),
+    AnimRig::get_name(),
+    ActorResource::get_name(),
+    LookAtResource::get_name(),
+    ReachResource::get_name(),
+    FootResource::get_name(),
+    LightResource::get_name(),
+    Material::get_name(),
+    PhysicsConfig::get_name(),
+    PhysicsResource::get_name(),
+    ProxyResource::get_name(),
+    RagdollResource::get_name(),
+    ShaderProgram::get_name(),
+    Texture::get_name(),
+    Raw3DTexture::get_name(),
+    Raw2DTexture::get_name(),
+    Mesh::get_name(),
+    ModelResource::get_name(),
+    Shader::get_name(),
+    ShadingEnviroment::get_name(),
+    AnimFSM::get_name(),
     SHADER_INCLUDE_EXT,
     "dds",
-    ScriptResource::getName(),
+    ScriptResource::get_name(),
 };
 static __create_compiler__ g_funtions[] =
 {
@@ -156,7 +156,7 @@ void level_processing()
         {
             std::vector<std::string> levelFiles;
             addBackSlash(folders[i]);
-            findFiles(folders[i], Level::getName(), false, levelFiles);
+            findFiles(folders[i], Level::get_name(), false, levelFiles);
             for (size_t j=0; j<levelFiles.size(); ++j)
             {
                 level_file_list.push_back(levelFiles[j]);
@@ -165,7 +165,7 @@ void level_processing()
     }
     else
     {
-        findFiles(g_config.m_inputDir, Level::getName(), false, level_file_list);
+        findFiles(g_config.m_inputDir, Level::get_name(), false, level_file_list);
     }
     LOGI("level file num = %d.", level_file_list.size());
     for (size_t i=0; i<level_file_list.size(); ++i)
@@ -198,7 +198,7 @@ void resources_process()
     {
         const std::string& input = input_file_list[i];
         std::string ext = getFileExt(input);
-        if(ext == Level::getName()) continue;
+        if(ext == Level::get_name()) continue;
         BaseCompiler* compiler = createCompiler(ext);
         if(!compiler) 
         {
@@ -206,7 +206,7 @@ void resources_process()
             continue;
         }
         std::string output = input_to_output(input);
-        if(ext == "dds") output = replaceExtension(output, Texture::getName());
+        if(ext == "dds") output = replaceExtension(output, Texture::get_name());
         compiler->m_input = input;
         compiler->m_output = output;
         compiler->m_packageName = get_package_name(input);

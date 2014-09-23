@@ -118,8 +118,8 @@ bool ProgramCompiler::readJSON(const JsonValue& root)
     program.m_psName = StringId(ps);
     program.m_handle.idx = bgfx::invalidHandle;
 
-    addDependency("vertex shader", name_to_file_path(vs, Shader::getName()));
-    addDependency("pixel shader", name_to_file_path(ps, Shader::getName()));
+    addDependency("vertex shader", name_to_file_path(vs, Shader::get_name()));
+    addDependency("pixel shader", name_to_file_path(ps, Shader::get_name()));
 
     return write_file(m_output, &program, sizeof(program));
 }
