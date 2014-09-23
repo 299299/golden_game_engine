@@ -17,6 +17,7 @@ void* load_resource_script(const char* data, uint32_t size)
 {
     ScriptResource* script = (ScriptResource*)data;
     script->m_code = (char*)data + script->m_codeOffset;
+    script->m_includes = (ScriptInclude*)((char*)data + sizeof(ScriptResource));
     return script;
 }
 

@@ -2,13 +2,14 @@ global make_splash_state = function()
 {
     local splash_state = 
     {
-        x = 0.0,
-        y = 0.0,
+        x = 128.0,
+        y = 128.0,
+        shading_env = 0,
     };
 
     splash_state.init  = function()
     {
-
+        .shading_env = resource.find_resource(string_to_id("shading_enviroment"), string_to_id("core/common/default"));
     };
 
     splash_state.release  = function()
@@ -22,24 +23,6 @@ global make_splash_state = function()
         {
             shut_down();
         }
-
-        local move_speed = 50.0;
-        if(input.is_key_down(input.LEFT))
-        {
-            .x -= move_speed * dt;
-        }
-        if(input.is_key_down(input.RIGHT))
-        {
-            .x += move_speed * dt;
-        }
-        if(input.is_key_down(input.UP))
-        {
-            .y -= move_speed * dt;
-        }
-        if(input.is_key_down(input.DOWN))
-        {
-            .y += move_speed * dt;
-        }
     };
 
     splash_state.update = function(dt)
@@ -49,13 +32,18 @@ global make_splash_state = function()
 
     splash_state.post_step = function(dt)
     {
-        
+       
     };
 
     splash_state.render = function()
     {
-        gui.draw_rect(.x, .y, 64.0, 64.0, rgba_to_int(0,255,0));
-        graphics.draw(0);
+        local w = get_window_width();
+        local h = get_window_height();
+        local fw = 0.0 + w;
+        local fh = 0.0 + h;
+        gui.draw_round_rect(0.0, 0.0, fw, fh, 4.0, rgba_to_int(0,125,255));
+        gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "hello world", rgba_to_int(255,255,0));
+        graphics.draw(.shading_env);
     };
 
     splash_state.on_enter = function(prev_state_name, prev_state_obj)

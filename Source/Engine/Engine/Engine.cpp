@@ -108,11 +108,11 @@ void Engine::frame(float timeStep)
         g_threadMgr.vdb_update(timeStep);
     }
 
-    if(g_engineMode == 1)
-        return;
-
-    PROFILE(Game_Render);
-    g_script.render();
+    if(g_engineMode  == 0)
+    {
+        PROFILE(Game_Render);
+        g_script.render();
+    }
 }
 
 void Engine::apply_framelimit(double timeMS)

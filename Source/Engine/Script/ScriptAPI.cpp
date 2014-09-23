@@ -10,6 +10,7 @@
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
+#include <bgfx/bgfx.h>
 
 #ifdef GetObject
 #undef GetObject
@@ -54,9 +55,13 @@ static int GM_CDECL rgba_to_int(gmThread* a_thread)
     a_thread->PushInt(imguiRGBA(r,g,b,a));
     return GM_OK;
 }
-static int GM_CDECL get_window_size(gmThread* a_thread)
+static int GM_CDECL get_window_width(gmThread* a_thread)
 {
     a_thread->PushInt(g_win32Context.m_width);
+    return GM_OK;
+}
+static int GM_CDECL get_window_height(gmThread* a_thread)
+{
     a_thread->PushInt(g_win32Context.m_height);
     return GM_OK;
 }
@@ -188,9 +193,9 @@ static int GM_CDECL resource_package_flush(gmThread* a_thread)
 
 static int GM_CDECL resource_find(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(res_type, 0);
-    GM_CHECK_INT_PARAM(res_name, 0);
+    GM_CHECK_INT_PARAM(res_name, 1);
     a_thread->PushInt((int)g_resourceMgr.find_resource(StringId(res_type), StringId(res_name)));
     return GM_OK;
 }
@@ -510,6 +515,14 @@ static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
     g_debugDrawMgr.add_grid(grid_num, grid_width, color, depth);
     return GM_OK;
 }
+
+static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(mode, 0);
+    bgfx::setDebug(mode);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
@@ -529,7 +542,8 @@ void register_script_api(gmMachine* machine)
     {
         {"shut_down", script_shutdown_game },
         {"string_to_id", string_to_id},
-        {"get_window_size", get_window_size },
+        {"get_window_width", get_window_width },
+        {"get_window_height", get_window_height },
         {"subsystems_ready", subsystems_ready},
         {"rgba_to_int", rgba_to_int },
         {"begin_profile", begin_profile},
@@ -654,8 +668,16 @@ void register_script_api(gmMachine* machine)
         {"debug_add_sphere", debug_draw_add_sphere},
         {"debug_add_sphere", debug_draw_add_circle},
         {"debug_add_grid", debug_draw_add_grid},
+        {"set_debug_mode", graphics_set_debug_mode},
+    };
+    static gmVariableEntry s_graphics_values[] =
+    {
+        {"BGFX_DEBUG_NONE", gmVariable((int)BGFX_DEBUG_NONE)},
+        {"BGFX_DEBUG_STATS", gmVariable((int)BGFX_DEBUG_STATS)},
+        {"BGFX_DEBUG_TEXT", gmVariable((int)BGFX_DEBUG_TEXT)},
+        {"BGFX_DEBUG_WIREFRAME", gmVariable((int)BGFX_DEBUG_WIREFRAME)},
     };
     machine->RegisterLibrary(s_graphics_binding, BX_COUNTOF(s_graphics_binding), "graphics");
-
+    register_enum_values(machine, "graphics", s_graphics_values, BX_COUNTOF(s_graphics_values));
 
 }

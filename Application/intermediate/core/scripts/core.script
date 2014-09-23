@@ -1,5 +1,5 @@
-//inc core/common/state_machine
-//inc core/common/splash_state
+//inc core/scripts/state_machine
+//inc core/scripts/splash_state
 
 local create_core = function()
 {

@@ -41,7 +41,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
         std::string line(head, line_len);
         if(!str_begin_with(line, include_keyword))
             break;
-        std::string include_file = std::string(head + key_len, line_len - key_len);
+        std::string include_file = std::string(head + key_len, line_len - key_len - 1);
         include_files.push_back(include_file);
         head = offset + 1;
         offset = strchr(head, '\n');
@@ -54,6 +54,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     ScriptResource* script = (ScriptResource*)mem;
     script->m_codeSize = stream.GetSize();
     script->m_threadId = -1;
+    script->m_numIncs = numOfIncludes;
     char* p = mem;
     p += sizeof(ScriptResource);
     ScriptInclude* includes = (ScriptInclude*)p;
