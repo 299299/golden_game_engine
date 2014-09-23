@@ -409,7 +409,7 @@ void RagdollInstance::stop_ragdoll_feedback()
     for (int b=0; b<m_ragdoll->getNumBones(); b++ )
     {
         const int parentId = m_ragdoll->getParentOfBone(b);
-        setDynamicWithCollisions( m_ragdoll->getRigidBodyOfBone(b), b, parentId, dynamicLayer);
+        set_dynamic_with_collisions( m_ragdoll->getRigidBodyOfBone(b), b, parentId, dynamicLayer);
     }
 }
 

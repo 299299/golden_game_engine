@@ -32,7 +32,7 @@ void Animation::destroy()
 void Animation::lookup()
 {
     if(m_mirroredFrom.isZero()) return;
-    createMirrorAnimation(FIND_RESOURCE(Animation, m_mirroredFrom));
+    create_mirrored_animation(FIND_RESOURCE(Animation, m_mirroredFrom));
 }
 
 void Animation::create_mirrored_animation(const Animation* orginalAnim)
@@ -57,7 +57,7 @@ const AnimationBeat* Animation::find_beat(uint32_t type) const
 
 const AnimationBeat* Animation::find_next_closest_beat(float time, bool bLoop) const
 {
-    if(!m_numBeats || time >= getLength())
+    if(!m_numBeats || time >= get_length())
         return 0;
 
     if(!bLoop)

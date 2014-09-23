@@ -39,10 +39,9 @@ ENGINE_NATIVE_ALIGN struct PhysicsInstance
 
     void init(const void* resource);
     void destroy();
-    void set_transform(const hkQsTransform& t);
     void set_transform(const hkTransform& t);
     void add_to_simulation();
     void remove_from_simulation();
     void post_simulation(hkpRigidBody* rb);
-    void fetch_transfrom(int index, hkTransform& outT);
+    void fetch_transform(int index, hkTransform& outT);
 };

@@ -176,7 +176,7 @@ uint32_t RtState::collect_triggers(float dt, AnimationTrigger* outTriggers)
         if(ac->getWeight() < TRIGGER_WEIGHT_THRESHOLD)
             continue;
         float localTime = ac->getLocalTime();
-        uint32_t num = animation->collectTriggers(localTime, dt, outTriggers);
+        uint32_t num = animation->collect_triggers(localTime, dt, outTriggers);
         outTriggers += num;
         ret += num;
     }
@@ -205,7 +205,7 @@ void RtState::remove(hk_anim_skel* skeleton)
     }
 }
 
-void RtState::setWeight(float fBaseWeight)
+void RtState::set_weight(float fBaseWeight)
 {
     for(uint32_t i=0; i<m_numAnimations; ++i)
     {
@@ -213,7 +213,7 @@ void RtState::setWeight(float fBaseWeight)
     }
 }
 
-void RtState::setPlaybackSpeed(float fSpeed)
+void RtState::set_playbackspeed(float fSpeed)
 {
     for(uint32_t i=0; i<m_numAnimations; ++i)
     {
@@ -221,7 +221,7 @@ void RtState::setPlaybackSpeed(float fSpeed)
     }
 }
 
-void RtState::setLocalTime(float fLocalTime)
+void RtState::set_localtime(float fLocalTime)
 {
     for(uint32_t i=0; i<m_numAnimations; ++i)
     {
@@ -240,7 +240,7 @@ void RtLayer::init(const AnimFSMLayer* resource)
         m_states[i].init(&m_layer->m_states[i]);
     }
     defaultTransition.m_destStateIndex = 0;
-    doTransition(&defaultTransition);
+    do_transition(&defaultTransition);
 }
 
 void RtLayer::destroy()
@@ -254,7 +254,7 @@ void RtLayer::destroy()
     SAFE_REMOVEREF(m_transition.m_easeOutCtrl);
 }
 
-void RtLayer::changeStatus(uint8_t newStatus)
+void RtLayer::change_status(uint8_t newStatus)
 {
     if(m_status == newStatus) return;
     m_status = newStatus;
@@ -290,7 +290,7 @@ void RtLayer::changeStatus(uint8_t newStatus)
             nextState->add(m_skeleton, m_transition.m_nextTime);
             if(t->m_mode == kTransitionFrozen ||
                t->m_mode == kTransitionFrozenSync)
-                lastState->setPlaybackSpeed(0.0f);
+                lastState->set_playbackspeed(0.0f);
         }
         break;
     case kStateWaitForAlgin:
@@ -311,7 +311,7 @@ void RtLayer::udpate(float dt)
         {
             if(m_dirty) 
             {
-                m_curState->setWeight(m_weight);
+                m_curState->set_weight(m_weight);
                 m_dirty = false;
             }
         }
@@ -330,13 +330,13 @@ void RtLayer::udpate(float dt)
             float cur_state_weight = easeInCtrl->getWeight();
             float prev_state_weight = easeOutCtrl->getWeight();
             
-            lastState->setWeight(cur_state_weight * m_weight);
-            nextState->setWeight(prev_state_weight * m_weight);
+            lastState->set_weight(cur_state_weight * m_weight);
+            nextState->set_weight(prev_state_weight * m_weight);
             
             if(easeInCtrl->getEaseStatus() == hk_anim_ctrl::EASED_IN &&
                easeOutCtrl->getEaseStatus() == hk_anim_ctrl::EASED_OUT)
             {
-                changeStatus(kStateNormal);
+                change_status(kStateNormal);
             }
             
         }
@@ -346,7 +346,7 @@ void RtLayer::udpate(float dt)
             m_transition.m_waitAlignTime -= dt;
             if(m_transition.m_waitAlignTime <= 0.0f)
             {
-                changeStatus(kStateTransitioning);
+                change_status(kStateTransitioning);
             }
         }
         break;
@@ -355,7 +355,7 @@ void RtLayer::udpate(float dt)
     }
 }
 
-void RtLayer::doTransition(const Transition* t)
+void RtLayer::do_transition(const Transition* t)
 {
     if(m_status == kStateTransitioning)
         return; //-->TODO 
@@ -383,9 +383,9 @@ void RtLayer::doTransition(const Transition* t)
         float localtime_src = lastState->m_ctrls[0]->getLocalTime();
         float localtime_dst = nextState->m_ctrls[0]->getLocalTime();
         bool bLooped = lState->m_looped;
-        const AnimationBeat* beat_src = anim_src->findNextClosestBeat(localtime_src, bLooped);
+        const AnimationBeat* beat_src = anim_src->find_next_closest_beat(localtime_src, bLooped);
         const AnimationBeat* beat_dst = 0;
-        if(beat_src) beat_dst = anim_dst->findBeat(beat_src->m_type);
+        if(beat_src) beat_dst = anim_dst->find_beat(beat_src->m_type);
         
         if(beat_src && beat_dst)
         {
@@ -397,7 +397,7 @@ void RtLayer::doTransition(const Transition* t)
                     timeDiff = beatTime - localtime_src;
                 else
                 {
-                    timeDiff = anim_src->getLength() - localtime_src;
+                    timeDiff = anim_src->get_length() - localtime_src;
                     timeDiff += beatTime;
                 }
             }
@@ -406,24 +406,24 @@ void RtLayer::doTransition(const Transition* t)
             if(timeDiff > BEAT_TIME_THRESHOLD)
             {
                 m_transition.m_waitAlignTime = timeDiff;
-                changeStatus(kStateWaitForAlgin);
+                change_status(kStateWaitForAlgin);
                 return;
             }
             m_transition.m_nextTime = beat_dst->m_time;
         }
         else LOGW("can not find all animation beat, do normal transition");
     }
-    changeStatus(kStateTransitioning);
-    markDirty();
+    change_status(kStateTransitioning);
+    mark_dirty();
 }
 
-void RtLayer::getRootmotion(float dt, hkQsTransform& motionOut)
+void RtLayer::get_rootmotion(float dt, hkQsTransform& motionOut)
 {
     switch(m_status)
     {
     case kStateTransitioning:
         {
-            getTransitionRootmotion(dt, motionOut);
+            get_transition_rootmotion(dt, motionOut);
         }
         break;
     default:
@@ -432,7 +432,7 @@ void RtLayer::getRootmotion(float dt, hkQsTransform& motionOut)
     }
 }
 
-void RtLayer::getTransitionRootmotion(float dt, hkQsTransform& motionOut)
+void RtLayer::get_transition_rootmotion(float dt, hkQsTransform& motionOut)
 {
     const Transition* t = m_transition.m_transition;
     RtState* lastState = m_transition.m_lastState;
@@ -499,15 +499,15 @@ void RtLayer::getTransitionRootmotion(float dt, hkQsTransform& motionOut)
 uint32_t RtLayer::collect_triggers(float dt, AnimationTrigger* outTriggers)
 {
     if(!m_curState) return 0;
-    return m_curState->collectTriggers(dt, outTriggers);
+    return m_curState->collect_triggers(dt, outTriggers);
 }
 
 void RtLayer::send_event(const StringId& evtName)
 {
     if(!m_curState) return;
-    const Transition* t = m_curState->m_state->findTransition(evtName);
+    const Transition* t = m_curState->m_state->find_transition(evtName);
     if(!t) return;
-    doTransition(t);
+    do_transition(t);
 }
 
 bool RtLayer::is_state_active(const StringId& stateName) const
@@ -587,7 +587,7 @@ uint32_t AnimFSMInstance::collect_triggers(float dt, AnimationTrigger* outTrigge
     uint32_t ret = 0;
     for(uint32_t i=0; i<m_resource->m_numLayers; ++i)
     {
-        uint32_t num = m_layers[i].collectTriggers(dt, outTriggers);
+        uint32_t num = m_layers[i].collect_triggers(dt, outTriggers);
         ret += num;
         outTriggers += num;
     }

@@ -24,7 +24,7 @@ int AnimRig::find_joint_index(const StringId& jointName)
     return -1;
 }
 
-void AnimRig::ceate_mirrored_skeleton()
+void AnimRig::create_mirrored_skeleton()
 {
     hkArray<hkStringPtr> ltag;
     hkArray<hkStringPtr> rtag;
@@ -85,7 +85,7 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
     rig->m_attachments = (BoneAttachment*)offset;
     offset = data + rig->m_havokDataOffset;
     rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
-    if(rig->m_mirrored) rig->createMirrorSkeleton();
+    if(rig->m_mirrored) rig->create_mirrored_skeleton();
     return rig;
 }
 

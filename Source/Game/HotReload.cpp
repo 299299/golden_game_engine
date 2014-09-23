@@ -136,7 +136,7 @@ void reload_animation_resource(void* oldResource, void* newResource)
         if(oldAnimation->m_binding == binding)
         {
             anim->destroy();
-            anim->createMirrorAnimation(newAnimation);
+            anim->create_mirrored_animation(newAnimation);
         }
     }
 }

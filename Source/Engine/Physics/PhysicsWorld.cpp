@@ -436,7 +436,7 @@ void PhysicsWorld::sync_actors( struct Actor* actors, uint32_t num )
         Actor& actor = actors[i];
         PhysicsInstance* physics_object = (PhysicsInstance*)actor.get_component(kComponentPhysics);
         if(!physics_object->m_dirty) continue;
-        physics_object->fetchTransform(0, t1);
+        physics_object->fetch_transform(0, t1);
         t.setFromTransformNoScale(t1);
         actor.transform_renders(t);
     }

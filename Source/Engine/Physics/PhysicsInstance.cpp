@@ -58,17 +58,10 @@ void PhysicsInstance::init(const void* resource)
             break;    
         }
     }
-    addToSimulation();
+    add_to_simulation();
 }
 
-void PhysicsInstance::set_transfrom(const hkQsTransform& t)
-{
-    hkTransform tm;
-    t.copyToTransformNoScale(tm);
-    setTransform(tm);
-}
-
-void PhysicsInstance::set_transfrom(const hkTransform& t)
+void PhysicsInstance::set_transform(const hkTransform& t)
 {
     PHYSICS_LOCKWRITE(g_physicsWorld.world());
     switch(m_systemType)

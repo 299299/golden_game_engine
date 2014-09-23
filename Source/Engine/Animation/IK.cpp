@@ -120,7 +120,7 @@ void ReachInstance::init(const void* resource)
     m_reachLastTargetWS.setZero4();
 }
 
-void ReachInstance::doReach(  const hkVector4& targetPosWS,
+void ReachInstance::do_reach(  const hkVector4& targetPosWS,
                               const hkQsTransform& worldFromModel, 
                               hkaPose& thePose)
 {
