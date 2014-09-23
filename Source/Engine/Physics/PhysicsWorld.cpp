@@ -223,7 +223,7 @@ void PhysicsWorld::destroy_world()
     if(!m_world)
         return;
     m_world->markForWrite();
-    g_threadMgr.vdbRemoveWorld(m_world);
+    g_threadMgr.vdb_remove_world(m_world);
     SAFE_DELETE(m_world);
 }
 

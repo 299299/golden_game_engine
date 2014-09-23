@@ -149,7 +149,7 @@ static int GM_CDECL resource_package_load(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(pack_name, 0);
-    g_resourceMgr.loadPackage(pack_name);
+    g_resourceMgr.load_package(pack_name);
     return GM_OK;
 }
 
@@ -173,7 +173,7 @@ static int GM_CDECL resource_package_get_status(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(pack_name, 0);
-    a_thread->PushInt(g_resourceMgr.getPackageStatus(StringId(pack_name)));
+    a_thread->PushInt(g_resourceMgr.get_package_status(StringId(pack_name)));
     return GM_OK;
 }
 

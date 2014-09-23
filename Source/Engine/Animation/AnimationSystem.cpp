@@ -121,7 +121,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
         const Matrix* invMats = model->m_resource->m_mesh->m_jointMatrix;
         const hkArray<hkQsTransform>& poseMS = pose->getSyncedPoseModelSpace();
-        model->allocSkinningMat();
+        model->alloc_skinning_mat();
 
         float* matrix = model->m_skinMatrix;
         hkQsTransform tempT1, tempT2;

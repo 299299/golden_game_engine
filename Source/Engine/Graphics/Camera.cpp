@@ -103,7 +103,7 @@ DebugFPSCamera::DebugFPSCamera()
 
 void DebugFPSCamera::update(float dt)
 {
-    bool bGamePad = g_XInput.isConnected(0);
+    bool bGamePad = g_XInput.is_connected(0);
     float* eye = m_eye;
     float* at = m_at;
     float* up = g_camera.m_up;
@@ -118,8 +118,8 @@ void DebugFPSCamera::update(float dt)
 
     if(bGamePad)
     {
-        dx = g_XInput.getLSSmooth(0)[0] * 32767.0f;
-        dy = g_XInput.getLSSmooth(0)[1] * 32767.0f;
+        dx = g_XInput.get_ls_smooth(0)[0] * 32767.0f;
+        dy = g_XInput.get_ls_smooth(0)[1] * 32767.0f;
     }
 
     bool bRotating = bGamePad ? true : g_win32Context.m_mouseStatus[kMouseRight];
@@ -151,8 +151,8 @@ void DebugFPSCamera::update(float dt)
     bool bMoveFlags[4] = {false, false, false, false};
     if(bGamePad)
     {
-        float lsX = g_XInput.getLSSmooth(0)[0];
-        float lsY = g_XInput.getLSSmooth(0)[1];
+        float lsX = g_XInput.get_ls_smooth(0)[0];
+        float lsY = g_XInput.get_ls_smooth(0)[1];
         bMoveFlags[0] = lsY > 0.1f;
         bMoveFlags[1] = lsY < -0.1f;
         bMoveFlags[2] = lsX < -0.1f;

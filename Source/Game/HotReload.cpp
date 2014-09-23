@@ -102,7 +102,7 @@ void reload_animation_resource(void* oldResource, void* newResource)
     Animation* oldAnimation = (Animation*)oldResource;
     Animation* newAnimation = (Animation*)newResource;
 
-    uint32_t numOfFSM = g_resourceMgr.findResourcesTypeOf(AnimFSM::getType(), result, resourceMax);
+    uint32_t numOfFSM = g_resourceMgr.find_resources_type_of(AnimFSM::getType(), result, resourceMax);
     LOGD("total num of anim fsm resources = %d", numOfFSM);
     //holy shit, deep loop!
     for (uint32_t i=0; i<numOfFSM; ++i)
@@ -125,7 +125,7 @@ void reload_animation_resource(void* oldResource, void* newResource)
         reload_component_resource<AnimFSM, AnimFSMInstance>(fsm, fsm);
     }
 
-    uint32_t numOfAnimations = g_resourceMgr.findResourcesTypeOf(Animation::getType(), result, resourceMax);
+    uint32_t numOfAnimations = g_resourceMgr.find_resources_type_of(Animation::getType(), result, resourceMax);
     LOGD("total num of animation resources = %d", numOfAnimations);
     for (uint32_t i = 0; i < numOfAnimations; ++i)
     {
@@ -163,7 +163,7 @@ void reload_material_resource(void* oldResource, void* newResource)
     Material* oldMat = (Material*)oldResource;
     Material* newMat = (Material*)newResource;
 
-    uint32_t numOfModels = g_resourceMgr.findResourcesTypeOf(ModelResource::getType(), result, resourceMax);
+    uint32_t numOfModels = g_resourceMgr.find_resources_type_of(ModelResource::getType(), result, resourceMax);
     LOGD("total num of model resources = %d", numOfModels);
     for(uint32_t i=0; i<numOfModels; ++i)
     {
@@ -197,7 +197,7 @@ void reload_texture_resource(void* oldResource, void* newResource)
     Texture* oldTex = (Texture*)oldResource;
     Texture* newTex = (Texture*)newResource;
 
-    uint32_t numOfMaterials = g_resourceMgr.findResourcesTypeOf(Material::getType(), result, resourceMax);
+    uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::getType(), result, resourceMax);
     LOGD("total num of materials = %d", numOfMaterials);
     for(uint32_t i=0; i<numOfMaterials; ++i)
     {
@@ -218,7 +218,7 @@ void reload_texture_3d_resource(void* oldResource, void* newResource)
     Raw3DTexture* oldTex = (Raw3DTexture*)oldResource;
     Raw3DTexture* newTex = (Raw3DTexture*)newResource;
 
-    uint32_t numOfEnv = g_resourceMgr.findResourcesTypeOf(ShadingEnviroment::getType(), result, resourceMax);
+    uint32_t numOfEnv = g_resourceMgr.find_resources_type_of(ShadingEnviroment::getType(), result, resourceMax);
     LOGD("total num of shading enviroment = %d", numOfEnv);
     for(uint32_t i=0; i<numOfEnv; ++i)
     {
@@ -234,7 +234,7 @@ void reload_mesh_resource(void* oldResource, void* newResource)
     Mesh* oldMesh = (Mesh*)oldResource;
     Mesh* newMesh = (Mesh*)newResource;
 
-    uint32_t numOfModels = g_resourceMgr.findResourcesTypeOf(ModelResource::getType(), result, resourceMax);
+    uint32_t numOfModels = g_resourceMgr.find_resources_type_of(ModelResource::getType(), result, resourceMax);
     LOGD("total num of model resources = %d", numOfModels);
     for(uint32_t i=0; i<numOfModels; ++i)
     {
@@ -258,7 +258,7 @@ void reload_program_resource(void* oldResource, void* newResource)
     CHECK_SHADER_HANDLE(g_postProcess.m_blurShader);
     CHECK_SHADER_HANDLE(g_postProcess.m_combineShader);
     
-     uint32_t numOfMaterials = g_resourceMgr.findResourcesTypeOf(Material::getType(), result, resourceMax);
+     uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::getType(), result, resourceMax);
     LOGD("total num of materials = %d", numOfMaterials);
     for(uint32_t i=0; i<numOfMaterials; ++i)
     {
@@ -278,7 +278,7 @@ void reload_shader_resource(void* oldResource, void* newResource)
     Shader* oldShader = (Shader*)oldResource;
     Shader* newShader = (Shader*)newResource;
     
-    uint32_t numOfPrograms = g_resourceMgr.findResourcesTypeOf(ShaderProgram::getType(), result, resourceMax);
+    uint32_t numOfPrograms = g_resourceMgr.find_resources_type_of(ShaderProgram::getType(), result, resourceMax);
     LOGD("total num of programs = %d", numOfPrograms);
     for(uint32_t i=0; i<numOfPrograms; ++i)
     {

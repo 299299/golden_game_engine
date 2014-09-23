@@ -236,19 +236,19 @@ void Win32Context::adjust(uint32_t _width, uint32_t _height, bool _windowFrame)
     m_frame = _windowFrame;
 }
 
-void Win32Context::setMousePos(int32_t _mx, int32_t _my)
+void Win32Context::set_mouse_pos(int32_t _mx, int32_t _my)
 {
     POINT pt = { _mx, _my };
     ClientToScreen(m_hwnd, &pt);
     SetCursorPos(pt.x, pt.y);   
 }
 
-void Win32Context::setWindowSize(uint32_t _width, uint32_t _height)
+void Win32Context::set_window_size(uint32_t _width, uint32_t _height)
 {
     PostMessage(m_hwnd, WM_USER_SET_WINDOW_SIZE, 0, (_height<<16) | (_width&0xffff) );
 }
 
-void Win32Context::toggleWindowFrame()
+void Win32Context::toggle_window_frame()
 {
     PostMessage(m_hwnd, WM_USER_TOGGLE_WINDOW_FRAME, 0, 0);
 }

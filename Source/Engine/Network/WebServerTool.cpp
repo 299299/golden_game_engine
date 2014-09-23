@@ -90,7 +90,7 @@ void WebServerTool::on_request_quit()
 
 void WebServerTool::on_request_active()
 {
-    g_engine.setUpdate(!g_engine.isUpdating());
+    g_engine.set_update(!g_engine.updating());
 }
 
 void WebServerTool::on_request_step()

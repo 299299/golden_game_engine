@@ -154,7 +154,7 @@ void Engine::core_shutdown()
     TIMELOG("Engine Core Shutdown");
     g_threadMgr.quit();
     g_memoryMgr.quit();
-    g_win32Context.destroyWindow();
+    g_win32Context.destroy_window();
 }
 
 void Engine::subsystem_shutdown()

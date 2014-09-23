@@ -91,7 +91,7 @@ void XInput::update( float timeStep )
 
     for (int i=0; i<XUSER_MAX_COUNT;++i)
     {
-        udpate_stick(i, timeStep);
+        update_stick(i, timeStep);
     }
 }
 
@@ -114,7 +114,7 @@ float XInput::get_left_trigger( int index ) const
     return (t - XINPUT_GAMEPAD_TRIGGER_THRESHOLD) / (255.0f - XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 }
 
-float XInput::get_right_triggers( int index ) const
+float XInput::get_right_trigger( int index ) const
 {
     if(!is_connected(index)) return 0.0f;
     float t = (float)g_states[index].Gamepad.bRightTrigger;
@@ -164,7 +164,7 @@ void caculate_value(short tx, short ty, float deadZone, float* outValue)
     outValue[1] = normalizedLY;
 }
 
-void XInput::udpate_stick( int index, float timeStep )
+void XInput::update_stick( int index, float timeStep )
 {
     const XINPUT_GAMEPAD& xGamePad = g_states[index].Gamepad;
     caculate_value(xGamePad.sThumbLX,  xGamePad.sThumbLY,  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, m_LSSmooth[index]);

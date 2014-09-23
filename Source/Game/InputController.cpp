@@ -18,7 +18,7 @@ void InputController::init()
 
 void InputController::update(float dt)
 {
-    if(g_XInput.isConnected(0)) updateGamePad(dt);
+    if(g_XInput.is_connected(0)) updateGamePad(dt);
     else updateKeyboard(dt);
 
     m_leftAngle = atan2f( m_leftInput[0], -m_leftInput[1] );
@@ -38,11 +38,11 @@ void InputController::update(float dt)
 
 void InputController::updateGamePad(float dt)
 {
-    const float* linput = g_XInput.getLSSmooth(0);
+    const float* linput = g_XInput.get_ls_smooth(0);
     m_leftInput[0] = linput[0];
     m_leftInput[1] = linput[1];
 
-    const float* rinput = g_XInput.getRSSmooth(0);
+    const float* rinput = g_XInput.get_rs_smooth(0);
     m_rightInput[0] = rinput[0];
     m_rightInput[1] = rinput[1];
 }
@@ -65,5 +65,5 @@ void InputController::updateKeyboard(float dt)
     m_rightInput[1] = bx::flerp(mouseInput[1], mouseInput[1], dt*MOUSE_INPUT_GAIN);
 
     //lock mouse.
-    g_win32Context.setMousePos(g_win32Context.m_width/2, g_win32Context.m_height/2);
+    g_win32Context.set_mouse_pos(g_win32Context.m_width/2, g_win32Context.m_height/2);
 }

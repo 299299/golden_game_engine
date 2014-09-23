@@ -109,7 +109,7 @@ void exit_command(const char* data1, const char* data2)
 }
 void load_package(const char* data1, const char* data2)
 {
-    g_resourceMgr.loadPackageAndWait(data1);
+    g_resourceMgr.load_package_and_wait(data1);
 }
 
 void list_command(const char* data1, const char* data2);

@@ -115,7 +115,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(loadEntityName) strcpy(g_actorName, loadEntityName);
     if(loadLevelName) strcpy(g_levelName, loadLevelName);
 
-    g_resourceMgr.loadPackageAndWait("data/core.package");
+    g_resourceMgr.load_package_and_wait("data/core.package");
 
     Graphics::ready();
     g_debugDrawMgr.ready();

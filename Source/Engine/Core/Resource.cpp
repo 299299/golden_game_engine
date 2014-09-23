@@ -185,7 +185,7 @@ void ResourcePackage::flush(int maxNum)
     if(m_status == kResourceOnline)
         return;
     hkCriticalSection::waitForValueEqual(&m_status, kResourceOffline);
-    bringInAllResources(maxNum);
+    bringin_all_resources(maxNum);
 }
 
 void ResourcePackage::lookup_all_resources()
@@ -578,7 +578,7 @@ uint32_t  ResourceManager::find_resources_type_of(const StringId& type, Resource
     for (uint32_t i = 0; i < m_numPackages; ++i)
     {
         ResourcePackage* package = m_packages[i];
-        ResourceGroup* group = package->findGroup(type);
+        ResourceGroup* group = package->find_group(type);
         if(!group) continue;
         for (uint32_t j=0; j<group->m_numResources; ++j)
         {
@@ -733,7 +733,7 @@ void ResourceManager::reload_resource(const StringId& type, bool bFireCallbacks)
     {
         ResourcePackage* package = m_packages[i];
         if(package->m_bundled) continue; //bundled package can not reload.
-        ResourceGroup* group = package->findGroup(type);
+        ResourceGroup* group = package->find_group(type);
         if(!group) continue;
         for (uint32_t j=0; j<group->m_numResources; ++j)
         {
