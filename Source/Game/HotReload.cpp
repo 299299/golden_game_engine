@@ -156,7 +156,7 @@ void reload_shading_enviroment(void* oldResource, void* newResource)
 {
     ShadingEnviroment* oldShading = (ShadingEnviroment*)oldResource;
     ShadingEnviroment* newShading = (ShadingEnviroment*)newResource;
-    
+    if(g_actorWorld.m_shading_env == oldShading) g_actorWorld.m_shading_env = newShading;
 }
 void reload_material_resource(void* oldResource, void* newResource)
 {

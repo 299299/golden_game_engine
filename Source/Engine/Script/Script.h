@@ -46,15 +46,11 @@ struct ScriptSystem
 {
     void init();
     void quit();
+    void update(float dt);
 
     void print_error();
     void call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param);
     void call_global_function(const char* a_func_name, gmVariable* a_param);
-
-    void pre_step(float dt);
-    void update(float dt);
-    void post_step(float dt);
-    void render();
     void frame_end(float dt);
 
     void ready();
@@ -64,10 +60,7 @@ struct ScriptSystem
     float                   m_time;
 
     gmTableObject*          m_core_table;
-    gmFunctionObject*       m_pre_step_func;
-    gmFunctionObject*       m_post_step_func;
-    gmFunctionObject*       m_update_func;
-    gmFunctionObject*       m_render_func;
+    //gmFunctionObject*       m_pre_step_func;
 };
 
 extern ScriptSystem g_script;

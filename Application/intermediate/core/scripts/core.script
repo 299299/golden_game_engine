@@ -1,62 +1,62 @@
-//inc core/scripts/state_machine
-//inc core/scripts/splash_state
-
 local create_core = function()
 {
-    local core = 
-    {
-        game_fsm = null,
-    };
+    local core = {};
 
     core.init = function()
     {
         print("game core init.");
-        .game_fsm = make_state_machine();
-        local state = make_splash_state();
-        .game_fsm.add_state("splash_state", state);
-        .game_fsm.change_to("splash_state");
+        .shading_env = resource.find_resource(string_to_id("shading_enviroment"), string_to_id("core/common/default"));
+        world.set_shading_enviroment(.shading_env);
+
+        package_name = "data/world0.package";
+        global g_package_loading = string_to_id(package_name);
+        resource.load_package(package_name);
+
+        this:stateSet(.splash_state);
     };
 
     core.shutdown = function()
     {
         print("game core shutdown.");
-        .game_fsm.release();
     };
 
-    core.pre_step = function(dt)
+    core.splash_state = function()
     {
-        local state = .game_fsm.get_cur_state();
-        if( state != null )
+        while( true )
         {
-            state.pre_step(dt);
+            local w = get_window_width();
+            local h = get_window_height();  
+            gui.draw_round_rect(0, 0, w, h, 4, rgba_to_int(0,125,255));
+            gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "Loading core.package", rgba_to_int(255,255,0));
+
+            local status = resource.get_package_status(g_package_loading);
+            print("status = " + status);
+
+            if(status == resource.OFFLINE)
+            {
+                resource.flush_package(g_package_loading, 99999);
+            }
+            else if(status == resource.ONLINE)
+            {
+                this:stateSet(.loaded_state);
+            }
+            yield();
         }
     };
 
-    core.update = function(dt)
+    core.loaded_state = function()
     {
-        .game_fsm.update(dt);
-    };
-
-    core.post_step = function(dt)
-    {
-        local state = .game_fsm.get_cur_state();
-        if( state != null )
+        while(true)
         {
-            state.post_step(dt);
-        }
-    };
-
-    core.render = function()
-    {
-        local state = .game_fsm.get_cur_state();
-        if( state != null )
-        {
-            state.render();
-        }
+            local w = get_window_width();
+            local h = get_window_height();  
+            gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "Loaded!!!!!", rgba_to_int(255,0,0));
+            yield();
+        }  
     };
 
     return core;
 };
 
 global g_core = create_core();
-g_core.init();
+//g_core.init();

@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Light.h"
 #include "Script.h"
+#include "Graphics.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
 #include "MemorySystem.h"
@@ -193,6 +194,7 @@ void ActorWorld::init()
     g_actorBuckets[kLevelGeometry].init(MAX_LEVEL_GEOMETRY, default_allocator());
     g_actorBuckets[kProp].init(MAX_PROP, default_allocator());
     g_actorBuckets[kCharacter].init(MAX_CHARACTER, default_allocator());
+    m_shading_env = 0;
 }
 
 
@@ -282,6 +284,7 @@ void ActorWorld::post_step( float dt )
 
 void ActorWorld::draw()
 {
+    Graphics::draw(m_shading_env);
     g_animMgr.skin_actors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
 }
 

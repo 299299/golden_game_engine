@@ -7,6 +7,7 @@
 #include "Graphics.h"
 #include "DebugDraw.h"
 #include "Profiler.h"
+#include "Actor.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -220,7 +221,7 @@ static int GM_CDECL imgui_draw_text(gmThread* a_thread)
     GM_CHECK_INT_PARAM(align, 2);
     GM_CHECK_STRING_PARAM(text, 3);
     GM_CHECK_INT_PARAM(color, 4);
-    imguiDrawText(x, y, (ImguiTextAlign::Enum)align, text, color);
+    imguiDrawText((int)x, (int)y, (ImguiTextAlign::Enum)align, text, color);
     return GM_OK;
 }
 
@@ -282,7 +283,7 @@ static int GM_CDECL imgui_begin_area(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(w, 3);
     GM_CHECK_FLOAT_OR_INT_PARAM(h, 4);
     GM_CHECK_INT_PARAM(enabled, 5);
-    imguiBeginArea(name, x, y, w, h, enabled);
+    imguiBeginArea(name, (int)x, (int)y, (int)w, (int)h, enabled);
     return GM_OK;
 }
 
@@ -520,7 +521,22 @@ static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(mode, 0);
-    bgfx::setDebug(mode);
+    static uint32_t debug_modes[] = 
+    {
+        BGFX_DEBUG_NONE, BGFX_DEBUG_TEXT, BGFX_DEBUG_STATS, BGFX_DEBUG_IFH, BGFX_DEBUG_WIREFRAME, 
+    };
+    bgfx::setDebug(debug_modes[mode]);
+    return GM_OK;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// WORLD
+static int GM_CDECL world_set_shading_enviroment(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(shading_env, 0);
+    g_actorWorld.m_shading_env = (ShadingEnviroment*)shading_env;
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -672,12 +688,16 @@ void register_script_api(gmMachine* machine)
     };
     static gmVariableEntry s_graphics_values[] =
     {
-        {"BGFX_DEBUG_NONE", gmVariable((int)BGFX_DEBUG_NONE)},
-        {"BGFX_DEBUG_STATS", gmVariable((int)BGFX_DEBUG_STATS)},
-        {"BGFX_DEBUG_TEXT", gmVariable((int)BGFX_DEBUG_TEXT)},
-        {"BGFX_DEBUG_WIREFRAME", gmVariable((int)BGFX_DEBUG_WIREFRAME)},
+        "dummy", gmVariable(0),
     };
     machine->RegisterLibrary(s_graphics_binding, BX_COUNTOF(s_graphics_binding), "graphics");
     register_enum_values(machine, "graphics", s_graphics_values, BX_COUNTOF(s_graphics_values));
 
+    //----------------------------------------------------------
+    // WORLD
+    static gmFunctionEntry s_world_binding[] =
+    {
+        {"set_shading_enviroment", world_set_shading_enviroment},
+    };
+    machine->RegisterLibrary(s_world_binding, BX_COUNTOF(s_world_binding), "world");
 }

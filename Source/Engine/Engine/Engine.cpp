@@ -94,7 +94,6 @@ void Engine::frame(float timeStep)
         {
             PROFILE(Game_PreStep);
             g_actorWorld.pre_step(timeStep);
-            g_script.pre_step(timeStep);
         }
         {
             PROFILE(Game_Step);
@@ -112,19 +111,18 @@ void Engine::frame(float timeStep)
         {
             PROFILE(Game_PostStep);
             g_actorWorld.post_step(timeStep);
-            g_script.post_step(timeStep);
         }
-    }
-
-    if(g_engineMode  == 0)
-    {
-        PROFILE(Game_Render);
-        g_script.render();
     }
 
     Graphics::frame_end();
     g_script.frame_end(timeStep);
     g_threadMgr.vdb_update(timeStep);
+
+    if(g_engineMode == 0)
+    {
+        PROFILE(Game_Render);
+        g_actorWorld.draw();
+    }
 }
 
 void Engine::apply_framelimit(double timeMS)

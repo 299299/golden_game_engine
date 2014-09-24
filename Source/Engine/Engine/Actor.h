@@ -3,7 +3,7 @@
 #include "DataDef.h"
 #include "Prerequisites.h"
 
-
+struct ShadingEnviroment;
 struct ValueType
 {
     enum Enum
@@ -90,6 +90,8 @@ struct ActorWorld
     void        post_step(float dt);
 
     void        draw();
+
+    ShadingEnviroment*      m_shading_env;
 };
 
 extern ActorWorld g_actorWorld;
