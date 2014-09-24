@@ -55,6 +55,8 @@ struct ScriptSystem
     void update(float dt);
     void post_step(float dt);
     void render();
+    void frame_end(float dt);
+
     void ready();
 
     gmMachine*              m_vm;

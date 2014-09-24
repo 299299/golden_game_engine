@@ -194,12 +194,6 @@ void ScriptSystem::update(float dt)
         call.End();
     }
     int nThreadCount = m_vm->Execute(16);
-    m_time += dt;
-    if(m_time > GC_TIME)
-    {
-        m_time -= GC_TIME;
-        m_vm->CollectGarbage();
-    }
     print_error();
 }
 
@@ -215,6 +209,14 @@ void ScriptSystem::render()
     call.BeginFunction(m_vm, m_render_func, gmVariable(m_core_table));
     call.End();
     print_error();
+}
+
+void ScriptSystem::frame_end(float dt)
+{
+    m_time += dt;
+    if(m_time < GC_TIME) return;
+    m_time -= GC_TIME;
+    m_vm->CollectGarbage();
 }
 
 //-----------------------------------------------------------------------

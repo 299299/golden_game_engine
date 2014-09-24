@@ -123,6 +123,7 @@ void Engine::frame(float timeStep)
     }
 
     Graphics::frame_end();
+    g_script.frame_end(timeStep);
     g_threadMgr.vdb_update(timeStep);
 }
 
