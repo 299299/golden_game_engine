@@ -58,8 +58,8 @@ struct PhysicsWorld
     void quit();
 
     void frame_start();
-    void kickin_jobs(float timeStep);
-    void tick_finished_jobs(float timeStep);
+    void kick_in_jobs(float timeStep);
+    void tick_finished_jobs();
 
     void create_world(PhysicsConfig* config);
     void destroy_world();

@@ -1,7 +1,7 @@
 #pragma once
 #include "StringId.h"
 #include "ShaderInc.h"
-#include <bgfx.h>
+#include <bgfx/bgfx.h>
 
 struct UniformPerFrame
 {

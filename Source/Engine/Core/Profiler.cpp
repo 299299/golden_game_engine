@@ -221,7 +221,7 @@ void ProfilerBlock::begin()
     ++count_;
 }
 
-void ProfilerBlock::End()
+void ProfilerBlock::end()
 {
     long long time = timer_.get_usec(false);
     if (time > maxTime_) maxTime_ = time;

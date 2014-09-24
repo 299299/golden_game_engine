@@ -1,6 +1,6 @@
 #pragma once
 #include "StringId.h"
-#include <bgfx.h>
+#include <bgfx/bgfx.h>
 
 ENGINE_NATIVE_ALIGN struct Texture
 {

@@ -172,7 +172,7 @@
 #include <fstream>
 #include <io.h>
 #include <algorithm>
-#include <bgfx.h>
+#include <bgfx/bgfx.h>
 #include <bx/fpumath.h>
 #include <bx/bx.h>
 #include <bx/platform.h>

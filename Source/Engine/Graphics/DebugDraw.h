@@ -1,6 +1,6 @@
 #pragma once
 #include "Prerequisites.h"
-#include <bgfx.h>
+#include <bgfx/bgfx.h>
 
 struct Frustum;
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "StringId.h"
-#include <bgfx.h>
+#include <bgfx/bgfx.h>
 
 
 #define SHADOW_RENDER_STATE  (BGFX_STATE_ALPHA_WRITE|BGFX_STATE_DEPTH_WRITE|BGFX_STATE_DEPTH_TEST_LESS|BGFX_STATE_CULL_CCW)

@@ -260,7 +260,7 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
 }
 
 
-void PhysicsWorld::kickin_jobs( float timeStep )
+void PhysicsWorld::kick_in_jobs( float timeStep )
 {
     if(!m_world) return;
     PROFILE(Physics_KickInJobs);
@@ -269,7 +269,7 @@ void PhysicsWorld::kickin_jobs( float timeStep )
     m_world->initMtStep( g_threadMgr.get_jobqueue(),timeStep );
 }
 
-void PhysicsWorld::tick_finished_jobs( float timeStep )
+void PhysicsWorld::tick_finished_jobs()
 {
     if(!m_world) return;
     PROFILE(Physics_TickFinishJobs);

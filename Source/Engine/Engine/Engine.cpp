@@ -98,8 +98,8 @@ void Engine::frame(float timeStep)
         }
         {
             PROFILE(Game_Step);
-            g_physicsWorld.kickin_jobs(timeStep);
-            g_animMgr.kickin_jobs();
+            g_physicsWorld.kick_in_jobs(timeStep);
+            g_animMgr.kick_in_jobs();
             g_threadMgr.process_all_jobs();
             //------------------------------------
             g_actorWorld.step(timeStep);

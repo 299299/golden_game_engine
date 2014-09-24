@@ -1,6 +1,6 @@
 #pragma once
-#include <bgfx.h>
 #include "StringId.h"
+#include <bgfx/bgfx.h>
 
 #define MAX_COLOR_GRADING_NUM               (6)
 
