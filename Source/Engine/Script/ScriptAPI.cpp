@@ -75,12 +75,12 @@ static int GM_CDECL begin_profile(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(name, 0);
-    g_profiler.BeginBlock(name);
+    g_profiler.begin_block(name);
     return GM_OK;
 }
 static int GM_CDECL end_profile(gmThread* a_thread)
 {
-    g_profiler.EndBlock();
+    g_profiler.end_block();
     return GM_OK;
 }
 static int GM_CDECL show_profile(gmThread* a_thread)
@@ -89,7 +89,7 @@ static int GM_CDECL show_profile(gmThread* a_thread)
     GM_CHECK_INT_PARAM(show_unused, 0);
     GM_CHECK_INT_PARAM(show_total, 1);
     GM_CHECK_INT_PARAM(max_depth, 2);
-    g_profiler.Dump(show_unused, show_total, max_depth);
+    g_profiler.dump(show_unused, show_total, max_depth);
     return GM_OK;
 }
 //-------------------------------------------------------------------------

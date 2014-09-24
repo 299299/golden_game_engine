@@ -23,6 +23,7 @@ struct MemorySystem
 
     void            init(int havok_frame_size, int monitor_size, bool init_havok, bool havok_check_mem);
     void            quit();
+    void            frame_start();
 
     //=====================================================
     //          LINEAR ALLOCATION

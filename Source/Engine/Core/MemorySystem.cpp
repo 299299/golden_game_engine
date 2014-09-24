@@ -73,6 +73,11 @@ void MemorySystem::quit()
     memory_globals::shutdown();
 }
 
+void MemorySystem::frame_start()
+{
+    clear(kMemoryCategoryFrame);
+}
+
 void* MemorySystem::allocate(uint32_t category, uint32_t size, uint32_t alignment)
 {
     if(!size) return 0;

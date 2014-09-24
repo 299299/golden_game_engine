@@ -10,13 +10,13 @@ public:
     HiresTimer();
 
     /// Return elapsed microseconds and optionally reset.
-    long long GetUSec(bool reset);
+    long long get_usec(bool reset);
     /// Reset the timer.
-    void Reset();
+    void reset();
 
     /// Return high-resolution timer frequency if supported.
-    static long long GetFrequency() { return frequency; }
-    static void Init();
+    static long long getFrequency() { return frequency; }
+    static void init();
 
 private:
     /// Starting clock value in CPU ticks.
@@ -29,13 +29,13 @@ private:
 struct ProfilerBlock
 {
     /// Begin timing.
-    void Begin();
+    void begin();
     
     /// End timing.
-    void End();
+    void end();
     
     /// End profiling frame and update interval and total values.
-    void EndFrame()
+    void end_frame()
     {
         frameTime_ = time_;
         frameMaxTime_ = maxTime_;
@@ -53,22 +53,22 @@ struct ProfilerBlock
         count_ = 0;
 
         for (uint32_t i=0; i<numChildren_; ++i)
-            children_[i]->EndFrame();
+            children_[i]->end_frame();
     }
     
     /// Begin new profiling interval.
-    void BeginInterval()
+    void begin_interval()
     {
         intervalTime_ = 0;
         intervalMaxTime_ = 0;
         intervalCount_ = 0;
         
         for (uint32_t i=0; i<numChildren_; ++i)
-            children_[i]->BeginInterval();
+            children_[i]->begin_interval();
     }
     
     /// Return child block with the specified name.
-    ProfilerBlock* GetChild(const char* name);
+    ProfilerBlock* get_child(const char* name);
 
     /// Block name.
     const char* name_;
@@ -120,43 +120,43 @@ public:
     /// Destruct.
     ~Profiler();
     
-    void Init();
+    void init();
 
     /// Begin timing a profiling block.
-    void BeginBlock(const char* name)
+    void begin_block(const char* name)
     {
-        current_ = current_->GetChild(name);
-        current_->Begin();
+        current_ = current_->get_child(name);
+        current_->begin();
     }
     
     /// End timing the current profiling block.
-    void EndBlock()
+    void end_block()
     {
         if (current_ != root_)
         {
-            current_->End();
+            current_->end();
             current_ = current_->parent_;
         }
     }
     
     /// Begin the profiling frame. Called by HandleBeginFrame().
-    void BeginFrame();
+    void begin_frame();
     /// End the profiling frame. Called by HandleEndFrame().
-    void EndFrame();
+    void end_frame();
     /// Begin a new interval.
-    void BeginInterval();
+    void begin_interval();
 
     /// Return the current profiling block.
-    const ProfilerBlock* GetCurrentBlock() { return current_; }
+    const ProfilerBlock* get_current_block() const { return current_; }
     /// Return the root profiling block.
-    const ProfilerBlock* GetRootBlock() { return root_; }
+    const ProfilerBlock* get_root_block() const { return root_; }
     
-    ProfilerBlock* AllocBlock(const char* name);
+    ProfilerBlock* alloc_block(const char* name);
 
-    void Dump(bool showUnused = false, bool showTotal = false, unsigned maxDepth = -1) const;
+    void dump(bool showUnused = false, bool showTotal = false, unsigned maxDepth = -1) const;
 
 private:
-    void DumpData(ProfilerBlock* block, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal) const;
+    void dump_block(ProfilerBlock* block, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal) const;
 
     /// Current profiling block.
     ProfilerBlock* current_;
@@ -180,11 +180,11 @@ class AutoProfileBlock
 public:
     AutoProfileBlock(const char* name)
     {
-        g_profiler.BeginBlock(name);
+        g_profiler.begin_block(name);
     }
     ~AutoProfileBlock()
     {
-        g_profiler.EndBlock();
+        g_profiler.end_block();
     }
 };
 
@@ -193,10 +193,12 @@ public:
 
 #ifdef USE_PROFILING
 #define PROFILE(name)       AutoProfileBlock profile_##name (#name)
-#define PROFILE_BEGIN()     g_profiler.BeginFrame();
-#define PROFILE_END()       g_profiler.EndFrame();
+#define PROFILE_BEGIN()     g_profiler.begin_frame();
+#define PROFILE_END()       g_profiler.end_frame();
+#define PROFILE_INIT()      g_profiler.init();
 #else
 #define PROFILE(name)
 #define PROFILE_BEGIN()
 #define PROFILE_END()
+#define PROFILE_INIT()
 #endif

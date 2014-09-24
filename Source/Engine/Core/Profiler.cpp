@@ -14,14 +14,14 @@ static const int NAME_MAX_LENGTH = 30;
 //static const double freq = double(hpFreq);
 //static const double toMs = 1000.0/freq;
 
-void HiresTimer::Init()
+void HiresTimer::init()
 {
     LARGE_INTEGER frequency;
     QueryPerformanceFrequency(&frequency);
     HiresTimer::frequency = frequency.QuadPart;
 }
 
-long long HiresTimer::GetUSec( bool reset )
+long long HiresTimer::get_usec( bool reset )
 {
     long long currentTime;
     LARGE_INTEGER counter;
@@ -40,7 +40,7 @@ long long HiresTimer::GetUSec( bool reset )
     return (elapsedTime * 1000000LL) / frequency;
 }
 
-void HiresTimer::Reset()
+void HiresTimer::reset()
 {
     LARGE_INTEGER counter;
     QueryPerformanceCounter(&counter);
@@ -69,42 +69,41 @@ Profiler::~Profiler()
     
 }
 
-void Profiler::BeginFrame()
+void Profiler::begin_frame()
 {
     // End the previous frame if any
-    EndFrame();
-    
-    BeginBlock("RunFrame");
+    end_frame();
+    begin_block("RunFrame");
 }
 
-void Profiler::EndFrame()
+void Profiler::end_frame()
 {
     if (current_ != root_)
     {
-        EndBlock();
+        end_block();
         ++intervalFrames_;
         ++totalFrames_;
         if (!totalFrames_)
             ++totalFrames_;
-        root_->EndFrame();
+        root_->end_frame();
         current_ = root_;
     }
 }
 
-void Profiler::BeginInterval()
+void Profiler::begin_interval()
 {
-    root_->BeginInterval();
+    root_->begin_interval();
     intervalFrames_ = 0;
 }
 
-void Profiler::Init()
+void Profiler::init()
 {
     numBlocks_ = 0;
-    root_ = AllocBlock("Root");
+    root_ = alloc_block("Root");
     current_ = root_;
 }
 
-ProfilerBlock* Profiler::AllocBlock( const char* name )
+ProfilerBlock* Profiler::alloc_block( const char* name )
 {
     ENGINE_ASSERT(numBlocks_ < TOTAL_BLOCK_NUM - 1, "profile blocks overflow.");
     ProfilerBlock* newBlock = blocks_ + (numBlocks_++);
@@ -112,10 +111,9 @@ ProfilerBlock* Profiler::AllocBlock( const char* name )
     return newBlock;
 }
 
-void Profiler::Dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
+void Profiler::dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
 {
-    if (!maxDepth)
-        maxDepth = 1;
+    if (!maxDepth) maxDepth = 1;
     const uint8_t color = 0x1f;
     if (!showTotal)
     {
@@ -126,10 +124,10 @@ void Profiler::Dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
         DBG_TEX_PRINTF(color, "Block                                       Last frame                       Whole execution time");
         DBG_TEX_PRINTF(color, "                                 Cnt     Avg      Max      Total      Cnt      Avg       Max        Total");
     }
-    DumpData(root_, 0, maxDepth, showUnused, showTotal);
+    dump_block(root_, 0, maxDepth, showUnused, showTotal);
 }
 
-void Profiler::DumpData( ProfilerBlock* block, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal ) const
+void Profiler::dump_block( ProfilerBlock* block, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal ) const
 {
     char indentedName[LINE_MAX_LENGTH];
 
@@ -193,11 +191,11 @@ void Profiler::DumpData( ProfilerBlock* block, unsigned depth, unsigned maxDepth
 
     for (uint32_t i=0; i<block->numChildren_; ++i)
     {
-        DumpData(block->children_[i], depth, maxDepth, showUnused, showTotal);
+        dump_block(block->children_[i], depth, maxDepth, showUnused, showTotal);
     }
 }
 
-ProfilerBlock* ProfilerBlock::GetChild( const char* name )
+ProfilerBlock* ProfilerBlock::get_child( const char* name )
 {
     for (uint32_t i=0; i<numChildren_; ++i)
     {
@@ -211,22 +209,21 @@ ProfilerBlock* ProfilerBlock::GetChild( const char* name )
         if(!strcmp(name, child->name_))
             return child;
     }
-    ProfilerBlock* newBlock = g_profiler.AllocBlock(name);
+    ProfilerBlock* newBlock = g_profiler.alloc_block(name);
     children_[numChildren_++] = newBlock;
     newBlock->parent_ = this;
     return newBlock;
 }
 
-void ProfilerBlock::Begin()
+void ProfilerBlock::begin()
 {
-    timer_.Reset();
+    timer_.reset();
     ++count_;
 }
 
 void ProfilerBlock::End()
 {
-    long long time = timer_.GetUSec(false);
-    if (time > maxTime_)
-        maxTime_ = time;
+    long long time = timer_.get_usec(false);
+    if (time > maxTime_) maxTime_ = time;
     time_ += time;
 }

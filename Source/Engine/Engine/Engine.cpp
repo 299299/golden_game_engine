@@ -33,7 +33,7 @@ void Engine::init( const EngineConfig& cfg )
     m_updating = true;
     m_cfg = cfg;
     LOG_INIT("EngineLog.html", "ENGINE");
-    HiresTimer::Init();
+    HiresTimer::init();
     core_init();
     subsystem_init();
 }
@@ -61,9 +61,9 @@ void Engine::run()
             m_running = false;
             return;
         }
-        m_timer.Reset();
+        m_timer.reset();
         frame(fixTimeStep);
-        double timeMS = (double)m_timer.GetUSec(false) / 1000.0;
+        double timeMS = (double)m_timer.get_usec(false) / 1000.0;
         g_frameTimeMS = timeMS;
         g_totalSeconds += (float)(timeMS/1000.0);
         if(timeMS < fixTimeMS) apply_framelimit(fixTimeMS - timeMS);
@@ -82,12 +82,15 @@ void Engine::frame(float timeStep)
         LOGW("FrameId overflow!!");
     }
 
-    g_memoryMgr.clear(kMemoryCategoryFrame);
+    g_memoryMgr.frame_start();
+    frame_start_websocket(timeStep);
+    Graphics::frame_start();
+    g_physicsWorld.frame_start();
+    g_animMgr.frame_start();
+    g_actorWorld.frame_start(timeStep);
+
     if(m_updating)
     {
-        frame_start_websocket(timeStep);
-        Graphics::frame_start();
-        g_actorWorld.frame_start(timeStep);
         {
             PROFILE(Game_PreStep);
             g_actorWorld.pre_step(timeStep);
@@ -95,17 +98,22 @@ void Engine::frame(float timeStep)
         }
         {
             PROFILE(Game_Step);
+            g_physicsWorld.kickin_jobs(timeStep);
+            g_animMgr.kickin_jobs();
+            g_threadMgr.process_all_jobs();
+            //------------------------------------
             g_actorWorld.step(timeStep);
             g_script.update(timeStep);
+            //------------------------------------
+            g_threadMgr.wait();
+            g_physicsWorld.tick_finished_jobs();
+            g_animMgr.tick_finished_jobs();
         }
         {
             PROFILE(Game_PostStep);
             g_actorWorld.post_step(timeStep);
             g_script.post_step(timeStep);
         }
-
-        Graphics::frame_end();
-        g_threadMgr.vdb_update(timeStep);
     }
 
     if(g_engineMode  == 0)
@@ -113,6 +121,9 @@ void Engine::frame(float timeStep)
         PROFILE(Game_Render);
         g_script.render();
     }
+
+    Graphics::frame_end();
+    g_threadMgr.vdb_update(timeStep);
 }
 
 void Engine::apply_framelimit(double timeMS)
@@ -125,17 +136,15 @@ void Engine::apply_framelimit(double timeMS)
 void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
+    PROFILE_INIT();
     g_memoryMgr.init(1024*1024*4, 1024*1024*2, true, m_cfg.m_checkMemory);
     g_threadMgr.init(true);
     g_resourceMgr.init();
-#ifdef USE_PROFILING
-    g_profiler.Init();
-#endif
 }
 
 void Engine::subsystem_init()
 {
-    TIMELOG("Engine Subsystem Init");
+    TIMELOG("Engine Subsystem init");
     extern void regster_resource_factories();
     regster_resource_factories();
 
