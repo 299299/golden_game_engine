@@ -215,8 +215,8 @@ static int GM_CDECL gui_dbg_print(gmThread* a_thread)
 static int GM_CDECL imgui_draw_text(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(5);
-    GM_CHECK_INT_PARAM(x, 0);
-    GM_CHECK_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
     GM_CHECK_INT_PARAM(align, 2);
     GM_CHECK_STRING_PARAM(text, 3);
     GM_CHECK_INT_PARAM(color, 4);
@@ -227,11 +227,11 @@ static int GM_CDECL imgui_draw_text(gmThread* a_thread)
 static int GM_CDECL imgui_draw_line(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
-    GM_CHECK_FLOAT_PARAM(x0, 0);
-    GM_CHECK_FLOAT_PARAM(y0, 1);
-    GM_CHECK_FLOAT_PARAM(x1, 2);
-    GM_CHECK_FLOAT_PARAM(y1, 3);
-    GM_CHECK_FLOAT_PARAM(r, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x1, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y1, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(r, 4);
     GM_CHECK_INT_PARAM(color, 5);
     imguiDrawLine(x0, y0, x1, y1, r, color);
     return GM_OK;
@@ -240,11 +240,11 @@ static int GM_CDECL imgui_draw_line(gmThread* a_thread)
 static int GM_CDECL imgui_draw_round_rect(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
-    GM_CHECK_FLOAT_PARAM(x, 0);
-    GM_CHECK_FLOAT_PARAM(y, 1);
-    GM_CHECK_FLOAT_PARAM(w, 2);
-    GM_CHECK_FLOAT_PARAM(h, 3);
-    GM_CHECK_FLOAT_PARAM(r, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(r, 4);
     GM_CHECK_INT_PARAM(color, 5);
     imguiDrawRoundedRect(x, y, w, h, r, color);
     return GM_OK;
@@ -253,10 +253,10 @@ static int GM_CDECL imgui_draw_round_rect(gmThread* a_thread)
 static int GM_CDECL imgui_draw_rect(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(5);
-    GM_CHECK_FLOAT_PARAM(x, 0);
-    GM_CHECK_FLOAT_PARAM(y, 1);
-    GM_CHECK_FLOAT_PARAM(w, 2);
-    GM_CHECK_FLOAT_PARAM(h, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
     GM_CHECK_INT_PARAM(color, 4);
     imguiDrawRect(x, y, w, h, color);
     return GM_OK;
@@ -277,10 +277,10 @@ static int GM_CDECL imgui_begin_area(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
     GM_CHECK_STRING_PARAM(name, 0);
-    GM_CHECK_INT_PARAM(x, 1);
-    GM_CHECK_INT_PARAM(y, 2);
-    GM_CHECK_INT_PARAM(w, 3);
-    GM_CHECK_INT_PARAM(h, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 4);
     GM_CHECK_INT_PARAM(enabled, 5);
     imguiBeginArea(name, x, y, w, h, enabled);
     return GM_OK;
@@ -396,12 +396,12 @@ static int GM_CDECL graphics_draw(gmThread* a_thread)
 static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(8);
-    GM_CHECK_FLOAT_PARAM(x0, 0);
-    GM_CHECK_FLOAT_PARAM(y0, 1);
-    GM_CHECK_FLOAT_PARAM(z0, 2);
-    GM_CHECK_FLOAT_PARAM(x1, 3);
-    GM_CHECK_FLOAT_PARAM(y1, 4);
-    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z1, 5);
     GM_CHECK_INT_PARAM(color, 6);
     GM_CHECK_FLOAT_PARAM(depth, 7);
     float start[] = {x0, y0, z0};
@@ -413,12 +413,12 @@ static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
 static int GM_CDECL debug_draw_add_aabb(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(8);
-    GM_CHECK_FLOAT_PARAM(x0, 0);
-    GM_CHECK_FLOAT_PARAM(y0, 1);
-    GM_CHECK_FLOAT_PARAM(z0, 2);
-    GM_CHECK_FLOAT_PARAM(x1, 3);
-    GM_CHECK_FLOAT_PARAM(y1, 4);
-    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z1, 5);
     GM_CHECK_INT_PARAM(color, 6);
     GM_CHECK_INT_PARAM(depth, 7);
     float min[] = {x0, y0, z0};
@@ -431,12 +431,12 @@ static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
 {
     //TODO
     GM_CHECK_NUM_PARAMS(8);
-    GM_CHECK_FLOAT_PARAM(x0, 0);
-    GM_CHECK_FLOAT_PARAM(y0, 1);
-    GM_CHECK_FLOAT_PARAM(z0, 2);
-    GM_CHECK_FLOAT_PARAM(x1, 3);
-    GM_CHECK_FLOAT_PARAM(y1, 4);
-    GM_CHECK_FLOAT_PARAM(z1, 5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z1, 5);
     GM_CHECK_FLOAT_PARAM(size, 6);
     GM_CHECK_INT_PARAM(depth, 7);
     hkQsTransform t;
@@ -449,9 +449,9 @@ static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
 static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
-    GM_CHECK_FLOAT_PARAM(x, 0);
-    GM_CHECK_FLOAT_PARAM(y, 1);
-    GM_CHECK_FLOAT_PARAM(z, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z, 2);
     GM_CHECK_FLOAT_PARAM(size, 3);
     GM_CHECK_INT_PARAM(color, 4);
     GM_CHECK_INT_PARAM(depth, 5);
@@ -463,9 +463,9 @@ static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
 static int GM_CDECL debug_draw_add_3d_text(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(5);
-    GM_CHECK_FLOAT_PARAM(x, 0);
-    GM_CHECK_FLOAT_PARAM(y, 1);
-    GM_CHECK_FLOAT_PARAM(z, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z, 2);
     GM_CHECK_STRING_PARAM(text, 3);
     GM_CHECK_INT_PARAM(color, 4);
     float pos[] = {x, y, z};
@@ -476,10 +476,10 @@ static int GM_CDECL debug_draw_add_3d_text(gmThread* a_thread)
 static int GM_CDECL debug_draw_add_sphere(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
-    GM_CHECK_FLOAT_PARAM(x, 0);
-    GM_CHECK_FLOAT_PARAM(y, 1);
-    GM_CHECK_FLOAT_PARAM(z, 2);
-    GM_CHECK_FLOAT_PARAM(radius, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(radius, 3);
     GM_CHECK_INT_PARAM(color, 4);
     GM_CHECK_INT_PARAM(depth, 5);
     float pos[] = {x, y, z};
@@ -490,13 +490,13 @@ static int GM_CDECL debug_draw_add_sphere(gmThread* a_thread)
 static int GM_CDECL debug_draw_add_circle(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(9);
-    GM_CHECK_FLOAT_PARAM(x0, 0);
-    GM_CHECK_FLOAT_PARAM(y0, 1);
-    GM_CHECK_FLOAT_PARAM(z0, 2);
-    GM_CHECK_FLOAT_PARAM(x1, 3);
-    GM_CHECK_FLOAT_PARAM(y1, 4);
-    GM_CHECK_FLOAT_PARAM(z1, 5);
-    GM_CHECK_FLOAT_PARAM(radius, 6);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x0, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y0, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z0, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x1, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y1, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(z1, 5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(radius, 6);
     GM_CHECK_INT_PARAM(color, 7);
     GM_CHECK_INT_PARAM(depth, 8);
     float pos[] = {x0, y0, z0};
@@ -509,7 +509,7 @@ static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(4);
     GM_CHECK_INT_PARAM(grid_num, 0);
-    GM_CHECK_FLOAT_PARAM(grid_width, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(grid_width, 1);
     GM_CHECK_INT_PARAM(color, 2);
     GM_CHECK_INT_PARAM(depth, 3);
     g_debugDrawMgr.add_grid(grid_num, grid_width, color, depth);

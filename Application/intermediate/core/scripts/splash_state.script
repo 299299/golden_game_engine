@@ -39,9 +39,7 @@ global make_splash_state = function()
     {
         local w = get_window_width();
         local h = get_window_height();
-        local fw = 0.0 + w;
-        local fh = 0.0 + h;
-        gui.draw_round_rect(0.0, 0.0, fw, fh, 4.0, rgba_to_int(0,125,255));
+        gui.draw_round_rect(0, 0, w, h, 4, rgba_to_int(0,125,255));
         gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "hello world", rgba_to_int(255,255,0));
         graphics.draw(.shading_env);
     };
