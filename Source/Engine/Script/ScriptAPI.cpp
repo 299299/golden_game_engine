@@ -24,13 +24,25 @@ struct gmVariableEntry
     gmVariable  m_value;
 };
 
+#define SIMPLE_FUNC_REG(func_name, script_name) static int GM_CDECL script_name(gmThread* a_thread) { func_name; return GM_OK; }
+
+gmTableNode* find_table_node(gmTableObject* table, const char* key)
+{
+    gmTableIterator iter;
+    gmTableNode* node = table->GetFirst(iter);
+    while(node)
+    {
+        if(node->m_key.m_type != GM_STRING) continue;
+        const char* key_name = ((gmStringObject*)node->m_key.m_value.m_ref)->GetString();
+        if(!strcmp(key, key_name)) return node;
+        node = table->GetNext(iter);
+    }
+    return 0;
+}
+
 //-------------------------------------------------------------------------
 // CORE
-static int GM_CDECL script_shutdown_game(gmThread* a_thread)
-{
-    g_engine.shutdown();
-    return GM_OK;
-}
+SIMPLE_FUNC_REG(g_engine.shutdown(), script_shutdown_game);
 static int GM_CDECL string_to_id(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -80,11 +92,7 @@ static int GM_CDECL begin_profile(gmThread* a_thread)
     g_profiler.begin_block(name);
     return GM_OK;
 }
-static int GM_CDECL end_profile(gmThread* a_thread)
-{
-    g_profiler.end_block();
-    return GM_OK;
-}
+SIMPLE_FUNC_REG(g_profiler.end_block(), end_profile);
 static int GM_CDECL show_profile(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(3);
@@ -213,7 +221,6 @@ static int GM_CDECL gui_dbg_print(gmThread* a_thread)
     DBG_TEX_PRINTF(color, text);
     return GM_OK;
 }
-
 static int GM_CDECL imgui_draw_text(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(5);
@@ -225,7 +232,6 @@ static int GM_CDECL imgui_draw_text(gmThread* a_thread)
     imguiDrawText((int)x, (int)y, (ImguiTextAlign::Enum)align, text, color);
     return GM_OK;
 }
-
 static int GM_CDECL imgui_draw_line(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
@@ -238,7 +244,6 @@ static int GM_CDECL imgui_draw_line(gmThread* a_thread)
     imguiDrawLine(x0, y0, x1, y1, r, color);
     return GM_OK;
 }
-
 static int GM_CDECL imgui_draw_round_rect(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
@@ -251,7 +256,6 @@ static int GM_CDECL imgui_draw_round_rect(gmThread* a_thread)
     imguiDrawRoundedRect(x, y, w, h, r, color);
     return GM_OK;
 }
-
 static int GM_CDECL imgui_draw_rect(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(5);
@@ -263,81 +267,49 @@ static int GM_CDECL imgui_draw_rect(gmThread* a_thread)
     imguiDrawRect(x, y, w, h, color);
     return GM_OK;
 }
-
-
 static int GM_CDECL imgui_border_button(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(border, 0);
     GM_CHECK_INT_PARAM(checked, 1);
-    GM_CHECK_INT_PARAM(enabled, 2);
+    GM_INT_PARAM(enabled, 1, 2);
     a_thread->PushInt(imguiBorderButton((ImguiBorder::Enum)border, checked, enabled));
     return GM_OK;
 }
-
 static int GM_CDECL imgui_begin_area(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(6);
+    GM_CHECK_NUM_PARAMS(4);
     GM_CHECK_STRING_PARAM(name, 0);
     GM_CHECK_FLOAT_OR_INT_PARAM(x, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(y, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(w, 3);
     GM_CHECK_FLOAT_OR_INT_PARAM(h, 4);
-    GM_CHECK_INT_PARAM(enabled, 5);
+    GM_INT_PARAM(enabled, 5, 1);
     imguiBeginArea(name, (int)x, (int)y, (int)w, (int)h, enabled);
     return GM_OK;
 }
-
-static int GM_CDECL imgui_end_area(gmThread* a_thread)
-{
-    imguiEndArea();
-    return GM_OK;
-}
-
-static int GM_CDECL imgui_indent(gmThread* a_thread)
-{
-    imguiIndent();
-    return GM_OK;
-}
-
-static int GM_CDECL imgui_unindent(gmThread* a_thread)
-{
-    imguiUnindent();
-    return GM_OK;
-}
-
-
-static int GM_CDECL imgui_separator(gmThread* a_thread)
-{
-    imguiSeparator();
-    return GM_OK;
-}
-
-static int GM_CDECL imgui_separator_line(gmThread* a_thread)
-{
-    imguiSeparatorLine();
-    return GM_OK;
-}
-
+SIMPLE_FUNC_REG(imguiEndArea(), imgui_end_area);
+SIMPLE_FUNC_REG(imguiIndent(), imgui_indent);
+SIMPLE_FUNC_REG(imguiUnindent(), imgui_unindent);
+SIMPLE_FUNC_REG(imguiSeparator(), imgui_separator);
+SIMPLE_FUNC_REG(imguiSeparatorLine(), imgui_separator_line);
 static int GM_CDECL imgui_button(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(text, 0);
-    GM_CHECK_INT_PARAM(enabled, 1);
-    GM_CHECK_INT_PARAM(align, 1);
+    GM_INT_PARAM(enabled, 1, 1);
+    GM_INT_PARAM(align, 2, ImguiAlign::LeftIndented);
     a_thread->PushInt(imguiButton(text, enabled, (ImguiAlign::Enum)align));
     return GM_OK;
 }
-
 static int GM_CDECL imgui_item(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(text, 0);
-    GM_CHECK_INT_PARAM(enabled, 1);
+    GM_INT_PARAM(enabled, 1, 1);
     a_thread->PushInt(imguiItem(text, enabled));
     return GM_OK;
 }
-
 static int GM_CDECL imgui_check(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
@@ -347,18 +319,16 @@ static int GM_CDECL imgui_check(gmThread* a_thread)
     a_thread->PushInt(imguiCheck(text, checked, enabled));
     return GM_OK;
 }
-
 static int GM_CDECL imgui_collapse(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(4);
+    GM_CHECK_NUM_PARAMS(3);
     GM_CHECK_STRING_PARAM(text, 0);
     GM_CHECK_STRING_PARAM(sub_text, 1);
     GM_CHECK_INT_PARAM(checked, 2);
-    GM_CHECK_INT_PARAM(enabled, 3);
+    GM_INT_PARAM(enabled, 3, 1);
     a_thread->PushInt(imguiCollapse(text, sub_text, checked, enabled));
     return GM_OK;
 }
-
 static int GM_CDECL imgui_label(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -366,7 +336,6 @@ static int GM_CDECL imgui_label(gmThread* a_thread)
     imguiLabel(text);
     return GM_OK;
 }
-
 static int GM_CDECL imgui_color_label(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
@@ -375,12 +344,84 @@ static int GM_CDECL imgui_color_label(gmThread* a_thread)
     imguiLabel(color, text);
     return GM_OK;
 }
-
 static int GM_CDECL imgui_value(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(text, 0);
     imguiValue(text);
+    return GM_OK;
+}
+static int GM_CDECL imgui_get_text_length(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_STRING_PARAM(text, 0);
+    a_thread->PushFloat(imguiGetTextLength(text, imguiGetCurrentFont()));
+    return GM_OK;
+}
+static int GM_CDECL imgui_begin_scroll(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(height, 0);
+    GM_CHECK_STRING_PARAM(var_name, 1);
+    GM_CHECK_TABLE_PARAM(table, 2);
+    GM_INT_PARAM(enabled, 3, 1);
+    gmTableNode* node = find_table_node(table, var_name);
+    if(!node) 
+    {
+        GM_EXCEPTION_MSG("table has no variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    int32_t* fp = &node->m_value.m_value.m_int;
+    a_thread->PushInt(imguiBeginScroll((int32_t)height, fp, enabled));
+    return GM_OK;
+}
+SIMPLE_FUNC_REG(imguiEndScroll(), imgui_end_scroll);
+static int GM_CDECL imgui_begin_scroll_area(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(6);
+    GM_CHECK_STRING_PARAM(name, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 4);
+    GM_CHECK_STRING_PARAM(var_name, 5);
+    GM_CHECK_TABLE_PARAM(table, 6);
+    GM_INT_PARAM(enabled, 7, 1);
+    gmTableNode* node = find_table_node(table, var_name);
+    if(!node) 
+    {
+        GM_EXCEPTION_MSG("table has no variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    int32_t* fp = &node->m_value.m_value.m_int;
+    a_thread->PushInt(imguiBeginScrollArea(name, (int32_t)x, (int32_t)y, (int32_t)w, (int32_t)h, fp));
+    return GM_OK;
+}
+SIMPLE_FUNC_REG(imguiEndScrollArea(), imgui_end_scroll_area);
+static int GM_CDECL imgui_float_slider(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(6);
+    GM_CHECK_STRING_PARAM(text, 0);
+    GM_CHECK_STRING_PARAM(var_name, 1);
+    GM_CHECK_TABLE_PARAM(table, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(vmin, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(vmax, 4);
+    GM_CHECK_FLOAT_OR_INT_PARAM(inc, 5);
+    GM_INT_PARAM(enabled, 6, 1);
+    GM_INT_PARAM(align, 7, ImguiAlign::LeftIndented);
+    gmTableNode* node = find_table_node(table, var_name);
+    if(!node) 
+    {
+        GM_EXCEPTION_MSG("table has no variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    if(node->m_value.m_type != GM_FLOAT)
+    {
+        GM_EXCEPTION_MSG("except float variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    float& f = node->m_value.m_value.m_float;
+    a_thread->PushInt(imguiSlider(text, f, vmin, vmax, inc, (bool)enabled, (ImguiAlign::Enum)align));
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -560,10 +601,10 @@ static int GM_CDECL world_destroy_actor(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(id, 0);
     GM_CHECK_INT_PARAM(class_type, 0);
-    ActorId id;
-    id.m_id  = id;
-    id.m_class = class_type;
-    a_thread->PushInt(g_actorWorld.destroy_actor(id));
+    //ActorId actor_id;
+    //actor_id.m_id  = id;
+    //actor_id.m_class = class_type;
+    //g_actorWorld.destroy_actor(actor_id);
     return GM_OK;
 }
 static int GM_CDECL world_clear_actors(gmThread* a_thread)
@@ -623,7 +664,6 @@ static int GM_CDECL actor_get_float4(gmThread* a_thread)
 static int GM_CDECL actor_set_float4(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
-    //..
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -740,6 +780,12 @@ void register_script_api(gmMachine* machine)
         {"label", imgui_label},
         {"color_label", imgui_color_label},
         {"value", imgui_value},
+        {"get_text_length", imgui_get_text_length},
+        {"begin_scroll", imgui_begin_scroll},
+        {"end_scroll", imgui_end_scroll},
+        {"begin_scroll_area", imgui_begin_scroll_area},
+        {"end_scroll_area", imgui_end_scroll_area},
+        {"float_slider", imgui_float_slider},
     };
     static gmVariableEntry s_gui_values[] =
     {

@@ -451,7 +451,8 @@ gmVariable gmTableObject::GetLinearSearch(const char * a_key) const
   {
     if( GM_STRING == node->m_key.m_type )
     {
-      if( strcmp(((gmStringObject*)node->m_key.m_value.m_ref)->GetString(), a_key) == 0 )
+      const char* key_name = ((gmStringObject*)node->m_key.m_value.m_ref)->GetString();
+      if( strcmp(key_name, a_key) == 0 )
       {
         return node->m_value;
       }

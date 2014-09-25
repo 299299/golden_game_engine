@@ -95,6 +95,20 @@ uint32_t IniReader::find_value( const char* key, char* bufOut ) const
     return 0;
 }
 
+const char* g_fact_keynames[] = 
+{
+    "int", "float", "string", "float4", 0
+};
+uint32_t g_fact_valuesizes[] =
+{
+    sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4, 0
+};
+
+void msg_box( const char* text, const char* title )
+{
+    ::MessageBoxA(NULL, text, title, MB_TOPMOST);
+}
+
 uint32_t Fact::value_type(const StringId& k) const
 {
     Key key;
@@ -123,12 +137,12 @@ bool Fact::get_key(const StringId& k, Key& out_k) const
     return false;
 }
 
-bool Fact::get_key(char* values, const StringId& k, int& v)
+bool Fact::get_key(char* values, const StringId& k, int& v) const
 {
     Key key;
     bool has = get_key(k, key);
     if(!has) return false;
-    v = *(int*)(char* values,  + key.offset);
+    v = *(int*)(values + key.m_offset);
     return has;
 }
 
@@ -137,7 +151,7 @@ bool Fact::get_key(char* values, const StringId& k, float& v) const
     Key key;
     bool has = get_key(k, key);
     if(!has) return false;
-    v = *(float*)(values + key.offset);
+    v = *(float*)(values + key.m_offset);
     return has;
 }
 
@@ -146,7 +160,7 @@ bool Fact::get_key(char* values, const StringId& k, StringId& v) const
     Key key;
     bool has = get_key(k, key);
     if(!has) return false;
-    v = *(StringId*)(values + key.offset);
+    v = *(StringId*)(values + key.m_offset);
     return has;
 }
 
@@ -155,7 +169,7 @@ bool Fact::get_key(char* values, const StringId& k, float* v) const
     Key key;
     bool has = get_key(k, key);
     if(!has) return false;
-    memcpy(v, values + key.offset, sizeof(float)*4);
+    memcpy(v, values + key.m_offset, sizeof(float)*4);
     return has;
 }
 
@@ -163,7 +177,7 @@ bool Fact::set_key(char* values, const StringId& k, int v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
-    *(int*)(values + key.offset) = v;
+    *(int*)(values + key.m_offset) = v;
     return false;
 }
 
@@ -171,7 +185,7 @@ bool Fact::set_key(char* values, const StringId& k, float v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
-    *(float*)(values + key.offset) = v;
+    *(float*)(values + key.m_offset) = v;
     return true;
 }
 
@@ -179,7 +193,7 @@ bool Fact::set_key(char* values, const StringId& k, const StringId& v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
-    *(StringId*)(values + key.offset) = v;
+    *(StringId*)(values + key.m_offset) = v;
     return true;
 }
 
@@ -187,6 +201,6 @@ bool Fact::set_key(char* values, const StringId& k, const float* v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
-    memcpy(values + key.offset, v, sizeof(float) * 4);
+    memcpy(values + key.m_offset, v, sizeof(float) * 4);
     return true;
 }

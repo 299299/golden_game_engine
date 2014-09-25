@@ -9,17 +9,12 @@
 #include "DebugDraw.h"
 #include "Graphics.h"
 #include "Script.h"
+#include "Utils.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
 #include <bx/bx.h>
 #include <bx/commandline.h>
-
-
-void msgBox(const char* text, const char* title)
-{
-    ::MessageBoxA(NULL, text, title, MB_TOPMOST);
-}
 
 void showHelp()
 {
@@ -80,13 +75,13 @@ int _tmain(int argc, _TCHAR* argv[])
     if(name) loadEntityName = name;
     name = cmdline.findOption("level");
     if(name) loadLevelName = name;
-    if(cmdline.hasArg("debug")) msgBox("wait for visual studio attach process.", "ENGINE");
+    if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.", "ENGINE");
 
     if(cfg.m_mode == 1)
     {
         if(checkSingleProcess() == FALSE)
         {
-            msgBox("process already exist!", "ENGINE");
+            msg_box("process already exist!", "ENGINE");
             return 0;
         }
         initWebServerTool(6161);

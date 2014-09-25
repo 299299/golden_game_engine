@@ -77,6 +77,8 @@ void ScriptInstance::destroy()
 }
 
 ScriptSystem g_script;
+static char g_buffer_for_key[sizeof(Key) * MAX_SCRIPT_KEY + sizeof(float)*4+MAX_SCRIPT_KEY];
+
 static bool GM_CDECL machine_callback(gmMachine * a_machine, gmMachineCommand a_command, const void * a_context)
 {
     if(a_command == MC_THREAD_EXCEPTION)
@@ -95,18 +97,20 @@ static void GM_CDECL print_callback(gmMachine * a_machine, const char * a_string
 void ScriptSystem::init()
 {
     memset(this, 0x00, sizeof(ScriptSystem));
+    m_fact.m_keys = (Key*)g_buffer_for_key;
+    m_fact.m_values = g_buffer_for_key + sizeof(Key)*MAX_SCRIPT_KEY;
     m_vm = new gmMachine();
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
     gmMachine::s_printCallback = print_callback;
-    extern void register_script_api(gmMachine* machine);
+    extern void register_script_api(gmMachine*);
     register_script_api(m_vm);
     print_error();
 }
 
 void ScriptSystem::quit()
 {
-    call_function("g_core", "init", 0);
+    if(m_core_table) call_function("g_core", "shutdown", 0);
     delete m_vm;
 }
 
@@ -120,28 +124,24 @@ void ScriptSystem::ready()
 void ScriptSystem::print_error()
 {
     bool firstErr = true;
-
     gmLog & compileLog = m_vm->GetLog();
     const char *msg = compileLog.GetEntry(firstErr);
-
-    if ( msg )
-    {
-        LOGE("[GameMonkey Run-time Error]:");
-    }
-
+    if(!msg) return;
+    char script_error_buffer[2048];
     while(msg)	
     {
         LOGE(msg);
+        strcat_s(script_error_buffer, msg);
         msg = compileLog.GetEntry(firstErr);
     }
-
     compileLog.Reset();
+    msg_box("[Script Error]", script_error_buffer);
 }
 
 void ScriptSystem::call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param)
 {
     gmTableObject* table = m_vm->GetGlobals()->Get(m_vm, a_obj_name).GetTableObjectSafe();
-    if(table) {
+    if(!table) {
         LOGE("not find table %s", a_obj_name);
         return;
     }
@@ -163,7 +163,7 @@ void ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_p
 
 void ScriptSystem::update(float dt)
 {
-    int nThreadCount = m_vm->Execute(dt*1000);
+    int nThreadCount = m_vm->Execute((gmint)(dt*1000));
     print_error();
 }
 
@@ -173,6 +173,17 @@ void ScriptSystem::frame_end(float dt)
     if(m_time < GC_TIME) return;
     m_time -= GC_TIME;
     m_vm->CollectGarbage();
+}
+
+void ScriptSystem::add_key( const StringId& k, uint32_t type )
+{
+    if(m_fact.has_key(k)) return;
+    ENGINE_ASSERT((m_fact.m_num_keys <= MAX_SCRIPT_KEY-1), "script keys overflow!");
+    Key& key = m_fact.m_keys[m_fact.m_num_keys++];
+    key.m_name = k;
+    key.m_offset = m_value_offset;
+    extern uint32_t g_fact_valuesizes[];
+    m_value_offset += g_fact_valuesizes[type];
 }
 
 //-----------------------------------------------------------------------

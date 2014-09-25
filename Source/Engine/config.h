@@ -28,3 +28,5 @@
 #define MAX_SCRIPT_OBJECT       256
 
 #define RESOURCE_MAP_NUM        16384
+
+#define MAX_SCRIPT_KEY          256

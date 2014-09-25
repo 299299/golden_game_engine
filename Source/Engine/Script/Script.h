@@ -56,17 +56,7 @@ struct ScriptSystem
 
     void ready();
 
-    void    add_key(const StringId& k, uint32_t type);
-    bool    has_key(const StringId& k) const;
-    uint32_t value_type(const StringId& k);
-    bool    get_key(const StringId& k, int& v) const;
-    bool    get_key(const StringId& k, float& v) const;
-    bool    get_key(const StringId& k, StringId& v) const;
-    bool    get_key(const StringId& k, float* v) const;
-    bool    set_key(const StringId& k, int v);
-    bool    set_key(const StringId& k, float v);
-    bool    set_key(const StringId& k, const StringId& v);
-    bool    set_key(const StringId& k, const float* v);
+    void add_key(const StringId& k, uint32_t type);
 
     gmMachine*              m_vm;
     int                     m_threadId;
@@ -76,6 +66,8 @@ struct ScriptSystem
     //gmFunctionObject*       m_pre_step_func;
 
     Fact                    m_fact;
+    uint32_t                m_value_offset;
+    uint32_t                m_max_key_size;
 };
 
 extern ScriptSystem g_script;

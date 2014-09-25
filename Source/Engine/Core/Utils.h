@@ -7,6 +7,7 @@ class hkRootLevelContainer;
 int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
 void unload_havok_inplace(void* data, uint32_t size);
+void msg_box(const char* text, const char* title);
 
 #define INI_MAX_KEY_VALUE   (128)
 struct IniReader
@@ -59,7 +60,7 @@ struct Fact
     uint32_t value_type(const StringId& k) const;
     bool has_key(const StringId& k) const;
     bool get_key(const StringId& k, Key& out_k) const;
-    bool get_key(char* values, const StringId& k, int& v);
+    bool get_key(char* values, const StringId& k, int& v) const;
     bool get_key(char* values, const StringId& k, float& v) const;
     bool get_key(char* values, const StringId& k, StringId& v) const;
     bool get_key(char* values, const StringId& k, float* v) const;

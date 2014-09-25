@@ -1,15 +1,6 @@
 #include "ActorCompiler.h"
 #include "DC_Utils.h"
 
-static const char* g_keynames[] = 
-{
-    "int", "float", "string", "float4", 0
-};
-static int g_valuesizes[] =
-{
-    sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4, 
-};
-
 ActorCompiler::ActorCompiler()
 {
 
@@ -82,34 +73,27 @@ bool ActorCompiler::readJSON(const JsonValue& root)
     fact.m_values = offset;
     char* values = fact.m_values;
 
+    extern const char* g_fact_keynames[];
+    extern uint32_t g_fact_valuesizes[];
+
     for (size_t i=0; i<numOfData; ++i)
     {
         JsonValue dataValue = datasValue[i];
         Key& key = fact.m_keys[i];
-        key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_keynames);
+        key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_fact_keynames);
         key.m_name = JSON_GetStringId(dataValue.GetValue("name"));
         key.m_offset = (uint32_t)(values - p);
 
         JsonValue jValue = dataValue.GetValue("value");
-        switch(key.type)
+        switch(key.m_type)
         {
-        case ValueType::INT:
-            *((int*)values) = JSON_GetInt(jValue);
-            values += sizeof(int);
-            break;
-        case ValueType::FLOAT:
-            *((float*)values) = JSON_GetFloat(jValue);
-            values += sizeof(float);
-            break;
-        case ValueType::STRING:
-            *((StringId*)values) = JSON_GetStringId(jValue);
-            values += sizeof(StringId);
-            break;
-        case ValueType::FLOAT4:
-            JSON_GetFloats(jValue, (float*)values, 4);
-            values += sizeof(float)*4;
-            break;    
+        case ValueType::INT:*((int*)values) = JSON_GetInt(jValue);break;
+        case ValueType::FLOAT:*((float*)values) = JSON_GetFloat(jValue);break;
+        case ValueType::STRING:*((StringId*)values) = JSON_GetStringId(jValue);break;
+        case ValueType::FLOAT4:JSON_GetFloats(jValue, (float*)values, 4);break;
+        default: --i; continue;
         }
+        values += g_fact_valuesizes[key.m_type];
     }
     ENGINE_ASSERT(values == p + resSize, "offset address");
 

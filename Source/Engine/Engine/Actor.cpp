@@ -11,28 +11,6 @@
 #include "MemorySystem.h"
 #include "memory.h"
 
-bool ActorResource::has_key(const StringId& k) const
-{
-    for (uint32_t i = 0; i < m_numKeys; ++i)
-    {
-        if(m_keys[i].name == k) return true;
-    }
-    return false;
-}
-
-bool ActorResource::get_key(const StringId& k, Key& out_k) const
-{
-    for (uint32_t i = 0; i < m_numKeys; ++i)
-    {
-        if(m_keys[i].name == k)
-        {
-            out_k = m_keys[i];
-            return true;
-        }
-    }
-    return false;
-}
-
 void* load_resource_actor(const char* data, uint32_t size)
 {
     ActorResource* actor = (ActorResource*)data;
@@ -40,7 +18,7 @@ void* load_resource_actor(const char* data, uint32_t size)
     p += sizeof(ActorResource);
     Fact& fact = actor->m_fact;
     fact.m_keys = (Key*)(p);
-    p += sizeof(actor->m_numKeys * sizeof(Key));
+    p += sizeof(actor->m_fact.m_num_keys * sizeof(Key));
     fact.m_values = p;
     return actor;
 }
@@ -77,7 +55,7 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t)
     if(fact.m_value_size)
     {
         m_values = COMMON_ALLOC(char, fact.m_value_size);
-        mempcy(m_values, fact.m_values, value_size);
+        memcpy(m_values, fact.m_values, fact.m_value_size);
     }
     else
     {
@@ -215,7 +193,7 @@ void ActorWorld::clear_actors(Actor* actors, uint32_t num)
 
 void ActorWorld::clear_actors(uint32_t type)
 {
-    clear_actors(g_actorBuckets[type]);
+    clear_actors(g_actorBuckets[type].begin(), g_actorBuckets[type].size());
 }
 
 ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)

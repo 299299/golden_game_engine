@@ -1,6 +1,10 @@
 local create_core = function()
 {
-    local core = {};
+    local core = 
+    {
+        test_name = 0,
+        speed = 1.0, 
+    };
 
     core.init = function()
     {
@@ -24,7 +28,7 @@ local create_core = function()
     {
         while( true )
         {
-            local w = get_window_width();
+            local w = get_window_width(); 
             local h = get_window_height();  
             gui.draw_round_rect(0, 0, w, h, 4, rgba_to_int(0,125,255));
             gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "Loading core.package", rgba_to_int(255,255,0));
@@ -51,6 +55,11 @@ local create_core = function()
             local w = get_window_width();
             local h = get_window_height();  
             gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "Loaded!!!!!", rgba_to_int(255,0,0));
+
+            gui.begin_area("test_area", 0, 0, 128, 512);
+            gui.float_slider("Speed", "speed", this, 0.0, 1.0, 0.01);
+            gui.end_area();
+
             yield();
         }  
     };
