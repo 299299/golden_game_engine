@@ -578,6 +578,54 @@ static int GM_CDECL world_clear(gmThread* a_thread)
     g_actorWorld.clear();
     return GM_OK;
 }
+static int GM_CDECL actor_get_float(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_set_float(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_get_string(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_set_string(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_get_int(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_set_int(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_get_float4(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
+static int GM_CDECL actor_set_float4(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    //..
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
@@ -742,6 +790,14 @@ void register_script_api(gmMachine* machine)
         {"destroy_actor", world_destroy_actor},
         {"clear_actors", world_clear_actors},
         {"clear", world_clear},
+        {"actor_get_float", actor_get_float},
+        {"actor_set_float", actor_set_float},
+        {"actor_get_int", actor_get_int},
+        {"actor_set_int", actor_set_int},
+        {"actor_get_string", actor_get_string},
+        {"actor_set_string", actor_set_string},
+        {"actor_get_float4", actor_get_float4},
+        {"actor_set_float4", actor_set_float4},
     };
     static gmVariableEntry s_world_values[] =
     {

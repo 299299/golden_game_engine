@@ -2,25 +2,9 @@
 #include "StringId.h"
 #include "DataDef.h"
 #include "Prerequisites.h"
+#include "Utils.h"
 
 struct ShadingEnviroment;
-struct ValueType
-{
-    enum Enum
-    {
-        INT,
-        FLOAT,
-        STRING,
-        FLOAT4
-    };
-};
-
-struct Key
-{
-    StringId    name;
-    uint32_t    type;
-    uint32_t    offset;
-};
 
 ENGINE_NATIVE_ALIGN struct ActorResource
 {
@@ -28,13 +12,7 @@ ENGINE_NATIVE_ALIGN struct ActorResource
     StringId        m_resourceNames[kComponentTypeNum];
     void*           m_resources[kComponentTypeNum];
     uint32_t        m_class;
-    Key*            m_keys;
-    uint32_t        m_numKeys;
-    char*           m_values;
-    uint32_t        m_numValues;
-    uint32_t        m_valueSize;
-    bool has_key(const StringId& k) const;
-    bool get_key(const StringId& k, Key& out_k) const;
+    Fact            m_fact;
 };
 
 ENGINE_NATIVE_ALIGN struct Actor
@@ -57,10 +35,10 @@ ENGINE_NATIVE_ALIGN struct Actor
     bool    get_key(const StringId& k, float& v) const;
     bool    get_key(const StringId& k, StringId& v) const;
     bool    get_key(const StringId& k, float* v) const;
-    void    set_key(const StringId& k, int v);
-    void    set_key(const StringId& k, float v);
-    void    set_key(const StringId& k, const StringId& v);
-    void    set_key(const StringId& k, const float* v);
+    bool    set_key(const StringId& k, int v);
+    bool    set_key(const StringId& k, float v);
+    bool    set_key(const StringId& k, const StringId& v);
+    bool    set_key(const StringId& k, const float* v);
 };
 
 

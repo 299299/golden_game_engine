@@ -74,19 +74,21 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         addDependency(type, name_to_file_path(name, type));
     }
 
+    Fact& fact = actor->m_fact;
     offset += sizeof(ActorResource);
     uint32_t valueSize = 0;
-    Key* keys = (Key*)offset;
+    fact.m_keys = (Key*)offset;
     offset += sizeof(Key) * numOfData;
-    char* values = offset;
+    fact.m_values = offset;
+    char* values = fact.m_values;
 
     for (size_t i=0; i<numOfData; ++i)
     {
         JsonValue dataValue = datasValue[i];
-        Key& key = keys[i];
-        key.type = JSON_GetEnum(dataValue.GetValue("type"), g_keynames);
-        key.name = JSON_GetStringId(dataValue.GetValue("name"));
-        key.offset = (uint32_t)(values - p);
+        Key& key = fact.m_keys[i];
+        key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_keynames);
+        key.m_name = JSON_GetStringId(dataValue.GetValue("name"));
+        key.m_offset = (uint32_t)(values - p);
 
         JsonValue jValue = dataValue.GetValue("value");
         switch(key.type)

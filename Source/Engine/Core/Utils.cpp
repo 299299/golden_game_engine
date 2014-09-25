@@ -94,3 +94,99 @@ uint32_t IniReader::find_value( const char* key, char* bufOut ) const
     }
     return 0;
 }
+
+uint32_t Fact::value_type(const StringId& k) const
+{
+    Key key;
+    if(!get_key(k, key)) return ValueType::UNKNOW;
+    return key.m_type;
+}
+
+bool Fact::has_key(const StringId& k) const
+{
+    for(uint32_t i=0; i<m_num_keys; ++i)
+    {
+        if(m_keys[i].m_name == k) return true;
+    }
+    return false;
+}
+
+bool Fact::get_key(const StringId& k, Key& out_k) const
+{
+    for(uint32_t i=0; i<m_num_keys; ++i)
+    {
+        if(m_keys[i].m_name == k)
+        {
+            out_k = m_keys[i]; return true;
+        }
+    }
+    return false;
+}
+
+bool Fact::get_key(char* values, const StringId& k, int& v)
+{
+    Key key;
+    bool has = get_key(k, key);
+    if(!has) return false;
+    v = *(int*)(char* values,  + key.offset);
+    return has;
+}
+
+bool Fact::get_key(char* values, const StringId& k, float& v) const
+{
+    Key key;
+    bool has = get_key(k, key);
+    if(!has) return false;
+    v = *(float*)(values + key.offset);
+    return has;
+}
+
+bool Fact::get_key(char* values, const StringId& k, StringId& v) const
+{
+    Key key;
+    bool has = get_key(k, key);
+    if(!has) return false;
+    v = *(StringId*)(values + key.offset);
+    return has;
+}
+
+bool Fact::get_key(char* values, const StringId& k, float* v) const
+{
+    Key key;
+    bool has = get_key(k, key);
+    if(!has) return false;
+    memcpy(v, values + key.offset, sizeof(float)*4);
+    return has;
+}
+
+bool Fact::set_key(char* values, const StringId& k, int v) const
+{
+    Key key;
+    if(!get_key(k, key)) return false;
+    *(int*)(values + key.offset) = v;
+    return false;
+}
+
+bool Fact::set_key(char* values, const StringId& k, float v) const
+{
+    Key key;
+    if(!get_key(k, key)) return false;
+    *(float*)(values + key.offset) = v;
+    return true;
+}
+
+bool Fact::set_key(char* values, const StringId& k, const StringId& v) const
+{
+    Key key;
+    if(!get_key(k, key)) return false;
+    *(StringId*)(values + key.offset) = v;
+    return true;
+}
+
+bool Fact::set_key(char* values, const StringId& k, const float* v) const
+{
+    Key key;
+    if(!get_key(k, key)) return false;
+    memcpy(values + key.offset, v, sizeof(float) * 4);
+    return true;
+}

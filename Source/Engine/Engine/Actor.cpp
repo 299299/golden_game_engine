@@ -38,9 +38,10 @@ void* load_resource_actor(const char* data, uint32_t size)
     ActorResource* actor = (ActorResource*)data;
     char* p = (char*)data;
     p += sizeof(ActorResource);
-    actor->m_keys = (Key*)(p);
+    Fact& fact = actor->m_fact;
+    fact.m_keys = (Key*)(p);
     p += sizeof(actor->m_numKeys * sizeof(Key));
-    actor->m_values = p;
+    fact.m_values = p;
     return actor;
 }
 
@@ -71,7 +72,18 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t)
         const void* res = resource->m_resources[i];
         if(res) m_components[i] = create_componet(i, res);
     }
-    m_values = COMMON_ALLOC(char, m_resource->m_valueSize);
+
+    const Fact& fact = m_resource->m_fact;
+    if(fact.m_value_size)
+    {
+        m_values = COMMON_ALLOC(char, fact.m_value_size);
+        mempcy(m_values, fact.m_values, value_size);
+    }
+    else
+    {
+        m_values = 0;
+    }
+    
     teleport_transform(t);
 }
 
@@ -116,74 +128,52 @@ void* Actor::get_component( uint32_t type )
 
 bool Actor::has_key(const StringId& k) const
 {
-    return m_resource->has_key(k);
+    return m_resource->m_fact.has_key(k);
 }
 
 uint32_t Actor::value_type(const StringId& k)
 {
-    Key key;
-    m_resource->get_key(k, key);
-    return (ValueType::Enum) key.type;
+    return m_resource->m_fact.value_type(k);
 }
 
 bool Actor::get_key(const StringId& k, int& v) const
 {
-    Key key;
-    bool has = m_resource->get_key(k, key);
-    v = *(int*)(m_values + key.offset);
-    return has;
+    return m_resource->m_fact.get_key(m_values, k, v);
 }
 
 bool Actor::get_key(const StringId& k, float& v) const
 {
-    Key key;
-    bool has = m_resource->get_key(k, key);
-    v = *(float*)(m_values + key.offset);
-    return has;
+    return m_resource->m_fact.get_key(m_values, k, v);
 }
 
 bool Actor::get_key(const StringId& k, StringId& v) const
 {
-    Key key;
-    bool has = m_resource->get_key(k, key);
-    v = *(StringId*)(m_values + key.offset);
-    return has;
+    return m_resource->m_fact.get_key(m_values, k, v);
 }
 
 bool Actor::get_key(const StringId& k, float* v) const
 {
-    Key key;
-    bool has = m_resource->get_key(k, key);
-    memcpy(v, m_values + key.offset, sizeof(float)*4);
-    return has;
+    return m_resource->m_fact.get_key(m_values, k, v);
 }
 
-void Actor::set_key(const StringId& k, int v)
+bool Actor::set_key(const StringId& k, int v)
 {
-    Key key;
-    if(!m_resource->get_key(k, key)) return;
-    *(int*)(m_values + key.offset) = v;
+    return m_resource->m_fact.set_key(m_values, k, v);
 }
 
-void Actor::set_key(const StringId& k, float v)
+bool Actor::set_key(const StringId& k, float v)
 {
-    Key key;
-    if(!m_resource->get_key(k, key)) return;
-    *(float*)(m_values + key.offset) = v;
+    return m_resource->m_fact.set_key(m_values, k, v);
 }
 
-void Actor::set_key(const StringId& k, const StringId& v)
+bool Actor::set_key(const StringId& k, const StringId& v)
 {
-    Key key;
-    if(!m_resource->get_key(k, key)) return;
-    *(StringId*)(m_values + key.offset) = v;
+    return m_resource->m_fact.set_key(m_values, k, v);
 }
 
-void Actor::set_key(const StringId& k, const float* v)
+bool Actor::set_key(const StringId& k, const float* v)
 {
-    Key key;
-    if(!m_resource->get_key(k, key)) return;
-    memcpy(m_values + key.offset, v, sizeof(float) * 4);
+    return m_resource->m_fact.set_key(m_values, k, v);
 }
 
 ActorWorld g_actorWorld;
