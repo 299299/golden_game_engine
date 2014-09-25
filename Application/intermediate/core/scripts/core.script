@@ -59,4 +59,3 @@ local create_core = function()
 };
 
 global g_core = create_core();
-//g_core.init();

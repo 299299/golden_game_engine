@@ -106,13 +106,7 @@ void ScriptSystem::init()
 
 void ScriptSystem::quit()
 {
-    if(m_core_table)
-    {
-        gmCall call;
-        call.BeginTableFunction(m_vm, "shutdown", m_core_table, gmVariable(m_core_table));
-        call.End();
-        print_error();
-    }
+    call_function("g_core", "init", 0);
     delete m_vm;
 }
 
@@ -120,12 +114,7 @@ void ScriptSystem::ready()
 {
     m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
     ENGINE_ASSERT(m_core_table, "get g_core failed.");
-    gmFunctionObject* core_init = m_core_table->Get(m_vm, "init").GetFunctionObjectSafe();
-    ENGINE_ASSERT(core_init, "get g_core init function failed");
-    gmCall call;
-    call.BeginFunction(m_vm, core_init, gmVariable(m_core_table));
-    call.End();
-    print_error();
+    call_function("g_core", "init", 0);
 }
 
 void ScriptSystem::print_error()
