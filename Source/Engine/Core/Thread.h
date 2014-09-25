@@ -15,9 +15,9 @@ public:
     void init(bool bCreateVDB);
     void quit();
     
-    hkJobQueue* get_jobqueue() const { return mJobQueue;};
-    hkThreadPool* get_threadpool() const { return mThreadPool;};
-    uint32_t get_main_threadid() const { return mMainThreadId; };
+    hkJobQueue* get_jobqueue() const { return m_jobQueue;};
+    hkThreadPool* get_threadpool() const { return m_threadPool;};
+    uint32_t get_main_threadid() const { return m_mainThreadId; };
     bool check_main_thread() const;
 
     void process_all_jobs();
@@ -27,11 +27,11 @@ public:
     void vdb_remove_world(hkpWorld* pWord);
     void vdb_update(float timeStep);
 private:
-    hkJobQueue*                                     mJobQueue;
-    hkThreadPool*                                   mThreadPool;
-    hkpPhysicsContext*                              mPhysicsCtx;
-    hkVisualDebugger*                               mVDB;
-    uint32_t                                        mMainThreadId;
+    hkJobQueue*                                     m_jobQueue;
+    hkThreadPool*                                   m_threadPool;
+    hkpPhysicsContext*                              m_physicsCtx;
+    hkVisualDebugger*                               m_vdb;
+    uint32_t                                        m_mainThreadId;
 };
 
 extern ThreadSystem g_threadMgr;

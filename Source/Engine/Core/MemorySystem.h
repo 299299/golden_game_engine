@@ -25,15 +25,12 @@ struct MemorySystem
     void            quit();
     void            frame_start();
 
-    //=====================================================
-    //          LINEAR ALLOCATION
     void*           allocate(uint32_t category, uint32_t size, uint32_t alignment = 16);
     void            deallocate(uint32_t category, void* p);
     uint32_t        allocated_size(uint32_t category);
     void            clear(uint32_t category);
     void            register_allocator(uint32_t category, Allocator* allocator);
     Allocator*      get_allocator(uint32_t category) { return m_allocators[category]; };
-    //=====================================================
 
     hkMemoryRouter*                 m_memRouter;
     Allocator*                      m_allocators[kMemoryCategoryMax];

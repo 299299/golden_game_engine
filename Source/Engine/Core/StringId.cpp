@@ -31,6 +31,58 @@ void insert_string_id(uint32_t key, const char* value)
         ENGINE_ASSERT(!hkString::strCasecmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
     }
 }
+const char* stringid_lookup(const StringId& id)
+{
+    if(id.is_zero()) return "";
+    hkCriticalSectionLock _l(&g_stringTableCS);
+    StringTable::iterator iter = g_stringTable.find(id.value());
+    if(iter == g_stringTable.end()) return  0;
+    return iter->second;
+}
+#define STRING_TABLE_FMT "%u,%x,%s\n"
+void load_string_table(const char* fName)
+{
+    FILE* fp = fopen(fName, "r");
+    if(!fp) {
+        LOGW(__FUNCTION__ " can not open file %s", fName);
+        return;
+    }
+    TIMELOG("load string table");
+    char buf[256];
+    uint32_t key1, key2 = 0;
+    while(!feof(fp))
+    {    
+        int argNum = fscanf(fp, STRING_TABLE_FMT, &key1, &key2, buf);
+        if(argNum != 3) break;
+        if(key1 != key2) break;
+        insert_string_id(key1, buf);
+    }
+    fclose(fp);
+}
+void save_string_table(const char* fName)
+{
+    FILE* fp = fopen(fName, "w");
+    if(!fp) {
+        LOGE(__FUNCTION__ " can not open file %s", fName);
+        return;
+    }
+    
+    StringTable::const_iterator iter = g_stringTable.begin();
+    for(; iter != g_stringTable.end(); ++iter)
+    {
+        fprintf(fp, STRING_TABLE_FMT, iter->first, iter->first, iter->second);
+    }
+    
+    fclose(fp);
+}
+#else
+static char g_buffer[32];
+const char* stringid_lookup(const StringId& id)
+{
+    if(id.is_zero()) return "";
+    sprintf_s(g_buffer, "%x", id.value());
+    return g_buffer;
+}
 #endif
 
 uint32_t StringId::calculate(const char* str)
@@ -83,63 +135,6 @@ uint32_t static_hash(const char* s, uint32_t value)
 {
     ENGINE_ASSERT(StringId::calculate(s) == value, "static_hash failed.");
     return value;
-}
-#endif
-
-#ifndef _RETAIL
-const char* stringid_lookup(const StringId& id)
-{
-    if(id.is_zero()) return "";
-    hkCriticalSectionLock _l(&g_stringTableCS);
-    StringTable::iterator iter = g_stringTable.find(id.value());
-    if(iter == g_stringTable.end()) return  0;
-    return iter->second;
-}
-#define STRING_TABLE_FMT "%u,%x,%s\n"
-void load_string_table(const char* fName)
-{
-    FILE* fp = fopen(fName, "r");
-    if(!fp) {
-        LOGW(__FUNCTION__ " can not open file %s", fName);
-        return;
-    }
-    TIMELOG("load string table");
-    char buf[256];
-    uint32_t key1, key2 = 0;
-    while(!feof(fp))
-    {    
-        int argNum = fscanf(fp, STRING_TABLE_FMT, &key1, &key2, buf);
-        if(argNum != 3) break;
-        if(key1 != key2) break;
-        insert_string_id(key1, buf);
-    }
-    fclose(fp);
-}
-void save_string_table(const char* fName)
-{
-    FILE* fp = fopen(fName, "w");
-    if(!fp) {
-        LOGE(__FUNCTION__ " can not open file %s", fName);
-        return;
-    }
-    
-    StringTable::const_iterator iter = g_stringTable.begin();
-    for(; iter != g_stringTable.end(); ++iter)
-    {
-        uint32_t key = iter->first;
-        const std::string& value = iter->second;
-        fprintf(fp, STRING_TABLE_FMT, key, key, value.c_str());
-    }
-    
-    fclose(fp);
-}
-#else
-static char g_buffer[32];
-const char* stringid_lookup(const StringId& id)
-{
-    if(id.is_zero()) return "";
-    sprintf_s(g_buffer, "%x", id.value());
-    return g_buffer;
 }
 #endif
 

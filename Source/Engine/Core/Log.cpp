@@ -26,7 +26,7 @@ static const char*          g_loglevelTag[] =
     "invalid"
 };
 
-Log gLogger;
+Log g_logger;
 
 Log::Log()
 {

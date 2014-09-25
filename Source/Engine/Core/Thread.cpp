@@ -9,14 +9,12 @@
 ThreadSystem g_threadMgr;
 
 ThreadSystem::ThreadSystem()
-    :mJobQueue(NULL)
-    ,mThreadPool(NULL)
-    ,mPhysicsCtx(NULL)
-    ,mVDB(NULL)
-    ,mMainThreadId(0)
+    :m_jobQueue(NULL)
+    ,m_threadPool(NULL)
+    ,m_physicsCtx(NULL)
+    ,m_vdb(NULL)
+    ,m_mainThreadId(0)
 {
-    mJobQueue = NULL;
-    mThreadPool = NULL;
 }
 
 ThreadSystem::~ThreadSystem()
@@ -26,7 +24,7 @@ ThreadSystem::~ThreadSystem()
 
 void ThreadSystem::init(bool bCreateVDB)
 {
-    mMainThreadId = ::GetCurrentThreadId();
+    m_mainThreadId = ::GetCurrentThreadId();
 
     // Get the number of physical threads available on the system
     int totalNumThreadsUsed = hkHardwareInfo::getNumHardwareThreads();
@@ -37,69 +35,69 @@ void ThreadSystem::init(bool bCreateVDB)
 
     // This line enables timers collection, by allocating 200kb per thread.
     threadPoolCinfo.m_timerBufferPerThreadAllocation = 200 * 1024;
-    mThreadPool = new hkCpuThreadPool( threadPoolCinfo );
+    m_threadPool = new hkCpuThreadPool( threadPoolCinfo );
 
     hkJobQueueCinfo info;
     info.m_jobQueueHwSetup.m_numCpuThreads = totalNumThreadsUsed;
-    mJobQueue = new hkJobQueue(info);
+    m_jobQueue = new hkJobQueue(info);
 
     if(bCreateVDB)
     {
         hkArray<hkProcessContext*> contexts;
-        mPhysicsCtx = new hkpPhysicsContext();
+        m_physicsCtx = new hkpPhysicsContext();
         hkpPhysicsContext::registerAllPhysicsProcesses();
-        contexts.pushBack( mPhysicsCtx );
-        mVDB = new hkVisualDebugger(contexts);
-        mVDB->serve();
+        contexts.pushBack( m_physicsCtx );
+        m_vdb = new hkVisualDebugger(contexts);
+        m_vdb->serve();
     }
 }
 
 void ThreadSystem::quit()
 {
-    if(mVDB)
+    if(m_vdb)
     {
         hkMonitorStream::getInstance().reset();
-        mThreadPool->clearTimerData();
-        SAFE_REMOVEREF(mVDB);
-        SAFE_REMOVEREF(mPhysicsCtx);
+        m_threadPool->clearTimerData();
+        SAFE_REMOVEREF(m_vdb);
+        SAFE_REMOVEREF(m_physicsCtx);
     }
-    delete mJobQueue;
-    SAFE_REMOVEREF(mThreadPool);
+    SAFE_DELETE(m_jobQueue);
+    SAFE_REMOVEREF(m_threadPool);
 }
 
 void ThreadSystem::process_all_jobs()
 {
     PROFILE(Thread_Process);
-    mThreadPool->processJobQueue( mJobQueue );
-    mJobQueue->processAllJobs( );
+    m_threadPool->processJobQueue( m_jobQueue );
+    m_jobQueue->processAllJobs( );
 }
 
 void ThreadSystem::wait()
 {
     PROFILE(Thread_Wait);
-    mThreadPool->waitForCompletion();
+    m_threadPool->waitForCompletion();
 }
 
 void ThreadSystem::vdb_add_world( hkpWorld* pWorld )
 {
-    if(mPhysicsCtx) mPhysicsCtx->addWorld(pWorld);
+    if(m_physicsCtx) m_physicsCtx->addWorld(pWorld);
 }
 
 void ThreadSystem::vdb_remove_world( hkpWorld* pWorld )
 {
-    if(mPhysicsCtx) mPhysicsCtx->removeWorld(pWorld);
+    if(m_physicsCtx) m_physicsCtx->removeWorld(pWorld);
 }
 
 void ThreadSystem::vdb_update( float timeStep )
 {
-    if(!mVDB) return;
-    mPhysicsCtx->syncTimers( mThreadPool );
-    mVDB->step(timeStep);
+    if(!m_vdb) return;
+    m_physicsCtx->syncTimers( m_threadPool );
+    m_vdb->step(timeStep);
     hkMonitorStream::getInstance().reset();
-    mThreadPool->clearTimerData();
+    m_threadPool->clearTimerData();
 }
 
 bool ThreadSystem::check_main_thread() const
 {
-    return mMainThreadId == ::GetCurrentThreadId();
+    return m_mainThreadId == ::GetCurrentThreadId();
 }
