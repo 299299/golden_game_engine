@@ -8,6 +8,7 @@
 #include "DebugDraw.h"
 #include "Profiler.h"
 #include "Actor.h"
+#include "DataDef.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -539,6 +540,44 @@ static int GM_CDECL world_set_shading_enviroment(gmThread* a_thread)
     g_actorWorld.m_shading_env = (ShadingEnviroment*)shading_env;
     return GM_OK;
 }
+static int GM_CDECL world_num_of_actors(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(type, 0);
+    a_thread->PushInt(g_actorWorld.num_actors(type));
+    return GM_OK;
+}
+static int GM_CDECL world_create_actor(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(type, 0);
+    //a_thread->PushInt();
+    //ActorId acId = g_actorWorld.create_actor()
+    return GM_OK;
+}
+static int GM_CDECL world_destroy_actor(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(id, 0);
+    GM_CHECK_INT_PARAM(class_type, 0);
+    ActorId id;
+    id.m_id  = id;
+    id.m_class = class_type;
+    a_thread->PushInt(g_actorWorld.destroy_actor(id));
+    return GM_OK;
+}
+static int GM_CDECL world_clear_actors(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(type, 0);
+    g_actorWorld.clear_actors(type);
+    return GM_OK;
+}
+static int GM_CDECL world_clear(gmThread* a_thread)
+{
+    g_actorWorld.clear();
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
@@ -698,6 +737,19 @@ void register_script_api(gmMachine* machine)
     static gmFunctionEntry s_world_binding[] =
     {
         {"set_shading_enviroment", world_set_shading_enviroment},
+        {"num_of_actors", world_num_of_actors},
+        {"create_actor", world_create_actor},
+        {"destroy_actor", world_destroy_actor},
+        {"clear_actors", world_clear_actors},
+        {"clear", world_clear},
+    };
+    static gmVariableEntry s_world_values[] =
+    {
+        "LEVEL_GEOMETRY", gmVariable(kLevelGeometry),
+        "PROP", gmVariable(kProp),
+        "CHARACTER", gmVariable(kCharacter),
+        "CLASS_NUM", gmVariable(kActorClassNum),
     };
     machine->RegisterLibrary(s_world_binding, BX_COUNTOF(s_world_binding), "world");
+    register_enum_values(machine, "world", s_world_values, BX_COUNTOF(s_world_values));
 }

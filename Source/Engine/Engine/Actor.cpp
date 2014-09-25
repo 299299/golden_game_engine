@@ -211,7 +211,7 @@ void ActorWorld::clear()
 {
     for(uint32_t i=0; i<kActorClassNum; ++i)
     {
-        clear_actors(g_actorBuckets[i].begin(), g_actorBuckets[i].size());
+        clear_actors(i);
     }
 }
 
@@ -221,6 +221,11 @@ void ActorWorld::clear_actors(Actor* actors, uint32_t num)
     {
         actors[i].destroy();
     }
+}
+
+void ActorWorld::clear_actors(uint32_t type)
+{
+    clear_actors(g_actorBuckets[type]);
 }
 
 ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)

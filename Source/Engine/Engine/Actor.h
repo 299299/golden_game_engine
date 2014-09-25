@@ -76,7 +76,8 @@ struct ActorWorld
     void        destroy();
 
     void        clear();
-    void        clear_actors(Actor* actors, uint32_t num);
+    void        clear_actors(uint32_t type);
+    
     ActorId     create_actor(const StringId& resourceName, const hkQsTransform& t);
     ActorId     create_actor(const void* actorResource, const hkQsTransform& t);
     void        destroy_actor(ActorId id);
@@ -92,6 +93,10 @@ struct ActorWorld
     void        draw();
 
     ShadingEnviroment*      m_shading_env;
+
+private:
+    void        clear_actors(Actor* actors, uint32_t num);
+
 };
 
 extern ActorWorld g_actorWorld;
