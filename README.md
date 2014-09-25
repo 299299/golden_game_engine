@@ -13,7 +13,7 @@ maya dx11 and engine runtime view
 ![short_1](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/maya_monk.jpg)
 ![short_2](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/maya_monk_1.jpg)
 
-pipline tool -- on button click from maya to engine
+pipline tool -- realtime sync from maya to engine
 ![short_3](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipeline.jpg)
 
 webtool for monitor engine runtime
