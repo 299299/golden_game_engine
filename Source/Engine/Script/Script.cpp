@@ -98,7 +98,6 @@ ScriptSystem g_script;
 void ScriptSystem::init()
 {
     memset(this, 0x00, sizeof(ScriptSystem));
-    m_fact.m_keys = (Key*)g_buffer_for_key;
     m_vm = new gmMachine();
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
@@ -116,7 +115,7 @@ void ScriptSystem::quit()
 
 void ScriptSystem::ready()
 {
-    m_core_script = FIND_RESOURCE(ScriptResource, "core/scripts/core");
+    m_core_script = FIND_RESOURCE(ScriptResource, StringId("core/scripts/core"));
     m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
     ENGINE_ASSERT(m_core_table, "get g_core failed.");
     call_function("g_core", "init", 0);

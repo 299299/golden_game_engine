@@ -44,9 +44,9 @@ ENGINE_NATIVE_ALIGN struct Actor
 
 struct ActorId
 {
-    uint32_t    m_id;       : 16
-    uint32_t    m_index;    : 12;
-    uint32_t    m_class     : 4;
+    uint32_t    m_id       : 16;
+    uint32_t    m_index    : 12;
+    uint32_t    m_class    : 4;
 
     uint32_t pack() const
     {

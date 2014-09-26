@@ -14,16 +14,16 @@
 
 void ActorId::set_id(Id id)
 {
-    m_id = id.m_id;
-    ENGINE_ASSERT(id.m_index < (1 << 12), "ActorId index overflow.!");
-    m_index = id.m_index;
+    m_id = id.id;
+    ENGINE_ASSERT(id.index < (1 << 12), "ActorId index overflow.!");
+    m_index = id.index;
 }
 
 Id ActorId::get_id()
 {
     Id id;
-    id.m_id = m_id;
-    id.m_index = m_index;
+    id.id = m_id;
+    id.index = m_index;
     return id;
 }
 
@@ -236,18 +236,18 @@ ActorId ActorWorld::create_actor( const StringId& resourceName, const hkQsTransf
     return create_actor(FIND_RESOURCE(ActorResource, resourceName), t);
 }
 
-void ActorWorld::destroy_actor( ActorId actorId )
+void ActorWorld::destroy_actor( ActorId actor_id )
 {
-    uint32_t classId = actorId.m_class;
-    Id id = actorId.get_id();
-    if(!g_actorBuckets[classId].has(id.m_id)) return;
+    uint32_t classId = actor_id.m_class;
+    Id id = actor_id.get_id();
+    if(!g_actorBuckets[classId].has(id)) return;
     g_actorBuckets[classId].destroy(id);
 }
 
-Actor* ActorWorld::get_actor( ActorId id )
+Actor* ActorWorld::get_actor( ActorId actor_id )
 {
-    uint32_t classId = actorId.m_class;
-    Id id = actorId.get_id();
+    uint32_t classId = actor_id.m_class;
+    Id id = actor_id.get_id();
     if(!g_actorBuckets[classId].has(id)) return 0;
     return &g_actorBuckets[classId].get(id);
 }

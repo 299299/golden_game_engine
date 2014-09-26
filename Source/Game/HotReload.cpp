@@ -148,8 +148,7 @@ void reload_level_resource(void* oldResource, void* newResource)
     Level* oldLevel = (Level*)oldResource;
     Level* newLevel = (Level*)newResource;
     oldLevel->unload();
-    newLevel->load(-1);
-    newLevel->flush();
+    newLevel->load();
 }
 
 void reload_shading_enviroment(void* oldResource, void* newResource)
@@ -329,7 +328,7 @@ void reload_script_resource(void* oldResource, void* newResource)
     ScriptResource* newScript = (ScriptResource*)newResource;
     uint32_t componentNum = num_components(kComponentScript);
     ScriptInstance* components = (ScriptInstance*)get_components(kComponentScript);
-    LOGI("component %s instance num = %d", T::get_name(), componentNum);
+    LOGI("component %s instance num = %d", ScriptResource::get_name(), componentNum);
     for(size_t i=0; i<componentNum; ++i)
     {
         if(components[i].m_resource == oldScript)

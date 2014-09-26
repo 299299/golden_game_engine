@@ -523,11 +523,11 @@ static int GM_CDECL imgui_draw_image(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(width, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(height, 3);
-    GM_INT_PARAM(align, ImguiAlign::LeftIndented);
+    GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
-    imguiImage(tex->m_handle, lod, (int)width, (int)height, align);
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    imguiImage(tex->m_handle, lod, (int)width, (int)height, (ImguiAlign::Enum)align);
     return GM_OK;
 }
 static int GM_CDECL imgui_draw_image_scaled(gmThread* a_thread)
@@ -540,8 +540,8 @@ static int GM_CDECL imgui_draw_image_scaled(gmThread* a_thread)
     GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
-    imguiImage(tex->m_handle, lod, scale, aspect, align);
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    imguiImage(tex->m_handle, lod, scale, aspect, (ImguiAlign::Enum)align);
     return GM_OK;
 }
 static int GM_CDECL imgui_draw_image_channel(gmThread* a_thread)
@@ -555,8 +555,8 @@ static int GM_CDECL imgui_draw_image_channel(gmThread* a_thread)
     GM_INT_PARAM(align, 5, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
-    imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, (int)width, (int)height, align);
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, (int)width, (int)height, (ImguiAlign::Enum)align);
     return GM_OK;
 }
 static int GM_CDECL imgui_draw_image_channel_scaled(gmThread* a_thread)
@@ -570,8 +570,8 @@ static int GM_CDECL imgui_draw_image_channel_scaled(gmThread* a_thread)
     GM_INT_PARAM(align, 5, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
-    imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, scale, aspect, align);
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, scale, aspect, (ImguiAlign::Enum)align);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -832,7 +832,7 @@ static int GM_CDECL actor_get_int(gmThread* a_thread)
     if(!actor) return GM_OK;
     int ret = 0;
     actor->get_key(StringId(key_name), ret);
-    a_thread->PushInt(ret.value());
+    a_thread->PushInt(ret);
     return GM_OK;
 }
 static int GM_CDECL actor_set_float(gmThread* a_thread)
