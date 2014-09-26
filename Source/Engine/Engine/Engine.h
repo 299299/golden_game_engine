@@ -18,9 +18,9 @@ struct EngineConfig
 enum EngineFrameState
 {
     kFrameStart,
-    kPreStepping,
-    kUpdating,
-    kPostStepping,
+    kFramePreStepping,
+    kFrameUpdating,
+    kFramePostStepping,
     kFrameEnd,
     kFrameRendering,
     kFrameInvalid
