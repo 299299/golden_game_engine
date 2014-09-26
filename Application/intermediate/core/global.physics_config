@@ -1,4 +1,6 @@
 {
+    "world_size":1000.0,
+    "gravity":[0, -9.8, 0],
     "collision_filters" : 
     [
         {

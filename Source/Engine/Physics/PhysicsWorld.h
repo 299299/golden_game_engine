@@ -42,7 +42,7 @@ struct CollisionFilter
     uint32_t                    m_mask;
 };
 
-struct PhysicsConfig
+ENGINE_NATIVE_ALIGN struct PhysicsConfig
 {
     DECLARE_RESOURCE(physics_config);
     

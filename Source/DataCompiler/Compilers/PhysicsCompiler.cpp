@@ -79,6 +79,9 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
     PhysicsConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
     cfg.m_numFilterLayers = numOfFilters;
+    cfg.m_worldSize = JSON_GetFloat(root.GetValue("world_size"), 1000.0f);
+    vec3_make(cfg.m_gravity, 0, -9.8f, 0);
+    JSON_GetFloats(root.GetValue("gravity"), cfg.m_gravity, 3);
 
     for(uint32_t i=0; i<numOfFilters; ++i)
     {
@@ -97,7 +100,8 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
         {
             for(uint32_t i=0; i<colValue.GetElementsCount(); ++i)
             {
-                ADD_BITS(mask, 1 << findFilterIndex(JSON_GetString(colValue)));
+                int index = findFilterIndex(JSON_GetString(colValue[i]));
+                ADD_BITS(mask, 1 << index);
             }
         }
         else if(colExceptValue.IsValid())
@@ -105,10 +109,13 @@ bool PhysicsConfigCompiler::readJSON(const JsonValue& root)
             mask = 0xffffffff;
             for(uint32_t i=0; i<colExceptValue.GetElementsCount(); ++i)
             {
-                REMOVE_BITS(mask, 1 << findFilterIndex(JSON_GetString(colValue)));
+                int index = findFilterIndex(JSON_GetString(colExceptValue[i]));
+                REMOVE_BITS(mask, 1 << index);
             }
         }
         filter.m_mask = mask;
+        filter.m_name = JSON_GetStringId(filterValue.GetValue("name"));
     }
-    return true;
+
+    return write_file(m_output, &cfg, sizeof(cfg));
 }
