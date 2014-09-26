@@ -26,6 +26,9 @@ local create_core = function()
 
     core.splash_state = function()
     {
+        //--->
+        physics.create_world(string_to_id("core/global"));
+
         while( true )
         {
             local w = get_window_width(); 
@@ -63,6 +66,10 @@ local create_core = function()
             if(input.is_key_just_pressed(input.F1))
             {
                 world.create_actor(string_to_id("core/common/floor"), 0, 0, 0);
+            }
+            else if(input.is_key_just_pressed(input.F2))
+            {
+                graphics.set_debug_mode(1);
             }
 
             yield();

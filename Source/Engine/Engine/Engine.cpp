@@ -103,7 +103,6 @@ void Engine::frame(float timeStep)
             g_physicsWorld.kick_in_jobs(timeStep);
             g_animMgr.kick_in_jobs();
             g_threadMgr.process_all_jobs();
-            
             //------------------------------------
             m_state = kFrameUpdating;
             g_actorWorld.step(timeStep);

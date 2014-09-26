@@ -10,6 +10,7 @@
 #include "Actor.h"
 #include "Level.h"
 #include "DataDef.h"
+#include "PhysicsWorld.h"
 #include "Texture.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
@@ -115,7 +116,6 @@ static int GM_CDECL input_is_key_down(gmThread* a_thread)
     a_thread->PushInt(g_win32Context.is_key_down(key_code));
     return GM_OK;
 }
-
 static int GM_CDECL input_is_key_just_pressed(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -123,7 +123,6 @@ static int GM_CDECL input_is_key_just_pressed(gmThread* a_thread)
     a_thread->PushInt(g_win32Context.is_key_just_pressed(key_code));
     return GM_OK;
 }
-
 static int GM_CDECL input_is_mouse_down(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -131,7 +130,6 @@ static int GM_CDECL input_is_mouse_down(gmThread* a_thread)
     a_thread->PushInt(g_win32Context.is_mouse_down(mouse_btn));
     return GM_OK;
 }
-
 static int GM_CDECL input_is_mouse_just_pressed(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -139,7 +137,6 @@ static int GM_CDECL input_is_mouse_just_pressed(gmThread* a_thread)
     a_thread->PushInt(g_win32Context.is_mouse_just_pressed(mouse_btn));
     return GM_OK;
 }
-
 static int GM_CDECL input_mouse_pos(gmThread* a_thread)
 {
     a_thread->PushInt(g_win32Context.m_mx);
@@ -152,7 +149,6 @@ static int GM_CDECL input_mouse_last_pos(gmThread* a_thread)
     a_thread->PushInt(g_win32Context.m_last_my);
     return GM_OK;
 }
-
 static int GM_CDECL input_is_mouse_moved(gmThread* a_thread)
 {
     a_thread->PushInt(g_win32Context.m_mouseMoved);
@@ -169,7 +165,6 @@ static int GM_CDECL resource_package_load(gmThread* a_thread)
     g_resourceMgr.load_package(pack_name);
     return GM_OK;
 }
-
 static int GM_CDECL resource_package_load_and_wait(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -177,7 +172,6 @@ static int GM_CDECL resource_package_load_and_wait(gmThread* a_thread)
     g_resourceMgr.load_package_and_wait(pack_name);
     return GM_OK;
 }
-
 static int GM_CDECL resource_package_unload(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -185,7 +179,6 @@ static int GM_CDECL resource_package_unload(gmThread* a_thread)
     g_resourceMgr.unload_package(StringId(pack_name));
     return GM_OK;
 }
-
 static int GM_CDECL resource_package_get_status(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -193,7 +186,6 @@ static int GM_CDECL resource_package_get_status(gmThread* a_thread)
     a_thread->PushInt(g_resourceMgr.get_package_status(StringId(pack_name)));
     return GM_OK;
 }
-
 static int GM_CDECL resource_package_flush(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
@@ -202,7 +194,6 @@ static int GM_CDECL resource_package_flush(gmThread* a_thread)
     g_resourceMgr.flush_package(StringId(pack_name), max_num);
     return GM_OK;
 }
-
 static int GM_CDECL resource_find(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
@@ -574,6 +565,16 @@ static int GM_CDECL imgui_draw_image_channel_scaled(gmThread* a_thread)
     imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, scale, aspect, (ImguiAlign::Enum)align);
     return GM_OK;
 }
+static int GM_CDECL imgui_get_widget_x(gmThread* a_thread)
+{
+    a_thread->PushInt(imguiGetWidgetX());
+    return GM_OK;
+}
+static int GM_CDECL imgui_get_widget_y(gmThread* a_thread)
+{
+    a_thread->PushInt(imguiGetWidgetY());
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -585,7 +586,6 @@ static int GM_CDECL graphics_draw(gmThread* a_thread)
     Graphics::draw((ShadingEnviroment*)shading_env_addr);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(8);
@@ -602,7 +602,6 @@ static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
     g_debugDrawMgr.add_line(start, end, color, depth);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_aabb(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(8);
@@ -619,7 +618,6 @@ static int GM_CDECL debug_draw_add_aabb(gmThread* a_thread)
     g_debugDrawMgr.add_aabb(min, max, color, depth);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
 {
     //TODO
@@ -638,7 +636,6 @@ static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
     g_debugDrawMgr.add_axis(t, size, depth);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
@@ -652,7 +649,6 @@ static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
     g_debugDrawMgr.add_cross(pos, size, color, depth);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_3d_text(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(5);
@@ -665,7 +661,6 @@ static int GM_CDECL debug_draw_add_3d_text(gmThread* a_thread)
     g_debugDrawMgr.add_text_3d(pos, text, color);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_sphere(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(6);
@@ -679,7 +674,6 @@ static int GM_CDECL debug_draw_add_sphere(gmThread* a_thread)
     g_debugDrawMgr.add_sphere(pos, radius, color, depth);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_circle(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(9);
@@ -697,7 +691,6 @@ static int GM_CDECL debug_draw_add_circle(gmThread* a_thread)
     g_debugDrawMgr.add_cycle(pos, normal, radius, color, depth);
     return GM_OK;
 }
-
 static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(4);
@@ -708,7 +701,6 @@ static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
     g_debugDrawMgr.add_grid(grid_num, grid_width, color, depth);
     return GM_OK;
 }
-
 static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
@@ -718,6 +710,24 @@ static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
         BGFX_DEBUG_NONE, BGFX_DEBUG_TEXT, BGFX_DEBUG_STATS, BGFX_DEBUG_IFH, BGFX_DEBUG_WIREFRAME, 
     };
     bgfx::setDebug(debug_modes[mode]);
+    return GM_OK;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// PHYSICS
+static int GM_CDECL physics_create_world(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(physics_config, 0);
+    bool b_ok = false;
+    PhysicsConfig* config = FIND_RESOURCE(PhysicsConfig, StringId(physics_config));
+    if(config)
+    {
+        g_physicsWorld.create_world(config);
+        b_ok = true;
+    }
+    a_thread->PushInt(b_ok);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -906,6 +916,9 @@ void register_enum_values(gmMachine* machine, const char* libName, gmVariableEnt
 
 void register_script_api(gmMachine* machine)
 {
+    #define REG_LIB(name, binding) machine->RegisterLibrary(binding, BX_COUNTOF(binding), #name);
+    #define REG_ENUM(name, values) register_enum_values(machine, #name, values, BX_COUNTOF(values));
+
     //----------------------------------------------------------
     // CORE
     static gmFunctionEntry s_core_binding[] =  
@@ -944,8 +957,8 @@ void register_script_api(gmMachine* machine)
         {"ERROR", gmVariable(kResourceError)},
         {"UNLOADING", gmVariable(kResourceRequestUnload)},
     };
-    machine->RegisterLibrary(s_resource_binding, BX_COUNTOF(s_resource_binding), "resource");
-    register_enum_values(machine, "resource", s_resource_values, BX_COUNTOF(s_resource_values));
+    REG_LIB(resource, s_resource_binding);
+    REG_ENUM(resource, s_resource_values);
 
     //----------------------------------------------------------
     // INPUT
@@ -981,9 +994,8 @@ void register_script_api(gmMachine* machine)
         {"UP", gmVariable(VK_UP)},
         {"DOWN", gmVariable(VK_DOWN)},
     };
-    machine->RegisterLibrary(s_script_binding, BX_COUNTOF(s_script_binding), "input");
-    register_enum_values(machine, "input", s_input_values, BX_COUNTOF(s_input_values));
-
+    REG_LIB(input, s_script_binding);
+    REG_ENUM(input, s_input_values);
     //----------------------------------------------------------
     // GUI
     static gmFunctionEntry s_gui_binding[] =
@@ -1022,6 +1034,8 @@ void register_script_api(gmMachine* machine)
         {"draw_image_scaled", imgui_draw_image_scaled},
         {"draw_image_channel", imgui_draw_image_channel},
         {"draw_image_channel_scaled", imgui_draw_image_channel_scaled},
+        {"get_widget_x", imgui_get_widget_x},
+        {"get_widget_y", imgui_get_widget_y}
     };
     static gmVariableEntry s_gui_values[] =
     {
@@ -1038,9 +1052,8 @@ void register_script_api(gmMachine* machine)
         {"BORDER_TOP", gmVariable(ImguiBorder::Top)},
         {"BORDER_BOTTOM", gmVariable(ImguiBorder::Bottom)},
     };
-    machine->RegisterLibrary(s_gui_binding, BX_COUNTOF(s_gui_binding), "gui");
-    register_enum_values(machine, "gui", s_gui_values, BX_COUNTOF(s_gui_values));
-
+    REG_LIB(gui, s_gui_binding);
+    REG_ENUM(gui, s_gui_values);
     //----------------------------------------------------------
     // GRAPHICS
     static gmFunctionEntry s_graphics_binding[] =
@@ -1059,8 +1072,16 @@ void register_script_api(gmMachine* machine)
     {
         "dummy", gmVariable(0),
     };
-    machine->RegisterLibrary(s_graphics_binding, BX_COUNTOF(s_graphics_binding), "graphics");
-    register_enum_values(machine, "graphics", s_graphics_values, BX_COUNTOF(s_graphics_values));
+    REG_LIB(graphics, s_graphics_binding);
+    REG_ENUM(graphics, s_graphics_values);
+    //----------------------------------------------------------
+    // WORLD
+    static gmFunctionEntry s_physics_binding[] =
+    {
+        {"create_world", physics_create_world},
+
+    };
+    REG_LIB(physics, s_physics_binding);
 
     //----------------------------------------------------------
     // WORLD
@@ -1089,6 +1110,6 @@ void register_script_api(gmMachine* machine)
         "CHARACTER", gmVariable(kCharacter),
         "CLASS_NUM", gmVariable(kActorClassNum),
     };
-    machine->RegisterLibrary(s_world_binding, BX_COUNTOF(s_world_binding), "world");
-    register_enum_values(machine, "world", s_world_values, BX_COUNTOF(s_world_values));
+    REG_LIB(world, s_world_binding);
+    REG_ENUM(world, s_world_values);
 }
