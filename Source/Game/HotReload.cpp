@@ -322,6 +322,28 @@ void reload_actor_resource(void* oldResource, void* newResource)
         }
     }
 }
+
+void reload_script_resource(void* oldResource, void* newResource)
+{
+    ScriptResource* oldScript = (ScriptResource*)oldResource;
+    ScriptResource* newScript = (ScriptResource*)newResource;
+    uint32_t componentNum = num_components(kComponentScript);
+    ScriptInstance* components = (ScriptInstance*)get_components(kComponentScript);
+    LOGI("component %s instance num = %d", T::get_name(), componentNum);
+    for(size_t i=0; i<componentNum; ++i)
+    {
+        if(components[i].m_resource == oldScript)
+        {
+            components[i].destroy();
+            components[i].init(newScript);
+        }
+    }
+
+    if(g_script.m_core_script == oldScript)
+    {
+        g_script.ready();
+    }
+}
 //===================================================================================================
 
 
@@ -338,6 +360,7 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(Level::get_type(), reload_level_resource);
     g_resourceMgr.register_reload_callback(Animation::get_type(), reload_animation_resource);
     g_resourceMgr.register_reload_callback(LightResource::get_type(), reload_light_resource);
+    g_resourceMgr.register_reload_callback(ScriptResource::get_type(), reload_script_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();
@@ -349,7 +372,6 @@ void resource_hot_reload_init()
     register_component_resource_reload_callback_<PhysicsResource, PhysicsInstance>();
     register_component_resource_reload_callback_<ProxyResource, ProxyInstance>();
     register_component_resource_reload_callback_<AnimFSM, AnimFSMInstance>();
-    register_component_resource_reload_callback_<ScriptResource, ScriptInstance>();
 }
 
 

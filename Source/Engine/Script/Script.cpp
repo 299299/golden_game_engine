@@ -43,7 +43,9 @@ void bringin_resource_script(void* resource)
 void bringout_resource_script(void* resource)
 {
     ScriptResource* script = (ScriptResource*)resource;
-    //script->m_rootFunction->Destruct(g_script.m_vm);
+    if(script->m_threadId < 0) return;
+    g_script.m_vm->KillThread(script->m_threadId);
+    script->m_threadId = -1;
 }
 
 int ScriptResource::execute() const
@@ -76,8 +78,6 @@ void ScriptInstance::destroy()
     m_threadId = -1;
 }
 
-ScriptSystem g_script;
-static char g_buffer_for_key[sizeof(Key) * MAX_SCRIPT_KEY + sizeof(float)*4+MAX_SCRIPT_KEY];
 
 static bool GM_CDECL machine_callback(gmMachine * a_machine, gmMachineCommand a_command, const void * a_context)
 {
@@ -94,11 +94,11 @@ static void GM_CDECL print_callback(gmMachine * a_machine, const char * a_string
     OutputDebugString("\n");
 }
 
+ScriptSystem g_script;
 void ScriptSystem::init()
 {
     memset(this, 0x00, sizeof(ScriptSystem));
     m_fact.m_keys = (Key*)g_buffer_for_key;
-    m_fact.m_values = g_buffer_for_key + sizeof(Key)*MAX_SCRIPT_KEY;
     m_vm = new gmMachine();
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
@@ -116,6 +116,7 @@ void ScriptSystem::quit()
 
 void ScriptSystem::ready()
 {
+    m_core_script = FIND_RESOURCE(ScriptResource, "core/scripts/core");
     m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
     ENGINE_ASSERT(m_core_table, "get g_core failed.");
     call_function("g_core", "init", 0);
@@ -173,17 +174,6 @@ void ScriptSystem::frame_end(float dt)
     if(m_time < GC_TIME) return;
     m_time -= GC_TIME;
     m_vm->CollectGarbage();
-}
-
-void ScriptSystem::add_key( const StringId& k, uint32_t type )
-{
-    if(m_fact.has_key(k)) return;
-    ENGINE_ASSERT((m_fact.m_num_keys <= MAX_SCRIPT_KEY-1), "script keys overflow!");
-    Key& key = m_fact.m_keys[m_fact.m_num_keys++];
-    key.m_name = k;
-    key.m_offset = m_value_offset;
-    extern uint32_t g_fact_valuesizes[];
-    m_value_offset += g_fact_valuesizes[type];
 }
 
 //-----------------------------------------------------------------------

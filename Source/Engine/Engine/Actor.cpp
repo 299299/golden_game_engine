@@ -10,6 +10,22 @@
 #include "PhysicsWorld.h"
 #include "MemorySystem.h"
 #include "memory.h"
+#include "EngineAssert.h"
+
+void ActorId::set_id(Id id)
+{
+    m_id = id.m_id;
+    ENGINE_ASSERT(id.m_index < (1 << 12), "ActorId index overflow.!");
+    m_index = id.m_index;
+}
+
+Id ActorId::get_id()
+{
+    Id id;
+    id.m_id = m_id;
+    id.m_index = m_index;
+    return id;
+}
 
 void* load_resource_actor(const char* data, uint32_t size)
 {
@@ -199,11 +215,19 @@ void ActorWorld::clear_actors(uint32_t type)
 ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
 {
     const ActorResource* actorResource = (const ActorResource*)res;
+    if(!actorResource)
+    {
+        ActorId id;
+        id.set(INVALID_U32);
+        return id;
+    }
+
+    uint32_t classId = actorResource->m_class;
     ActorId id;
-    id.m_class = actorResource->m_class;
+    id.m_class = classId;
     Actor actor;
     actor.init(actorResource, t);
-    id.m_id = g_actorBuckets[id.m_class].create(actor);
+    id.set_id(g_actorBuckets[classId].create(actor));
     return id;
 }
 
@@ -215,14 +239,17 @@ ActorId ActorWorld::create_actor( const StringId& resourceName, const hkQsTransf
 void ActorWorld::destroy_actor( ActorId actorId )
 {
     uint32_t classId = actorId.m_class;
-    Id id = actorId.m_id;
+    Id id = actorId.get_id();
+    if(!g_actorBuckets[classId].has(id.m_id)) return;
     g_actorBuckets[classId].destroy(id);
 }
 
 Actor* ActorWorld::get_actor( ActorId id )
 {
-    if(!g_actorBuckets[id.m_class].has(id.m_id)) return 0;
-    return &g_actorBuckets[id.m_class].get(id.m_id);
+    uint32_t classId = actorId.m_class;
+    Id id = actorId.get_id();
+    if(!g_actorBuckets[classId].has(id)) return 0;
+    return &g_actorBuckets[classId].get(id);
 }
 
 uint32_t ActorWorld::num_actors( uint32_t type )

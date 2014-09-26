@@ -59,15 +59,10 @@ struct ScriptSystem
     void add_key(const StringId& k, uint32_t type);
 
     gmMachine*              m_vm;
-    int                     m_threadId;
     float                   m_time;
 
+    ScriptResource*         m_core_script;
     gmTableObject*          m_core_table;
-    //gmFunctionObject*       m_pre_step_func;
-
-    Fact                    m_fact;
-    uint32_t                m_value_offset;
-    uint32_t                m_max_key_size;
 };
 
 extern ScriptSystem g_script;

@@ -44,8 +44,27 @@ ENGINE_NATIVE_ALIGN struct Actor
 
 struct ActorId
 {
-    Id              m_id;
-    uint32_t        m_class;
+    uint32_t    m_id;       : 16
+    uint32_t    m_index;    : 12;
+    uint32_t    m_class     : 4;
+
+    uint32_t pack() const
+    {
+        return *((uint32_t*)(this));    
+    }
+
+    void set(uint32_t pack_id)
+    {
+        *((uint32_t*)(this)) = pack_id;
+    }
+
+    bool is_valid() const
+    {
+        return pack() != INVALID_U32;
+    }
+
+    void set_id(Id id);
+    Id get_id();
 };
 
 struct ActorWorld
