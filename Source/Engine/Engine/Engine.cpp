@@ -32,6 +32,7 @@ void Engine::init( const EngineConfig& cfg )
     m_running = true;
     m_updating = true;
     m_cfg = cfg;
+    m_state = kFrameStart;
     LOG_INIT("EngineLog.html", "ENGINE");
     HiresTimer::init();
     core_init();
@@ -82,6 +83,7 @@ void Engine::frame(float timeStep)
         LOGW("FrameId overflow!!");
     }
 
+    m_state = kFrameStart;
     g_memoryMgr.frame_start();
     frame_start_websocket(timeStep);
     Graphics::frame_start();
@@ -93,6 +95,7 @@ void Engine::frame(float timeStep)
     {
         {
             PROFILE(Game_PreStep);
+            m_state = kFramePreStepping;
             g_actorWorld.pre_step(timeStep);
         }
         {
@@ -100,7 +103,9 @@ void Engine::frame(float timeStep)
             g_physicsWorld.kick_in_jobs(timeStep);
             g_animMgr.kick_in_jobs();
             g_threadMgr.process_all_jobs();
+            
             //------------------------------------
+            m_state = kFrameUpdating;
             g_actorWorld.step(timeStep);
             g_script.update(timeStep);
             //------------------------------------
@@ -110,10 +115,12 @@ void Engine::frame(float timeStep)
         }
         {
             PROFILE(Game_PostStep);
+            m_state = kFramePostStepping;
             g_actorWorld.post_step(timeStep);
         }
     }
 
+    m_state = kFrameEnd;
     Graphics::frame_end();
     g_script.frame_end(timeStep);
     g_threadMgr.vdb_update(timeStep);
@@ -121,6 +128,7 @@ void Engine::frame(float timeStep)
     if(g_engineMode == 0)
     {
         PROFILE(Game_Render);
+        m_state = kFrameRendering;
         g_actorWorld.draw();
     }
 }

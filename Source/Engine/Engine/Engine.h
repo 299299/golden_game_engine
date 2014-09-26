@@ -15,6 +15,17 @@ struct EngineConfig
     bool                        m_headless;
 };
 
+enum EngineFrameState
+{
+    kFrameStart,
+    kPreStepping,
+    kUpdating,
+    kPostStepping,
+    kFrameEnd,
+    kFrameRendering,
+    kFrameInvalid
+};
+
 
 struct Engine
 {
@@ -35,6 +46,7 @@ struct Engine
     void subsystem_shutdown();
 
     EngineConfig                            m_cfg;
+    int                                     m_state;
     bool                                    m_running;
     bool                                    m_updating;
 };

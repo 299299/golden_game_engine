@@ -103,7 +103,13 @@ void ScriptSystem::init()
     gmMachine::s_machineCallback = machine_callback;
     gmMachine::s_printCallback = print_callback;
     extern void register_script_api(gmMachine*);
+    extern void gmBindMathLib(gmMachine*);
+    extern void gmBindStringLib(gmMachine*);
+    extern void gmBindSystemLib(gmMachine*);
     register_script_api(m_vm);
+    gmBindMathLib(m_vm);
+    gmBindStringLib(m_vm);
+    gmBindSystemLib(m_vm);
     print_error();
 }
 
