@@ -340,10 +340,10 @@ static ComponentFactory g_componentFactories[] =
 {
     create_render_model, destroy_render_model, get_render_model, num_render_models, get_render_models,
     create_render_light, destroy_render_light, get_render_light, num_render_lights, get_render_lights,
-    create_anim_rig, destroy_anim_rig, get_anim_rig, num_anim_rigs, get_anim_rigs,
-    create_anim_fsm, destroy_anim_fsm, get_anim_fsm, num_anim_fsms, get_anim_fsms,
     create_physics_object, destroy_physics_object, get_physics_object, num_physics_objects, get_physics_objects,
     create_physics_proxy, destroy_physics_proxy, get_physics_proxy, num_physics_proxies, get_physics_proxies,
+    create_anim_rig, destroy_anim_rig, get_anim_rig, num_anim_rigs, get_anim_rigs,
+    create_anim_fsm, destroy_anim_fsm, get_anim_fsm, num_anim_fsms, get_anim_fsms,
     create_script_object, destroy_script_object, get_script_object, num_script_objects, get_script_objects,
 };
 StringId g_componentTypes[kComponentTypeNum];

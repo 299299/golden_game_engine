@@ -63,14 +63,9 @@ local create_core = function()
             gui.float_slider("Speed", "speed", this, 0.0, 1.0, 0.01);
             gui.end_area();
 
-            if(input.is_key_just_pressed(input.F1))
-            {
-                world.create_actor(string_to_id("core/common/floor"), 0, 0, 0);
-            }
-            else if(input.is_key_just_pressed(input.F2))
-            {
-                graphics.set_debug_mode(1);
-            }
+            sleep(5);
+            //if(input.is_key_just_pressed(input.F1))
+            world.create_actor(string_to_id("core/actor/cube"), 0, 0, 0);
 
             yield();
         }  
