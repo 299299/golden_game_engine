@@ -8,7 +8,9 @@
 #include "DebugDraw.h"
 #include "Profiler.h"
 #include "Actor.h"
+#include "Level.h"
 #include "DataDef.h"
+#include "Texture.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -424,6 +426,154 @@ static int GM_CDECL imgui_float_slider(gmThread* a_thread)
     a_thread->PushInt(imguiSlider(text, f, vmin, vmax, inc, (bool)enabled, (ImguiAlign::Enum)align));
     return GM_OK;
 }
+static int GM_CDECL imgui_int_slider(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_STRING_PARAM(text, 0);
+    GM_CHECK_STRING_PARAM(var_name, 1);
+    GM_CHECK_TABLE_PARAM(table, 2);
+    GM_CHECK_INT_PARAM(vmin, 3);
+    GM_CHECK_INT_PARAM(vmax, 4);
+    GM_INT_PARAM(enabled, 5, 1);
+    GM_INT_PARAM(align, 6, ImguiAlign::LeftIndented);
+    gmTableNode* node = find_table_node(table, var_name);
+    if(!node) 
+    {
+        GM_EXCEPTION_MSG("table has no variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    if(node->m_value.m_type != GM_INT)
+    {
+        GM_EXCEPTION_MSG("except int variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    int& i = node->m_value.m_value.m_int;
+    a_thread->PushInt(imguiSlider(text, i, vmin, vmax, (bool)enabled, (ImguiAlign::Enum)align));
+    return GM_OK;
+}
+static int GM_CDECL imgui_bool(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_STRING_PARAM(text, 0);
+    GM_CHECK_STRING_PARAM(var_name, 1);
+    GM_CHECK_TABLE_PARAM(table, 2);
+    GM_INT_PARAM(enabled, 3, 1);
+    gmTableNode* node = find_table_node(table, var_name);
+    if(!node) 
+    {
+        GM_EXCEPTION_MSG("table has no variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    if(node->m_value.m_type != GM_INT)
+    {
+        GM_EXCEPTION_MSG("except int variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    int& i = node->m_value.m_value.m_int;
+    imguiBool(text, (bool &)i, (bool)enabled);
+    return GM_OK;
+}
+static int GM_CDECL imgui_color_wheel(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(r, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(g, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(b, 2);
+    GM_INT_PARAM(respectIndentation, 3, 0);
+    GM_INT_PARAM(enabled, 4, 1);
+    float rgb[] = {r,g,b};
+    imguiColorWheel(rgb, respectIndentation, enabled);
+    return GM_OK;
+}
+static int GM_CDECL imgui_color_wheel_named(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(7);
+    GM_CHECK_STRING_PARAM(str, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(r, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(g, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(b, 3);
+    GM_CHECK_STRING_PARAM(var_name, 4);
+    GM_CHECK_TABLE_PARAM(table, 5);
+    GM_INT_PARAM(enabled, 6, 1);
+    gmTableNode* node = find_table_node(table, var_name);
+    if(!node) 
+    {
+        GM_EXCEPTION_MSG("table has no variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    if(node->m_value.m_type != GM_INT)
+    {
+        GM_EXCEPTION_MSG("except int variable named %s", var_name);
+        return GM_EXCEPTION;
+    }
+    int& i = node->m_value.m_value.m_int;
+    float rgb[] = {r,g,b};
+    imguiColorWheel(str, rgb, (bool&)i, enabled);
+    return GM_OK;
+}
+static int GM_CDECL imgui_is_mouse_over_area(gmThread* a_thread)
+{
+    a_thread->PushInt((int)imguiMouseOverArea());
+    return GM_OK;
+}
+static int GM_CDECL imgui_draw_image(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(4);
+    GM_CHECK_INT_PARAM(image_name, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(width, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(height, 3);
+    GM_INT_PARAM(align, ImguiAlign::LeftIndented);
+    Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
+    if(!tex) return GM_OK;
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
+    imguiImage(tex->m_handle, lod, (int)width, (int)height, align);
+    return GM_OK;
+}
+static int GM_CDECL imgui_draw_image_scaled(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(4);
+    GM_CHECK_INT_PARAM(image_name, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(scale, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(aspect, 3);
+    GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
+    Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
+    if(!tex) return GM_OK;
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
+    imguiImage(tex->m_handle, lod, scale, aspect, align);
+    return GM_OK;
+}
+static int GM_CDECL imgui_draw_image_channel(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_INT_PARAM(image_name, 0);
+    GM_CHECK_INT_PARAM(channel, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(lod, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(width, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(height, 4);
+    GM_INT_PARAM(align, 5, ImguiAlign::LeftIndented);
+    Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
+    if(!tex) return GM_OK;
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
+    imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, (int)width, (int)height, align);
+    return GM_OK;
+}
+static int GM_CDECL imgui_draw_image_channel_scaled(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_INT_PARAM(image_name, 0);
+    GM_CHECK_INT_PARAM(channel, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(lod, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(scale, 3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(aspect, 4);
+    GM_INT_PARAM(align, 5, ImguiAlign::LeftIndented);
+    Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
+    if(!tex) return GM_OK;
+    if(!bgfx::isValid(tex->m_handle)) tex->bringin();
+    imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, scale, aspect, align);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -724,6 +874,25 @@ static int GM_CDECL actor_set_int(gmThread* a_thread)
     a_thread->PushInt(actor->set_key(StringId(key_name), (int)key_value));
     return GM_OK;
 }
+static int GM_CDECL level_load(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(level_name, 0);
+    Level* level = FIND_RESOURCE(Level, StringId(level_name));
+    if(!level) return GM_OK;
+    level->load();
+    a_thread->PushInt(level->m_numLoadedObjects);
+    return GM_OK;
+}
+static int GM_CDECL level_unload(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(level_name, 0);
+    Level* level = FIND_RESOURCE(Level, StringId(level_name));
+    if(!level) return GM_OK;
+    level->unload();
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
@@ -844,6 +1013,15 @@ void register_script_api(gmMachine* machine)
         {"begin_scroll_area", imgui_begin_scroll_area},
         {"end_scroll_area", imgui_end_scroll_area},
         {"float_slider", imgui_float_slider},
+        {"int_slider", imgui_int_slider},
+        {"bool", imgui_bool},
+        {"color_wheel", imgui_color_wheel},
+        {"color_wheel_named", imgui_color_wheel_named},
+        {"is_mouse_over_area", imgui_is_mouse_over_area},
+        {"draw_image", imgui_draw_image},
+        {"draw_image_scaled", imgui_draw_image_scaled},
+        {"draw_image_channel", imgui_draw_image_channel},
+        {"draw_image_channel_scaled", imgui_draw_image_channel_scaled},
     };
     static gmVariableEntry s_gui_values[] =
     {
@@ -901,6 +1079,8 @@ void register_script_api(gmMachine* machine)
         {"actor_set_float", actor_set_float},
         {"actor_set_int", actor_set_int},
         {"actor_set_string", actor_set_string},
+        {"level_load", level_load},
+        {"level_unload", level_unload},
     };
     static gmVariableEntry s_world_values[] =
     {

@@ -2,15 +2,6 @@
 #include "StringId.h"
 #include "Actor.h"
 
-enum LevelState
-{
-    kLevelStateLoadingObjects = 0,
-    kLevelStateReady,
-    kLevelStateUnloaded,
-    kLevelStateMax
-};
-
-
 struct LevelObject
 {
     float           m_translation[3];
@@ -47,12 +38,7 @@ ENGINE_NATIVE_ALIGN struct Level
 {
     DECLARE_RESOURCE(level);
 
-    //========================================================
-    // hot data.
-    uint32_t                    m_state;
-    uint32_t                    m_loadedObjects;
-    uint32_t                    m_loadNumPerframe;
-    //=============================================================
+    uint32_t                    m_numLoadedObjects;
     // cold data
     LevelObject*                m_objects;
     LevelActorResource*         m_resources;
@@ -64,10 +50,8 @@ ENGINE_NATIVE_ALIGN struct Level
     uint32_t                    m_resourceOffset;
 
     void  lookup();
-    void  load(uint32_t max_num_perframe = 100);
+    void  load();
     void  unload();
-    void  update();
-    void  flush();
 };
 
 
