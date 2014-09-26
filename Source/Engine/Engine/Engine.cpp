@@ -12,6 +12,7 @@
 #include "Script.h"
 #include "Actor.h"
 #include "WebServerTool.h"
+#include "Camera.h"
 //=================================================================
 #include "Log.h"
 #include "DataDef.h"
@@ -97,6 +98,7 @@ void Engine::frame(float timeStep)
             PROFILE(Game_PreStep);
             m_state = kFramePreStepping;
             g_actorWorld.pre_step(timeStep);
+            g_script.pre_step(timeStep);
         }
         {
             PROFILE(Game_Step);
@@ -106,7 +108,7 @@ void Engine::frame(float timeStep)
             //------------------------------------
             m_state = kFrameUpdating;
             g_actorWorld.step(timeStep);
-            g_script.update(timeStep);
+            g_script.step(timeStep);
             //------------------------------------
             g_threadMgr.wait();
             g_physicsWorld.tick_finished_jobs();
@@ -116,12 +118,14 @@ void Engine::frame(float timeStep)
             PROFILE(Game_PostStep);
             m_state = kFramePostStepping;
             g_actorWorld.post_step(timeStep);
+            g_script.post_step(timeStep);
         }
     }
 
     m_state = kFrameEnd;
     Graphics::frame_end();
     g_script.frame_end(timeStep);
+    debug_update_vdb_camera();
     g_threadMgr.vdb_update(timeStep);
 
     if(g_engineMode == 0)

@@ -274,7 +274,7 @@ void ActorWorld::pre_step( float dt )
 
 void ActorWorld::step( float dt )
 {
-
+    Graphics::update(m_shading_env, dt);
 }
 
 void ActorWorld::post_step( float dt )

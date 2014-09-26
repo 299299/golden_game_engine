@@ -18,8 +18,16 @@ void Camera::update(const float* eye, const float* at)
 {
     bx::vec3Move(m_eye, eye);
     bx::vec3Move(m_at, at);
+#if 0
+    float view[16], proj[16];
+    bx::mtxLookAt(view, eye, at);
+    bx::mtxProj(proj, m_fov, g_win32Context.m_aspectRatio, m_near, m_far);
+    bx::mtxProjFlipHandedness(m_proj, proj);
+    bx::mtxViewFlipHandedness(m_view, view);
+#else
     bx::mtxLookAt(m_view, eye, at);
     bx::mtxProj(m_proj, m_fov, g_win32Context.m_aspectRatio, m_near, m_far);
+#endif
     m_frustum.build_view_frustum(m_view, m_proj);
 }
 
@@ -90,7 +98,7 @@ void Camera::project_2d_to_3d(float* out3DPos, const float* in2DPosWithDepth)
 }
 
 DebugFPSCamera::DebugFPSCamera()
-:m_velocity(1.0f)
+:m_velocity(5.0f)
 ,m_rotateSpeed(0.5f)
 ,m_horizontalAngle(0.01f)
 ,m_verticalAngle(0)
@@ -98,6 +106,8 @@ DebugFPSCamera::DebugFPSCamera()
     m_lastMouseX = g_win32Context.m_mx;
     m_lastMouseY = g_win32Context.m_my;
     m_verticalAngle = -1.0f;
+    vec3_make(m_at, 0, 0, 0);
+    vec3_make(m_eye, 0, 10, -10);
 }
 
 
@@ -160,10 +170,10 @@ void DebugFPSCamera::update(float dt)
     }
     else
     {
-        bMoveFlags[0] = g_win32Context.m_keyStatus['W'];
-        bMoveFlags[1] = g_win32Context.m_keyStatus['S'];
-        bMoveFlags[2] = g_win32Context.m_keyStatus['A'];
-        bMoveFlags[3] = g_win32Context.m_keyStatus['D'];
+        bMoveFlags[0] = g_win32Context.is_key_down('W');
+        bMoveFlags[1] = g_win32Context.is_key_down('S');
+        bMoveFlags[2] = g_win32Context.is_key_down('A');
+        bMoveFlags[3] = g_win32Context.is_key_down('D');
     }
 
     bool bMove = false;

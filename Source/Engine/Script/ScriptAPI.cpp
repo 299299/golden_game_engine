@@ -12,6 +12,7 @@
 #include "DataDef.h"
 #include "PhysicsWorld.h"
 #include "Texture.h"
+#include "Camera.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -620,20 +621,19 @@ static int GM_CDECL debug_draw_add_aabb(gmThread* a_thread)
 }
 static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
 {
-    //TODO
-    GM_CHECK_NUM_PARAMS(8);
+    GM_CHECK_NUM_PARAMS(6);
     GM_CHECK_FLOAT_OR_INT_PARAM(x0, 0);
     GM_CHECK_FLOAT_OR_INT_PARAM(y0, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(z0, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(x1, 3);
     GM_CHECK_FLOAT_OR_INT_PARAM(y1, 4);
     GM_CHECK_FLOAT_OR_INT_PARAM(z1, 5);
-    GM_CHECK_FLOAT_PARAM(size, 6);
-    GM_CHECK_INT_PARAM(depth, 7);
+    GM_FLOAT_PARAM(size, 6, 0.25f);
+    GM_INT_PARAM(depth, 7, 0);
     hkQsTransform t;
     t.m_translation.set(x0, y0, z0);
     t.m_rotation.setFromEulerAngles(x1, y1, z1);
-    g_debugDrawMgr.add_axis(t, size, depth);
+    g_debugDrawMgr.add_axis(t, size, (bool)depth);
     return GM_OK;
 }
 static int GM_CDECL debug_draw_add_cross(gmThread* a_thread)
@@ -710,6 +710,13 @@ static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
         BGFX_DEBUG_NONE, BGFX_DEBUG_TEXT, BGFX_DEBUG_STATS, BGFX_DEBUG_IFH, BGFX_DEBUG_WIREFRAME, 
     };
     bgfx::setDebug(debug_modes[mode]);
+    return GM_OK;
+}
+static int GM_CDECL graphics_update_debug_camera(gmThread* a_thread)
+{
+    extern DebugFPSCamera g_fpsCamera;
+    GM_FLOAT_PARAM(dt, 0, 1.0f/60.0f);
+    g_fpsCamera.update(dt);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -1067,6 +1074,7 @@ void register_script_api(gmMachine* machine)
         {"debug_add_sphere", debug_draw_add_circle},
         {"debug_add_grid", debug_draw_add_grid},
         {"set_debug_mode", graphics_set_debug_mode},
+        {"update_debug_camera", graphics_update_debug_camera},
     };
     static gmVariableEntry s_graphics_values[] =
     {

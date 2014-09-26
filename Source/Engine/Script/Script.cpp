@@ -4,6 +4,7 @@
 #include "config.h"
 #include "EngineAssert.h"
 #include "Resource.h"
+#include "Profiler.h"
 #include <Windows.h>
 #include <gamemonkey/gmThread.h>
 #include <gamemonkey/gmStreamBuffer.h>
@@ -127,13 +128,15 @@ void ScriptSystem::ready()
     call_function("g_core", "init", 0);
 }
 
+char script_error_buffer[1024*4];
 void ScriptSystem::print_error()
 {
     bool firstErr = true;
     gmLog & compileLog = m_vm->GetLog();
     const char *msg = compileLog.GetEntry(firstErr);
     if(!msg) return;
-    char script_error_buffer[2048];
+
+    memset(script_error_buffer, 0x00, sizeof(script_error_buffer));
     while(msg)	
     {
         LOGE(msg);
@@ -141,7 +144,7 @@ void ScriptSystem::print_error()
         msg = compileLog.GetEntry(firstErr);
     }
     compileLog.Reset();
-    msg_box("[Script Error]", script_error_buffer);
+    msg_box(script_error_buffer, "[Script Error]");
 }
 
 void ScriptSystem::call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param)
@@ -167,10 +170,21 @@ void ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_p
     print_error();
 }
 
-void ScriptSystem::update(float dt)
+void ScriptSystem::step(float dt)
 {
+    
+}
+
+void ScriptSystem::pre_step( float dt )
+{
+    PROFILE(script_update);
     int nThreadCount = m_vm->Execute((gmint)(dt*1000));
     print_error();
+}
+
+void ScriptSystem::post_step( float dt )
+{
+
 }
 
 void ScriptSystem::frame_end(float dt)
@@ -180,6 +194,8 @@ void ScriptSystem::frame_end(float dt)
     m_time -= GC_TIME;
     m_vm->CollectGarbage();
 }
+
+
 
 //-----------------------------------------------------------------------
 Id create_script_object(const void* resource)
