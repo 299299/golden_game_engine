@@ -33,7 +33,7 @@ void insert_string_id(uint32_t key, const char* value)
 }
 const char* stringid_lookup(const StringId& id)
 {
-    if(id.is_zero()) return "";
+    if(!id) return "";
     hkCriticalSectionLock _l(&g_stringTableCS);
     StringTable::iterator iter = g_stringTable.find(id.value());
     if(iter == g_stringTable.end()) return  0;
@@ -79,7 +79,7 @@ void save_string_table(const char* fName)
 static char g_buffer[32];
 const char* stringid_lookup(const StringId& id)
 {
-    if(id.is_zero()) return "";
+    if(!id) return "";
     sprintf_s(g_buffer, "%x", id.value());
     return g_buffer;
 }

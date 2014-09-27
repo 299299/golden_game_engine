@@ -9,7 +9,7 @@
 void Material::lookup()
 {
     m_shader = FIND_RESOURCE(ShaderProgram, m_shaderName);
-    if(!m_shadowShaderName.is_zero()) m_shadowShader = FIND_RESOURCE(ShaderProgram, m_shadowShaderName);
+    if(m_shadowShaderName) m_shadowShader = FIND_RESOURCE(ShaderProgram, m_shadowShaderName);
 
     for (uint32_t i=0; i<m_numSamplers; ++i) 
     {

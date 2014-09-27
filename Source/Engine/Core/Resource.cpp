@@ -407,7 +407,7 @@ void ResourceManager::register_factory(const ResourceFactory& factory)
 
 void* ResourceManager::find_resource( const StringId& type, const StringId& name )
 {
-    if(name.is_zero()) return 0;
+    if(!name) return 0;
     hkCriticalSectionLock _l(&g_resourceCS);
     ResourceMap::Iterator it = g_resourceMap->findKey(packId(type, name));
     if(!g_resourceMap->isValid(it))

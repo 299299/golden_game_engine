@@ -46,7 +46,7 @@ void lookup_resource_actor(void* resource)
     for (uint32_t i=0; i<kComponentTypeNum; ++i)
     {
         StringId name = actor->m_resourceNames[i];
-        actor->m_resources[i] = name.is_zero() ? 0 : g_resourceMgr.find_resource(g_componentTypes[i], name);
+        actor->m_resources[i] = name ? g_resourceMgr.find_resource(g_componentTypes[i], name) : 0;
     }
 }
 

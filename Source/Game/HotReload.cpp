@@ -130,7 +130,7 @@ void reload_animation_resource(void* oldResource, void* newResource)
     for (uint32_t i = 0; i < numOfAnimations; ++i)
     {
         Animation* anim = (Animation*)result[i]->m_ptr;
-        if(anim->m_mirroredFrom.is_zero()) continue;
+        if(!anim->m_mirroredFrom) continue;
         hkaMirroredAnimation* mirrorAnim = (hkaMirroredAnimation*)anim->m_animation;
         const hkaAnimationBinding* binding = mirrorAnim->getOriginalBinding();
         if(oldAnimation->m_binding == binding)

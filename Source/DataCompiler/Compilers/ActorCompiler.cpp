@@ -54,7 +54,7 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         }
 
         StringId& resourceName = actor->m_resourceNames[index];
-        if(!resourceName.is_zero())
+        if(resourceName)
         {
             addError("only one component one type !!!! %s", m_name.c_str());
             continue;

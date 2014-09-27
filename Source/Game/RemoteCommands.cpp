@@ -50,12 +50,12 @@ void reload_resource(const char* data1, const char* data2)
 {
     StringId resType(data1);
     StringId resName(data2);
-    if(resType.is_zero())
+    if(!resType)
     {
         LOGE("reload resource error, resource type is zero");
         return;
     }
-    if(resName.is_zero())
+    if(!resName)
     {
         LOGI("reload resources of type %s", data1);
         g_resourceMgr.reload_resource(resType);

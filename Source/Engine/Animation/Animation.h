@@ -50,7 +50,7 @@ ENGINE_NATIVE_ALIGN struct Animation
 
     int get_frames() const;
     float get_length() const;
-    bool mirrored() const { return !m_mirroredFrom.is_zero();};
+    bool mirrored() const { return m_mirroredFrom;};
     
     const AnimationBeat* find_beat(uint32_t type) const;
     const AnimationBeat* find_next_closest_beat(float time, bool bLoop) const;

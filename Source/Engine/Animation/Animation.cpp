@@ -24,14 +24,14 @@
 
 void Animation::destroy()
 {
-    if(m_mirroredFrom.is_zero()) return;
+    if(!m_mirroredFrom) return;
     if(m_binding) hkaMirroredAnimation::destroyMirroredBinding(m_binding);
     SAFE_REMOVEREF(m_animation);
 }
 
 void Animation::lookup()
 {
-    if(m_mirroredFrom.is_zero()) return;
+    if(!m_mirroredFrom) return;
     create_mirrored_animation(FIND_RESOURCE(Animation, m_mirroredFrom));
 }
 
