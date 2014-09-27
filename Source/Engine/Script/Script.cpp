@@ -44,9 +44,11 @@ void bringin_resource_script(void* resource)
 void bringout_resource_script(void* resource)
 {
     ScriptResource* script = (ScriptResource*)resource;
+    /*
     if(script->m_threadId < 0) return;
     g_script.m_vm->KillThread(script->m_threadId);
     script->m_threadId = -1;
+    */
 }
 
 int ScriptResource::execute() const
@@ -100,6 +102,7 @@ void ScriptSystem::init()
 {
     memset(this, 0x00, sizeof(ScriptSystem));
     m_vm = new gmMachine();
+    m_core_thread_id = -1;
     m_vm->SetDebugMode(true);
     gmMachine::s_machineCallback = machine_callback;
     gmMachine::s_printCallback = print_callback;
@@ -122,10 +125,15 @@ void ScriptSystem::quit()
 
 void ScriptSystem::ready()
 {
+    if(m_core_thread_id >= 0)
+    {
+        m_vm->KillThread(m_core_thread_id);
+        m_core_thread_id = -1;
+    }
     m_core_script = FIND_RESOURCE(ScriptResource, StringId("core/scripts/core"));
     m_core_table = m_vm->GetGlobals()->Get(m_vm, "g_core").GetTableObjectSafe();
     ENGINE_ASSERT(m_core_table, "get g_core failed.");
-    call_function("g_core", "init", 0);
+    m_core_thread_id = call_function("g_core", "init", 0);
 }
 
 char script_error_buffer[1024*4];
@@ -147,27 +155,31 @@ void ScriptSystem::print_error()
     msg_box(script_error_buffer, "[Script Error]");
 }
 
-void ScriptSystem::call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param)
+int ScriptSystem::call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param)
 {
+    int nThreadId = -1;
     gmTableObject* table = m_vm->GetGlobals()->Get(m_vm, a_obj_name).GetTableObjectSafe();
     if(!table) {
         LOGE("not find table %s", a_obj_name);
-        return;
+        return nThreadId;
     }
     gmCall call;
     call.BeginTableFunction(m_vm, a_func_name, table, gmVariable(table));
     if ( a_param ) call.AddParam( *a_param );
-    call.End();
+    call.End(&nThreadId);
     print_error();
+    return nThreadId;
 }
 
-void ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_param)
+int ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_param)
 {
+    int nThreadId = -1;
     gmCall call;
     call.BeginGlobalFunction(m_vm, a_func_name);
     if(a_param) call.AddParam(*a_param);
-    call.End();
+    call.End(&nThreadId);
     print_error();
+    return nThreadId;
 }
 
 void ScriptSystem::step(float dt)

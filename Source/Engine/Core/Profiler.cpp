@@ -113,7 +113,6 @@ ProfilerBlock* Profiler::alloc_block( const char* name )
 
 void Profiler::dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
 {
-    if (!maxDepth) maxDepth = 1;
     const uint8_t color = 0x1f;
     if (!showTotal)
     {

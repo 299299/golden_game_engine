@@ -66,11 +66,11 @@ static int GM_CDECL id_to_string(gmThread* a_thread)
 static int GM_CDECL rgba_to_int(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(3);
-    GM_CHECK_INT_PARAM(r, 0);
-    GM_CHECK_INT_PARAM(g, 1);
-    GM_CHECK_INT_PARAM(b, 2);
-    GM_INT_PARAM(a, 3, 255);
-    a_thread->PushInt(imguiRGBA(r,g,b,a));
+    GM_CHECK_FLOAT_OR_INT_PARAM(r, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(g, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(b, 2);
+    GM_FLOAT_OR_INT_PARAM(a, 3, 255);
+    a_thread->PushInt(imguiRGBA((uint8_t)r,(uint8_t)g,(uint8_t)b,(uint8_t)a));
     return GM_OK;
 }
 static int GM_CDECL get_window_width(gmThread* a_thread)
@@ -99,11 +99,10 @@ static int GM_CDECL begin_profile(gmThread* a_thread)
 SIMPLE_FUNC_REG(g_profiler.end_block(), end_profile);
 static int GM_CDECL show_profile(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(3);
-    GM_CHECK_INT_PARAM(show_unused, 0);
-    GM_CHECK_INT_PARAM(show_total, 1);
-    GM_CHECK_INT_PARAM(max_depth, 2);
-    g_profiler.dump(show_unused, show_total, max_depth);
+    GM_INT_PARAM(show_unused, 0, 0);
+    GM_INT_PARAM(show_total, 1, 0);
+    GM_INT_PARAM(max_depth, 2, -1);
+    g_profiler.dump((bool)show_unused, (bool)show_total, (uint32_t)max_depth);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -580,13 +579,6 @@ static int GM_CDECL imgui_get_widget_y(gmThread* a_thread)
 
 //-------------------------------------------------------------------------
 // DRAW
-static int GM_CDECL graphics_draw(gmThread* a_thread)
-{
-    GM_CHECK_NUM_PARAMS(1);
-    GM_CHECK_INT_PARAM(shading_env_addr, 0);
-    Graphics::draw((ShadingEnviroment*)shading_env_addr);
-    return GM_OK;
-}
 static int GM_CDECL debug_draw_add_line(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(8);
@@ -730,6 +722,30 @@ static int GM_CDECL debug_draw_lights(gmThread* a_thread)
 {
     extern void draw_debug_lights();
     draw_debug_lights();
+    return GM_OK;
+}
+static int GM_CDECL camera_set_position(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(pos_x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(pos_y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(pos_z, 2);
+    float pos[] = {pos_x, pos_y, pos_z};
+    float at[3];
+    bx::vec3Move(at, g_camera.m_at);
+    g_camera.update(pos, at);
+    return GM_OK;
+}
+static int GM_CDECL camera_set_lookat(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_FLOAT_OR_INT_PARAM(pos_x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(pos_y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(pos_z, 2);
+    float pos[] = {pos_x, pos_y, pos_z};
+    float eye[3];
+    bx::vec3Move(eye, g_camera.m_eye);
+    g_camera.update(eye, pos);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -1078,7 +1094,6 @@ void register_script_api(gmMachine* machine)
     // GRAPHICS
     static gmFunctionEntry s_graphics_binding[] =
     {
-        {"draw", graphics_draw},
         {"debug_add_line", debug_draw_add_line},
         {"debug_add_aabb", debug_draw_add_aabb},
         {"debug_add_axis", debug_draw_add_axis},
@@ -1090,6 +1105,8 @@ void register_script_api(gmMachine* machine)
         {"update_debug_camera", graphics_update_debug_camera},
         {"debug_draw_models", debug_draw_models},
         {"debug_draw_lights", debug_draw_lights},
+        {"camera_set_position", camera_set_position},
+        {"camera_set_lookat", camera_set_lookat},
     };
     static gmVariableEntry s_graphics_values[] =
     {

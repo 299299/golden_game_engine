@@ -33,6 +33,7 @@ void Level::unload()
     {
         g_actorWorld.destroy_actor(m_objects[i].m_actorId);
     }
+    m_numLoadedObjects = 0;
 }
 
 void Level::lookup()

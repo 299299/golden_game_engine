@@ -84,6 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
             msg_box("process already exist!", "ENGINE");
             return 0;
         }
+        printf("\n\n------ create web socket ----\n\n");
         initWebServerTool(6161);
         extern void init_remote_commands();
         init_remote_commands();

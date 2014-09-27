@@ -53,8 +53,8 @@ struct ScriptSystem
     void post_step(float dt);
 
     void print_error();
-    void call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param);
-    void call_global_function(const char* a_func_name, gmVariable* a_param);
+    int call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param);
+    int call_global_function(const char* a_func_name, gmVariable* a_param);
     void frame_end(float dt);
 
     void ready();
@@ -66,6 +66,7 @@ struct ScriptSystem
 
     ScriptResource*         m_core_script;
     gmTableObject*          m_core_table;
+    int                     m_core_thread_id;
 };
 
 extern ScriptSystem g_script;

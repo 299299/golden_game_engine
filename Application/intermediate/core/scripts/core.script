@@ -18,6 +18,8 @@ local create_core = function()
 
         physics.create_world(string_to_id("core/global"));
 
+        graphics.camera_set_position(0, 10, -10);
+        graphics.camera_set_lookat(0, 0, 0);
 
         this:stateSet(.splash_state);
     };
@@ -27,13 +29,55 @@ local create_core = function()
         print("game core shutdown.");
     };
 
+    core.fade_in = function(time)
+    {
+        local w = get_window_width(); 
+        local h = get_window_height(); 
+        local dt = 1.0/60.0;
+        local alpha = 255.0;
+        local fade_speed = 255.0/time;
+
+        while(true)
+        {
+            gui.draw_rect(0, 0, w, h, rgba_to_int(0,0,0,alpha));
+            alpha -= dt * fade_speed;
+            if(alpha <= 0.0)
+            {
+                return;
+            }
+            yield();
+        }
+    };
+
+    core.fade_out = function(time)
+    {
+        local w = get_window_width(); 
+        local h = get_window_height(); 
+        local dt = 1.0/60.0;
+        local alpha = 0.0;
+        local fade_speed = 255.0/time;
+
+        while(true)
+        {
+            gui.draw_rect(0, 0, w, h, rgba_to_int(0,0,0,alpha));
+            alpha += dt * fade_speed;
+            if(alpha >= 255.0)
+            {
+                return;
+            }
+            yield();
+        }
+    };
+
     core.splash_state = function()
     {
+        print("enter ---------------> splash state ");
+
         while( true )
         {
             local w = get_window_width(); 
             local h = get_window_height();  
-            gui.draw_round_rect(0, 0, w, h, 4, rgba_to_int(0,125,255));
+            gui.draw_rect(0, 0, w, h, rgba_to_int(0,0,0));
             gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "Loading core.package", rgba_to_int(255,255,0));
 
             local status = resource.get_package_status(g_package_loading);
@@ -53,18 +97,19 @@ local create_core = function()
 
     core.loaded_state = function()
     {
+        print("enter ---------------> loaded state ");
+
         world.load_level(string_to_id("world0/Level_Test"));
 
-        global debug_index = 0;
+        local w = get_window_width();
+        local h = get_window_height();  
+        local debug_index = 0;
+        
+        .fade_in(5.0);
+
+        local bShowProfile = false;
         while(true)
         {
-            local w = get_window_width();
-            local h = get_window_height();  
-            //gui.draw_text(w/2, h/2, gui.TEXT_ALGIN_LEFT, "Loaded!!!!!", rgba_to_int(255,0,0));
-
-            //gui.begin_area("test_area", 0, 0, 128, 512);
-            //gui.float_slider("Speed", "speed", this, 0.0, 1.0, 0.01);
-            //gui.end_area();
 
             if(input.is_key_just_pressed(input.F1))
             {
@@ -79,14 +124,19 @@ local create_core = function()
             {
                 shut_down();
             }
+            else if(input.is_key_just_pressed(input.F2))
+            {
+                bShowProfile = !bShowProfile;
+            }
 
             graphics.update_debug_camera();
-            graphics.debug_add_axis(0,0,0,0,0,0, 5);
+            graphics.debug_add_axis(0,0,0,0,0,0,1);
             graphics.debug_draw_models();
             graphics.debug_draw_lights();
-
-            //sleep(50);
-            //world.create_actor(string_to_id("core/actor/cube"), 0, 0, 0);
+            if(bShowProfile)
+            {
+                show_profile();
+            }
 
             yield();
         }  

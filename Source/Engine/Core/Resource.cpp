@@ -368,7 +368,6 @@ void ResourceManager::quit()
     set_running(false);
     m_semaphore->release();
     m_thread->joinThread();
-
     for(size_t i=0; i<m_numPackages; ++i)
     {
         m_packages[i]->destroy_all_resources();
@@ -381,6 +380,9 @@ void ResourceManager::quit()
     COMMON_DEALLOC(m_resMapBuffer);
     SAFE_DELETE(m_thread);
     SAFE_DELETE(m_semaphore);
+#ifndef _RETAIL
+    destroy_reload_resources();
+#endif
 }
 
 
