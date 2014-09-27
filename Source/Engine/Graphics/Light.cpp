@@ -20,7 +20,6 @@ void LightWorld::init()
     bx::mtxIdentity(m_shadowProj);
 }
 
-
 void LightWorld::reset()
 {
     m_numLightsToDraw = 0;
@@ -141,6 +140,7 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
 Id create_render_light(const void* res)
 {
     LightInstance inst;
+    memset(&inst, 0x00, sizeof(inst));
     const LightResource* lightResource = (const LightResource*)res;
     inst.m_resource = lightResource;
     memcpy(inst.m_color, lightResource->m_color, sizeof(inst.m_color));
@@ -170,6 +170,60 @@ uint32_t num_render_lights()
 void* get_render_lights()
 {
     return id_array::begin(m_lights);
+}
+
+
+#include "DebugDraw.h"
+void draw_debug_lights()
+{
+    uint32_t num = id_array::size(m_lights);
+    LightInstance* lights = id_array::begin(m_lights);
+    bool bShadow = false;
+
+    for (uint32_t i=0; i<num; ++i)
+    {
+        const LightInstance& lt = lights[i];
+        const LightResource* lt_res = lt.m_resource;
+        switch(lt_res->m_type)
+        {
+        case kLightDirectional:
+            {
+                float start[3] = {0, 10, 0};
+                float end[3];
+                bx::vec3Mul(end, lt.m_dir, 10.0f);
+                float UP[3] = {0, 1, 0};
+                float RIGHT[3] = {1, 0, 0};
+                float offset[3];
+                float tmp1[3], tmp2[3];
+
+                for (int i = -1; i < 2; ++i)
+                {
+                    for (int j = -1; j < 2; ++j)
+                    {
+                        bx::vec3Mul(tmp1, UP, 5.0f*i);
+                        bx::vec3Mul(tmp2, RIGHT, 5.0f*j);
+                        bx::vec3Add(offset, tmp1, tmp2);
+                        bx::vec3Add(tmp1, start, offset);
+                        bx::vec3Add(tmp2, end, offset);
+                        g_debugDrawMgr.add_line(tmp1, tmp2, RGBA(252,177,67,255), true);
+                    }
+                }
+
+                if(lt_res->m_hasShadow) bShadow = true;
+            }
+            break;
+        case kLightPoint:
+        case kLightSpot:
+            {
+                const float* m = lt.m_transform;
+                float pos[3] = {m[12], m[13], m[14]};
+                g_debugDrawMgr.add_cross(pos, 1.0f, RGBA(255,0,0,255), true);
+            }
+            break;
+        }
+    }
+
+    if(bShadow) g_debugDrawMgr.add_frustum(g_lightWorld.m_shadowFrustum, RGBA(0,106,106,181), true);
 }
 //-----------------------------------------------------------------
 //

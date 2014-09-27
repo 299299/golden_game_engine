@@ -236,6 +236,7 @@ struct DynamicIdArray
         uint32_t memSize = sizeof(Id) + sizeof(uint16_t) * 2 + sizeof(T);
         memSize *= capacity;
         char* p = (char*)allocator.allocate(memSize, 16);
+        memset(p, 0x00, memSize);
         m_objects = (T*)p;
         p += sizeof(T) * capacity;
         m_sparse = (Id*) p;

@@ -243,6 +243,7 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
 Id create_render_model(const void* modelResource)
 {
     ModelInstance inst;
+    memset(&inst, 0x00, sizeof(inst));
     inst.init(modelResource);
     return id_array::create(m_models, inst);
 }
@@ -267,6 +268,19 @@ uint32_t num_render_models()
 void* get_render_models()
 {
     return id_array::begin(m_models);
+}
+
+
+#include "DebugDraw.h"
+void draw_debug_models()
+{
+    uint32_t num = id_array::size(m_models);
+    ModelInstance* models = id_array::begin(m_models);
+    for (uint32_t i=0; i<num; ++i)
+    {
+        const Aabb& aabb = models[i].m_aabb;
+        g_debugDrawMgr.add_aabb(aabb.m_min, aabb.m_max, RGBA(0,255,0,255), true);
+    }
 }
 //-----------------------------------------------------------------
 //

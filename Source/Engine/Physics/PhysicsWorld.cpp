@@ -449,6 +449,7 @@ Id create_physics_object(const void* resource)
 {
     check_status();
     PhysicsInstance inst;
+    memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
     return id_array::create(m_objects, inst);
 }
@@ -483,6 +484,7 @@ Id create_physics_proxy(const void* resource)
 {
     check_status();
     ProxyInstance inst;
+    memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
     return id_array::create(m_proxies, inst);
 }

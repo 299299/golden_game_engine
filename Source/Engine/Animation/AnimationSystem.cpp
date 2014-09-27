@@ -164,6 +164,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 Id create_anim_fsm( const void* resource )
 {
     AnimFSMInstance inst;
+    memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
     return id_array::create(m_fsms, inst);
 }
@@ -196,6 +197,7 @@ Id create_anim_rig( const void* resource )
 {
     check_status();
     AnimRigInstance inst;
+    memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
     return id_array::create(m_rigs, inst);
 }

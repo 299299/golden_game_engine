@@ -4,7 +4,9 @@
 #include "XBoxInput.h"
 #include <Common/Visualize/hkDebugDisplay.h>
 
-Camera g_camera;
+Camera              g_camera;
+DebugFPSCamera      g_fpsCamera;
+
 void Camera::init()
 {
     memset(this, 0x00, sizeof(Camera));
@@ -98,7 +100,7 @@ void Camera::project_2d_to_3d(float* out3DPos, const float* in2DPosWithDepth)
 }
 
 DebugFPSCamera::DebugFPSCamera()
-:m_velocity(5.0f)
+:m_velocity(1.0f)
 ,m_rotateSpeed(0.5f)
 ,m_horizontalAngle(0.01f)
 ,m_verticalAngle(0)
@@ -229,14 +231,13 @@ void DebugFPSCamera::sync()
     g_camera.update(m_eye, m_at);
 }
 
-DebugFPSCamera  g_fpsCamera;
 void debug_update_vdb_camera(const char* name)
 {
     hkVector4 from, to, up;
     transform_vec3(from, g_camera.m_eye);
     transform_vec3(to, g_camera.m_at);
     transform_vec3(to, g_camera.m_up);
-    HK_DISPLAY_STAR(from, 0.25f, hkColor::BLUE);
+    HK_DISPLAY_STAR(from, 1.0f, hkColor::RED);
     HK_UPDATE_CAMERA(from, to, up, g_camera.m_near, g_camera.m_far, g_camera.m_fov, name);
 }
 

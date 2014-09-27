@@ -276,6 +276,7 @@ void Graphics::update(ShadingEnviroment* env, float dt)
 {
     PROFILE(Graphics_Update);
     g_modelWorld.update(dt);
+    g_lightWorld.update(dt);
     g_guiMgr.update(dt);
 
     g_modelWorld.cull_models(g_camera.m_frustum);

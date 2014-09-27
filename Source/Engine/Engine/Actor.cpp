@@ -61,6 +61,9 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t)
     extern Id create_componet(uint32_t type, const void* resource);
 
     m_resource = resource;
+    m_transform.setIdentity();
+    m_values = 0;
+
     for (uint32_t i=0; i<kComponentTypeNum; ++i)
     {
         const void* res = resource->m_resources[i];
@@ -72,10 +75,6 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t)
     {
         m_values = COMMON_ALLOC(char, fact.m_value_size);
         memcpy(m_values, fact.m_values, fact.m_value_size);
-    }
-    else
-    {
-        m_values = 0;
     }
     
     teleport_transform(t);
@@ -226,6 +225,7 @@ ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     ActorId id;
     id.m_class = classId;
     Actor actor;
+    //memset(&actor, 0x00, sizeof(Actor));
     actor.init(actorResource, t);
     id.set_id(g_actorBuckets[classId].create(actor));
     return id;

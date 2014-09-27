@@ -628,9 +628,10 @@ static int GM_CDECL debug_draw_add_axis(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(x1, 3);
     GM_CHECK_FLOAT_OR_INT_PARAM(y1, 4);
     GM_CHECK_FLOAT_OR_INT_PARAM(z1, 5);
-    GM_FLOAT_PARAM(size, 6, 0.25f);
+    GM_FLOAT_OR_INT_PARAM(size, 6, 0.25f);
     GM_INT_PARAM(depth, 7, 0);
     hkQsTransform t;
+    t.setIdentity();
     t.m_translation.set(x0, y0, z0);
     t.m_rotation.setFromEulerAngles(x1, y1, z1);
     g_debugDrawMgr.add_axis(t, size, (bool)depth);
@@ -717,6 +718,18 @@ static int GM_CDECL graphics_update_debug_camera(gmThread* a_thread)
     extern DebugFPSCamera g_fpsCamera;
     GM_FLOAT_PARAM(dt, 0, 1.0f/60.0f);
     g_fpsCamera.update(dt);
+    return GM_OK;
+}
+static int GM_CDECL debug_draw_models(gmThread* a_thread)
+{
+    extern void draw_debug_models();
+    draw_debug_models();
+    return GM_OK;
+}
+static int GM_CDECL debug_draw_lights(gmThread* a_thread)
+{
+    extern void draw_debug_lights();
+    draw_debug_lights();
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -1075,6 +1088,8 @@ void register_script_api(gmMachine* machine)
         {"debug_add_grid", debug_draw_add_grid},
         {"set_debug_mode", graphics_set_debug_mode},
         {"update_debug_camera", graphics_update_debug_camera},
+        {"debug_draw_models", debug_draw_models},
+        {"debug_draw_lights", debug_draw_lights},
     };
     static gmVariableEntry s_graphics_values[] =
     {
@@ -1108,8 +1123,8 @@ void register_script_api(gmMachine* machine)
         {"actor_set_float", actor_set_float},
         {"actor_set_int", actor_set_int},
         {"actor_set_string", actor_set_string},
-        {"level_load", level_load},
-        {"level_unload", level_unload},
+        {"load_level", level_load},
+        {"unload_level", level_unload},
     };
     static gmVariableEntry s_world_values[] =
     {

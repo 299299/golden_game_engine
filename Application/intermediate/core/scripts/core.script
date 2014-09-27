@@ -18,6 +18,7 @@ local create_core = function()
 
         physics.create_world(string_to_id("core/global"));
 
+
         this:stateSet(.splash_state);
     };
 
@@ -52,6 +53,8 @@ local create_core = function()
 
     core.loaded_state = function()
     {
+        world.load_level(string_to_id("world0/Level_Test"));
+
         global debug_index = 0;
         while(true)
         {
@@ -72,9 +75,15 @@ local create_core = function()
                     debug_index = 0;
                 }
             }
+            else if(input.is_key_just_pressed(input.ESC))
+            {
+                shut_down();
+            }
 
             graphics.update_debug_camera();
-            graphics.debug_add_axis(0,0,0, 0,0,0);
+            graphics.debug_add_axis(0,0,0,0,0,0, 5);
+            graphics.debug_draw_models();
+            graphics.debug_draw_lights();
 
             //sleep(50);
             //world.create_actor(string_to_id("core/actor/cube"), 0, 0, 0);
