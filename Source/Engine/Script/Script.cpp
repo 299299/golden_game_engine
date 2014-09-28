@@ -207,7 +207,10 @@ void ScriptSystem::frame_end(float dt)
     m_vm->CollectGarbage();
 }
 
-
+void ScriptSystem::full_garbge_collect()
+{
+    m_vm->CollectGarbage(true);
+}
 
 //-----------------------------------------------------------------------
 Id create_script_object(const void* resource)

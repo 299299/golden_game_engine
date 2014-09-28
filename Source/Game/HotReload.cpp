@@ -347,6 +347,8 @@ void reload_script_resource(void* oldResource, void* newResource)
         g_script.ready();
         g_camera.update(old_cam_pos, old_cam_at);
     }
+
+    g_script.full_garbge_collect();
 }
 //===================================================================================================
 

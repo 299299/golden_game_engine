@@ -53,9 +53,10 @@ struct ScriptSystem
     void post_step(float dt);
 
     void print_error();
-    int call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param);
-    int call_global_function(const char* a_func_name, gmVariable* a_param);
+    int  call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param);
+    int  call_global_function(const char* a_func_name, gmVariable* a_param);
     void frame_end(float dt);
+    void full_garbge_collect();
 
     void ready();
 
