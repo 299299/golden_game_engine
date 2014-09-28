@@ -23,17 +23,18 @@ static hkCriticalSection g_errorCS;
 static char msgBuffer[2048];
 static std::vector<std::string> g_errorMsg;
 int g_errorNum = 0;
-void showErrorMessage(const char* title)
+void showErrorMessage(const char* title, const char* error_file, bool bSlient)
 {
-    if(!g_errorNum)
-       return;
+    if(!g_errorNum) return;
     std::stringstream ss;
-    ss << "error occurs times =  " << g_errorNum << "\n";
     for(size_t i=0; i<g_errorMsg.size(); ++i)
     {
         ss << g_errorMsg[i] << "\n";
     }
-    msgBox(ss.str().c_str(), title);
+    std::string error_msg = ss.str();
+    write_file(error_file, (void*)error_msg.c_str(), error_msg.length());
+    if(bSlient) return;
+    msgBox(error_msg.c_str(), title);
 }
 void addError(const char* fmt, ...)
 {

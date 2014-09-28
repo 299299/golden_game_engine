@@ -303,9 +303,6 @@
     <ClCompile Include="..\ThirdParty\gamemonkey\gmOperators.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmParser.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\gamemonkey\gmScanner.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
@@ -368,6 +365,9 @@
     </ClCompile>
     <ClCompile Include="Script\Script.cpp">
       <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\gamemonkey\gmParser.cpp">
+      <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -826,9 +826,6 @@
     <ClInclude Include="..\ThirdParty\gamemonkey\gmOperators.h">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmParser.cpp.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
     <ClInclude Include="..\ThirdParty\gamemonkey\gmScanner.h">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClInclude>
@@ -898,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Script\Script.h">
       <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\gamemonkey\gmParser.cpp.h">
+      <Filter>ThirdParty\gamemonkey</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

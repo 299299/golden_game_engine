@@ -319,7 +319,7 @@ int gmCodeGenPrivate::Lock(const gmCodeTreeNode * a_codeTree, gmCodeGenHooks * a
     info.m_debugName = "__main";
     m_hooks->AddFunction(info);
 
-    //gmByteCodePrint(stdout, info.m_byteCode, info.m_byteCodeLength);
+    gmByteCodePrint(stdout, info.m_byteCode, info.m_byteCodeLength);
   }
 
   PopFunction();

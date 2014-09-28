@@ -23,22 +23,22 @@ ENGINE_NATIVE_ALIGN struct ScriptResource
     const char*             m_code;
     uint32_t                m_codeSize;
     gmFunctionObject*       m_rootFunction;
-    ScriptInclude*          m_includes;
-    uint32_t                m_numIncs;
-    int                     m_threadId;
-    uint32_t                m_codeOffset;
+    bool                    m_preLoaded;
+    char                    m_padding[3];
 
-    int execute() const;
     void pre_load();
 };
 
 
 struct ScriptInstance
 {
-    void init(const void* resource);
+    void init(const void* resource, Id id);
     void destroy();
+    void reload(const ScriptResource* resource);
+    int  call_function(const char* a_func_name, const gmVariable* a_param = 0);
 
     const ScriptResource*       m_resource;
+    gmTableObject*              m_table;
     int                         m_threadId;
 };
 
@@ -64,10 +64,7 @@ struct ScriptSystem
 
     gmMachine*              m_vm;
     float                   m_time;
-
-    ScriptResource*         m_core_script;
-    gmTableObject*          m_core_table;
-    int                     m_core_thread_id;
+    ScriptInstance*         m_coreScript;
 };
 
 extern ScriptSystem g_script;

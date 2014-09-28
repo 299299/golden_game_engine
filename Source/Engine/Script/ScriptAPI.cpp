@@ -13,6 +13,7 @@
 #include "PhysicsWorld.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Script.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -103,6 +104,15 @@ static int GM_CDECL show_profile(gmThread* a_thread)
     GM_INT_PARAM(show_total, 1, 0);
     GM_INT_PARAM(max_depth, 2, -1);
     g_profiler.dump((bool)show_unused, (bool)show_total, (uint32_t)max_depth);
+    return GM_OK;
+}
+static int GM_CDECL script_require(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_STRING_PARAM(script_file, 0);
+    ScriptResource* res = FIND_RESOURCE(ScriptResource, StringId(script_file));
+    if(!res) return GM_OK;
+    res->pre_load();
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -968,6 +978,7 @@ void register_script_api(gmMachine* machine)
         {"begin_profile", begin_profile},
         {"end_profile", end_profile},
         {"show_profile", show_profile},
+        {"require", script_require},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
 #endif

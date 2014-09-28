@@ -238,7 +238,6 @@ extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
 extern void* load_resource_script(const char* data, uint32_t size);
-extern void  lookup_resource_script(void* resource);
 extern void  bringin_resource_script(void* resource);
 extern void  bringout_resource_script(void* resource);
 //-----------------------------------------------------------------
@@ -266,7 +265,7 @@ static ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::get_name()},
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::get_name()},
     {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::get_name()},
-    {load_resource_script, 0, lookup_resource_script, bringin_resource_script, bringout_resource_script, ScriptResource::get_name()},
+    {load_resource_script, 0, 0, bringin_resource_script, bringout_resource_script, ScriptResource::get_name()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::get_name()},
 };
 void regster_resource_factories()

@@ -13,6 +13,7 @@
 #define     MSG_TITLE           ("DATA COMPILER")
 #define     DC_DATABASE         ("data_compiler_database.txt")
 #define     DC_RESULT           ("data_compiler_result.txt")
+#define     DC_ERROR            ("data_compiler_error.txt")
 
 enum DCErrorCode
 {

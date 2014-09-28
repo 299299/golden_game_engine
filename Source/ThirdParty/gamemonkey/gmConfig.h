@@ -95,7 +95,7 @@ enum gmEndian
 
 // DEBUGGING
 
-#define GMDEBUG_SUPPORT             1         // allow use with the gm debugger
+#define GMDEBUG_SUPPORT             0         // allow use with the gm debugger
 
 
 // GARBAGE COLLECTOR

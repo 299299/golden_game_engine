@@ -331,6 +331,7 @@ void clear_resources()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    delete_file(DC_ERROR);
     DWORD timeMS = ::GetTickCount();
 
     if(argc < 2) 
@@ -482,8 +483,9 @@ int _tmain(int argc, _TCHAR* argv[])
     timeMS = ::GetTickCount() - timeMS;
     
     extern int g_errorNum;
-    if(g_config.m_slient) g_config.m_exitCode = -g_errorNum;
-    else showErrorMessage(MSG_TITLE);
+    g_config.m_exitCode = -g_errorNum;
+    showErrorMessage(MSG_TITLE, DC_ERROR, g_config.m_slient);
+
     if(g_compilers.size() < 20) saveCompileResult(DC_RESULT);
     g_database.save(DC_DATABASE);
     clear_resources();

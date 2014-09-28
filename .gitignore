@@ -62,3 +62,4 @@ DCC_Export/havok/world1
 DCC_Export/havok/world2
 DataCompiler.exe
 HavokConverter.exe
+*_error.txt

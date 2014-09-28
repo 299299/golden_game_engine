@@ -167,6 +167,7 @@ int32_t thread_compile(void* _userData)
 
 int main(int argc, char* argv[])
 {
+    delete_file(HAVOK_ERROR);
     DWORD timeMS = ::GetTickCount();
     //======================================================
 #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
@@ -269,8 +270,8 @@ int main(int argc, char* argv[])
     }
 
     extern int g_errorNum;
-    if(g_config.m_slient) g_config.m_exitCode = -g_errorNum;
-    else showErrorMessage(MSG_TITLE);
+    g_config.m_exitCode = -g_errorNum;
+    showErrorMessage(MSG_TITLE, HAVOK_ERROR, g_config.m_slient);
 
     g_memoryMgr.quit();
 

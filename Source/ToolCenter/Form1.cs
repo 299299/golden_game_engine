@@ -87,45 +87,9 @@ namespace ToolCenter
             watch.Stop();
             float time = (float)watch.ElapsedMilliseconds / 1000;
             string msg = "Build Total Time = " + time.ToString() + " seconds\n";
-            if(hRetCode != 0)
-            {
-                msg += "HavokConvert error ";
-                if(hRetCode < 0)
-                {
-                    msg += "occurs = " + (-hRetCode).ToString() + "\n";
-                }
-                else
-                {
-                    string[] errorMsg = 
-                    {
-                        "",
-                        "havok load error",
-                        "input argument error",
-                        "save output error"
-                    };
-                    msg += errorMsg[hRetCode] + "\n";
-                }
-            }
-
-            if( dRetCode != 0) 
-            {
-                msg += "DataCompiler error ";
-                if( dRetCode < 0)
-                {
-                    msg += "occurs = " + (-dRetCode).ToString();
-                }
-                else
-                {
-                    string[] errorMsg = 
-                    {
-                        "",
-                        "input argument error",
-                    };
-                    msg += errorMsg[dRetCode];
-                }
-            }
-            
-            MessageBox.Show(msg, "TOOL_CENTER");
+            string hc_error = Utils.LoadString("havok_converter_error.txt");
+            string dc_error = Utils.LoadString("havok_convert_error.txt");
+            MessageBox.Show(msg+hc_error+dc_error, "TOOL_CENTER");
         }
 
         private void do_clean()

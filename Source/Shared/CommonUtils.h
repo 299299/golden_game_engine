@@ -36,7 +36,7 @@ void        createFolder(const std::string& folderName);
 void        string_replace(std::string& strBig, const std::string & strsrc, const std::string &strdst);
 void        addBackSlash(std::string& outStr);
 void        fixPathSlash(std::string& inout);
-void        showErrorMessage(const char* title);
+void        showErrorMessage(const char* title, const char* error_file, bool bSlient);
 bool        fileSystemCopy(const std::string& src, const std::string& destFolder);
 std::string getWorkingDir();
 void        runProcess(const std::string& process, const std::string& workingDir, const std::string& args);

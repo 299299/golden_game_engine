@@ -325,6 +325,9 @@ void reload_actor_resource(void* oldResource, void* newResource)
 
 void reload_script_resource(void* oldResource, void* newResource)
 {
+    float old_cam_pos[3], old_cam_at[3];
+    bx::vec3Move(old_cam_pos, g_camera.m_eye);
+    bx::vec3Move(old_cam_at, g_camera.m_at);
     ScriptResource* oldScript = (ScriptResource*)oldResource;
     ScriptResource* newScript = (ScriptResource*)newResource;
     uint32_t componentNum = num_components(kComponentScript);
@@ -334,20 +337,11 @@ void reload_script_resource(void* oldResource, void* newResource)
     {
         if(components[i].m_resource == oldScript)
         {
-            components[i].destroy();
-            components[i].init(newScript);
+            components[i].reload(newScript);
         }
     }
-
-    if(g_script.m_core_script == oldScript)
-    {
-        float old_cam_pos[3], old_cam_at[3];
-        bx::vec3Move(old_cam_pos, g_camera.m_eye);
-        bx::vec3Move(old_cam_at, g_camera.m_at);
-        g_script.ready();
-        g_camera.update(old_cam_pos, old_cam_at);
-    }
-
+    
+    g_camera.update(old_cam_pos, old_cam_at);
     g_script.full_garbge_collect();
 }
 //===================================================================================================

@@ -1,14 +1,13 @@
-local create_core = function()
+global create_core = function(id)
 {
     local core = 
     {
-        test_name = 0,
-        speed = 1.0, 
+        instance_id = id,
     };
 
-    core.init = function()
+    core.start = function()
     {
-        print("game core init.");
+        print("game core start.");
         .shading_env = resource.find_resource(string_to_id("shading_enviroment"), string_to_id("core/common/default"));
         world.set_shading_enviroment(.shading_env);
 
@@ -24,9 +23,9 @@ local create_core = function()
         this:stateSet(.splash_state);
     };
 
-    core.shutdown = function()
+    core.stop = function()
     {
-        print("game core shutdown.");
+        print("game core stop.");
     };
 
     core.fade_in = function(time)
@@ -110,7 +109,6 @@ local create_core = function()
         local bShowProfile = false;
         while(true)
         {
-
             if(input.is_key_just_pressed(input.F1))
             {
                 graphics.set_debug_mode(debug_index);
@@ -130,7 +128,7 @@ local create_core = function()
             }
 
             graphics.update_debug_camera();
-            graphics.debug_add_axis(0,0,0,0,0,0,1);
+            graphics.debug_add_axis(0,0,0,0,0,0,10);
             graphics.debug_draw_models();
             graphics.debug_draw_lights();
             if(bShowProfile)
@@ -142,7 +140,7 @@ local create_core = function()
         }  
     };
 
+    print("core ver 1!");
+
     return core;
 };
-
-global g_core = create_core();

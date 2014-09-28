@@ -9,6 +9,7 @@
 #define     MSG_TITLE           ("HAVOK CONVERTER")
 #define     PROXY_NAME          ("Proxy_")
 #define     LEVEL_NAME          ("Level")
+#define     HAVOK_ERROR         ("havok_convert_error.txt")
 
 enum HCExitCode
 {

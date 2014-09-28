@@ -1616,8 +1616,12 @@ void gmMachine::Sys_FreeUniqueString(const char * a_string)
 
 int gmMachine::GetThreadId()
 {
-  while(GetThread(++m_threadId)) {}
-  return m_threadId;
+  //while(GetThread(++m_threadId)) {}
+  int nRet = m_threadId;
+  ++m_threadId;
+  if(m_threadId >= 0xFFFFFFFE)
+      m_threadId = 0;
+  return nRet;
 }
 
 

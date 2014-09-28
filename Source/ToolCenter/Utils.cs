@@ -114,6 +114,21 @@ namespace ToolCenter
             File.Delete(fileToDelete);
         }
 
+        static public string LoadString(string fileName)
+        {
+            System.IO.StreamReader file;
+            try
+            {
+                file = new System.IO.StreamReader(fileName);
+            }
+            catch (System.IO.FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return "";
+            }
+            return file.ReadToEnd();
+        }
+
         static public void LoadSetting(string settingFile)
         {
             m_toolSetting = new Dictionary<string, string>();
