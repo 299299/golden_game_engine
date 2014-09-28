@@ -44,11 +44,9 @@ void bringin_resource_script(void* resource)
 void bringout_resource_script(void* resource)
 {
     ScriptResource* script = (ScriptResource*)resource;
-    /*
     if(script->m_threadId < 0) return;
     g_script.m_vm->KillThread(script->m_threadId);
     script->m_threadId = -1;
-    */
 }
 
 int ScriptResource::execute() const
@@ -66,12 +64,14 @@ void ScriptResource::pre_load()
     m_rootFunction = g_script.m_vm->BindLibToFunction(stream);
     g_script.print_error();
     m_threadId = execute();
+    gmThread* p_thread = g_script.m_vm->GetThread(m_threadId);
+    if(!p_thread) m_threadId = -1;
 }
 
 void ScriptInstance::init( const void* resource )
 {
     m_resource = (const ScriptResource*)resource;
-    m_threadId= m_resource->execute();
+    m_threadId = m_resource->execute();
 }
 
 void ScriptInstance::destroy()
