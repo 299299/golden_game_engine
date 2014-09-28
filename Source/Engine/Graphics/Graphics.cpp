@@ -170,9 +170,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     if(bFullScreen) g_resetFlag |= BGFX_RESET_FULLSCREEN;
     bgfx::reset(g_win32Context.m_width, g_win32Context.m_height, g_resetFlag);
     bgfx::setDebug(BGFX_DEBUG_TEXT);
-
-    uint32_t clearViewId = (1 << kShadowViewId) | (1 << kBackgroundViewId);
-    bgfx::setViewClearMask(clearViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, 0x303030ff, 1.0f, 0);
+    bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, 0x303030ff, 1.0f, 0);
+    bgfx::setViewClear(kBackgroundViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, 0x303030ff, 1.0f, 0);
 
     PosTexCoord0Vertex::init();
     createUniforms();
@@ -244,16 +243,6 @@ void postProcessInit()
     g_postProcess.m_brightFB = createFrameBuffer(width/2, height/2, 1, 1, true, fboFmt);
     bx::mtxIdentity(g_postProcess.m_view);
     bx::mtxOrtho(g_postProcess.m_proj, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f);
-
-    g_postProcess.m_quadViewId = (1 << kHDRBrightViewId) | (1 << kCombineViewId);
-    for (int i = 0; i < N_PASSES; ++i)
-    {
-        uint32_t hViewId = kHDRBlurViewIdStart + i*2 + 0;
-        uint32_t vViewId = kHDRBlurViewIdStart + i*2 + 1;
-        g_postProcess.m_quadViewId |= (1 << (hViewId));
-        g_postProcess.m_quadViewId |= (1 << (vViewId));
-    }
-
     g_status = 1;
 }
 
@@ -296,19 +285,29 @@ void submitPerFrameUniforms()
 void Graphics::draw(ShadingEnviroment* env)
 {
     //force clear color & depth executed.
-    bgfx::submitMask((1<<kShadowViewId)|(1 << kBackgroundViewId));
+    bgfx::submit(kShadowViewId);
+    bgfx::submit(kBackgroundViewId);
 
     g_guiMgr.draw();
 
     //prepare for view rects.
-    uint32_t screenViewId =  (1 << kBackgroundViewId) | (1 << kSceneViewId) | (1 << kDebugDrawViewId) | (1 << kCombineViewId);
-    bgfx::setViewRectMask(screenViewId, 0, 0, g_win32Context.m_width, g_win32Context.m_height);
+    int w = g_win32Context.m_width;
+    int h = g_win32Context.m_height;
+    bgfx::setViewRect(kBackgroundViewId, 0, 0, w, h);
+    bgfx::setViewRect(kSceneViewId, 0, 0, w, h);
+    bgfx::setViewRect(kDebugDrawViewId, 0, 0, w, h);
+    bgfx::setViewRect(kCombineViewId, 0, 0, w, h);
 
-    uint32_t sceneViewId = (1 << kBackgroundViewId) | (1 << kSceneViewId) | (1 << kDebugDrawViewId);
-    bgfx::setViewTransformMask(sceneViewId, g_camera.m_view, g_camera.m_proj);
+    const float* view = g_camera.m_view;
+    const float* proj = g_camera.m_proj;
+    bgfx::setViewTransform(kBackgroundViewId, view, proj);
+    bgfx::setViewTransform(kSceneViewId, view, proj);
+    bgfx::setViewTransform(kDebugDrawViewId, view, proj);
 
-    uint32_t colorViewId = (1 << kBackgroundViewId) | (1 << kSceneViewId) | (1<< kDebugDrawViewId);
-    bgfx::setViewFrameBufferMask(colorViewId, g_postProcess.m_colorFB->m_handle);
+    bgfx::FrameBufferHandle handle = g_postProcess.m_colorFB->m_handle;
+    bgfx::setViewFrameBuffer(kBackgroundViewId, handle);
+    bgfx::setViewFrameBuffer(kSceneViewId, handle);
+    bgfx::setViewFrameBuffer(kDebugDrawViewId, handle);
 
     submitPerFrameUniforms();
     g_lightWorld.submit_lights(env);
@@ -354,8 +353,11 @@ void postProcessSubmit(ShadingEnviroment* env)
 
     bgfx::TextureHandle colorTex = g_postProcess.m_colorFB->m_textures[0];
     bgfx::TextureHandle depthTex = g_postProcess.m_colorFB->m_textures[1];
+    const float* view = g_postProcess.m_view;
+    const float* proj = g_postProcess.m_proj;
     float* dirParams = env->m_ppParams;
-    bgfx::setViewTransformMask(g_postProcess.m_quadViewId, g_postProcess.m_view, g_postProcess.m_proj);
+    bgfx::setViewTransform(kHDRBrightViewId, view, proj);
+    bgfx::setViewTransform(kCombineViewId, view, proj);
 
     FrameBuffer* fb = g_postProcess.m_brightFB;
     fb->begin(kHDRBrightViewId);
@@ -371,7 +373,9 @@ void postProcessSubmit(ShadingEnviroment* env)
 
         uint32_t hViewId = kHDRBlurViewIdStart + i*2 + 0;
         uint32_t vViewId = kHDRBlurViewIdStart + i*2 + 1;
-
+        bgfx::setViewTransform(hViewId, view, proj);
+        bgfx::setViewTransform(vViewId, view, proj);
+        
         // horizontalBlur
         hfb->begin(hViewId);
         Graphics::set_texture(TEX_COLOR_SLOT, current->m_handle);

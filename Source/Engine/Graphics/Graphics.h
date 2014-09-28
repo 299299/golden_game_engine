@@ -85,8 +85,6 @@ struct PostProcess
     FrameBuffer*                        m_colorFB;
     FrameBuffer*                        m_brightFB;
     FrameBuffer*                        m_blurFB[N_PASSES][2]; // hblur + vblur
-
-    uint32_t                            m_quadViewId;
 };
 
 struct ShadingEnviroment;
