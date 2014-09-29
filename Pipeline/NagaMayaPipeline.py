@@ -37,7 +37,6 @@ class NagaPipeline(object):
         self.engineScale = 0.01
         self.lastSyncCallback = None
         # GUI
-        self._loadSettings()
         self._createUI()
         # WEB
         self.webSock = WEB.MayaWebSocket()
@@ -59,35 +58,6 @@ class NagaPipeline(object):
         self.disconnect_to_game_server()
         self.created = False
         # print("########### NagaPipeline::destroy end ##################")
-
-    def _loadSettings(self):
-        self.settings = dict()
-        self.settings.clear()
-        fileName = NAGA.getMayaScriptPath() + 'setting.ini'
-        print(fileName)
-        if(not os.path.exists(fileName)):
-            return
-        f = open(fileName, 'r')
-        lines = f.readlines()
-        for line in lines:
-            line = line.strip('\n')
-            nameList = line.split('=')
-            key = nameList[1]
-            value = nameList[0]
-            print(key + '=' + value)
-            self.settings[key] = value
-        key = 'nagaPath'
-        if(key in self.settings):
-            self.naga.onNagaPathChanged(self.settings[key])
-
-    def _saveSettings(self):
-        fileName = NAGA.getMayaScriptPath() + 'setting.ini'
-        print(fileName)
-        f = open(fileName, 'w')
-        for key, value in self.settings.items():
-            line = '%s=%s\n' % (key, value)
-            f.write(line)
-        f.close()
 
     #
     # Callbacks
@@ -118,13 +88,6 @@ class NagaPipeline(object):
         self.selectCheck = cmds.checkBox(label='Export Select Only', v=False)
         cmds.setParent('..')
 
-        cmds.frameLayout(l="Engine Parameters", cll=1, h=50)
-        cmds.rowLayout(numberOfColumns=2)
-        self.filePath = cmds.textField(w=300, ed=True, text=self.naga.nagaPath)
-        cmds.button(label="Browse...", w=75, c=self.fileExplorer)
-        cmds.setParent('..')
-        cmds.setParent('..')
-
         height = 30
         margin_w = 5
         margin_h = 5
@@ -135,16 +98,10 @@ class NagaPipeline(object):
         cmds.setParent('..')
         cmds.setParent('..')
 
-        cmds.frameLayout(
-            l="Engine Remote", cll=1, mh=margin_h, mw=margin_w)
-        cmds.button('Close Engine', h=height, c=self.onCloseEngineClicked)
-        cmds.button('ReOpen Engine', h=height, c=self.onReopenEngineClicked)
-        cmds.setParent('..')
-        cmds.setParent('..')
-
         cmds.frameLayout(l="Animation", cll=1, mh=2, mw=2)
         cmds.rowLayout(numberOfColumns=3)
         animation_types = [
+            'skin-rig'
             'default',
             'root-motion-no-rotation',
             'root-motion-rotation',
@@ -154,7 +111,13 @@ class NagaPipeline(object):
         self.animTypeGroup = cmds.optionMenuGrp('AnimType')
         for animType in animation_types:
             cmds.menuItem(label=animType)
+        cmds.text(label='rig type:', align='center', bgc=[0, 1, 0])
+        self.rigTypeGroup = cmds.optionMenuGrp('RigType')
+        for rigType in self.naga.getRigList():
+            cmds.menuItem(label=rigType)
         cmds.button('Export', h=height, c=self.onAnimExportClicked)
+        cmds.setParent('..')
+        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -183,49 +146,22 @@ class NagaPipeline(object):
         cmds.file(mf=0)
         cmds.file(self.lastMayaScene, o=True)
 
-    def onCloseEngineClicked(self, *arg):
-        self.webSock.sendmayacommand('exit')
-
-    def onReopenEngineClicked(self, *arg):
-        self.reOpenEngine()
-
-    def fileExplorer(self, *arg):
-        filename = cmds.fileDialog2(fm=3, caption="Engine Path")
-        if not filename:
-            return
-        self.naga.onNagaPathChanged(filename[0])
-        cmds.textField(self.filePath, e=1, text=self.naga.nagaPath)
-        key = 'nagaPath'
-        value = self.naga.nagaPath
-        if(key in self.settings):
-            dct = {key: value}
-            self.settings.update(dct)
-        else:
-            self.settings[key] = value
-        self._saveSettings()
-
     def onAnimExportClicked(self, *arg):
         exportName = NAGA.getSceneName()
-        packageName = 'Animation'
-        index = cmds.optionMenuGrp(self.animTypeGroup, q=1, sl=1) - 2
-        self.export(exportName, packageName, index)
+        packageName = 'animation'
+        rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
+        rigName = self.naga.getRigList()[rigIndex]
+        index = cmds.optionMenuGrp(self.animTypeGroup, q=1, sl=1) - 1
+        self.export(exportName, packageName, index, rigName)
 
     #
     # UTIL FUNCTIONS
     #
-
-    def reOpenEngine(self, timeToWait=1):
-        self.webSock.sendmayacommand('exit')
-        time.sleep(timeToWait)
-        width = 800
-        height = 600
-        args = ['-m', '1', '-w', str(width), '-h', str(height)]
-        NAGA.lunchApplication(GAME_APP, self.naga.appPath, args, False)
-
-    def export(self, exportName, packageName, hkoType=0):
+    def export(self, exportName, packageName, hkoType=0, rigName=''):
         # step1 : export use havok plugin.
         self.naga.exportToHKX(
-            exportName, packageName, hkoType, '', '', s=self.isSelectOnly())
+            exportName, packageName, hkoType, rig=rigName, arg='',
+            s=self.isSelectOnly())
 
         # step2 : convert the hkx to intermediate data
         # using havok converter
@@ -268,12 +204,16 @@ class NagaPipeline(object):
         height = 600
         if(NAGA.isLevel(sceneName)):
             previewName = packageName + '/' + sceneName
-            args = ['-m', '1', '--level',
-                    previewName, '-w', str(width), '-h', str(height)]
+            args = ['--websocket',
+                    '--script', 'core/scripts/preview',
+                    '--level', previewName,
+                    '-w', str(width), '-h', str(height)]
         else:
             previewName = packageName + '/actor/' + sceneName
-            args = ['-m', '1', '--actor',
-                    previewName, '-w', str(width), '-h', str(height)]
+            args = ['--websocket',
+                    '--script', 'core/scripts/preview',
+                    '--actor', previewName,
+                    '-w', str(width), '-h', str(height)]
         NAGA.lunchApplication(GAME_APP, self.naga.appPath, args, False)
 
     #

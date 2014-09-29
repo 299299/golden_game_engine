@@ -53,7 +53,7 @@ namespace ToolCenter
 
         private void button_testgame_Click(object sender, EventArgs e)
         {
-            Utils.Run(Utils.getApplicationDir(), "Game_Debug.exe", "-m 1 --level world0/Level_Test", false);
+            Utils.Run(Utils.getApplicationDir(), "Game_Debug.exe", "--websocket --script core/scripts/core", false);
         }
 
         private void button_toolcopy_Click(object sender, EventArgs e)
@@ -89,7 +89,7 @@ namespace ToolCenter
             string msg = "Build Total Time = " + time.ToString() + " seconds\n";
             string hc_error = Utils.LoadString("havok_converter_error.txt");
             string dc_error = Utils.LoadString("havok_convert_error.txt");
-            MessageBox.Show(msg+hc_error+dc_error, "TOOL_CENTER");
+            MessageBox.Show(msg+hc_error + dc_error, "TOOL_CENTER");
         }
 
         private void do_clean()

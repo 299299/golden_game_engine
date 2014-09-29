@@ -53,13 +53,31 @@ void AnimRigConverter::process(RigSkinData* skin)
 void AnimRigConverter::postProcess()
 {
     __super::postProcess();
+
+#if 1
+    hkaSkeleton* skeleton = (hkaSkeleton*)m_skin->m_rig;
+    std::string rigFileName = "../pipeline/";
+    rigFileName += m_name + "_rig.txt";
+    FILE* fp = fopen(rigFileName.c_str(), "w");
+    fprintf("[HAVOK SKELETON DEFINITION FILE]\n");
+    fprintf("\n");
+    fprintf("[BONES START]\n");
+    for(int i=0; i<skeleton->m_bones.getSize(); ++i)
+    {
+        const hkaBone& bone = skeleton->m_bones[i];
+        fprintf("%s\n", bone.m_name.cString());
+    }
+    fprintf("[END]\n");
+    fclose(fp);
+#endif
+
     m_rigFileName = m_ownner->m_config->m_exportFolder + m_name + "_rig.havok";
     exportRig(m_rigFileName.c_str());
 }
 
 void AnimRigConverter::exportRig(const char* fileName)
 {
-    extern const char*          g_humanBodyNames[];
+    extern const char* g_humanBodyNames[];
     //if we have a skin rig data
     //we should also write the rig data to a specific havok hkt file
     //here we split the skin and skeleton file

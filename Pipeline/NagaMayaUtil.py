@@ -21,71 +21,6 @@ PROXY_PREFIX = 'Proxy_'
 PROXY_GROUP = 'Proxy'
 
 
-def getMatrix(node):
-    '''
-    Gets the world matrix of an object based on name.
-    '''
-    # Selection list object and MObject for our matrix
-    selection = OpenMaya.MSelectionList()
-    matrixObject = OpenMaya.MObject()
-
-    # Adding object
-    selection.add(node)
-
-    # New api is nice since it will just return an MObject instead of taking
-    # two arguments.
-    MObjectA = selection.getDependNode(0)
-
-    # Dependency node so we can get the worldMatrix attribute
-    fnThisNode = OpenMaya.MFnDependencyNode(MObjectA)
-
-    # Get it's world matrix plug
-    worldMatrixAttr = fnThisNode.attribute("worldMatrix")
-
-    # Getting mPlug by plugging in our MObject and attribute
-    matrixPlug = OpenMaya.MPlug(MObjectA, worldMatrixAttr)
-    matrixPlug = matrixPlug.elementByLogicalIndex(0)
-
-    # Get matrix plug as MObject so we can get it's data.
-    matrixObject = matrixPlug.asMObject()
-
-    # Finally get the data
-    worldMatrixData = OpenMaya.MFnMatrixData(matrixObject)
-    worldMatrix = worldMatrixData.matrix()
-
-    return worldMatrix
-
-
-def decompMatrix(node, matrix):
-    '''
-    Decomposes a MMatrix in new api. Returns an list of translation,rotation,scale in world space.
-    '''
-    # Rotate order of object
-    rotOrder = cmds.getAttr('%s.rotateOrder' % node)
-
-    # Puts matrix into transformation matrix
-    mTransformMtx = OpenMaya.MTransformationMatrix(matrix)
-
-    # Translation Values
-    trans = mTransformMtx.translation(OpenMaya.MSpace.kWorld)
-
-    # Euler rotation value in radians
-    eulerRot = mTransformMtx.rotation()
-
-    # Reorder rotation order based on ctrl.
-    eulerRot.reorderIt(rotOrder)
-
-    # Find degrees
-    angles = [math.degrees(angle)
-              for angle in (eulerRot.x, eulerRot.y, eulerRot.z)]
-
-    # Find world scale of our object.
-    scale = mTransformMtx.scale(OpenMaya.MSpace.kWorld)
-
-    # Return Values
-    return [trans.x, trans.y, trans.z], angles, scale
-
-
 def lunchApplication(name, folder, args, wait=False):
     print('lunch name = ' + name + ', folder = ' + folder)
     path = folder + name
@@ -216,14 +151,6 @@ def findNodeNameEqual(name):
         if(node == name):
             return node
     return ''
-
-
-def getCameraFov(cameraShapeName='perspShape'):
-    aperture = cmds.getAttr(cameraShapeName + '.hfa')
-    fl = cmds.getAttr(cameraShapeName + '.focalLength')
-    fov = aperture * 0.5 / (fl * 0.03937)
-    fov = 2.0 * math.atan(fov) / 3.14159 * 180.0
-    return fov
 
 
 def getMayaScriptPath():
@@ -418,6 +345,9 @@ class NagaMayaUtil(object):
             if folder != 'core' and folder != 'preview':
                 retList.append(folder)
         return retList
+
+    def getRigList(self):
+        return osGetFileList(self.pipelinePath, '_rig.txt')
 
     #
     #

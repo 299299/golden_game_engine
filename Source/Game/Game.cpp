@@ -10,6 +10,7 @@
 #include "Graphics.h"
 #include "Script.h"
 #include "Utils.h"
+#include "Actor.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -20,11 +21,14 @@ void showHelp()
 {
     printf("Usage: Game [options]\n"
             "Options:\n"
-            "-m set game mode(0-test, 1-remote, 2-render)\n"
             "-w set window width\n"
             "-h set window height\n"
+            "-t set window title\n"
+            "--package --> package to load\n"
+            "--script --> actor name\n"
             "--actor previewer --> actor name\n"
             "--level previewer --> level name\n"
+            "--websocket wait for debug attach when launched.\n"
             "--debug wait for debug attach when launched.\n"
             "--headless no graphics & no window\n");
 }
@@ -51,33 +55,37 @@ int _tmain(int argc, _TCHAR* argv[])
 
     showHelp();
 
-    const char* loadEntityName = 0;
-    const char* loadLevelName = 0;
+    const char* actor_name = 0;
+    const char* level_name = 0;
+    const char* package_name = 0;
+    const char* script = 0;
 
     EngineConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
-    cfg.m_checkMemory = true;    
-    cfg.m_mode = 0;
-    cfg.m_windowTitle = "Engine";
+    cfg.m_checkMemory = true;
+    cfg.m_windowTitle = "naga_engine";
     cfg.m_windowWidth = 1280;
     cfg.m_windowHeight = 720;
     cfg.m_fixedFPS = 60;
     bx::CommandLine cmdline(argc, argv);
     
-    const char* name = cmdline.findOption('m');
-    if(name) cfg.m_mode = atoi(name);
-    name = cmdline.findOption('w');
+    const char* name = cmdline.findOption('w');
     if(name) cfg.m_windowWidth = atoi(name);
     name = cmdline.findOption('h');
     if(name) cfg.m_windowHeight = atoi(name);
     cfg.m_headless = cmdline.hasArg("headless");
     name = cmdline.findOption("actor");
-    if(name) loadEntityName = name;
+    if(name) actor_name = name;
     name = cmdline.findOption("level");
-    if(name) loadLevelName = name;
+    if(name) level_name = name;
+    name = cmdline.findOption('t');
+    if(name) cfg.m_windowTitle = name;
+    script = cmdline.findOption("script");
+    package_name = cmdline.findOption("package");
+
     if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.", "ENGINE");
 
-    if(cfg.m_mode == 1)
+    if(cmdline.hasArg("websocket"))
     {
         if(checkSingleProcess() == FALSE)
         {
@@ -90,13 +98,6 @@ int _tmain(int argc, _TCHAR* argv[])
         init_remote_commands();
     }
 
-    static const char* window_names[] =
-    {
-        "test-game", "remote-viewer", "render-viewer",
-    };
-    cfg.m_webServer = cfg.m_mode == 1;
-    cfg.m_windowTitle = window_names[cfg.m_mode];
-
     extern void register_memory_allocators();
     register_memory_allocators();
 
@@ -105,18 +106,26 @@ int _tmain(int argc, _TCHAR* argv[])
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
 
-    extern char g_actorName[];
-    extern char g_levelName[];
-
-    if(loadEntityName) strcpy(g_actorName, loadEntityName);
-    if(loadLevelName) strcpy(g_levelName, loadLevelName);
-
     g_resourceMgr.load_package_and_wait("data/core.package");
 
     Graphics::ready();
     g_debugDrawMgr.ready();
-    g_script.ready();
-    
+
+    if(package_name) g_resourceMgr.load_package_and_wait(package_name);
+    if(actor_name) g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
+    if(level_name)
+    {
+        Level* level = FIND_RESOURCE(Level, StringId(level_name));
+        if(level) level->load();
+    }
+
+    if(script) 
+    {
+        LOGI("run script ----> %s", script);
+        extern Id create_script_object(const void* resource);
+        create_script_object(FIND_RESOURCE(ScriptResource), script);
+    }
+
     g_engine.run();
     quitWebServerTool();
     g_engine.quit();

@@ -10,8 +10,6 @@ struct EngineConfig
     int                         m_fixedFPS;
     bool                        m_fullScreen;
     bool                        m_checkMemory;
-    bool                        m_webServer;
-    uint8_t                     m_mode;
     bool                        m_headless;
 };
 

@@ -18,8 +18,6 @@
 #include <Common/Base/Container/String/hkString.h>
 
 using namespace gamedevwebtools;
-char            g_actorName[256] = {0};
-char            g_levelName[256] = {0};
 
 void str_chr_remove(const char* input, char* output, char flag)
 {

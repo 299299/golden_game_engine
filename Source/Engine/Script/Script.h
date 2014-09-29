@@ -61,10 +61,6 @@ struct ScriptSystem
     void frame_end(float dt);
     void full_garbge_collect();
 
-    void ready();
-
-    void add_key(const StringId& k, uint32_t type);
-
     gmMachine*              m_vm;
     float                   m_time;
     ScriptInstance*         m_coreScript;

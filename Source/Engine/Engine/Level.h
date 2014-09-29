@@ -4,12 +4,12 @@
 
 struct LevelObject
 {
-    float           m_translation[3];
-    float           m_rotation[4];
-    float           m_scale[3];
-    ActorId         m_actorId;
-    StringId        m_name;
-    int             m_resourceIndex;
+    float               m_translation[3];
+    float               m_rotation[4];
+    float               m_scale[3];
+    ActorId             m_actorId;
+    StringId            m_name;
+    int                 m_resourceIndex;
 };
 struct LevelActorResource
 {
