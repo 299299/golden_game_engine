@@ -258,7 +258,7 @@ void reload_program_resource(void* oldResource, void* newResource)
     CHECK_SHADER_HANDLE(g_postProcess.m_blurShader);
     CHECK_SHADER_HANDLE(g_postProcess.m_combineShader);
     
-     uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::get_type(), result, resourceMax);
+    uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::get_type(), result, resourceMax);
     LOGD("total num of materials = %d", numOfMaterials);
     for(uint32_t i=0; i<numOfMaterials; ++i)
     {

@@ -143,6 +143,7 @@ struct ResourceManager
     void* find_resource(const StringId& type, const StringId& name);
     void  remove_resource(const StringId& type, const ResourceInfo& info);
     uint32_t  find_resources_type_of(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen);
+    ResourceInfo* find_resource_info(const StringId& type, const StringId& name);
 #ifdef RESOURCE_RELOAD
     void* reload_resource(const StringId& type, const StringId& name, const char* pathName, bool bFireCallbacks = true);
     void  destroy_reload_resources();

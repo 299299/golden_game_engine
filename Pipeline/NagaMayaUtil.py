@@ -21,6 +21,71 @@ PROXY_PREFIX = 'Proxy_'
 PROXY_GROUP = 'Proxy'
 
 
+def getMatrix(node):
+    '''
+    Gets the world matrix of an object based on name.
+    '''
+    # Selection list object and MObject for our matrix
+    selection = OpenMaya.MSelectionList()
+    matrixObject = OpenMaya.MObject()
+
+    # Adding object
+    selection.add(node)
+
+    # New api is nice since it will just return an MObject instead of taking
+    # two arguments.
+    MObjectA = selection.getDependNode(0)
+
+    # Dependency node so we can get the worldMatrix attribute
+    fnThisNode = OpenMaya.MFnDependencyNode(MObjectA)
+
+    # Get it's world matrix plug
+    worldMatrixAttr = fnThisNode.attribute("worldMatrix")
+
+    # Getting mPlug by plugging in our MObject and attribute
+    matrixPlug = OpenMaya.MPlug(MObjectA, worldMatrixAttr)
+    matrixPlug = matrixPlug.elementByLogicalIndex(0)
+
+    # Get matrix plug as MObject so we can get it's data.
+    matrixObject = matrixPlug.asMObject()
+
+    # Finally get the data
+    worldMatrixData = OpenMaya.MFnMatrixData(matrixObject)
+    worldMatrix = worldMatrixData.matrix()
+
+    return worldMatrix
+
+
+def decompMatrix(node, matrix):
+    '''
+    Decomposes a MMatrix in new api. Returns an list of translation,rotation,scale in world space.
+    '''
+    # Rotate order of object
+    rotOrder = cmds.getAttr('%s.rotateOrder' % node)
+
+    # Puts matrix into transformation matrix
+    mTransformMtx = OpenMaya.MTransformationMatrix(matrix)
+
+    # Translation Values
+    trans = mTransformMtx.translation(OpenMaya.MSpace.kWorld)
+
+    # Euler rotation value in radians
+    eulerRot = mTransformMtx.rotation()
+
+    # Reorder rotation order based on ctrl.
+    eulerRot.reorderIt(rotOrder)
+
+    # Find degrees
+    angles = [math.degrees(angle)
+              for angle in (eulerRot.x, eulerRot.y, eulerRot.z)]
+
+    # Find world scale of our object.
+    scale = mTransformMtx.scale(OpenMaya.MSpace.kWorld)
+
+    # Return Values
+    return [trans.x, trans.y, trans.z], angles, scale
+
+
 def lunchApplication(name, folder, args, wait=False):
     print('lunch name = ' + name + ', folder = ' + folder)
     path = folder + name
@@ -226,30 +291,30 @@ class NagaMayaUtil(object):
         proxyNodeNum = 0
         packageName = ''
         group = findNodeNameEqual(PROXY_GROUP)
+        if(group != ''):
+            cmds.delete(PROXY_GROUP)
+        group = PROXY_GROUP
         packageName = os.path.basename(packageFolderName)
         hkxFolder = self.getHkxFolder(packageName)
         print('havok export folder = ' + hkxFolder)
-        if group == '':
-            group = cmds.group(em=True, name=PROXY_GROUP)
-            cmds.addAttr(sn='ht', ln='hkType', dt='string')
-            cmds.setAttr(
-                group + '.hkType', 'engineAttributes', type='string')
-            cmds.addAttr(sn='pn', ln='packageName', dt='string')
-            cmds.setAttr(group + '.packageName',
-                         packageName, type='string')
+        group = cmds.group(em=1, name=PROXY_GROUP)
+        cmds.addAttr(sn='ht', ln='hkType', dt='string')
+        cmds.setAttr(
+            group + '.hkType', 'engineAttributes', type='string')
+        cmds.addAttr(sn='pn', ln='packageName', dt='string')
+        cmds.setAttr(group + '.packageName', packageName, type='string')
+
         nodeList = cmds.ls(type='assemblyDefinition')
+        #islock = 0
+
         for ad_node in nodeList:
-            mesh_node = cmds.listRelatives(ad_node, c=True)[0]
-            cmds.setAttr(mesh_node + '.translate', lock=1)
-            cmds.setAttr(mesh_node + '.rotate', lock=1)
-            cmds.setAttr(mesh_node + '.scale', lock=1)
+            mesh_node = cmds.listRelatives(ad_node, c=1, f=1)[0]
+            #cmds.setAttr(mesh_node + '.translate', lock=islock)
+            #cmds.setAttr(mesh_node + '.rotate', lock=islock)
+            #cmds.setAttr(mesh_node + '.scale', lock=islock)
+            print('ad node = ' + ad_node)
+            print('mesh node = ' + mesh_node)
             proxyNodeName = PROXY_PREFIX + ad_node
-            nodeList = cmds.ls(proxyNodeName)
-            # if node is already exist
-            if(len(nodeList) > 0):
-                cmds.warning('proxy node exist -->' + proxyNodeName)
-                proxyNodeNum += 1
-                continue
             entityType = getAD_EntityType(ad_node)
             havokFileName = os.path.join(hkxFolder, entityType + '.hkx')
             if(not os.path.exists(havokFileName)):
@@ -266,18 +331,19 @@ class NagaMayaUtil(object):
                 nodeName + '.type', resourceName, type='string')
             cmds.addAttr(sn='na', ln='name', dt='string')
             cmds.setAttr(nodeName + '.name', ad_node, type='string')
-            #
-            #
             cmds.addAttr(sn='lk', ln='linkNode', dt='string')
             cmds.setAttr(nodeName + '.linkNode', ad_node, type='string')
-            cmds.connectAttr(
-                ad_node + '.translate', nodeName + '.translate')
-            cmds.connectAttr(ad_node + '.rotate', nodeName + '.rotate')
-            cmds.connectAttr(ad_node + '.scale', nodeName + '.scale')
-            #
-            #
+            mat = getMatrix(mesh_node)
+            matDecomp = decompMatrix(mesh_node, mat)
+            translate = matDecomp[0]
+            rotate = matDecomp[1]
+            scale = matDecomp[2]
+            cmds.setAttr(nodeName + '.translate',
+                         translate[0], translate[1], translate[2])
+            cmds.setAttr(nodeName + '.rotate', rotate[0], rotate[1], rotate[2])
+            cmds.setAttr(nodeName + '.scale', scale[0], scale[1], scale[2])
             proxyNodeNum += 1
-        cmds.select(group)
+        #cmds.delete(PROXY_GROUP)
         return proxyNodeNum, packageName
 
     def exportToHKX(self, exportName, packageName,

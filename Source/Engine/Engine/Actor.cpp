@@ -170,7 +170,8 @@ bool Actor::set_key(const StringId& k, const float* v)
 }
 
 ActorWorld g_actorWorld;
-static DynamicIdArray<Actor> g_actorBuckets[kActorClassNum];
+typedef DynamicIdArray<Actor> ActorBucket;
+static ActorBucket g_actorBuckets[kActorClassNum];
 
 void ActorWorld::init()
 {
@@ -240,16 +241,19 @@ void ActorWorld::destroy_actor( ActorId actor_id )
 {
     uint32_t classId = actor_id.m_class;
     Id id = actor_id.get_id();
-    if(!g_actorBuckets[classId].has(id)) return;
-    g_actorBuckets[classId].destroy(id);
+    ActorBucket& bucket = g_actorBuckets[classId];
+    if(!bucket.has(id)) return;
+    bucket.get(id).destroy();
+    bucket.destroy(id);
 }
 
 Actor* ActorWorld::get_actor( ActorId actor_id )
 {
     uint32_t classId = actor_id.m_class;
     Id id = actor_id.get_id();
-    if(!g_actorBuckets[classId].has(id)) return 0;
-    return &g_actorBuckets[classId].get(id);
+    ActorBucket& bucket = g_actorBuckets[classId];
+    if(!bucket.has(id)) return 0;
+    return &bucket.get(id);
 }
 
 uint32_t ActorWorld::num_actors( uint32_t type )

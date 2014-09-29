@@ -590,6 +590,22 @@ uint32_t  ResourceManager::find_resources_type_of(const StringId& type, Resource
     return retNum; 
 }
 
+ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const StringId& name )
+{
+    for (uint32_t i = 0; i < m_numPackages; ++i)
+    {
+        ResourcePackage* package = m_packages[i];
+        ResourceGroup* group = package->find_group(type);
+        if(!group) continue;
+        for (uint32_t j=0; j<group->m_numResources; ++j)
+        {
+            ResourceInfo* pInfo = &group->m_resources[j];
+            if(pInfo->m_name == name) return pInfo;
+        }
+    }
+    return 0;
+}
+
 void ResourceManager::load_package_and_wait(const char* packageName)
 {
     TIMELOG("load_package_and_wait %s", packageName);
@@ -705,6 +721,9 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     data.m_fac = fac;
     g_reloadResources[key] = data;
     insert_resource(type, name, newResource);
+
+    ResourceInfo* info = find_resource_info(type, name);
+    if(info) info->m_ptr = newResource;
     
     if(bFireCallbacks)
     {
@@ -747,6 +766,8 @@ void ResourceManager::reload_resource(const StringId& type, bool bFireCallbacks)
         }
     }
 }
+
+
 
 
 #endif

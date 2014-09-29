@@ -24,6 +24,7 @@
 #include <bx/allocator.h>
 #include <bx/uint32_t.h>
 
+#define BGFX_COLOR 0x303030ff
 
 struct bgfxCallback : public bgfx::CallbackI
 {
@@ -74,9 +75,6 @@ static bgfx::UniformHandle  g_engineUniforms[MAX_UNIFORM_NUM];
 static uint32_t             g_numEngineUniforms = 0;
 static FrameBuffer          g_frameBuffers[MAX_FRAMEBUFFER_NUM];
 static uint32_t             g_numFrameBuffers = 0;
-static uint64_t postprocess_state = BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE;
-static int                  g_status = 0;
-
 
 void postProcessInit();
 void postProcessSubmit(ShadingEnviroment* env);
@@ -170,8 +168,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     if(bFullScreen) g_resetFlag |= BGFX_RESET_FULLSCREEN;
     bgfx::reset(g_win32Context.m_width, g_win32Context.m_height, g_resetFlag);
     bgfx::setDebug(BGFX_DEBUG_TEXT);
-    bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, 0x303030ff, 1.0f, 0);
-    bgfx::setViewClear(kBackgroundViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, 0x303030ff, 1.0f, 0);
+    bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, BGFX_COLOR, 1.0f, 0);
+    bgfx::setViewClear(kBackgroundViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, BGFX_COLOR, 1.0f, 0);
 
     PosTexCoord0Vertex::init();
     createUniforms();
@@ -211,7 +209,6 @@ void Graphics::ready()
     g_postProcess.m_blurShader = find_shader("hdr_blur")->m_handle;
     g_postProcess.m_brightShader = find_shader("hdr_bright")->m_handle;
     g_postProcess.m_combineShader = find_shader("hdr_combine")->m_handle;
-    g_status = 2;
     g_debugDrawMgr.ready();
 }
 
@@ -243,7 +240,6 @@ void postProcessInit()
     g_postProcess.m_brightFB = createFrameBuffer(width/2, height/2, 1, 1, true, fboFmt);
     bx::mtxIdentity(g_postProcess.m_view);
     bx::mtxOrtho(g_postProcess.m_proj, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f);
-    g_status = 1;
 }
 
 
@@ -347,7 +343,7 @@ void Graphics::frame_end()
 
 void postProcessSubmit(ShadingEnviroment* env)
 {
-    if(g_status < 1 || !env) return;
+    if(!env) return;
     int width = g_win32Context.m_width;
     int height = g_win32Context.m_height;
 
@@ -405,7 +401,7 @@ void postProcessSubmit(ShadingEnviroment* env)
     }
     Graphics::set_texture(N_PASSES+1, env->get_colorgrading_tex());
     bgfx::setProgram(g_postProcess.m_combineShader);
-    bgfx::setState(postprocess_state);
+    bgfx::setState(BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE);
     Graphics::screenspace_quad((float)width, (float)height);
     bgfx::submit(kCombineViewId);
 }
@@ -444,7 +440,7 @@ void FrameBuffer::begin(uint32_t viewId)
 
 void FrameBuffer::end(uint32_t viewId)
 {
-    bgfx::setState(postprocess_state);
+    bgfx::setState(BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE);
     Graphics::screenspace_quad((float)m_realSize[0], (float)m_realSize[1]);
     bgfx::submit(viewId);
 }

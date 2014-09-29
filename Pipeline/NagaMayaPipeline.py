@@ -6,18 +6,8 @@ import maya.cmds as cmds
 import maya.mel as mel
 import maya.OpenMaya as OM
 import maya.OpenMayaUI as OMUI
-import math
 import time
 import os
-
-
-def nameToNode(name):
-    selectionList = OM.MSelectionList()
-    selectionList.add(name)
-    node = OM.MObject()
-    selectionList.getDependNode(0, node)
-    return node
-
 
 PREVIEW_PACK = 'preview'
 GAME_APP = 'Game_Debug'
@@ -40,7 +30,6 @@ class NagaPipeline(object):
         self._createUI()
         # WEB
         self.webSock = WEB.MayaWebSocket()
-        self.lastSyncTime = time.time()
         self.connect_to_game_server()
         self.created = True
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
@@ -99,9 +88,9 @@ class NagaPipeline(object):
         cmds.setParent('..')
 
         cmds.frameLayout(l="Animation", cll=1, mh=2, mw=2)
-        cmds.rowLayout(numberOfColumns=3)
+        # cmds.rowLayout(numberOfColumns=5)
         animation_types = [
-            'skin-rig'
+            'skin-rig',
             'default',
             'root-motion-no-rotation',
             'root-motion-rotation',
@@ -202,19 +191,19 @@ class NagaPipeline(object):
         sceneName = NAGA.getSceneName()
         width = 800
         height = 600
+        args = ['--websocket',
+                '--package', 'data/' + packageName + '.package',
+                '--script', 'core/scripts/preview',
+                '-w', str(width), '-h', str(height)]
+
         if(NAGA.isLevel(sceneName)):
             previewName = packageName + '/' + sceneName
-            args = ['--websocket',
-                    '--package', packageName,
-                    '--script', 'core/scripts/preview',
-                    '--level', previewName,
-                    '-w', str(width), '-h', str(height)]
+            args.append('--level')
+            args.append(previewName)
         else:
             previewName = packageName + '/actor/' + sceneName
-            args = ['--websocket',
-                    '--script', 'core/scripts/preview',
-                    '--actor', previewName,
-                    '-w', str(width), '-h', str(height)]
+            args.append('--actor')
+            args.append(previewName)
         NAGA.lunchApplication(GAME_APP, self.naga.appPath, args, False)
 
     #
@@ -229,7 +218,7 @@ class NagaPipeline(object):
         self.webSock.disconnect()
 
     def onWebSocketOpen(self):
-        self.doSyncRemoteCamera()
+        pass
 
     def onWebSocketMessage(self, json_object):
         type_name = json_object['type']

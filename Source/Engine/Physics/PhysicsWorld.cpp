@@ -282,6 +282,8 @@ void PhysicsWorld::tick_finished_jobs()
 
 void PhysicsWorld::add_to_world(PhysicsInstance* instance)
 {
+    ENGINE_ASSERT(m_world, "physics is not created!");
+
     check_status();
     PHYSICS_LOCKWRITE(m_world);
 
@@ -312,6 +314,8 @@ void PhysicsWorld::add_to_world(PhysicsInstance* instance)
 
 void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
 {
+    ENGINE_ASSERT(m_world, "physics is not created!");
+
     check_status();
     PHYSICS_LOCKWRITE(m_world);
     switch(instance->m_systemType)

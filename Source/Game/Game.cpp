@@ -113,6 +113,13 @@ int _tmain(int argc, _TCHAR* argv[])
     g_debugDrawMgr.ready();
 
     if(package_name) g_resourceMgr.load_package_and_wait(package_name);
+    if(script) 
+    {
+        LOGI("run script ----> %s", script);
+        extern Id create_script_object(const void*);
+        create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)));
+    }
+
     if(actor_name) 
     {
         printf("loading actor %s \n", actor_name);
@@ -123,13 +130,6 @@ int _tmain(int argc, _TCHAR* argv[])
         printf("loading level %s \n", level_name);
         Level* level = FIND_RESOURCE(Level, StringId(level_name));
         if(level) level->load();
-    }
-
-    if(script) 
-    {
-        LOGI("run script ----> %s", script);
-        extern Id create_script_object(const void*);
-        create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)));
     }
 
     g_engine.run();

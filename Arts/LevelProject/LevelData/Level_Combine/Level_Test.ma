@@ -1,26 +1,26 @@
 //Maya ASCII 2015 scene
 //Name: Level_Test.ma
-//Last modified: Sun, Sep 14, 2014 06:37:23 PM
+//Last modified: Mon, Sep 29, 2014 10:03:28 PM
 //Codeset: 936
 requires maya "2015";
 requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType "mentalrayGlobals"
-		 -nodeType "mentalrayItemsList" -dataType "byteArray" "Mayatomr" "2015.0 - 3.12.1.12 ";
+		 -nodeType "mentalrayItemsList" -dataType "byteArray" "Mayatomr" "2015.0 - 3.12.1.18 ";
 requires -nodeType "assemblyDefinition" "sceneAssembly" "1.0";
 currentUnit -l centimeter -a degree -t film;
 fileInfo "application" "maya";
 fileInfo "product" "Maya 2015";
 fileInfo "version" "2015";
-fileInfo "cutIdentifier" "201402282131-909040";
+fileInfo "cutIdentifier" "201408201531-928694";
 fileInfo "osv" "Microsoft Windows 7 Ultimate Edition, 64-bit Windows 7 Service Pack 1 (Build 7601)\n";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" -2648.7601950865237 2301.6785954177449 2434.88259726773 ;
-	setAttr ".r" -type "double3" -23.121846620642373 -2212.1999999999643 2.5946468249179149e-015 ;
+	setAttr ".t" -type "double3" 5096.8768790545537 890.09883526498106 362.05071840056314 ;
+	setAttr ".r" -type "double3" -4.5218466210805959 -2431.8000000000097 1.2657106891047461e-014 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
 	setAttr ".fcp" 990000;
-	setAttr ".coi" 3757.4431491822284;
+	setAttr ".coi" 4166.7048593959889;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -403,203 +403,9 @@ createNode mesh -n "SkyDomeShape" -p "SkyDome";
 	setAttr ".sdt" 0;
 	setAttr ".ugsdt" no;
 	setAttr ".ndt" 0;
-createNode transform -n "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "pn" -ln "packageName" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".pn" -type "string" "world0";
-createNode transform -n "Proxy_AD_ARCH_GCPD_EntranceRoof_04" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/ARCH_GCPD_EntranceRoof_04";
-	setAttr ".na" -type "string" "AD_ARCH_GCPD_EntranceRoof_04";
-	setAttr ".lk" -type "string" "AD_ARCH_GCPD_EntranceRoof_04";
-createNode transform -n "Proxy_AD_BridgeRoad_Destroyed_2048_Custom_02" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/BridgeRoad_Destroyed_2048_Custom_02";
-	setAttr ".na" -type "string" "AD_BridgeRoad_Destroyed_2048_Custom_02";
-	setAttr ".lk" -type "string" "AD_BridgeRoad_Destroyed_2048_Custom_02";
-createNode transform -n "Proxy_AD_Bridge_Rail_01_1024" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Bridge_Rail_01_1024";
-	setAttr ".na" -type "string" "AD_Bridge_Rail_01_1024";
-	setAttr ".lk" -type "string" "AD_Bridge_Rail_01_1024";
-createNode transform -n "Proxy_AD_ConcreteBarrier01" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/ConcreteBarrier01";
-	setAttr ".na" -type "string" "AD_ConcreteBarrier01";
-	setAttr ".lk" -type "string" "AD_ConcreteBarrier01";
-createNode transform -n "Proxy_AD_ConcreteBarrier02" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/ConcreteBarrier01";
-	setAttr ".na" -type "string" "AD_ConcreteBarrier02";
-	setAttr ".lk" -type "string" "AD_ConcreteBarrier02";
-createNode transform -n "Proxy_AD_Gotham_ARCH_Classic_BigWinx2" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_ARCH_Classic_BigWinx2";
-	setAttr ".na" -type "string" "AD_Gotham_ARCH_Classic_BigWinx2";
-	setAttr ".lk" -type "string" "AD_Gotham_ARCH_Classic_BigWinx2";
-createNode transform -n "Proxy_AD_Gotham_ARCH_Classic_BigWinx3" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_ARCH_Classic_BigWinx2";
-	setAttr ".na" -type "string" "AD_Gotham_ARCH_Classic_BigWinx3";
-	setAttr ".lk" -type "string" "AD_Gotham_ARCH_Classic_BigWinx3";
-createNode transform -n "Proxy_AD_Gotham_ARCH_Classic_WinBCorner" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_ARCH_Classic_WinBCorner";
-	setAttr ".na" -type "string" "AD_Gotham_ARCH_Classic_WinBCorner";
-	setAttr ".lk" -type "string" "AD_Gotham_ARCH_Classic_WinBCorner";
-createNode transform -n "Proxy_AD_Gotham_ARCH_Classic_WinBCorner1" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_ARCH_Classic_WinBCorner";
-	setAttr ".na" -type "string" "AD_Gotham_ARCH_Classic_WinBCorner1";
-	setAttr ".lk" -type "string" "AD_Gotham_ARCH_Classic_WinBCorner1";
-createNode transform -n "Proxy_AD_Gotham_Arch_Classic_BigWiny2" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Arch_Classic_BigWiny2";
-	setAttr ".na" -type "string" "AD_Gotham_Arch_Classic_BigWiny2";
-	setAttr ".lk" -type "string" "AD_Gotham_Arch_Classic_BigWiny2";
-createNode transform -n "Proxy_AD_Gotham_Fences_Mall768" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Fences_Mall768";
-	setAttr ".na" -type "string" "AD_Gotham_Fences_Mall768";
-	setAttr ".lk" -type "string" "AD_Gotham_Fences_Mall768";
-createNode transform -n "Proxy_AD_Gotham_Fences_Mall769" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Fences_Mall768";
-	setAttr ".na" -type "string" "AD_Gotham_Fences_Mall769";
-	setAttr ".lk" -type "string" "AD_Gotham_Fences_Mall769";
-createNode transform -n "Proxy_AD_Gotham_Fences_PoleSolid_128C" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Fences_PoleSolid_128C";
-	setAttr ".na" -type "string" "AD_Gotham_Fences_PoleSolid_128C";
-	setAttr ".lk" -type "string" "AD_Gotham_Fences_PoleSolid_128C";
-createNode transform -n "Proxy_AD_Gotham_Fences_PoleSolid_512" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Fences_PoleSolid_512";
-	setAttr ".na" -type "string" "AD_Gotham_Fences_PoleSolid_512";
-	setAttr ".lk" -type "string" "AD_Gotham_Fences_PoleSolid_512";
-createNode transform -n "Proxy_AD_Gotham_Fences_PoleSolid_513" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Fences_PoleSolid_512";
-	setAttr ".na" -type "string" "AD_Gotham_Fences_PoleSolid_513";
-	setAttr ".lk" -type "string" "AD_Gotham_Fences_PoleSolid_513";
-createNode transform -n "Proxy_AD_Gotham_Fences_PoleSolid_514" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Fences_PoleSolid_512";
-	setAttr ".na" -type "string" "AD_Gotham_Fences_PoleSolid_514";
-	setAttr ".lk" -type "string" "AD_Gotham_Fences_PoleSolid_514";
-createNode transform -n "Proxy_AD_Gotham_GCPD_Window1024" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_GCPD_Window1024";
-	setAttr ".na" -type "string" "AD_Gotham_GCPD_Window1024";
-	setAttr ".lk" -type "string" "AD_Gotham_GCPD_Window1024";
-createNode transform -n "Proxy_AD_Gotham_GCPD_Window1025" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_GCPD_Window1024";
-	setAttr ".na" -type "string" "AD_Gotham_GCPD_Window1025";
-	setAttr ".lk" -type "string" "AD_Gotham_GCPD_Window1025";
-createNode transform -n "Proxy_AD_Gotham_GroundFloor_Shop_OlddB5_512" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_GroundFloor_Shop_OlddB5_512";
-	setAttr ".na" -type "string" "AD_Gotham_GroundFloor_Shop_OlddB5_512";
-	setAttr ".lk" -type "string" "AD_Gotham_GroundFloor_Shop_OlddB5_512";
-createNode transform -n "Proxy_AD_Gotham_Groundfloor_Shop_OldB2" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/Gotham_Groundfloor_Shop_OldB2";
-	setAttr ".na" -type "string" "AD_Gotham_Groundfloor_Shop_OldB2";
-	setAttr ".lk" -type "string" "AD_Gotham_Groundfloor_Shop_OldB2";
-createNode transform -n "Proxy_AD_OZ_Gotham_GroundFloor_Shop_OldA_03" -p "Proxy";
-	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
-	addAttr -ci true -sn "tp" -ln "type" -dt "string";
-	addAttr -ci true -sn "na" -ln "name" -dt "string";
-	addAttr -ci true -sn "lk" -ln "linkNode" -dt "string";
-	setAttr ".ht" -type "string" "engineAttributes";
-	setAttr ".tp" -type "string" "world0/entity/OZ_Gotham_GroundFloor_Shop_OldA_03";
-	setAttr ".na" -type "string" "AD_OZ_Gotham_GroundFloor_Shop_OldA_03";
-	setAttr ".lk" -type "string" "AD_OZ_Gotham_GroundFloor_Shop_OldA_03";
 createNode transform -n "sun_light";
 	setAttr ".t" -type "double3" 0 1085.7540651415889 -2.4868995751603507e-014 ;
-	setAttr ".r" -type "double3" -150.04039409139904 -40.16694099861062 92.634470203581998 ;
+	setAttr ".r" -type "double3" -150.04039409139907 -40.166940998610627 92.634470203581998 ;
 	setAttr ".s" -type "double3" 323.93682138016857 522.80899775650823 323.93682138016857 ;
 createNode directionalLight -n "sun_lightShape" -p "sun_light";
 	setAttr -k off ".v";
@@ -820,7 +626,8 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"dynRelEdPanel\" (localizedPanelLabel(\"Dynamic Relationships\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"dynRelEdPanel\" -l (localizedPanelLabel(\"Dynamic Relationships\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Dynamic Relationships\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"relationshipPanel\" (localizedPanelLabel(\"Relationship Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"relationshipPanel\" -l (localizedPanelLabel(\"Relationship Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Relationship Editor\")) -mbv $menusOkayInPanels  $panelName;\n"
 		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"referenceEditorPanel\" (localizedPanelLabel(\"Reference Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"referenceEditorPanel\" -l (localizedPanelLabel(\"Reference Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Reference Editor\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"componentEditorPanel\" (localizedPanelLabel(\"Component Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"componentEditorPanel\" -l (localizedPanelLabel(\"Component Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Component Editor\")) -mbv $menusOkayInPanels  $panelName;\n"
 		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"dynPaintScriptedPanelType\" (localizedPanelLabel(\"Paint Effects\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"dynPaintScriptedPanelType\" -l (localizedPanelLabel(\"Paint Effects\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Paint Effects\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"scriptEditorPanel\" (localizedPanelLabel(\"Script Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"scriptEditorPanel\" -l (localizedPanelLabel(\"Script Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Script Editor\")) -mbv $menusOkayInPanels  $panelName;\n"
-		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n\t\t\t\t-defaultImage \"\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"vertical2\\\" -ps 1 23 100 -ps 2 77 100 $gMainPane;\"\n\t\t\t\t-removeAllPanels\n\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Outliner\")) \n\t\t\t\t\t\"outlinerPanel\"\n\t\t\t\t\t\"$panelName = `outlinerPanel -unParent -l (localizedPanelLabel(\\\"Outliner\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\noutlinerEditor -e \\n    -showShapes 0\\n    -showReferenceNodes 0\\n    -showReferenceMembers 0\\n    -showAttributes 0\\n    -showConnected 0\\n    -showAnimCurvesOnly 0\\n    -showMuteInfo 0\\n    -organizeByLayer 1\\n    -showAnimLayerWeight 1\\n    -autoExpandLayers 1\\n    -autoExpand 0\\n    -showDagOnly 1\\n    -showAssets 1\\n    -showContainedOnly 1\\n    -showPublishedAsConnected 0\\n    -showContainerContents 1\\n    -ignoreDagHierarchy 0\\n    -expandConnections 0\\n    -showUpstreamCurves 1\\n    -showUnitlessCurves 1\\n    -showCompounds 1\\n    -showLeafs 1\\n    -showNumericAttrsOnly 0\\n    -highlightActive 1\\n    -autoSelectNewObjects 0\\n    -doNotSelectNewObjects 0\\n    -dropIsParent 1\\n    -transmitFilters 0\\n    -setFilter \\\"defaultSetFilter\\\" \\n    -showSetMembers 1\\n    -allowMultiSelection 1\\n    -alwaysToggleSelect 0\\n    -directSelect 0\\n    -displayMode \\\"DAG\\\" \\n    -expandObjects 0\\n    -setsIgnoreFilters 1\\n    -containersIgnoreFilters 0\\n    -editAttrName 0\\n    -showAttrValues 0\\n    -highlightSecondary 0\\n    -showUVAttrsOnly 0\\n    -showTextureNodesOnly 0\\n    -attrAlphaOrder \\\"default\\\" \\n    -animLayerFilterOptions \\\"allAffecting\\\" \\n    -sortOrder \\\"none\\\" \\n    -longNames 0\\n    -niceNames 1\\n    -showNamespace 1\\n    -showPinIcons 0\\n    -mapMotionTrails 0\\n    -ignoreHiddenAttribute 0\\n    $editorName\"\n"
+		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\tif ($useSceneConfig) {\n\t\tscriptedPanel -e -to $panelName;\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n\t\t\t\t-defaultImage \"\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"vertical2\\\" -ps 1 31 100 -ps 2 69 100 $gMainPane;\"\n\t\t\t\t-removeAllPanels\n\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Outliner\")) \n\t\t\t\t\t\"outlinerPanel\"\n"
+		+ "\t\t\t\t\t\"$panelName = `outlinerPanel -unParent -l (localizedPanelLabel(\\\"Outliner\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\noutlinerEditor -e \\n    -showShapes 0\\n    -showReferenceNodes 0\\n    -showReferenceMembers 0\\n    -showAttributes 0\\n    -showConnected 0\\n    -showAnimCurvesOnly 0\\n    -showMuteInfo 0\\n    -organizeByLayer 1\\n    -showAnimLayerWeight 1\\n    -autoExpandLayers 1\\n    -autoExpand 0\\n    -showDagOnly 1\\n    -showAssets 1\\n    -showContainedOnly 1\\n    -showPublishedAsConnected 0\\n    -showContainerContents 1\\n    -ignoreDagHierarchy 0\\n    -expandConnections 0\\n    -showUpstreamCurves 1\\n    -showUnitlessCurves 1\\n    -showCompounds 1\\n    -showLeafs 1\\n    -showNumericAttrsOnly 0\\n    -highlightActive 1\\n    -autoSelectNewObjects 0\\n    -doNotSelectNewObjects 0\\n    -dropIsParent 1\\n    -transmitFilters 0\\n    -setFilter \\\"defaultSetFilter\\\" \\n    -showSetMembers 1\\n    -allowMultiSelection 1\\n    -alwaysToggleSelect 0\\n    -directSelect 0\\n    -displayMode \\\"DAG\\\" \\n    -expandObjects 0\\n    -setsIgnoreFilters 1\\n    -containersIgnoreFilters 0\\n    -editAttrName 0\\n    -showAttrValues 0\\n    -highlightSecondary 0\\n    -showUVAttrsOnly 0\\n    -showTextureNodesOnly 0\\n    -attrAlphaOrder \\\"default\\\" \\n    -animLayerFilterOptions \\\"allAffecting\\\" \\n    -sortOrder \\\"none\\\" \\n    -longNames 0\\n    -niceNames 1\\n    -showNamespace 1\\n    -showPinIcons 0\\n    -mapMotionTrails 0\\n    -ignoreHiddenAttribute 0\\n    $editorName\"\n"
 		+ "\t\t\t\t\t\"outlinerPanel -edit -l (localizedPanelLabel(\\\"Outliner\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\noutlinerEditor -e \\n    -showShapes 0\\n    -showReferenceNodes 0\\n    -showReferenceMembers 0\\n    -showAttributes 0\\n    -showConnected 0\\n    -showAnimCurvesOnly 0\\n    -showMuteInfo 0\\n    -organizeByLayer 1\\n    -showAnimLayerWeight 1\\n    -autoExpandLayers 1\\n    -autoExpand 0\\n    -showDagOnly 1\\n    -showAssets 1\\n    -showContainedOnly 1\\n    -showPublishedAsConnected 0\\n    -showContainerContents 1\\n    -ignoreDagHierarchy 0\\n    -expandConnections 0\\n    -showUpstreamCurves 1\\n    -showUnitlessCurves 1\\n    -showCompounds 1\\n    -showLeafs 1\\n    -showNumericAttrsOnly 0\\n    -highlightActive 1\\n    -autoSelectNewObjects 0\\n    -doNotSelectNewObjects 0\\n    -dropIsParent 1\\n    -transmitFilters 0\\n    -setFilter \\\"defaultSetFilter\\\" \\n    -showSetMembers 1\\n    -allowMultiSelection 1\\n    -alwaysToggleSelect 0\\n    -directSelect 0\\n    -displayMode \\\"DAG\\\" \\n    -expandObjects 0\\n    -setsIgnoreFilters 1\\n    -containersIgnoreFilters 0\\n    -editAttrName 0\\n    -showAttrValues 0\\n    -highlightSecondary 0\\n    -showUVAttrsOnly 0\\n    -showTextureNodesOnly 0\\n    -attrAlphaOrder \\\"default\\\" \\n    -animLayerFilterOptions \\\"allAffecting\\\" \\n    -sortOrder \\\"none\\\" \\n    -longNames 0\\n    -niceNames 1\\n    -showNamespace 1\\n    -showPinIcons 0\\n    -mapMotionTrails 0\\n    -ignoreHiddenAttribute 0\\n    $editorName\"\n"
 		+ "\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Persp View\")) \n\t\t\t\t\t\"modelPanel\"\n"
 		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 1\\n    -headsUpDisplay 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 1\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 1\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 1\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 16384\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -greasePencils 1\\n    -shadows 0\\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
@@ -2738,111 +2545,6 @@ connectAttr "hyperLayout7.msg" "AD_Gotham_GCPD_Window1025.hl";
 connectAttr "hyperLayout8.msg" "AD_Gotham_Fences_PoleSolid_514.hl";
 connectAttr "sky.di" "SkyDome.do";
 connectAttr "polyNormal1.out" "SkyDomeShape.i";
-connectAttr "AD_ARCH_GCPD_EntranceRoof_04.t" "Proxy_AD_ARCH_GCPD_EntranceRoof_04.t"
-		;
-connectAttr "AD_ARCH_GCPD_EntranceRoof_04.r" "Proxy_AD_ARCH_GCPD_EntranceRoof_04.r"
-		;
-connectAttr "AD_ARCH_GCPD_EntranceRoof_04.s" "Proxy_AD_ARCH_GCPD_EntranceRoof_04.s"
-		;
-connectAttr "AD_BridgeRoad_Destroyed_2048_Custom_02.t" "Proxy_AD_BridgeRoad_Destroyed_2048_Custom_02.t"
-		;
-connectAttr "AD_BridgeRoad_Destroyed_2048_Custom_02.r" "Proxy_AD_BridgeRoad_Destroyed_2048_Custom_02.r"
-		;
-connectAttr "AD_BridgeRoad_Destroyed_2048_Custom_02.s" "Proxy_AD_BridgeRoad_Destroyed_2048_Custom_02.s"
-		;
-connectAttr "AD_Bridge_Rail_01_1024.t" "Proxy_AD_Bridge_Rail_01_1024.t";
-connectAttr "AD_Bridge_Rail_01_1024.r" "Proxy_AD_Bridge_Rail_01_1024.r";
-connectAttr "AD_Bridge_Rail_01_1024.s" "Proxy_AD_Bridge_Rail_01_1024.s";
-connectAttr "AD_ConcreteBarrier01.t" "Proxy_AD_ConcreteBarrier01.t";
-connectAttr "AD_ConcreteBarrier01.r" "Proxy_AD_ConcreteBarrier01.r";
-connectAttr "AD_ConcreteBarrier01.s" "Proxy_AD_ConcreteBarrier01.s";
-connectAttr "AD_ConcreteBarrier02.t" "Proxy_AD_ConcreteBarrier02.t";
-connectAttr "AD_ConcreteBarrier02.r" "Proxy_AD_ConcreteBarrier02.r";
-connectAttr "AD_ConcreteBarrier02.s" "Proxy_AD_ConcreteBarrier02.s";
-connectAttr "AD_Gotham_ARCH_Classic_BigWinx2.t" "Proxy_AD_Gotham_ARCH_Classic_BigWinx2.t"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_BigWinx2.r" "Proxy_AD_Gotham_ARCH_Classic_BigWinx2.r"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_BigWinx2.s" "Proxy_AD_Gotham_ARCH_Classic_BigWinx2.s"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_BigWinx3.t" "Proxy_AD_Gotham_ARCH_Classic_BigWinx3.t"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_BigWinx3.r" "Proxy_AD_Gotham_ARCH_Classic_BigWinx3.r"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_BigWinx3.s" "Proxy_AD_Gotham_ARCH_Classic_BigWinx3.s"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_WinBCorner.t" "Proxy_AD_Gotham_ARCH_Classic_WinBCorner.t"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_WinBCorner.r" "Proxy_AD_Gotham_ARCH_Classic_WinBCorner.r"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_WinBCorner.s" "Proxy_AD_Gotham_ARCH_Classic_WinBCorner.s"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_WinBCorner1.t" "Proxy_AD_Gotham_ARCH_Classic_WinBCorner1.t"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_WinBCorner1.r" "Proxy_AD_Gotham_ARCH_Classic_WinBCorner1.r"
-		;
-connectAttr "AD_Gotham_ARCH_Classic_WinBCorner1.s" "Proxy_AD_Gotham_ARCH_Classic_WinBCorner1.s"
-		;
-connectAttr "AD_Gotham_Arch_Classic_BigWiny2.t" "Proxy_AD_Gotham_Arch_Classic_BigWiny2.t"
-		;
-connectAttr "AD_Gotham_Arch_Classic_BigWiny2.r" "Proxy_AD_Gotham_Arch_Classic_BigWiny2.r"
-		;
-connectAttr "AD_Gotham_Arch_Classic_BigWiny2.s" "Proxy_AD_Gotham_Arch_Classic_BigWiny2.s"
-		;
-connectAttr "AD_Gotham_Fences_Mall768.t" "Proxy_AD_Gotham_Fences_Mall768.t";
-connectAttr "AD_Gotham_Fences_Mall768.r" "Proxy_AD_Gotham_Fences_Mall768.r";
-connectAttr "AD_Gotham_Fences_Mall768.s" "Proxy_AD_Gotham_Fences_Mall768.s";
-connectAttr "AD_Gotham_Fences_Mall769.t" "Proxy_AD_Gotham_Fences_Mall769.t";
-connectAttr "AD_Gotham_Fences_Mall769.r" "Proxy_AD_Gotham_Fences_Mall769.r";
-connectAttr "AD_Gotham_Fences_Mall769.s" "Proxy_AD_Gotham_Fences_Mall769.s";
-connectAttr "AD_Gotham_Fences_PoleSolid_128C.t" "Proxy_AD_Gotham_Fences_PoleSolid_128C.t"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_128C.r" "Proxy_AD_Gotham_Fences_PoleSolid_128C.r"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_128C.s" "Proxy_AD_Gotham_Fences_PoleSolid_128C.s"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_512.t" "Proxy_AD_Gotham_Fences_PoleSolid_512.t"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_512.r" "Proxy_AD_Gotham_Fences_PoleSolid_512.r"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_512.s" "Proxy_AD_Gotham_Fences_PoleSolid_512.s"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_513.t" "Proxy_AD_Gotham_Fences_PoleSolid_513.t"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_513.r" "Proxy_AD_Gotham_Fences_PoleSolid_513.r"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_513.s" "Proxy_AD_Gotham_Fences_PoleSolid_513.s"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_514.t" "Proxy_AD_Gotham_Fences_PoleSolid_514.t"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_514.r" "Proxy_AD_Gotham_Fences_PoleSolid_514.r"
-		;
-connectAttr "AD_Gotham_Fences_PoleSolid_514.s" "Proxy_AD_Gotham_Fences_PoleSolid_514.s"
-		;
-connectAttr "AD_Gotham_GCPD_Window1024.t" "Proxy_AD_Gotham_GCPD_Window1024.t";
-connectAttr "AD_Gotham_GCPD_Window1024.r" "Proxy_AD_Gotham_GCPD_Window1024.r";
-connectAttr "AD_Gotham_GCPD_Window1024.s" "Proxy_AD_Gotham_GCPD_Window1024.s";
-connectAttr "AD_Gotham_GCPD_Window1025.t" "Proxy_AD_Gotham_GCPD_Window1025.t";
-connectAttr "AD_Gotham_GCPD_Window1025.r" "Proxy_AD_Gotham_GCPD_Window1025.r";
-connectAttr "AD_Gotham_GCPD_Window1025.s" "Proxy_AD_Gotham_GCPD_Window1025.s";
-connectAttr "AD_Gotham_GroundFloor_Shop_OlddB5_512.t" "Proxy_AD_Gotham_GroundFloor_Shop_OlddB5_512.t"
-		;
-connectAttr "AD_Gotham_GroundFloor_Shop_OlddB5_512.r" "Proxy_AD_Gotham_GroundFloor_Shop_OlddB5_512.r"
-		;
-connectAttr "AD_Gotham_GroundFloor_Shop_OlddB5_512.s" "Proxy_AD_Gotham_GroundFloor_Shop_OlddB5_512.s"
-		;
-connectAttr "AD_Gotham_Groundfloor_Shop_OldB2.t" "Proxy_AD_Gotham_Groundfloor_Shop_OldB2.t"
-		;
-connectAttr "AD_Gotham_Groundfloor_Shop_OldB2.r" "Proxy_AD_Gotham_Groundfloor_Shop_OldB2.r"
-		;
-connectAttr "AD_Gotham_Groundfloor_Shop_OldB2.s" "Proxy_AD_Gotham_Groundfloor_Shop_OldB2.s"
-		;
-connectAttr "AD_OZ_Gotham_GroundFloor_Shop_OldA_03.t" "Proxy_AD_OZ_Gotham_GroundFloor_Shop_OldA_03.t"
-		;
-connectAttr "AD_OZ_Gotham_GroundFloor_Shop_OldA_03.r" "Proxy_AD_OZ_Gotham_GroundFloor_Shop_OldA_03.r"
-		;
-connectAttr "AD_OZ_Gotham_GroundFloor_Shop_OldA_03.s" "Proxy_AD_OZ_Gotham_GroundFloor_Shop_OldA_03.s"
-		;
 connectAttr ":mentalrayGlobals.msg" ":mentalrayItemsList.glb";
 connectAttr ":miDefaultOptions.msg" ":mentalrayItemsList.opt" -na;
 connectAttr ":miDefaultFramebuffer.msg" ":mentalrayItemsList.fb" -na;
