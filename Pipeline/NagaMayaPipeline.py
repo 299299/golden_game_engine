@@ -205,6 +205,7 @@ class NagaPipeline(object):
         if(NAGA.isLevel(sceneName)):
             previewName = packageName + '/' + sceneName
             args = ['--websocket',
+                    '--package', packageName,
                     '--script', 'core/scripts/preview',
                     '--level', previewName,
                     '-w', str(width), '-h', str(height)]
