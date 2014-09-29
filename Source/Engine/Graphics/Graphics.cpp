@@ -269,7 +269,7 @@ void Graphics::update(ShadingEnviroment* env, float dt)
     g_guiMgr.update(dt);
 
     g_modelWorld.cull_models(g_camera.m_frustum);
-    g_lightWorld.update_shadow(env->m_shadowAreaSize, env->m_shadowFar, g_camera.m_eye);
+    if(env) g_lightWorld.update_shadow(env->m_shadowAreaSize, env->m_shadowFar, g_camera.m_eye);
     if(g_lightWorld.m_shadowLight) g_modelWorld.cull_shadows(g_lightWorld.m_shadowFrustum);
 }
 

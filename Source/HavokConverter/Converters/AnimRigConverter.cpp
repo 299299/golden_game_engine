@@ -59,15 +59,15 @@ void AnimRigConverter::postProcess()
     std::string rigFileName = "../pipeline/";
     rigFileName += m_name + "_rig.txt";
     FILE* fp = fopen(rigFileName.c_str(), "w");
-    fprintf("[HAVOK SKELETON DEFINITION FILE]\n");
-    fprintf("\n");
-    fprintf("[BONES START]\n");
+    fprintf(fp,"[HAVOK SKELETON DEFINITION FILE]\n");
+    fprintf(fp,"\n");
+    fprintf(fp,"[BONES START]\n");
     for(int i=0; i<skeleton->m_bones.getSize(); ++i)
     {
         const hkaBone& bone = skeleton->m_bones[i];
-        fprintf("%s\n", bone.m_name.cString());
+        fprintf(fp,"%s\n", bone.m_name.cString());
     }
-    fprintf("[END]\n");
+    fprintf(fp,"[END]\n");
     fclose(fp);
 #endif
 

@@ -128,12 +128,6 @@ void ScriptSystem::quit()
     delete m_vm;
 }
 
-void ScriptSystem::ready()
-{
-    extern Id create_script_object(const void*);
-    create_script_object(FIND_RESOURCE(ScriptResource, StringId("core/scripts/core")));
-}
-
 char script_error_buffer[1024*4];
 void ScriptSystem::print_error()
 {

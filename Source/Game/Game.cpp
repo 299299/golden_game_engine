@@ -11,6 +11,7 @@
 #include "Script.h"
 #include "Utils.h"
 #include "Actor.h"
+#include "Level.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -122,8 +123,8 @@ int _tmain(int argc, _TCHAR* argv[])
     if(script) 
     {
         LOGI("run script ----> %s", script);
-        extern Id create_script_object(const void* resource);
-        create_script_object(FIND_RESOURCE(ScriptResource), script);
+        extern Id create_script_object(const void*);
+        create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)));
     }
 
     g_engine.run();
