@@ -2,7 +2,7 @@ global create_core = function(id)
 {
     local core = 
     {
-        instance_id = id,
+        self = id,
     };
 
     core.start = function()

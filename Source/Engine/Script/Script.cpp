@@ -67,12 +67,11 @@ void ScriptInstance::reload( const ScriptResource* resource )
     Id id;
     if(m_table)
     {
-        gmVariable idVar = m_table->GetLinearSearch("instance_id");
+        gmVariable idVar = m_table->GetLinearSearch("self");
         if(!idVar.IsNull())
         {
             uint32_t inst_id = (uint32_t)idVar.GetInt();
             id.decode(inst_id);
-            int xx = 0;
         }
     }
     destroy();
