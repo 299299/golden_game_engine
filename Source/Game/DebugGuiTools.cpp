@@ -1,143 +1,14 @@
-#include "RenderViewerState.h"
-//==================================================
-#include "Engine.h"
-#include "MathDefs.h"
-#include "MemorySystem.h"
-#include "Log.h"
-#include "Win32Context.h"
-#include "Resource.h"
-//==================================================
-//COMPONENTS
-#include "AnimationSystem.h"
-#include "PhysicsWorld.h"
-#include "PhysicsAutoLock.h"
-#include "Camera.h"
-#include "AnimRig.h"
-#include "ShadingEnviroment.h"
-//==================================================
-#include "Component.h"
-#include "Entity.h"
-#include "EntityManager.h"
 #include "Graphics.h"
-#include "Model.h"
 #include "Material.h"
 #include "DebugDraw.h"
-#include "Scene.h"
 #include "ShadingEnviroment.h"
-#include "Light.h"
-#include "PhysicsInstance.h"
-#include "Level.h"
+#include "Gui.h"
 #include <imgui/imgui.h>
 
-static LightInstance*               g_light = 0;
-static Frustum                      g_cameraFrustum;
-static int                          g_guiMode = 0;
 
-#define  LEVEL_PACKAGE  ("data/world0.package")
-#define  TEST_LEVEL     ("world0/Level_Test")
-
-extern void getCameraRay(hkVector4& outFrom, hkVector4& outTo, hkVector4& outDir);
-extern void destroyMouseSpring();
-extern void createMouseSpring();
-extern void moveMouseSpring();
-
-static void gameKeyCallback(uint32_t key, bool down)
+void create_material_debug_gui(Material* mat, const char* name)
 {
-    if(!down)
-        return;
-    switch(key)
-    {
-    case VK_ESCAPE:
-        g_engine.shutdown();
-        break;
-     case VK_F1:
-         {
-             static uint32_t debugMode[] = {BGFX_DEBUG_NONE, BGFX_DEBUG_STATS, BGFX_DEBUG_TEXT, BGFX_DEBUG_WIREFRAME};
-             static int curMode = 0;
-             bgfx::setDebug(debugMode[curMode]);
-             ++curMode; 
-             if(curMode >= sizeof(debugMode)/sizeof(debugMode[0])) curMode = 0;
-         }
-        break;
-    case VK_F2: g_engine.setUpdate(!g_engine.isUpdating()); break;
-    case VK_F3: memcpy(&g_cameraFrustum, &g_camera.m_frustum ,sizeof(g_cameraFrustum)); break;
-    case VK_F4: ++g_guiMode; if(g_guiMode >= 2) g_guiMode = 0; break;
-    default:
-        break;
-    }
-}
-
-void gameMouseButtonCallback(int32_t mx, int32_t my, uint32_t button, bool down)
-{
-    if(button == kMouseLeft)
-    {
-        if(down)
-        {
-            createMouseSpring();
-        }
-        else
-        {
-            destroyMouseSpring();
-        }
-    }
-}
-
-void gameMouseMoveCallback(int32_t mx, int32_t my)
-{
-    moveMouseSpring();   
-}
-
-void RenderViewerState::onFirstEnter(GameState* pPrevState)
-{
-    extern DebugFPSCamera  g_fpsCamera;
-    vec3_make(g_fpsCamera.m_eye, 0, 10, -10);
-    g_fpsCamera.sync();
-    Win32InputCallback cb = 
-    {
-        0, gameKeyCallback, gameMouseButtonCallback, gameMouseMoveCallback
-    };
-    g_win32Context.registerCallback(cb);
-    m_shading = FIND_RESOURCE(ShadingEnviroment, StringId("core/common/default"));
-    g_resourceMgr.loadPackage(LEVEL_PACKAGE);
-    g_entityMgr.addInstance(StringId("core/common/sun"), hkQsTransform::getIdentity());
-}
-
-void RenderViewerState::preStep(float timeStep)
-{
-    extern DebugFPSCamera  g_fpsCamera;
-    g_fpsCamera.update(timeStep);
-    __super::preStep(timeStep);
-}
-
-void RenderViewerState::postStep(float timeStep)
-{
-    __super::postStep(timeStep);
-    debug_update_vdb_camera();
-    g_debugDrawMgr.addAxis(hkQsTransform::getIdentity());
-
-    int status = g_resourceMgr.getPackageStatus(StringId(LEVEL_PACKAGE));
-    if(status == kResourceOffline)
-    {
-        g_resourceMgr.flushPackage(StringId(LEVEL_PACKAGE), 2);
-    }
-    else if(status == kResourceOnline)
-    {
-        Level* level = FIND_RESOURCE(Level, StringId(TEST_LEVEL));
-        static bool bCreated = false;
-        if(level && !bCreated)
-        {
-            bCreated = true;
-            level->load();
-            level->update();
-        }
-    }
-}
-
-static void createMaterialDebugGUI(Material* mat, const char* name)
-{
-    char buf[128];
-    sprintf_s(buf, "material: %s", name);
-    imguiLabel(buf);
+    imguiLabel("material: %s", name);
     static bool bEnable3 = false;
     imguiColorWheel("diffuse:", mat->m_diffuse, bEnable3);
     static bool bEnable4 = false;
@@ -179,9 +50,22 @@ static void createMaterialDebugGUI(Material* mat, const char* name)
     imguiSeparator();
 }
 
-void RenderViewerState::createPostProcessGUI()
+void create_light_debug_gui(LightInstance* light, const char* name)
 {
-    extern PostProcess          g_postProcess;
+    imguiLabel("light: %s", name);
+    LightResource* res = light->m_resource;
+    static bool bEnable = false;
+    imguiColorWheel("color:", light->m_color, bEnable);
+    imguiSlider("falloff", res->m_fallOff, 0.0f, 1.0f, 0.1f);
+    imguiSlider("intensity", res->m_intensity, 0.0f, 1.0f, 0.1f);
+    imguiSlider("coneAngle", res->m_coneAngle, 0.0f, 1.0f, 0.1f);
+    imguiSlider("attenScale", res->m_attenScale, 0.0f, 1.0f, 0.1f);
+    imguiSeparator();
+}
+
+void create_postprocess_debug_gui()
+{
+    extern PostProcess  g_postProcess;
     static int32_t scroll = 0;
     imguiBeginScrollArea("post-process", 0, 50, 300, 800, &scroll);
 
@@ -206,16 +90,11 @@ void RenderViewerState::createPostProcessGUI()
     imguiEndScrollArea();
 }
 
-void RenderViewerState::createNormalGUI()
+void create_shading_enviroment_gui(ShadingEnviroment* shading_env, const char* name)
 {
-    static int scroll = 0;
-    imguiBeginScrollArea("material", 0, 50, 400, 600, &scroll);
+    imguiLabel("ShadingEnviroment: %s", name);
 
-    imguiLabel("Environment:");
-
-    ShadingEnviroment* shading_env = m_shading;
     imguiSlider("color-grading", shading_env->m_colorGradingIndex, 0, 2);
-
     imguiSlider("exposure", shading_env->m_bloomParams[0], 0.0f, 100.0f, 0.1f);
     imguiSlider("bloomThreshold", shading_env->m_bloomParams[1], 0.0f, 1.0f, 0.001f);
     imguiSlider("bloomWidth", shading_env->m_bloomParams[2], 0.0f, 100.0f, 0.1f);
@@ -249,32 +128,4 @@ void RenderViewerState::createNormalGUI()
     imguiSlider("fog density", shading_env->m_fogParams[2], 0.0f, 1.0f, 0.01f);
     imguiSlider("fog height", shading_env->m_fogParams[3], -100.0f, 100.0f, 0.1f);
     imguiSeparator();
-
-    const char* matName = "core/actor/test_monk/Mat_Monk_Body.mat";
-    static Material* mat = FIND_RESOURCE(Material, StringId(matName));
-    if(mat)
-    {
-        createMaterialDebugGUI(mat, matName);
-    }
-
-    if(g_light)
-    {
-        imguiLabel("light:");
-        LightResource* res = (LightResource*)g_light->m_resource;
-        static bool bEnable5 = false;
-        imguiColorWheel("color:", g_light->m_color, bEnable5);
-        imguiSlider("falloff", res->m_fallOff, 0.0f, 1.0f, 0.1f);
-        imguiSlider("intensity", res->m_intensity, 0.0f, 1.0f, 0.1f);
-        imguiSlider("coneAngle", res->m_coneAngle, 0.0f, 1.0f, 0.1f);
-        imguiSlider("attenScale", res->m_attenScale, 0.0f, 1.0f, 0.1f);
-        imguiSeparator();
-    }
-    imguiEndScrollArea();
-}
-
-void RenderViewerState::render()
-{
-    if(g_guiMode == 0) createNormalGUI();
-    else if(g_guiMode == 1) createPostProcessGUI();
-	__super::render();
 }

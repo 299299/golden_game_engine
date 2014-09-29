@@ -16,6 +16,8 @@ struct ScriptInclude
     ScriptResource*         m_script;
 };
 
+#define SCRIPT_FUNCTION_MAX_LEN     32
+
 ENGINE_NATIVE_ALIGN struct ScriptResource
 {
     DECLARE_RESOURCE(script);
@@ -25,6 +27,7 @@ ENGINE_NATIVE_ALIGN struct ScriptResource
     gmFunctionObject*       m_rootFunction;
     bool                    m_preLoaded;
     char                    m_padding[3];
+    char                    m_funcName[SCRIPT_FUNCTION_MAX_LEN];                  
 
     void pre_load();
 };

@@ -47,7 +47,7 @@ void ScriptInstance::init( const void* resource, Id id )
     m_resource = (const ScriptResource*)resource;
     gmVariable a_param((int)id.encode());
     gmCall call;
-    call.BeginGlobalFunction(g_script.m_vm, "create_core");
+    call.BeginGlobalFunction(g_script.m_vm, m_resource->m_funcName);
     call.AddParam(a_param);
     call.End(&m_threadId);
     m_table = call.GetReturnedVariable().GetTableObjectSafe();
@@ -110,7 +110,9 @@ void ScriptSystem::init()
 {
     memset(this, 0x00, sizeof(ScriptSystem));
     m_vm = new gmMachine();
+#ifndef _RETIAL
     m_vm->SetDebugMode(true);
+#endif    
     gmMachine::s_machineCallback = machine_callback;
     gmMachine::s_printCallback = print_callback;
     extern void register_script_api(gmMachine*);
