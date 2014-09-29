@@ -34,7 +34,7 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     char* mem = (char*)malloc(memSize);
     memset(mem, 0x00, memSize);
     ScriptResource* script = (ScriptResource*)mem;
-    std::string scirpt_name = getFileName(input);
+    std::string script_name = getFileName(input);
     script_name = "create_" + script_name;
     uint32_t name_len = script_name.length();
     ENGINE_ASSERT(name_len < SCRIPT_FUNCTION_MAX_LEN, "script function name %s overflow", script_name.c_str());
