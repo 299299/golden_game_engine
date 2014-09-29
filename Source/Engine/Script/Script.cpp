@@ -207,6 +207,12 @@ void ScriptSystem::full_garbge_collect()
 //-----------------------------------------------------------------------
 Id create_script_object(const void* resource)
 {
+    if(!resource) 
+    {
+        Id id;
+        id.id = INVALID_ID;
+        return id;
+    }
     ScriptInstance inst;
     Id id = id_array::create(g_scriptObjects, inst);
     id_array::get(g_scriptObjects, id).init(resource, id);

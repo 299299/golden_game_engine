@@ -113,9 +113,14 @@ int _tmain(int argc, _TCHAR* argv[])
     g_debugDrawMgr.ready();
 
     if(package_name) g_resourceMgr.load_package_and_wait(package_name);
-    if(actor_name) g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
+    if(actor_name) 
+    {
+        printf("loading actor %s \n", actor_name);
+        g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
+    }
     if(level_name)
     {
+        printf("loading level %s \n", level_name);
         Level* level = FIND_RESOURCE(Level, StringId(level_name));
         if(level) level->load();
     }
