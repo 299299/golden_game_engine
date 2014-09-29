@@ -132,9 +132,7 @@ void ScriptSystem::quit()
 void ScriptSystem::ready()
 {
     extern Id create_script_object(const void*);
-    extern void* get_script_object(Id);
-    Id id = create_script_object(FIND_RESOURCE(ScriptResource, StringId("core/scripts/core")));
-    m_coreScript = (ScriptInstance*)get_script_object(id);
+    create_script_object(FIND_RESOURCE(ScriptResource, StringId("core/scripts/core")));
 }
 
 char script_error_buffer[1024*4];
