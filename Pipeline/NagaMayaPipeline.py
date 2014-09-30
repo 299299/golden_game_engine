@@ -13,6 +13,15 @@ PREVIEW_PACK = 'preview'
 GAME_APP = 'Game_Debug'
 UI_NAME = 'Naga_UI'
 
+HKO_TYPES = [
+    'default',
+    'skin-model',
+    'animation-default',
+    'animation-rootmotion-no-rotation',
+    'animation-rootmotion-rotation',
+    'animation-additive-first-frame',
+]
+
 
 class NagaPipeline(object):
     NagaObject = None
@@ -73,8 +82,23 @@ class NagaPipeline(object):
                                   bgc=[0, 1, 0])
         cmds.setParent('..')
 
-        cmds.frameLayout(l="Parameters", cll=1, h=50)
+        cmds.frameLayout(l="Export Parameters", cll=1, h=50)
+        # line 1
         self.selectCheck = cmds.checkBox(label='Export Select Only', v=False)
+        # line 2
+        cmds.text(label='export type:', align='center', bgc=[0, 1, 0])
+        # line 3
+        self.hkoTypeGroup = cmds.optionMenuGrp('HkoType')
+        for hkoType in HKO_TYPES:
+            cmds.menuItem(label=hkoType)
+        # line 4
+        cmds.text(label='rig type:', align='center', bgc=[0, 1, 0])
+        self.rigTypeGroup = cmds.optionMenuGrp('RigType')
+        for rigType in self.naga.getRigList():
+            cmds.menuItem(label=rigType)
+        cmds.setParent('..')
+        cmds.setParent('..')
+        cmds.setParent('..')
         cmds.setParent('..')
 
         height = 30
@@ -87,35 +111,13 @@ class NagaPipeline(object):
         cmds.setParent('..')
         cmds.setParent('..')
 
-        cmds.frameLayout(l="Animation", cll=1, mh=2, mw=2)
-        # cmds.rowLayout(numberOfColumns=5)
-        animation_types = [
-            'skin-rig',
-            'default',
-            'root-motion-no-rotation',
-            'root-motion-rotation',
-            'additive-first-frame',
-        ]
-        cmds.text(label='export type:', align='center', bgc=[0, 1, 0])
-        self.animTypeGroup = cmds.optionMenuGrp('AnimType')
-        for animType in animation_types:
-            cmds.menuItem(label=animType)
-        cmds.text(label='rig type:', align='center', bgc=[0, 1, 0])
-        self.rigTypeGroup = cmds.optionMenuGrp('RigType')
-        for rigType in self.naga.getRigList():
-            cmds.menuItem(label=rigType)
-        cmds.button('Export', h=height, c=self.onAnimExportClicked)
-        cmds.setParent('..')
-        cmds.setParent('..')
-        cmds.setParent('..')
-        cmds.setParent('..')
-        cmds.setParent('..')
-
         height = 75
         cmds.frameLayout(
             l="Preview and Export", cll=1, mh=margin_h, mw=margin_w)
         cmds.button('Preview', h=height, bgc=[1, 1, 0],
                     c=self.onPreviewButtonClicked)
+        cmds.button('Export', h=height, bgc=[0, 1, 1],
+                    c=self.onExportButtonClicked)
         cmds.setParent('..')
         cmds.showWindow(UI_NAME)
 
@@ -135,13 +137,14 @@ class NagaPipeline(object):
         cmds.file(mf=0)
         cmds.file(self.lastMayaScene, o=True)
 
-    def onAnimExportClicked(self, *arg):
-        exportName = NAGA.getSceneName()
-        packageName = 'animation'
-        rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
-        rigName = self.naga.getRigList()[rigIndex]
-        index = cmds.optionMenuGrp(self.animTypeGroup, q=1, sl=1) - 1
-        self.export(exportName, packageName, index, rigName)
+    def onExportButtonClicked(self, *arg):
+        #exportName = NAGA.getSceneName()
+        #packageName = 'animation'
+        #rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
+        #rigName = self.naga.getRigList()[rigIndex]
+        #index = cmds.optionMenuGrp(self.animTypeGroup, q=1, sl=1) - 1
+        #self.export(exportName, packageName, index, rigName)
+        pass
 
     #
     # UTIL FUNCTIONS
@@ -179,7 +182,13 @@ class NagaPipeline(object):
                 return
         else:
             packageName = PREVIEW_PACK
-        self.export(exportName, packageName)
+
+        rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
+        rigName = self.naga.getRigList()[rigIndex]
+        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
+
+        self.export(exportName, packageName,
+                    hkoType=hkoIndex, rigName=rigName)
 
         if not self.webSock.connected:
             self.lunchEngine(packageName)

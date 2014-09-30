@@ -343,7 +343,7 @@ class NagaMayaUtil(object):
             cmds.setAttr(nodeName + '.rotate', rotate[0], rotate[1], rotate[2])
             cmds.setAttr(nodeName + '.scale', scale[0], scale[1], scale[2])
             proxyNodeNum += 1
-        #cmds.delete(PROXY_GROUP)
+        cmds.delete(PROXY_GROUP)
         return proxyNodeNum, packageName
 
     def exportToHKX(self, exportName, packageName,

@@ -11,6 +11,7 @@ public:
     virtual std::string getFormatExt() const { return LookAtResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
+    virtual bool checkProcessing() { return true; };
 };
 
 class ReachIKCompiler : public BaseCompiler
@@ -22,6 +23,7 @@ public:
     virtual std::string getFormatExt() const { return ReachResource::get_name();};
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
+    virtual bool checkProcessing() { return true; };
 };
 
 class FootIKCompiler : public BaseCompiler
@@ -33,4 +35,5 @@ public:
     virtual std::string getFormatExt() const { return FootResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
+    virtual bool checkProcessing() { return true; };
 };
