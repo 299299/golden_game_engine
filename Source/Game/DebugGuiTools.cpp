@@ -3,6 +3,7 @@
 #include "DebugDraw.h"
 #include "ShadingEnviroment.h"
 #include "Gui.h"
+#include "AnimFSM.h"
 #include <imgui/imgui.h>
 
 
@@ -128,4 +129,22 @@ void create_shading_enviroment_gui(ShadingEnviroment* shading_env, const char* n
     imguiSlider("fog density", shading_env->m_fogParams[2], 0.0f, 1.0f, 0.01f);
     imguiSlider("fog height", shading_env->m_fogParams[3], -100.0f, 100.0f, 0.1f);
     imguiSeparator();
+}
+
+void create_anim_fsm_gui(AnimFSMInstance* fsmInstance, const char* name)
+{
+    const AnimFSM* fsm = fsmInstance->m_resource;
+    imguiLabel("AnimationFSM: %s", name);
+    for (uint32_t i = 0; i < fsm->m_numLayers; ++i)
+    {
+        const RtLayer& rtLayer = fsm->m_layers[i];
+        const RtState* cur_state = rtLayer.m_curState;
+        const State* state = cur_state->m_state;
+        imguiLabel("layer %d, cur state = %s", i, stringid_lookup(state->m_name));
+        for(uint32_t j=0; j<state->m_numTransitions; ++j)
+        {
+            const Transition& t = state->m_transitions[j];
+            imguiButton(stringid_lookup(t.m_event));
+        }
+    }
 }

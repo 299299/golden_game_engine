@@ -67,6 +67,6 @@ struct AnimRigInstance
     void init(const void* resource);
     void destroy();
     int  get_triggers(int layer, float dt, AnimationTrigger* outTriggers);
-    void udpate_localcock(float dt);
+    void update_local_clock(float dt);
     void test_animation(const char* animFile);
 };

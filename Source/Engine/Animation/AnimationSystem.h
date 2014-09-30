@@ -25,6 +25,8 @@ struct AnimationSystem
     void    kick_in_jobs();
     void    tick_finished_jobs();
     void    skin_actors(Actor* actors, uint32_t num);
+    void    update_local_clocks(float dt);
+    void    update_fsms(float dt);
 };
 extern AnimationSystem g_animMgr;
 

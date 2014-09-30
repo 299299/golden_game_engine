@@ -102,6 +102,7 @@ void AnimationSystem::tick_finished_jobs()
 
 void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 {
+    PROFILE(Animation_SkinActors);
     extern void* get_anim_rig(Id);
     extern void* get_render_model(Id);
     for (uint32_t i=0; i<num; ++i)
@@ -155,7 +156,30 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         draw_pose(*pose, t, RGBA(125,125,255,255));
 #endif
     }
-    
+}
+
+void AnimationSystem::update_local_clocks(float dt)
+{
+    uint32_t numRigs = id_array::size(m_rigs);
+    if(!numRigs) return;
+    PROFILE(Animation_UpdateLocalClock);
+    AnimRigInstance* rigs = id_array::begin(m_rigs);
+    for(uint32_t i=0; i<numRigs;++i)
+    {
+        rigs[i].update_local_clock(dt);
+    }
+}
+
+void AnimationSystem::update_fsms(float dt)
+{
+    uint32_t numFSMs = id_array::size(m_fsms);
+    if(!numFSMs) return;
+    PROFILE(Animation_UpdateFSM);
+    AnimFSMInstance* fsms = id_array::begin(m_fsms);
+    for(uint32_t i=0; i<numRigs;++i)
+    {
+        fsms[i].update(dt);
+    }
 }
 
 //-----------------------------------------------------------------

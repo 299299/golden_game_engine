@@ -54,7 +54,7 @@ int AnimRigInstance::get_triggers(int layer, float dt, AnimationTrigger* outTrig
     return 0;
 }
 
-void AnimRigInstance::udpate_localcock(float dt)
+void AnimRigInstance::update_local_clock(float dt)
 {
     m_skeleton->stepDeltaTime(dt);
 }
