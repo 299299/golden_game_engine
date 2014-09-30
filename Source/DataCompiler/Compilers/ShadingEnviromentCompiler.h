@@ -11,5 +11,5 @@ public:
     virtual std::string getFormatExt() const { return ShadingEnviroment::get_name(); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
-    virtual bool checkProcessing() { return true; };
+    virtual bool checkInLevel() const { return false; };
 };

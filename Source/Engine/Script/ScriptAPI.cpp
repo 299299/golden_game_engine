@@ -776,6 +776,13 @@ static int GM_CDECL physics_create_world(gmThread* a_thread)
     a_thread->PushInt(b_ok);
     return GM_OK;
 }
+static int GM_CDECL physics_create_plane(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(size, 0);
+    g_physicsWorld.create_plane(size);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1130,7 +1137,7 @@ void register_script_api(gmMachine* machine)
     static gmFunctionEntry s_physics_binding[] =
     {
         {"create_world", physics_create_world},
-
+        {"create_plane", physics_create_plane},
     };
     REG_LIB(physics, s_physics_binding);
 

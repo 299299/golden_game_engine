@@ -11,6 +11,7 @@ global create_preview = function(id)
         .shading_env = resource.find_resource(string_to_id("shading_enviroment"), string_to_id("core/common/default"));
         world.set_shading_enviroment(.shading_env);
         physics.create_world(string_to_id("core/global"));
+        physics.create_plane(500);
         graphics.camera_set_position(0, 10, -10);
         graphics.camera_set_lookat(0, 0, 0);
         this:stateSet(.running_state);

@@ -176,7 +176,7 @@ void AnimationSystem::update_fsms(float dt)
     if(!numFSMs) return;
     PROFILE(Animation_UpdateFSM);
     AnimFSMInstance* fsms = id_array::begin(m_fsms);
-    for(uint32_t i=0; i<numRigs;++i)
+    for(uint32_t i=0; i<numFSMs;++i)
     {
         fsms[i].update(dt);
     }

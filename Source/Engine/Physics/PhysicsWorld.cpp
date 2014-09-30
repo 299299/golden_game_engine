@@ -177,6 +177,7 @@ void PhysicsWorld::create_world(PhysicsConfig* config)
 
 void PhysicsWorld::create_plane(float size)
 {
+    ENGINE_ASSERT(m_world, "physics is not created!");
     PHYSICS_LOCKWRITE(m_world);
     hkVector4 planeSize(size, 2.0f, size);
     hkVector4 halfExtents(planeSize(0) * 0.5f, planeSize(1) * 0.5f, planeSize(2) * 0.5f);

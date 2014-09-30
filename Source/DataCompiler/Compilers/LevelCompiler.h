@@ -17,7 +17,7 @@ public:
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
     bool isResourceInLevel(const std::string& resourceName) const;
-    virtual bool checkProcessing() const { return true; };
+    virtual bool checkInLevel() const { return false; };
 
     ResourceKeyMap           m_resourceKeys;
 };

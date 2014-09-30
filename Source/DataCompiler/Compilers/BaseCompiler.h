@@ -33,6 +33,7 @@ public:
     virtual bool checkProcessing();
     virtual bool parseWithJson() const { return false; };
     virtual void checkModifyTime();
+    virtual bool checkInLevel() const { return true;};
 
     std::string                                     m_name;
     std::string                                     m_input;
