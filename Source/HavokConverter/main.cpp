@@ -106,7 +106,8 @@ void havok_convert(Actor_Config* config)
 
     converter->m_config = config;
     converter->setName(config->m_exportName);
-    converter->process(scene);
+    if(config->m_exportMode == "skinning") converter->process(ac);
+    else converter->process(scene);
     converter->postProcess();
     converter->serializeToFile(config->m_output.c_str());
 

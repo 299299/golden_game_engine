@@ -65,7 +65,7 @@ void AnimRigInstance::init( const void* resource )
     m_skeleton = new hkaAnimatedSkeleton(m_resource->m_skeleton);
     m_pose = new hkaPose(m_skeleton->getSkeleton());
     m_pose->setToReferencePose();
-    m_pose->syncModelSpace();
+    m_pose->syncAll();
 }
 
 void AnimRigInstance::test_animation( const char* animFile )

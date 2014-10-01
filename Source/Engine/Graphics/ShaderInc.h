@@ -19,7 +19,7 @@
 #define BGFX_CONFIG_MAX_BONES   128
 #define BGFX_CONFIG_MAX_LIGHTS  4
 #define SHADOWMAP_SIZE          1024
-#define HDR
+//#define HDR
 
 #define MAX_UNIFORM_NUM         1024
 #define MAX_FRAMEBUFFER_NUM     32
@@ -31,6 +31,6 @@
 
 //#define FILM_GAIN
 #define COLOR_CORRECTION
-
+#define GAMMA_CORRECTION
 
 #endif

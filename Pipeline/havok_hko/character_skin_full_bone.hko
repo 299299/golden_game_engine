@@ -40,7 +40,7 @@
 	</hkobject>
 	<hkobject name="Create Skeletons" class="hctCreateSkeletonOptions">
 		<hkparam name="moveToOrigin">true</hkparam>
-		<hkparam name="automatic">false</hkparam>
+		<hkparam name="automatic">true</hkparam>
 		<hkparam name="rigNodes"></hkparam>
 		<hkparam name="rigFile">output_rig.txt</hkparam>
 		<hkparam name="selected">false</hkparam>

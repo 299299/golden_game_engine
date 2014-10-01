@@ -367,7 +367,7 @@ class NagaMayaUtil(object):
             if(isLevel(exportName)):
                 exportMode = "level"
         elif(hko_index == 1):
-            exportMode = "skinnning"
+            exportMode = "skinning"
         else:
             exportMode = "animation"
         envCmd += "EXPORT_MODE=" + exportMode + ";"

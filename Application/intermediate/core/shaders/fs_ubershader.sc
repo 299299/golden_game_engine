@@ -9,10 +9,6 @@
 #define SPECULAR_MODEL 0
 #endif
 
-#ifndef GAMMA_CORRECTION
-#define GAMMA_CORRECTION
-#endif
-
 //#define REFLECTION_MASK
 //#define DIFFUSE_ALPHA
 //#define TRANSLUCENCY
@@ -621,7 +617,12 @@ void main()
     //**************************************************************
     //DIFFUSE　MAP
     vec4 diffuseMap = texture2D(u_texColor, v_texcoord0);
+#ifdef GAMMA_CORRECTION
     diffuseColor *= toLinear(diffuseMap.rgb) * u_diffuseColor.rgb;
+#else
+    diffuseColor *= diffuseMap.rgb * u_diffuseColor.rgb;
+#endif
+
 #ifdef DIFFUSE_ALPHA
     diffuseAlpha = diffuseMap.a;
 #endif

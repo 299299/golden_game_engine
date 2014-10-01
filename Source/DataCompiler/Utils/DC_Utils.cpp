@@ -39,9 +39,15 @@ struct JsonMemBuffer
     {
         if(m_size >= size) return;
         delete []m_ioBuffer;
+        delete []m_parseBuffer;
         m_ioBuffer = new char[size];
         m_parseBuffer = new char[size];
         m_size = size;
+    }
+    JsonMemBuffer::JsonMemBuffer()
+    {
+        m_ioBuffer = m_parseBuffer = 0;
+        m_size = 0;
     }
     JsonMemBuffer::~JsonMemBuffer()
     {
@@ -78,7 +84,6 @@ struct JsonMemMgr
         }
 
         JsonMemBuffer* buffer = new JsonMemBuffer;
-        memset(buffer, 0x00, sizeof(JsonMemBuffer));
         buffer->alloc(size);
         buffer->m_threadId = threadId;
         m_buffers.push_back(buffer);

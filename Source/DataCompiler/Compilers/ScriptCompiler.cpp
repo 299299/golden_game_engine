@@ -19,9 +19,9 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
         bool firstErr = true;
         std::string scriptErr;
         const char* msg = compileLog.GetEntry(firstErr);
-        scriptErr += msg;
         while(msg)	
         {
+            scriptErr += msg;
             msg = compileLog.GetEntry(firstErr);
             if(msg) scriptErr += msg;
         }

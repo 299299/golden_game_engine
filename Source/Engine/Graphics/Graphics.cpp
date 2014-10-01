@@ -300,10 +300,12 @@ void Graphics::draw(ShadingEnviroment* env)
     bgfx::setViewTransform(kSceneViewId, view, proj);
     bgfx::setViewTransform(kDebugDrawViewId, view, proj);
 
+#ifdef HDR
     bgfx::FrameBufferHandle handle = g_postProcess.m_colorFB->m_handle;
     bgfx::setViewFrameBuffer(kBackgroundViewId, handle);
     bgfx::setViewFrameBuffer(kSceneViewId, handle);
     bgfx::setViewFrameBuffer(kDebugDrawViewId, handle);
+#endif
 
     submitPerFrameUniforms();
     g_lightWorld.submit_lights(env);
@@ -311,7 +313,9 @@ void Graphics::draw(ShadingEnviroment* env)
     g_modelWorld.submit_models();
     if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();
     g_debugDrawMgr.draw();
+#ifdef HDR
     postProcessSubmit(env);
+#endif
 
     PROFILE(bgfx_frame);
     bgfx::frame();

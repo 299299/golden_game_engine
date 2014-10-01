@@ -273,7 +273,7 @@ void ActorWorld::frame_start(float dt)
 
 void ActorWorld::pre_step( float dt )
 {
-
+    g_animMgr.update_local_clocks(dt);
 }
 
 void ActorWorld::step( float dt )
@@ -288,8 +288,8 @@ void ActorWorld::post_step( float dt )
 
 void ActorWorld::draw()
 {
-    Graphics::draw(m_shading_env);
     g_animMgr.skin_actors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
+    Graphics::draw(m_shading_env);
 }
 
 
