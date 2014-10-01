@@ -31,9 +31,25 @@ void lut2d_to_3d(const uint8_t* inData, uint8_t* outData)
 
 struct JsonMemBuffer
 {
-    DWORD   m_threadId;
-    char    m_ioBuffer[1024*10];
-    char    m_parseBuffer[1024*10];
+    DWORD       m_threadId;
+    char*       m_ioBuffer;
+    char*       m_parseBuffer;
+    uint32_t    m_size;
+    void alloc(uint32_t size)
+    {
+        if(m_size >= size) return;
+        delete []m_ioBuffer;
+        m_ioBuffer = new char[size];
+        m_parseBuffer = new char[size];
+        m_size = size;
+    }
+    JsonMemBuffer::~JsonMemBuffer()
+    {
+        delete []m_ioBuffer;
+        m_ioBuffer = 0;
+        delete []m_parseBuffer;
+        m_parseBuffer = 0;
+    }
 };
 
 struct JsonMemMgr
@@ -46,18 +62,24 @@ struct JsonMemMgr
             delete m_buffers[i];
         }
     }
-    JsonMemBuffer* allocBuffer()
+    JsonMemBuffer* allocBuffer(uint32_t size)
     {
         DWORD threadId = ::GetCurrentThreadId();
 
         hkCriticalSectionLock _l(&g_jsonCS);
         for (size_t i=0; i<m_buffers.size(); ++i)
         {
-            if(m_buffers[i]->m_threadId == threadId)
-                return m_buffers[i];
+            JsonMemBuffer* buffer = m_buffers[i];
+            if(buffer->m_threadId == threadId)
+            {
+                buffer->alloc(size);
+                return buffer;
+            }
         }
 
         JsonMemBuffer* buffer = new JsonMemBuffer;
+        memset(buffer, 0x00, sizeof(JsonMemBuffer));
+        buffer->alloc(size);
         buffer->m_threadId = threadId;
         m_buffers.push_back(buffer);
         return buffer;
@@ -85,7 +107,7 @@ bool parse_json(const std::string& fileName, JsonParser& parser)
         return 0;
     }
 
-    JsonMemBuffer* buffer = g_jsonMgr.allocBuffer();
+    JsonMemBuffer* buffer = g_jsonMgr.allocBuffer(fileSize);
     ReadFile(hFile, buffer->m_ioBuffer, fileSize, &readLen, 0);
     if(readLen != fileSize)
     {

@@ -127,6 +127,11 @@ void MaterialConverter::process(hkxMaterial* material)
         m_shader = "sky";
         m_shadowShader = "";
     }
+    else if(m_model->m_type == kModelCollision)
+    {
+        m_shader = "base";
+        m_shadowShader = "";
+    }
 }
 
 jsonxx::Object MaterialConverter::serializeToJson() const

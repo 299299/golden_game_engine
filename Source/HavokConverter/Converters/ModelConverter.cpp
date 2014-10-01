@@ -188,7 +188,7 @@ ModelConverter::serializeToJson() const
     }
     modelObject << "materials" << matObject;
 
-    if(m_type == kModelSky)
+    if(m_type == kModelSky || m_type == kModelCollision)
     {
         extern const char* g_viewGroupNames[];
         modelObject << "view_group" << std::string(g_viewGroupNames[kBackgroundViewId]);

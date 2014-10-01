@@ -82,7 +82,7 @@ class NagaPipeline(object):
                                   bgc=[0, 1, 0])
         cmds.setParent('..')
 
-        cmds.frameLayout(l="Export Parameters", cll=1, h=50)
+        cmds.frameLayout(l="Export Parameters", cll=1)
         # line 1
         self.selectCheck = cmds.checkBox(label='Export Select Only', v=False)
         # line 2
@@ -95,7 +95,9 @@ class NagaPipeline(object):
         cmds.text(label='rig type:', align='center', bgc=[0, 1, 0])
         self.rigTypeGroup = cmds.optionMenuGrp('RigType')
         for rigType in self.naga.getRigList():
-            cmds.menuItem(label=rigType)
+            rigName = os.path.basename(rigType)
+            cmds.menuItem(label=rigName)
+        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -185,6 +187,7 @@ class NagaPipeline(object):
 
         rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
         rigName = self.naga.getRigList()[rigIndex]
+        rigName = os.path.basename(rigName)
         hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
 
         self.export(exportName, packageName,

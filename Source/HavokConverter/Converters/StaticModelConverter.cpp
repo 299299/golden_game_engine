@@ -42,7 +42,6 @@ void StaticModelConverter::processNode( hkxNode* node )
             sprintf_s(buf, "%s", m_name.c_str());
         else
             sprintf_s(buf, "%s_%d", m_name.c_str(), i);
-
         mc->m_type = m_type;
         mc->setName(buf);
         mc->process(va.m_object, 0);
@@ -91,4 +90,12 @@ void StaticModelConverter::processNode( hkxNode* node )
         physics->process((void*)m_config->m_physics);
         m_components.push_back(physics);
     }
+}
+
+void StaticModelConverter::processPhysics( hkpPhysicsData* data )
+{
+    PhysicsConverter* physics = new PhysicsConverter(this);
+    physics->setName(m_name);
+    physics->process((void*)data);
+    m_components.push_back(physics);
 }

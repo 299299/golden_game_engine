@@ -7,8 +7,11 @@
 
 #if BGFX_CONFIG_RENDERER_DIRECT3D11
 #	include "renderer_d3d11.h"
-#	include <psapi.h>
-#	include <renderdoc/renderdoc_app.h>
+
+#	if BGFX_CONFIG_DEBUG_PIX
+#		include <psapi.h>
+#		include <renderdoc/renderdoc_app.h>
+#	endif // BGFX_CONFIG_DEBUG_PIX
 
 namespace bgfx
 {
@@ -404,26 +407,7 @@ namespace bgfx
 		return false;
 	};
 
-#define RENDERDOC_IMPORT \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetLogFile); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_GetCapture); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetCaptureOptions); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetActiveWindow); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_TriggerCapture); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_StartFrameCapture); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_EndFrameCapture); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_GetOverlayBits); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_MaskOverlayBits); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetFocusToggleKeys); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetCaptureKeys); \
-			RENDERDOC_IMPORT_FUNC(RENDERDOC_InitRemoteAccess);
-
-#define RENDERDOC_IMPORT_FUNC(_func) p##_func _func
-RENDERDOC_IMPORT
-#undef RENDERDOC_IMPORT_FUNC
-
-	pRENDERDOC_GetAPIVersion RENDERDOC_GetAPIVersion;
-
+#if BGFX_CONFIG_DEBUG_PIX && BX_PLATFORM_WINDOWS
 	bool findModule(const char* _name)
 	{
 		HANDLE process = GetCurrentProcess();
@@ -463,6 +447,26 @@ RENDERDOC_IMPORT
 
 		return false;
 	}
+
+#define RENDERDOC_IMPORT \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetLogFile); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_GetCapture); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetCaptureOptions); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetActiveWindow); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_TriggerCapture); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_StartFrameCapture); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_EndFrameCapture); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_GetOverlayBits); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_MaskOverlayBits); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetFocusToggleKeys); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_SetCaptureKeys); \
+			RENDERDOC_IMPORT_FUNC(RENDERDOC_InitRemoteAccess);
+
+#define RENDERDOC_IMPORT_FUNC(_func) p##_func _func
+	RENDERDOC_IMPORT
+#undef RENDERDOC_IMPORT_FUNC
+
+	pRENDERDOC_GetAPIVersion RENDERDOC_GetAPIVersion;
 
 	void* loadRenderDoc()
 	{
@@ -521,11 +525,22 @@ RENDERDOC_IMPORT
 			bx::dlclose(_renderdocdll);
 		}
 	}
+#else
+	void* loadRenderDoc()
+	{
+		return NULL;
+	}
+
+	void unloadRenderDoc(void*)
+	{
+	}
+#endif // BGFX_CONFIG_DEBUG_PIX
 
 	struct RendererContextD3D11 : public RendererContextI
 	{
 		RendererContextD3D11()
-			: m_captureTexture(NULL)
+			: m_lost(0)
+			, m_captureTexture(NULL)
 			, m_captureResolve(NULL)
 			, m_wireframe(false)
 			, m_flags(BGFX_RESET_NONE)
@@ -1144,16 +1159,42 @@ RENDERDOC_IMPORT
 			capturePostReset();
 		}
 
+		static bool isLost(HRESULT _hr)
+		{
+			return DXGI_ERROR_DEVICE_REMOVED == _hr
+				|| DXGI_ERROR_DEVICE_HUNG == _hr
+				|| DXGI_ERROR_DEVICE_RESET == _hr
+				|| DXGI_ERROR_DRIVER_INTERNAL_ERROR == _hr
+				|| DXGI_ERROR_NOT_CURRENTLY_AVAILABLE == _hr
+				;
+		}
+
 		void flip() BX_OVERRIDE
 		{
 			if (NULL != m_swapChain)
 			{
+				HRESULT hr = 0;
 				uint32_t syncInterval = !!(m_flags & BGFX_RESET_VSYNC);
-				for (uint32_t ii = 1, num = m_numWindows; ii < num; ++ii)
+				for (uint32_t ii = 1, num = m_numWindows; ii < num && SUCCEEDED(hr); ++ii)
 				{
-					DX_CHECK(m_frameBuffers[m_windows[ii].idx].m_swapChain->Present(syncInterval, 0) );
+					hr = m_frameBuffers[m_windows[ii].idx].m_swapChain->Present(syncInterval, 0);
 				}
-				DX_CHECK(m_swapChain->Present(syncInterval, 0) );
+
+				if (SUCCEEDED(hr) )
+				{
+					hr = m_swapChain->Present(syncInterval, 0);
+				}
+
+				if (FAILED(hr)
+				&&  isLost(hr) )
+				{
+					++m_lost;
+					BGFX_FATAL(10 > m_lost, bgfx::Fatal::DeviceLost, "Device is lost. FAILED 0x%08x", hr);
+				}
+				else
+				{
+					m_lost = 0;
+				}
 			}
 		}
 
@@ -1964,6 +2005,7 @@ RENDERDOC_IMPORT
 		IDXGIFactory* m_factory;
 
 		IDXGISwapChain* m_swapChain;
+		uint16_t m_lost;
 		uint16_t m_numWindows;
 		FrameBufferHandle m_windows[BGFX_CONFIG_MAX_FRAME_BUFFERS];
 

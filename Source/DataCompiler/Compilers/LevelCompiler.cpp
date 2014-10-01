@@ -44,15 +44,19 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     std::vector<int>        actorIndices;
 
     actorIndices.resize(numOfActors);
+    LOGI("level %s num-of-actors = %d", m_input.c_str(), numOfActors);
 
     std::string typeName;
     for (uint32_t i = 0; i < numOfActors; ++i)
     {
         JsonValue actorValue = actorsValue[i];
-        typeName = JSON_GetString(actorValue.GetValue("type"));
+        JsonValue typeValue = actorValue.GetValue("type");
+        typeName = JSON_GetString(typeValue);
+        std::string actorName = JSON_GetString(actorValue.GetValue("name"));
         uint32_t key = StringId::calculate(typeName.c_str());
         int index = -1;
         ResourceKeyMap::iterator iter = m_resourceKeys.find(key);
+        HK_ASSERT(0, typeName.length());
         if(iter == m_resourceKeys.end())
         {
             resourceNames.push_back(key);
@@ -60,7 +64,8 @@ bool LevelCompiler::readJSON( const JsonValue& root )
             m_resourceKeys[key] = index;
             addDependency("actor resource", name_to_file_path(typeName, ActorResource::get_name()));
         }
-        else {
+        else 
+        {
             index = iter->second;
         }
         actorIndices[i] = index;

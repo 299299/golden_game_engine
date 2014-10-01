@@ -14,6 +14,7 @@ public:
 private:
     void process(hkxScene* scene);
     virtual void postProcess();
+    Actor_Config* createConfig(const std::string& nodeName);
 private:
     hkxScene*                                   m_scene;
     std::vector<hkxNode*>                       m_sceneNodes;
@@ -21,5 +22,6 @@ private:
     std::vector<hkxNode*>                       m_lightNodes;
     std::vector<ActorConverter*>                m_levelMeshes;
     std::vector<ActorConverter*>                m_levelLights;
+    ActorConverter*                             m_collisionActor;
     std::vector<Actor_Config*>                  m_configs;
 };

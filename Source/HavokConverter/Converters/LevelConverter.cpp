@@ -45,8 +45,17 @@ void json_transform(jsonxx::Object& object, hkxNode* pNode, hkxScene* pScene)
     object << "scale" << scale;
 }
 
+void fixNodeName(std::string& nodeName)
+{
+    size_t pos = nodeName.find_last_of('|');
+    if(pos == std::string::npos) return;
+    pos += 1;
+    nodeName = nodeName.substr(pos, nodeName.length()-pos);
+}
+
 LevelConverter::LevelConverter()
 :m_scene(0)
+,m_collisionActor(0)
 {
     
 }
@@ -65,6 +74,7 @@ LevelConverter::~LevelConverter()
     {
         SAFE_DELETE(m_configs[i]);
     }
+    SAFE_REMOVEREF(m_collisionActor);
 }
 
 void LevelConverter::process(void* pData)
@@ -86,47 +96,53 @@ void LevelConverter::process(hkxScene* scene)
     {
         hkxNode* node = m_meshNodes[i];
         std::string nodeName(node->m_name.cString());
-        toLower(nodeName);
+        fixNodeName(nodeName);
+        LOGI("mesh node name = %s", nodeName.c_str());
         StaticModelConverter* actor = new StaticModelConverter();
         if(str_begin_with(nodeName, "sky"))
         {
-            //hack here for skydome materil
+            //hack here for sky dome material
             actor->setType(kModelSky);
         }
-        Actor_Config* cfg = new Actor_Config;
-        cfg->m_assetFolder = m_config->m_assetFolder;
-        cfg->m_workspaceFolder = m_config->m_workspaceFolder;
-        cfg->m_exportFolder = m_config->m_exportFolder;
-        cfg->m_exportName = m_name + "_" + node->m_name.cString();
-        cfg->m_rootPath = m_config->m_rootPath;
-        cfg->m_assetPath = m_config->m_assetPath;
-        cfg->m_exportClass = "level_geometry";
+        else if(str_begin_with(nodeName, "collision_"))
+        {
+            //hack here for collision material
+            actor->setType(kModelCollision);
+        }
+        Actor_Config* cfg = createConfig(nodeName);
         actor->m_config = cfg;
         actor->setName(cfg->m_exportName);
         actor->setClass(cfg->m_exportClass);
         actor->processNode(node);
         m_levelMeshes.push_back(actor);
-        m_configs.push_back(cfg);
     }
 
     for(size_t i=0; i<m_lightNodes.size(); ++i)
     {
         hkxNode* node = m_lightNodes[i];
         StaticModelConverter* actor = new StaticModelConverter();
-        Actor_Config* cfg = new Actor_Config;
-        cfg->m_assetFolder = m_config->m_assetFolder;
-        cfg->m_workspaceFolder = m_config->m_workspaceFolder;
-        cfg->m_exportFolder = m_config->m_exportFolder;
-        cfg->m_exportName = m_name + "_" + node->m_name.cString();
-        cfg->m_rootPath = m_config->m_rootPath;
-        cfg->m_assetPath = m_config->m_assetPath;
-        cfg->m_exportClass = "level_geometry";
+        std::string nodeName(node->m_name.cString());
+        fixNodeName(nodeName);
+        LOGI("light node name = %s", nodeName.c_str());      
+        Actor_Config* cfg = createConfig(nodeName);
         actor->m_config = cfg;
         actor->setName(cfg->m_exportName);
         actor->setClass(cfg->m_exportClass);
         actor->processNode(node);
         m_levelLights.push_back(actor);
-        m_configs.push_back(cfg);
+    }
+
+    if(m_config->m_physics)
+    {
+        std::string nodeName = "Physics";
+        LOGI("processing level physics %s", nodeName.c_str());
+        StaticModelConverter* actor = new StaticModelConverter();
+        m_collisionActor = actor;
+        Actor_Config* cfg = createConfig(nodeName);
+        actor->m_config = cfg;
+        actor->setName(cfg->m_exportName);
+        actor->setClass(cfg->m_exportClass);
+        actor->processPhysics(m_config->m_physics);
     }
 }
 
@@ -176,6 +192,15 @@ jsonxx::Object LevelConverter::serializeToJson() const
         actorList << actorObject;
     }
 
+    if(m_collisionActor)
+    {
+        jsonxx::Object actorObject = m_collisionActor->serializeToJson();
+        actorObject << "packed" << true;
+        actorObject << "type" << m_collisionActor->getResourceName();
+        actorList << actorObject;
+    }
+
+    LOGI("level %s num-of-actors = %d", m_name.c_str(), actorList.size());
     levelObject << "actors" << actorList;
     return levelObject;
 }
@@ -195,4 +220,19 @@ void LevelConverter::postProcess()
     {
         m_levelLights[i]->postProcess();
     }
+    if(m_collisionActor) m_collisionActor->postProcess();
+}
+
+Actor_Config* LevelConverter::createConfig(const std::string& nodeName)
+{
+    Actor_Config* cfg = new Actor_Config;
+    cfg->m_assetFolder = m_config->m_assetFolder;
+    cfg->m_workspaceFolder = m_config->m_workspaceFolder;
+    cfg->m_exportFolder = m_config->m_exportFolder;
+    cfg->m_exportName = m_name + "_" + nodeName;
+    cfg->m_rootPath = m_config->m_rootPath;
+    cfg->m_assetPath = m_config->m_assetPath;
+    cfg->m_exportClass = "level_geometry";
+    m_configs.push_back(cfg);
+    return cfg;
 }

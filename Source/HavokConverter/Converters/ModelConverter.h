@@ -15,6 +15,7 @@ enum ModelType
     kModelDefault = 0,
     kModelSky,
     kModelSkinning,
+    kModelCollision,
     kModelTypeNum
 };
 

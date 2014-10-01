@@ -46,9 +46,7 @@ void findNodesRec(  hkxNode* theNode,
                     std::vector<hkxNode*>& outNodes)
 {
     hkVariant va = theNode->m_object;
-    if (va.m_class == theClass)
-        outNodes.push_back(theNode);
-
+    if (va.m_class == theClass) outNodes.push_back(theNode);
     for(int i=0; i<theNode->m_children.getSize(); ++i)
     {
         findNodesRec(theNode->m_children[i], theClass, outNodes);

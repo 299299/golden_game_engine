@@ -9,6 +9,8 @@ public:
     ~StaticModelConverter();
     virtual void process(void* pData);
     void processNode(hkxNode* node);
+    void processPhysics(hkpPhysicsData* physics);
+
     void setType(int modelType) { m_type = modelType; };
 
 private:

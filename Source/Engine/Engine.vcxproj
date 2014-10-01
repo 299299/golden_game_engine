@@ -57,7 +57,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Project\hk2014_1_0_r1\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;__STDC_FORMAT_MACROS;BGFX_CONFIG_DEBUG=1;BGFX_CONFIG_RENDERER_DIRECT3D11=1;BGFX_CONFIG_RENDERER_NULL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>

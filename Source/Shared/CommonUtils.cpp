@@ -474,7 +474,7 @@ std::string get_last_string( const std::string& input, char c, int count )
 
 bool str_begin_with( const std::string& str1, const std::string& str2 )
 {
-    return str1.compare(0, str2.length(), str2) == 0;
+    return hkString::strNcasecmp(str1.c_str(), str2.c_str(), str2.length()) == 0;
 }
 
 void fixPathSlash( std::string& inout )
