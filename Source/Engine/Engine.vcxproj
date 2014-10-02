@@ -185,6 +185,7 @@
     <ClCompile Include="Physics\ProxyInstance.cpp" />
     <ClCompile Include="Physics\PhysicsAutoLock.cpp" />
     <ClCompile Include="Physics\PhysicsInstance.cpp" />
+    <ClCompile Include="Script\DebugGuiTools.cpp" />
     <ClCompile Include="Script\Script.cpp" />
     <ClCompile Include="Script\ScriptAPI.cpp" />
   </ItemGroup>

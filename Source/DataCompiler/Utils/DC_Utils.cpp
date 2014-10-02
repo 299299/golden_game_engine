@@ -193,14 +193,16 @@ void saveCompileResult(const std::string& fileName)
     std::vector<std::string> resultfiles;
     for(size_t i=0; i<g_compilers.size(); ++i)
     {
-        const std::string& output = g_compilers[i]->m_output;
-        if(output.length() == 0 || g_compilers[i]->m_skipped) continue;
+        BaseCompiler* compiler = g_compilers[i];
+        const std::string& output = compiler->m_output;
+        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
         resultfiles.push_back(output);
     }
     for(size_t i=0; i<g_childCompilers.size(); ++i)
     {
-        const std::string& output = g_childCompilers[i]->m_output;
-        if(output.length() == 0 || g_childCompilers[i]->m_skipped) continue;
+        BaseCompiler* compiler = g_childCompilers[i];
+        const std::string& output = compiler->m_output;
+        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
         resultfiles.push_back(output);
     }
     for(size_t i=0; i<g_levels.size(); ++i)

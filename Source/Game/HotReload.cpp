@@ -24,6 +24,7 @@
 #include "Actor.h"
 #include "Script.h"
 #include "Camera.h"
+#include "DebugDraw.h"
 #include <bx/bx.h>
 //==========================================================================================
 #include <Animation/Animation/Animation/hkaAnimation.h>
@@ -283,8 +284,7 @@ void reload_shader_resource(void* oldResource, void* newResource)
     for(uint32_t i=0; i<numOfPrograms; ++i)
     {
         ShaderProgram* program = (ShaderProgram*)result[i]->m_ptr;
-        if(program->m_vs == oldShader || 
-           program->m_ps == oldShader)
+        if(program->m_vs == oldShader || program->m_ps == oldShader)
         {
             bgfx::ProgramHandle oldHandle = program->m_handle;
             program->bringout();
@@ -296,6 +296,7 @@ void reload_shader_resource(void* oldResource, void* newResource)
             CHECK_PROGRAM_HANDLE(g_postProcess.m_brightShader);
             CHECK_PROGRAM_HANDLE(g_postProcess.m_blurShader);
             CHECK_PROGRAM_HANDLE(g_postProcess.m_combineShader);
+            CHECK_PROGRAM_HANDLE(g_debugDrawMgr.m_shader);
         }
     }
 }

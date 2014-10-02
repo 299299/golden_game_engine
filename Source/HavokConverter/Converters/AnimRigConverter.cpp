@@ -54,7 +54,7 @@ void AnimRigConverter::postProcess()
 {
     __super::postProcess();
 
-#if 1
+#if 0
     hkaSkeleton* skeleton = (hkaSkeleton*)m_skin->m_rig;
     std::string rigFileName = "../pipeline/";
     rigFileName += m_name + "_rig.txt";

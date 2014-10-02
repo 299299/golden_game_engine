@@ -34,6 +34,7 @@ public:
     virtual bool parseWithJson() const { return false; };
     virtual void checkModifyTime();
     virtual bool checkInLevel() const { return true;};
+    virtual bool addToResult() const { return true; };
 
     std::string                                     m_name;
     std::string                                     m_input;

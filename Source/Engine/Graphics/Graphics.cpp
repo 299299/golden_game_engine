@@ -70,7 +70,7 @@ bool                        g_hdr = true;
 //      INNER GLOBAL VARIABLES
 //==============================================================
 static bgfxCallback         g_bgfxCallback;
-static uint32_t             g_resetFlag = BGFX_RESET_VSYNC|BGFX_RESET_MSAA_X4;
+static uint32_t             g_resetFlag = BGFX_RESET_MSAA_X4;//BGFX_RESET_VSYNC|BGFX_RESET_MSAA_X4;
 static bgfx::UniformHandle  g_engineUniforms[MAX_UNIFORM_NUM];
 static uint32_t             g_numEngineUniforms = 0;
 static FrameBuffer          g_frameBuffers[MAX_FRAMEBUFFER_NUM];

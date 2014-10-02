@@ -35,4 +35,5 @@ public:
     virtual bool checkProcessing();
     virtual std::string getFormatExt() const { return SHADER_INCLUDE_EXT; };
     virtual bool process(const std::string& input, const std::string& output);
+    virtual bool addToResult() const { return false; };
 };

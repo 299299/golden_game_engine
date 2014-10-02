@@ -369,6 +369,9 @@
     <ClCompile Include="..\ThirdParty\gamemonkey\gmParser.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
+    <ClCompile Include="Script\DebugGuiTools.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Log.h">

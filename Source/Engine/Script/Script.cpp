@@ -121,6 +121,9 @@ void ScriptSystem::init()
     gmBindMathLib(m_vm);
     gmBindStringLib(m_vm);
     print_error();
+
+    extern void register_debug_gui_api(gmMachine*);
+    register_debug_gui_api(m_vm);
 }
 
 void ScriptSystem::quit()

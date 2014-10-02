@@ -4,8 +4,11 @@
 #include "ShadingEnviroment.h"
 #include "Gui.h"
 #include "AnimFSM.h"
+#include "Light.h"
+#include "Resource.h"
 #include <imgui/imgui.h>
-
+#include <bx/bx.h>
+#include <gamemonkey/gmThread.h>
 
 void create_material_debug_gui(Material* mat, const char* name)
 {
@@ -51,16 +54,15 @@ void create_material_debug_gui(Material* mat, const char* name)
     imguiSeparator();
 }
 
-void create_light_debug_gui(LightInstance* light, const char* name)
+void create_light_debug_gui(LightResource* light, const char* name)
 {
     imguiLabel("light: %s", name);
-    LightResource* res = light->m_resource;
     static bool bEnable = false;
     imguiColorWheel("color:", light->m_color, bEnable);
-    imguiSlider("falloff", res->m_fallOff, 0.0f, 1.0f, 0.1f);
-    imguiSlider("intensity", res->m_intensity, 0.0f, 1.0f, 0.1f);
-    imguiSlider("coneAngle", res->m_coneAngle, 0.0f, 1.0f, 0.1f);
-    imguiSlider("attenScale", res->m_attenScale, 0.0f, 1.0f, 0.1f);
+    imguiSlider("falloff", light->m_fallOff, 0.0f, 1.0f, 0.1f);
+    imguiSlider("intensity", light->m_intensity, 0.0f, 1.0f, 0.1f);
+    imguiSlider("coneAngle", light->m_coneAngle, 0.0f, 1.0f, 0.1f);
+    imguiSlider("attenScale", light->m_attenScale, 0.0f, 1.0f, 0.1f);
     imguiSeparator();
 }
 
@@ -71,7 +73,7 @@ void create_postprocess_debug_gui()
     imguiBeginScrollArea("post-process", 0, 50, 300, 800, &scroll);
 
     int width = 256;
-    ImguiImageAlign::Enum align = ImguiImageAlign::CenterIndented;
+    ImguiAlign::Enum align = ImguiAlign::CenterIndented;
     const char* fbNames[] = {"float-color-buffer", "r-depth-tex", "depth-buffer"};
     for(int i=0; i<g_postProcess.m_colorFB->m_numTextures - 1; ++i)
     {
@@ -131,20 +133,82 @@ void create_shading_enviroment_gui(ShadingEnviroment* shading_env, const char* n
     imguiSeparator();
 }
 
-void create_anim_fsm_gui(AnimFSMInstance* fsmInstance, const char* name)
+//--------------------------------------------------------------------------
+// SCRIPT FUNCTIONS
+static int GM_CDECL script_material_debug_gui(gmThread* a_thread)
 {
-    const AnimFSM* fsm = fsmInstance->m_resource;
-    imguiLabel("AnimationFSM: %s", name);
-    for (uint32_t i = 0; i < fsm->m_numLayers; ++i)
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
+    GM_CHECK_STRING_PARAM(mat_name, 4);
+    Material* m = FIND_RESOURCE(Material, StringId(mat_name));
+    if(!m) return GM_OK;
+    static int scroll = 0;
+    imguiBeginScrollArea("material", (int)x, (int)y, (int)w, (int)h, &scroll);
+    create_material_debug_gui(m, mat_name);
+    imguiEndScrollArea();
+    return GM_OK;
+}
+
+static int GM_CDECL script_light_debug_gui(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
+    GM_CHECK_STRING_PARAM(light_name, 4);
+    LightResource* lt = FIND_RESOURCE(LightResource, StringId(light_name));
+    if(!lt) return GM_OK;
+    static int scroll = 0;
+    imguiBeginScrollArea("light", (int)x, (int)y, (int)w, (int)h, &scroll);
+    create_light_debug_gui(lt, light_name);
+    imguiEndScrollArea();
+    return GM_OK;
+}
+
+static int GM_CDECL script_shading_enviroment_debug_gui(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
+    GM_CHECK_STRING_PARAM(shading_name, 4);
+    ShadingEnviroment* shading_env = FIND_RESOURCE(ShadingEnviroment, StringId(shading_name));
+    if(!shading_env) return GM_OK;
+    static int scroll = 0;
+    imguiBeginScrollArea("shading_enviroment", (int)x, (int)y, (int)w, (int)h, &scroll);
+    create_shading_enviroment_gui(shading_env, shading_name);
+    imguiEndScrollArea();
+    return GM_OK;
+}
+
+static int GM_CDECL script_post_process_debug_gui(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(5);
+    GM_CHECK_FLOAT_OR_INT_PARAM(x, 0);
+    GM_CHECK_FLOAT_OR_INT_PARAM(y, 1);
+    GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
+    GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
+    static int scroll = 0;
+    imguiBeginScrollArea("post_process", (int)x, (int)y, (int)w, (int)h, &scroll);
+    create_postprocess_debug_gui();
+    imguiEndScrollArea();
+    return GM_OK;
+}
+
+
+void register_debug_gui_api(gmMachine* machine)
+{
+    static gmFunctionEntry s_script_binding[] =  
     {
-        const RtLayer& rtLayer = fsm->m_layers[i];
-        const RtState* cur_state = rtLayer.m_curState;
-        const State* state = cur_state->m_state;
-        imguiLabel("layer %d, cur state = %s", i, stringid_lookup(state->m_name));
-        for(uint32_t j=0; j<state->m_numTransitions; ++j)
-        {
-            const Transition& t = state->m_transitions[j];
-            imguiButton(stringid_lookup(t.m_event));
-        }
-    }
+        {"debug_material", script_material_debug_gui },
+        {"debug_light", script_light_debug_gui },
+        {"debug_shading_enviroment", script_shading_enviroment_debug_gui },
+        {"debug_post_process", script_post_process_debug_gui },
+    };
+    machine->RegisterLibrary(s_script_binding, BX_COUNTOF(s_script_binding), "debug");
 }

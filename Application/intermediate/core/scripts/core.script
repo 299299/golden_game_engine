@@ -31,14 +31,15 @@ global create_core = function(id)
 
     core.fade_in = function(time)
     {
-        local w = get_window_width(); 
-        local h = get_window_height(); 
         local dt = 1.0/60.0;
         local alpha = 255.0;
         local fade_speed = 255.0/time;
 
         while(true)
         {
+            local w = get_window_width(); 
+            local h = get_window_height(); 
+
             gui.draw_rect(0, 0, w, h, rgba_to_int(0,0,0,alpha));
             alpha -= dt * fade_speed;
             if(alpha <= 0.0)
@@ -51,14 +52,15 @@ global create_core = function(id)
 
     core.fade_out = function(time)
     {
-        local w = get_window_width(); 
-        local h = get_window_height(); 
         local dt = 1.0/60.0;
         local alpha = 0.0;
         local fade_speed = 255.0/time;
 
         while(true)
         {
+            local w = get_window_width(); 
+            local h = get_window_height(); 
+
             gui.draw_rect(0, 0, w, h, rgba_to_int(0,0,0,alpha));
             alpha += dt * fade_speed;
             if(alpha >= 255.0)
@@ -105,9 +107,12 @@ global create_core = function(id)
         local h = get_window_height();  
         local debug_index = 0;
         
-        .fade_in(5.0);
+        .fade_in(1.5);
 
         local bShowProfile = false;
+        local bShowShadingEnv = false;
+        .scroll = 0.0;
+
         while(true)
         {
             if(input.is_key_just_pressed(input.F1))
@@ -127,11 +132,21 @@ global create_core = function(id)
             {
                 bShowProfile = !bShowProfile;
             }
+            else if(input.is_key_just_pressed(input.F3))
+            {
+                bShowShadingEnv = !bShowShadingEnv;
+            }
 
             graphics.update_debug_camera();
             graphics.debug_add_axis(0,0,0,0,0,0,10);
             graphics.debug_draw_models();
             graphics.debug_draw_lights();
+            if(bShowShadingEnv)
+            {
+                debug.debug_shading_enviroment(0, 0, 400, 500, "core/common/default");
+            }
+            
+
             if(bShowProfile)
             {
                 show_profile();
