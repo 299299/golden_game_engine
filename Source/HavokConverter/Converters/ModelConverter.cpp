@@ -64,7 +64,7 @@ void ModelConverter::process(RigSkinData* skinData)
         transform_matrix(m_joints[i].m_x, invT);
     }
 
-    ENGINE_ASSERT(m_joints.size() < 255, "joint size overflow = %d", m_joints.size());
+    ENGINE_ASSERT(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
 }
 
 void ModelConverter::loadMeshes(const std::vector<hkxMeshSection*>& meshes)
@@ -197,4 +197,18 @@ ModelConverter::serializeToJson() const
         modelObject << "flags" << flagsObject;
     }
     return modelObject;
+}
+
+void ModelConverter::processMeshes( const std::vector<hkxMesh*>& meshes )
+{
+    std::vector<hkxMeshSection*> meshSections;
+    for (size_t i=0; i<meshes.size(); ++i)
+    {
+        hkxMesh* mesh = meshes[i];
+        for (int j=0; j<mesh->m_sections.getSize(); ++j)
+        {
+            meshSections.push_back(mesh->m_sections[j]);
+        }
+    }
+    loadMeshes(meshSections);
 }

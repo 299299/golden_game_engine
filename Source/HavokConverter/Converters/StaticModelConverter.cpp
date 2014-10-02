@@ -31,6 +31,7 @@ void StaticModelConverter::processNode( hkxNode* node )
 {
     std::vector<hkxNode*> meshNodes;
     findNodesRec(node, &hkxMeshClass, meshNodes);
+#if 0
     for(size_t i=0; i<meshNodes.size(); ++i)
     {
         hkxNode* node = meshNodes[i];
@@ -47,9 +48,27 @@ void StaticModelConverter::processNode( hkxNode* node )
         mc->process(va.m_object, 0);
         m_components.push_back(mc);
     }
+#else
+    if(!meshNodes.empty())
+    {
+        ModelConverter* mc = new ModelConverter(this);
+        mc->m_type = m_type;
+        mc->setName(m_name);
+        std::vector<hkxMesh*> meshes;
+        for(size_t i=0; i< meshNodes.size(); ++i)
+        {
+            hkxNode* node = meshNodes[i];
+            hkVariant va = node->m_object;
+            meshes.push_back((hkxMesh*)va.m_object);
+        }
+        mc->processMeshes(meshes);
+        m_components.push_back(mc);
+    }
+#endif
 
     std::vector<hkxNode*> skinNodes;
     findNodesRec(node, &hkxSkinBindingClass, skinNodes);
+#if 0
     for(size_t i=0; i<skinNodes.size(); ++i)
     {
         hkxNode* node = skinNodes[i];
@@ -65,6 +84,23 @@ void StaticModelConverter::processNode( hkxNode* node )
         mc->process((void*)skin->m_mesh, 0);
         m_components.push_back(mc);
     }
+#else
+    if(!skinNodes.empty())
+    {
+        ModelConverter* mc = new ModelConverter(this);
+        std::vector<hkxMesh*> meshes;
+        for(size_t i=0; i<skinNodes.size(); ++i)
+        {
+            hkxNode* node = skinNodes[i];
+            hkVariant va = node->m_object;
+            hkxSkinBinding* skin = (hkxSkinBinding*)va.m_object;
+            meshes.push_back(skin->m_mesh);
+        }
+        mc->setName(m_name);
+        mc->processMeshes(meshes);
+        m_components.push_back(mc);
+    }
+#endif
 
     std::vector<hkxNode*> lightNodes;
     findNodesRec(node, &hkxLightClass, lightNodes);

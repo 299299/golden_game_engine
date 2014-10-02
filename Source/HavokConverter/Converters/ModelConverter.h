@@ -33,15 +33,16 @@ public:
     virtual std::string getFormatExt() const { return ModelResource::get_name(); };
 
     virtual void process(void* pData, int hint = 0);
+    void processMeshes(const std::vector<hkxMesh*>& meshes);
+
     virtual void postProcess();
     virtual jsonxx::Object serializeToJson() const;
 
 private:
     void process(hkxMesh* mesh);
     void process(RigSkinData* skinData);
-    void loadMeshes(const std::vector<hkxMeshSection*>& meshes);
     void writeMesh(const std::string& fileName);
-
+    void loadMeshes(const std::vector<hkxMeshSection*>& meshes);
 public:
     std::vector<hkxMeshSection*>        m_havokMeshes;
     std::vector<MeshConverter*>         m_meshes;

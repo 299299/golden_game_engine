@@ -11,7 +11,7 @@ void main()
     vec4 worldTangent = vec4_splat(0.0);
 
 #ifdef SKINNING
-    float weightw = 1.0f - a_blendIndices.x - a_blendIndices.y - a_blendIndices.z;
+    float weightw = 1.0f - a_blendWeights.x - a_blendWeights.y - a_blendWeights.z;
     v_wpos = mul(u_model[a_blendIndices.x], pos) * a_blendWeights.x +
              mul(u_model[a_blendIndices.y], pos) * a_blendWeights.y +
              mul(u_model[a_blendIndices.z], pos) * a_blendWeights.z +

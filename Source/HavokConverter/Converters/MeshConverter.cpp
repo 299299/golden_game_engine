@@ -160,7 +160,6 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
         
         if(attrib == bgfx::Attrib::Tangent)
         {
-            //LOGD("Tangent set element num from %d to %d", decl.m_numElements, 4);
             elementNum = 4;
         }
         else if(attrib == bgfx::Attrib::Weight)
@@ -243,12 +242,10 @@ void MeshConverter::processIndexBuffer(hkxIndexBuffer* ib)
         m_indices[i] = ib->m_indices16[i];
     }
 
-#if 1
     std::vector<uint16_t> newIndices;
     newIndices.resize(m_numIndices);
     Forsyth::OptimizeFaces(&m_indices[0], m_numIndices, m_numVertices, &newIndices[0], 32);
     m_indices = newIndices;
-#endif
 }
 
 uint32_t MeshConverter::writeVertexBuffer(char* blob)
@@ -284,11 +281,13 @@ uint32_t MeshConverter::writeVertexBuffer(char* blob)
 #ifdef FLOAT_WEIGHT
             else if(decl.m_usage == hkxVertexDescription::HKX_DU_BLENDWEIGHTS)
             {
+                ENGINE_ASSERT(decl.m_type == hkxVertexDescription::HKX_DT_UINT8, "blend weight format error.");
                 float* p = (float*)outData;
                 p[0] = (float)vData[0]/255.0f;
                 p[1] = (float)vData[1]/255.0f;
                 p[2] = (float)vData[2]/255.0f;
-                p[3] = (float)vData[3]/255.0f;
+                //p[3] = (float)vData[3]/255.0f;
+                //LOGI("weight = %f,%f,%f,%f", p[0], p[1], p[2], p[3]);
             }
 #endif
             else if(data.m_attrib == bgfx::Attrib::Tangent)
