@@ -37,6 +37,8 @@
 #include "fs_imgui_color.bin.h"
 #include "vs_imgui_texture.bin.h"
 #include "fs_imgui_texture.bin.h"
+#include "vs_imgui_cubemap.bin.h"
+#include "fs_imgui_cubemap.bin.h"
 #include "vs_imgui_image.bin.h"
 #include "fs_imgui_image.bin.h"
 #include "fs_imgui_image_swizz.bin.h"
@@ -79,6 +81,19 @@ static void imguiFree(void* _ptr, void* /*_userptr*/)
 
 namespace
 {
+	static uint32_t quad(uint16_t* _indices, uint16_t _idx0, uint16_t _idx1, uint16_t _idx2, uint16_t _idx3)
+	{
+		_indices[0] = _idx0;
+		_indices[1] = _idx3;
+		_indices[2] = _idx1;
+
+		_indices[3] = _idx1;
+		_indices[4] = _idx3;
+		_indices[5] = _idx2;
+
+		return 6;
+	}
+
 	float sign(float px, float py, float ax, float ay, float bx, float by)
 	{
 		return (px - bx) * (ay - by) - (ax - bx) * (py - by);
@@ -255,6 +270,38 @@ namespace
 
 	bgfx::VertexDecl PosUvVertex::ms_decl;
 
+	struct PosNormalVertex
+	{
+		float m_x;
+		float m_y;
+		float m_z;
+		float m_nx;
+		float m_ny;
+		float m_nz;
+
+		static void init()
+		{
+			ms_decl.begin()
+				   .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
+				   .add(bgfx::Attrib::Normal,    3, bgfx::AttribType::Float)
+				   .end();
+		}
+
+		void set(float _x, float _y, float _z, float _nx, float _ny, float _nz)
+		{
+			m_x = _x;
+			m_y = _y;
+			m_z = _z;
+			m_nx = _nx;
+			m_ny = _ny;
+			m_nz = _nz;
+		}
+
+		static bgfx::VertexDecl ms_decl;
+	};
+
+	bgfx::VertexDecl PosNormalVertex::ms_decl;
+
 } // namespace
 
 #if !USE_NANOVG_FONT
@@ -340,6 +387,7 @@ struct Imgui
 
 		m_colorProgram.idx      = bgfx::invalidHandle;
 		m_textureProgram.idx    = bgfx::invalidHandle;
+		m_cubeMapProgram.idx    = bgfx::invalidHandle;
 		m_imageProgram.idx      = bgfx::invalidHandle;
 		m_imageSwizzProgram.idx = bgfx::invalidHandle;
 	}
@@ -408,6 +456,7 @@ struct Imgui
 		PosColorVertex::init();
 		PosColorUvVertex::init();
 		PosUvVertex::init();
+		PosNormalVertex::init();
 
 		u_imageLod     = bgfx::createUniform("u_imageLod", bgfx::UniformType::Uniform1f);
 		u_imageSwizzle = bgfx::createUniform("u_swizzle",  bgfx::UniformType::Uniform4fv);
@@ -417,6 +466,8 @@ struct Imgui
 		const bgfx::Memory* fs_imgui_color;
 		const bgfx::Memory* vs_imgui_texture;
 		const bgfx::Memory* fs_imgui_texture;
+		const bgfx::Memory* vs_imgui_cubemap;
+		const bgfx::Memory* fs_imgui_cubemap;
 		const bgfx::Memory* vs_imgui_image;
 		const bgfx::Memory* fs_imgui_image;
 		const bgfx::Memory* fs_imgui_image_swizz;
@@ -428,6 +479,8 @@ struct Imgui
 			fs_imgui_color       = bgfx::makeRef(fs_imgui_color_dx9, sizeof(fs_imgui_color_dx9) );
 			vs_imgui_texture     = bgfx::makeRef(vs_imgui_texture_dx9, sizeof(vs_imgui_texture_dx9) );
 			fs_imgui_texture     = bgfx::makeRef(fs_imgui_texture_dx9, sizeof(fs_imgui_texture_dx9) );
+			vs_imgui_cubemap     = bgfx::makeRef(vs_imgui_cubemap_dx9, sizeof(vs_imgui_cubemap_dx9) );
+			fs_imgui_cubemap     = bgfx::makeRef(fs_imgui_cubemap_dx9, sizeof(fs_imgui_cubemap_dx9) );
 			vs_imgui_image       = bgfx::makeRef(vs_imgui_image_dx9, sizeof(vs_imgui_image_dx9) );
 			fs_imgui_image       = bgfx::makeRef(fs_imgui_image_dx9, sizeof(fs_imgui_image_dx9) );
 			fs_imgui_image_swizz = bgfx::makeRef(fs_imgui_image_swizz_dx9, sizeof(fs_imgui_image_swizz_dx9) );
@@ -439,6 +492,8 @@ struct Imgui
 			fs_imgui_color       = bgfx::makeRef(fs_imgui_color_dx11, sizeof(fs_imgui_color_dx11) );
 			vs_imgui_texture     = bgfx::makeRef(vs_imgui_texture_dx11, sizeof(vs_imgui_texture_dx11) );
 			fs_imgui_texture     = bgfx::makeRef(fs_imgui_texture_dx11, sizeof(fs_imgui_texture_dx11) );
+			vs_imgui_cubemap     = bgfx::makeRef(vs_imgui_cubemap_dx11, sizeof(vs_imgui_cubemap_dx11) );
+			fs_imgui_cubemap     = bgfx::makeRef(fs_imgui_cubemap_dx11, sizeof(fs_imgui_cubemap_dx11) );
 			vs_imgui_image       = bgfx::makeRef(vs_imgui_image_dx11, sizeof(vs_imgui_image_dx11) );
 			fs_imgui_image       = bgfx::makeRef(fs_imgui_image_dx11, sizeof(fs_imgui_image_dx11) );
 			fs_imgui_image_swizz = bgfx::makeRef(fs_imgui_image_swizz_dx11, sizeof(fs_imgui_image_swizz_dx11) );
@@ -449,6 +504,8 @@ struct Imgui
 			fs_imgui_color       = bgfx::makeRef(fs_imgui_color_glsl, sizeof(fs_imgui_color_glsl) );
 			vs_imgui_texture     = bgfx::makeRef(vs_imgui_texture_glsl, sizeof(vs_imgui_texture_glsl) );
 			fs_imgui_texture     = bgfx::makeRef(fs_imgui_texture_glsl, sizeof(fs_imgui_texture_glsl) );
+			vs_imgui_cubemap     = bgfx::makeRef(vs_imgui_cubemap_glsl, sizeof(vs_imgui_cubemap_glsl) );
+			fs_imgui_cubemap     = bgfx::makeRef(fs_imgui_cubemap_glsl, sizeof(fs_imgui_cubemap_glsl) );
 			vs_imgui_image       = bgfx::makeRef(vs_imgui_image_glsl, sizeof(vs_imgui_image_glsl) );
 			fs_imgui_image       = bgfx::makeRef(fs_imgui_image_glsl, sizeof(fs_imgui_image_glsl) );
 			fs_imgui_image_swizz = bgfx::makeRef(fs_imgui_image_swizz_glsl, sizeof(fs_imgui_image_swizz_glsl) );
@@ -467,6 +524,12 @@ struct Imgui
 		vsh = bgfx::createShader(vs_imgui_texture);
 		fsh = bgfx::createShader(fs_imgui_texture);
 		m_textureProgram = bgfx::createProgram(vsh, fsh);
+		bgfx::destroyShader(vsh);
+		bgfx::destroyShader(fsh);
+
+		vsh = bgfx::createShader(vs_imgui_cubemap);
+		fsh = bgfx::createShader(fs_imgui_cubemap);
+		m_cubeMapProgram = bgfx::createProgram(vsh, fsh);
 		bgfx::destroyShader(vsh);
 		bgfx::destroyShader(fsh);
 
@@ -509,6 +572,7 @@ struct Imgui
 		bgfx::destroyTexture(m_missingTexture);
 		bgfx::destroyProgram(m_colorProgram);
 		bgfx::destroyProgram(m_textureProgram);
+		bgfx::destroyProgram(m_cubeMapProgram);
 		bgfx::destroyProgram(m_imageProgram);
 		bgfx::destroyProgram(m_imageSwizzProgram);
 		nvgDelete(m_nvg);
@@ -1456,7 +1520,7 @@ struct Imgui
 		return selected;
 	}
 
-	void image(bgfx::TextureHandle _image, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align)
+	void image(bgfx::TextureHandle _image, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align, bool _originBottomLeft)
 	{
 		Area& area = getCurrentArea();
 
@@ -1485,7 +1549,7 @@ struct Imgui
 		const int32_t yy = area.m_widgetY;
 		area.m_widgetY += _height + DEFAULT_SPACING;
 
-		screenQuad(xx, yy, _width, _height);
+		screenQuad(xx, yy, _width, _height, _originBottomLeft);
 		bgfx::setUniform(u_imageLod, &_lod);
 		bgfx::setTexture(0, s_texColor, bgfx::isValid(_image) ? _image : m_missingTexture);
 		bgfx::setState(BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE);
@@ -1494,12 +1558,12 @@ struct Imgui
 		bgfx::submit(m_view);
 	}
 
-	void image(bgfx::TextureHandle _image, float _lod, float _width, float _aspect, ImguiAlign::Enum _align)
+	void image(bgfx::TextureHandle _image, float _lod, float _width, float _aspect, ImguiAlign::Enum _align, bool _originBottomLeft)
 	{
 		const float width = _width*float(getCurrentArea().m_widgetW);
 		const float height = width/_aspect;
 
-		image(_image, _lod, int32_t(width), int32_t(height), _align);
+		image(_image, _lod, int32_t(width), int32_t(height), _align, _originBottomLeft);
 	}
 
 	void imageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align)
@@ -1553,6 +1617,124 @@ struct Imgui
 		const float height = width/_aspect;
 
 		imageChannel(_image, _channel, _lod, int32_t(width), int32_t(height), _align);
+	}
+
+	void cubeMap(bgfx::TextureHandle _cubemap, float _lod, bool _cross, ImguiAlign::Enum _align)
+	{
+		uint32_t numVertices = 14;
+		uint32_t numIndices  = 36;
+		if (bgfx::checkAvailTransientBuffers(numVertices, PosNormalVertex::ms_decl, numIndices) )
+		{
+			bgfx::TransientVertexBuffer tvb;
+			bgfx::allocTransientVertexBuffer(&tvb, numVertices, PosNormalVertex::ms_decl);
+
+			bgfx::TransientIndexBuffer tib;
+			bgfx::allocTransientIndexBuffer(&tib, numIndices);
+
+			PosNormalVertex* vertex = (PosNormalVertex*)tvb.data;
+			uint16_t* indices = (uint16_t*)tib.data;
+
+			if (_cross)
+			{
+				vertex->set( 0.0f, 0.5f, 0.0f, -1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 0.0f, 1.0f, 0.0f, -1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 0.5f, 0.0f, 0.0f, -1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 0.5f, 0.5f, 0.0f, -1.0f,  1.0f,  1.0f); ++vertex;
+				vertex->set( 0.5f, 1.0f, 0.0f, -1.0f, -1.0f,  1.0f); ++vertex;
+				vertex->set( 0.5f, 1.5f, 0.0f, -1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 1.0f, 0.0f, 0.0f,  1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 1.0f, 0.5f, 0.0f,  1.0f,  1.0f,  1.0f); ++vertex;
+				vertex->set( 1.0f, 1.0f, 0.0f,  1.0f, -1.0f,  1.0f); ++vertex;
+				vertex->set( 1.0f, 1.5f, 0.0f,  1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 1.5f, 0.5f, 0.0f,  1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 1.5f, 1.0f, 0.0f,  1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 2.0f, 0.5f, 0.0f, -1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 2.0f, 1.0f, 0.0f, -1.0f, -1.0f, -1.0f); ++vertex;
+
+				indices += quad(indices,  0,  3,  4,  1);
+				indices += quad(indices,  2,  6,  7,  3);
+				indices += quad(indices,  3,  7,  8,  4);
+				indices += quad(indices,  4,  8,  9,  5);
+				indices += quad(indices,  7, 10, 11,  8);
+				indices += quad(indices, 10, 12, 13, 11);
+			}
+			else
+			{
+				vertex->set( 0.0f, 0.25f, 0.0f, -1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 0.0f, 0.75f, 0.0f, -1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 0.5f, 0.00f, 0.0f, -1.0f,  1.0f,  1.0f); ++vertex;
+				vertex->set( 0.5f, 0.50f, 0.0f, -1.0f, -1.0f,  1.0f); ++vertex;
+				vertex->set( 0.5f, 1.00f, 0.0f,  1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 1.0f, 0.25f, 0.0f,  1.0f,  1.0f,  1.0f); ++vertex;
+				vertex->set( 1.0f, 0.75f, 0.0f,  1.0f, -1.0f,  1.0f); ++vertex;
+
+				vertex->set( 1.0f, 0.25f, 0.0f,  1.0f,  1.0f,  1.0f); ++vertex;
+				vertex->set( 1.0f, 0.75f, 0.0f,  1.0f, -1.0f,  1.0f); ++vertex;
+
+				vertex->set( 1.5f, 0.00f, 0.0f, -1.0f,  1.0f,  1.0f); ++vertex;
+				vertex->set( 1.5f, 0.50f, 0.0f,  1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 1.5f, 1.00f, 0.0f,  1.0f, -1.0f, -1.0f); ++vertex;
+
+				vertex->set( 2.0f, 0.25f, 0.0f, -1.0f,  1.0f, -1.0f); ++vertex;
+				vertex->set( 2.0f, 0.75f, 0.0f, -1.0f, -1.0f, -1.0f); ++vertex;
+
+				indices += quad(indices,  0,  2,  3,  1);
+				indices += quad(indices,  1,  3,  6,  4);
+				indices += quad(indices,  2,  5,  6,  3);
+				indices += quad(indices,  7,  9, 12, 10);
+				indices += quad(indices,  7, 10, 11,  8);
+				indices += quad(indices, 10, 12, 13, 11);
+			}
+
+			Area& area = getCurrentArea();
+			int32_t xx;
+			int32_t width;
+			if (ImguiAlign::Left == _align)
+			{
+				xx = area.m_contentX + SCROLL_AREA_PADDING;
+				width = area.m_widgetW;
+			}
+			else if (ImguiAlign::LeftIndented == _align
+				 ||  ImguiAlign::Right        == _align)
+			{
+				xx = area.m_widgetX;
+				width = area.m_widgetW-1; //TODO: -1 !
+			}
+			else //if (ImguiAlign::Center         == _align
+				 //||  ImguiAlign::CenterIndented == _align).
+			{
+				xx = area.m_widgetX;
+				width = area.m_widgetW - (area.m_widgetX-area.m_scissorX);
+			}
+
+			const uint32_t height = _cross ? (width*3)/4 : (width/2);
+			const int32_t yy = area.m_widgetY;
+			area.m_widgetY += height + DEFAULT_SPACING;
+
+			const float scale = float(width/2);
+
+			float mtx[16];
+			bx::mtxSRT(mtx, scale, scale, 1.0f, 0.0f, 0.0f, 0.0f, float(xx), float(yy), 0.0f);
+
+			bgfx::setTransform(mtx);
+			bgfx::setUniform(u_imageLod, &_lod);
+			bgfx::setTexture(0, s_texColor, _cubemap);
+			bgfx::setProgram(m_cubeMapProgram);
+			bgfx::setVertexBuffer(&tvb);
+			bgfx::setIndexBuffer(&tib);
+			bgfx::setState(0
+						   | BGFX_STATE_RGB_WRITE
+						   | BGFX_STATE_CULL_CW
+						   );
+			setCurrentScissor();
+			bgfx::submit(m_view);
+		}
 	}
 
 	bool collapse(const char* _text, const char* _subtext, bool _checked, bool _enabled)
@@ -2330,7 +2512,7 @@ struct Imgui
 #endif // USE_NANOVG_FONT
 	}
 
-	void screenQuad(int32_t _x, int32_t _y, int32_t _width, uint32_t _height)
+	void screenQuad(int32_t _x, int32_t _y, int32_t _width, uint32_t _height, bool _originBottomLeft = false)
 	{
 		if (bgfx::checkAvailTransientVertexBuffer(6, PosUvVertex::ms_decl) )
 		{
@@ -2350,8 +2532,8 @@ struct Imgui
 			const float texelHalfH = m_halfTexel/heightf;
 			const float minu = texelHalfW;
 			const float maxu = 1.0f - texelHalfW;
-			const float minv = texelHalfH;
-			const float maxv = texelHalfH + 1.0f;
+			const float minv = _originBottomLeft ? texelHalfH+1.0f : texelHalfH     ;
+			const float maxv = _originBottomLeft ? texelHalfH      : texelHalfH+1.0f;
 
 			vertex[0].m_x = minx;
 			vertex[0].m_y = miny;
@@ -2784,6 +2966,7 @@ struct Imgui
 	bgfx::UniformHandle s_texColor;
 	bgfx::ProgramHandle m_colorProgram;
 	bgfx::ProgramHandle m_textureProgram;
+	bgfx::ProgramHandle m_cubeMapProgram;
 	bgfx::ProgramHandle m_imageProgram;
 	bgfx::ProgramHandle m_imageSwizzProgram;
 	bgfx::TextureHandle m_missingTexture;
@@ -2794,6 +2977,16 @@ static Imgui s_imgui;
 ImguiFontHandle imguiCreate(const void* _data, float _fontSize)
 {
 	return s_imgui.create(_data, _fontSize);
+}
+
+void imguiDestroy()
+{
+	s_imgui.destroy();
+}
+
+ImguiFontHandle imguiCreateFont(const void* _data, float _fontSize)
+{
+	return s_imgui.createFont(_data, _fontSize);
 }
 
 void imguiSetFont(ImguiFontHandle _handle)
@@ -2807,16 +3000,6 @@ ImguiFontHandle imguiGetCurrentFont()
 	return handle;
 }
 
-ImguiFontHandle imguiCreateFont(const void* _data, float _fontSize)
-{
-	return s_imgui.createFont(_data, _fontSize);
-}
-
-void imguiDestroy()
-{
-	s_imgui.destroy();
-}
-
 void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scroll, uint16_t _width, uint16_t _height, char _inputChar, uint8_t _view)
 {
 	s_imgui.beginFrame(_mx, _my, _button, _scroll, _width, _height, _inputChar, _view);
@@ -2825,6 +3008,26 @@ void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scroll,
 void imguiEndFrame()
 {
 	s_imgui.endFrame();
+}
+
+void imguiDrawText(int32_t _x, int32_t _y, ImguiTextAlign::Enum _align, const char* _text, uint32_t _argb)
+{
+	s_imgui.drawText(_x, _y, _align, _text, _argb);
+}
+
+void imguiDrawLine(float _x0, float _y0, float _x1, float _y1, float _r, uint32_t _argb)
+{
+	s_imgui.drawLine(_x0, _y0, _x1, _y1, _r, _argb);
+}
+
+void imguiDrawRoundedRect(float _x, float _y, float _width, float _height, float _r, uint32_t _argb)
+{
+	s_imgui.drawRoundedRect(_x, _y, _width, _height, _r, _argb);
+}
+
+void imguiDrawRect(float _x, float _y, float _width, float _height, uint32_t _argb)
+{
+	s_imgui.drawRect(_x, _y, _width, _height, _argb);
 }
 
 bool imguiBorderButton(ImguiBorder::Enum _border, bool _checked, bool _enabled)
@@ -2866,7 +3069,6 @@ void imguiEndScrollArea(int32_t _r)
 	s_imgui.endScroll(_r);
 	s_imgui.endArea();
 }
-
 
 void imguiIndent(uint16_t _width)
 {
@@ -2911,6 +3113,14 @@ bool imguiItem(const char* _text, bool _enabled)
 bool imguiCheck(const char* _text, bool _checked, bool _enabled)
 {
 	return s_imgui.check(_text, _checked, _enabled);
+}
+
+void imguiBool(const char* _text, bool& _flag, bool _enabled)
+{
+	if (imguiCheck(_text, _flag, _enabled) )
+	{
+		_flag = !_flag;
+	}
 }
 
 bool imguiCollapse(const char* _text, const char* _subtext, bool _checked, bool _enabled)
@@ -3016,34 +3226,6 @@ uint32_t imguiChooseUseMacroInstead(uint32_t _selected, ...)
 	return _selected;
 }
 
-void imguiDrawText(int32_t _x, int32_t _y, ImguiTextAlign::Enum _align, const char* _text, uint32_t _argb)
-{
-	s_imgui.drawText(_x, _y, _align, _text, _argb);
-}
-
-void imguiDrawLine(float _x0, float _y0, float _x1, float _y1, float _r, uint32_t _argb)
-{
-	s_imgui.drawLine(_x0, _y0, _x1, _y1, _r, _argb);
-}
-
-void imguiDrawRoundedRect(float _x, float _y, float _width, float _height, float _r, uint32_t _argb)
-{
-	s_imgui.drawRoundedRect(_x, _y, _width, _height, _r, _argb);
-}
-
-void imguiDrawRect(float _x, float _y, float _width, float _height, uint32_t _argb)
-{
-	s_imgui.drawRect(_x, _y, _width, _height, _argb);
-}
-
-void imguiBool(const char* _text, bool& _flag, bool _enabled)
-{
-	if (imguiCheck(_text, _flag, _enabled) )
-	{
-		_flag = !_flag;
-	}
-}
-
 void imguiColorWheel(float _rgb[3], bool _respectIndentation, bool _enabled)
 {
 	s_imgui.colorWheelWidget(_rgb, _respectIndentation, _enabled);
@@ -3069,14 +3251,14 @@ void imguiColorWheel(const char* _text, float _rgb[3], bool& _activated, bool _e
 	}
 }
 
-void imguiImage(bgfx::TextureHandle _image, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align)
+void imguiImage(bgfx::TextureHandle _image, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align, bool _originBottomLeft)
 {
-	s_imgui.image(_image, _lod, _width, _height, _align);
+	s_imgui.image(_image, _lod, _width, _height, _align, _originBottomLeft);
 }
 
-void imguiImage(bgfx::TextureHandle _image, float _lod, float _width, float _aspect, ImguiAlign::Enum _align)
+void imguiImage(bgfx::TextureHandle _image, float _lod, float _width, float _aspect, ImguiAlign::Enum _align, bool _originBottomLeft)
 {
-	s_imgui.image(_image, _lod, _width, _aspect, _align);
+	s_imgui.image(_image, _lod, _width, _aspect, _align, _originBottomLeft);
 }
 
 void imguiImageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align)
@@ -3089,9 +3271,9 @@ void imguiImageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod,
 	s_imgui.imageChannel(_image, _channel, _lod, _width, _aspect, _align);
 }
 
-bool imguiMouseOverArea()
+void imguiCube(bgfx::TextureHandle _cubemap, float _lod, bool _cross, ImguiAlign::Enum _align)
 {
-	return s_imgui.m_insideArea;
+	s_imgui.cubeMap(_cubemap, _lod, _cross, _align);
 }
 
 float imguiGetTextLength(const char* _text, ImguiFontHandle _handle)
@@ -3102,4 +3284,9 @@ float imguiGetTextLength(const char* _text, ImguiFontHandle _handle)
 #else
 	return 0.0f;
 #endif
+}
+
+bool imguiMouseOverArea()
+{
+	return s_imgui.m_insideArea;
 }
