@@ -38,7 +38,7 @@
 		<hkparam name="floatSlots"></hkparam>
 		<hkparam name="useOrderInFile">false</hkparam>
 		<hkparam name="substringMatch">false</hkparam>
-		<hkparam name="skeletonName"></hkparam>
+		<hkparam name="skeletonName">$(SK_NAME)</hkparam>
 		<hkparam name="partitions"></hkparam>
 		<hkparam name="partitionStartBoneNames"></hkparam>
 		<hkparam name="partitionEndBoneNames"></hkparam>

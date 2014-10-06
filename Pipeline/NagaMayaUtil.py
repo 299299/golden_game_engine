@@ -372,11 +372,13 @@ class NagaMayaUtil(object):
             exportMode = "animation"
         envCmd += "EXPORT_MODE=" + exportMode + ";"
 
-        if(arg):
-            envCmd += arg
-        eval_cmd += '"' + envCmd + '"'
-
         if(rig):
+            rigFile = self.pipelinePath + rig
+            #can not set full rig path
+            #I`m not sure why
+            #envCmd += "RIG_FILE=" + rigFile + ";"
+            #envCmd += "RIG_FILE=output_rig.txt;"
+            envCmd += "SK_NAME=" + exportName + ";"
             sceneDir = getSceneDirectory()
             print("scene dir = " + sceneDir)
             tmpRigFile = sceneDir + "\\output_rig.txt"
@@ -384,8 +386,15 @@ class NagaMayaUtil(object):
             print('rig file = ' + rigFile)
             shutil.copyfile(rigFile, tmpRigFile)
 
+        if(arg):
+            envCmd += arg
+        eval_cmd += '"' + envCmd + '"'
+
         print(eval_cmd)
         mel.eval(eval_cmd)
+
+        #if(rig):
+        #    shutil.rmFile(tmpRigFile)
 
     def convertHkx(self, exportName, packageName, bCompile=True):
         convertOutputDir = 'intermediate/' + packageName + '/'

@@ -34,27 +34,32 @@ struct JsonMemBuffer
     DWORD       m_threadId;
     char*       m_ioBuffer;
     char*       m_parseBuffer;
-    uint32_t    m_size;
-    void alloc(uint32_t size)
+    uint32_t    m_ioSize;
+    uint32_t    m_parseSize;
+    void alloc_io_buffer(uint32_t size)
     {
-        if(m_size >= size) return;
+        if(m_ioSize >= size) return;
         delete []m_ioBuffer;
-        delete []m_parseBuffer;
         m_ioBuffer = new char[size];
+        m_ioSize = size;
+    }
+    void alloc_parse_buffer(uint32_t size)
+    {
+        if(m_parseSize >= size) return;
+        delete []m_parseBuffer;
         m_parseBuffer = new char[size];
-        m_size = size;
+        memset(m_parseBuffer, 0x00, size);
+        m_parseSize = size;
     }
     JsonMemBuffer::JsonMemBuffer()
     {
         m_ioBuffer = m_parseBuffer = 0;
-        m_size = 0;
+        m_ioSize = m_parseSize = 0;
     }
     JsonMemBuffer::~JsonMemBuffer()
     {
-        delete []m_ioBuffer;
-        m_ioBuffer = 0;
-        delete []m_parseBuffer;
-        m_parseBuffer = 0;
+        delete []m_ioBuffer;m_ioBuffer = 0;
+        delete []m_parseBuffer;m_parseBuffer = 0;
     }
 };
 
@@ -78,13 +83,11 @@ struct JsonMemMgr
             JsonMemBuffer* buffer = m_buffers[i];
             if(buffer->m_threadId == threadId)
             {
-                buffer->alloc(size);
                 return buffer;
             }
         }
 
         JsonMemBuffer* buffer = new JsonMemBuffer;
-        buffer->alloc(size);
         buffer->m_threadId = threadId;
         m_buffers.push_back(buffer);
         return buffer;
@@ -113,6 +116,7 @@ bool parse_json(const std::string& fileName, JsonParser& parser)
     }
 
     JsonMemBuffer* buffer = g_jsonMgr.allocBuffer(fileSize);
+    buffer->alloc_io_buffer(fileSize);
     ReadFile(hFile, buffer->m_ioBuffer, fileSize, &readLen, 0);
     if(readLen != fileSize)
     {
@@ -131,6 +135,7 @@ bool parse_json(const std::string& fileName, JsonParser& parser)
         return false;
     }
 
+    buffer->alloc_parse_buffer(jsonBufferSize);
     result = parser.ParseJsonString(buffer->m_ioBuffer, fileSize, buffer->m_parseBuffer, jsonBufferSize);
     if(result != JSMN_SUCCESS && result != JSMN_ERROR_PART)
     {

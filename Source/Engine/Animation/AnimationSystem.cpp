@@ -113,6 +113,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
         ModelInstance* model = (ModelInstance*)get_render_model(modelId);
 
+        if(!model) continue;
         bool bVisibleThisFrame = model->m_visibleThisFrame;
         if(!bVisibleThisFrame) continue;
 

@@ -10,7 +10,7 @@
 	</hkobject>
 	<hkobject name="Transform Scene" class="hctFilterData">
 		<hkparam name="id">2860016997</hkparam>
-		<hkparam name="ver">66049</hkparam>
+		<hkparam name="ver">66050</hkparam>
 		<hkparam name="hasOptions">true</hkparam>
 	</hkobject>
 	<hkobject name="Transform Scene" class="hctSceneTransformOptions">
@@ -21,7 +21,12 @@
 		<hkparam name="applyToLights">true</hkparam>
 		<hkparam name="applyToCameras">true</hkparam>
 		<hkparam name="flipWinding">true</hkparam>
-		<hkparam name="matrix">(-0.010000 0.000000 0.000000 0.000000)(0.000000 0.010000 0.000000 0.000000)(0.000000 0.000000 0.010000 0.000000)(0.000000 0.000000 0.000000 1.000000)</hkparam>
+		<hkparam name="matrix">(-0.025000 0.000000 0.000000 0.000000)(0.000000 0.025000 0.000000 0.000000)(0.000000 0.000000 0.025000 0.000000)(0.000000 0.000000 0.000000 1.000000)</hkparam>
+	</hkobject>
+	<hkobject name="Bake Scale" class="hctFilterData">
+		<hkparam name="id">2638394286</hkparam>
+		<hkparam name="ver">65792</hkparam>
+		<hkparam name="hasOptions">false</hkparam>
 	</hkobject>
 	<hkobject name="Create Tangents" class="hctFilterData">
 		<hkparam name="id">1401072808</hkparam>
@@ -40,7 +45,7 @@
 	</hkobject>
 	<hkobject name="Create Skeletons" class="hctCreateSkeletonOptions">
 		<hkparam name="moveToOrigin">true</hkparam>
-		<hkparam name="automatic">true</hkparam>
+		<hkparam name="automatic">false</hkparam>
 		<hkparam name="rigNodes"></hkparam>
 		<hkparam name="rigFile">output_rig.txt</hkparam>
 		<hkparam name="selected">false</hkparam>
@@ -48,7 +53,7 @@
 		<hkparam name="floatSlots"></hkparam>
 		<hkparam name="useOrderInFile">false</hkparam>
 		<hkparam name="substringMatch">false</hkparam>
-		<hkparam name="skeletonName"></hkparam>
+		<hkparam name="skeletonName">$(SK_NAME)</hkparam>
 		<hkparam name="partitions"></hkparam>
 		<hkparam name="partitionStartBoneNames"></hkparam>
 		<hkparam name="partitionEndBoneNames"></hkparam>
@@ -64,35 +69,6 @@
 		<hkparam name="moveMeshesToSkeletonSpace">false</hkparam>
 		<hkparam name="boneLimit">-1</hkparam>
 		<hkparam name="ignoreBonesInSkin">false</hkparam>
-	</hkobject>
-	<hkobject name="Prune Types" class="hctFilterData">
-		<hkparam name="id">2496164476</hkparam>
-		<hkparam name="ver">66048</hkparam>
-		<hkparam name="hasOptions">true</hkparam>
-	</hkobject>
-	<hkobject name="Prune Types" class="hctPruneTypesOptions">
-		<hkparam name="pruneSceneData">true</hkparam>
-		<hkparam name="pruneMeshData">false</hkparam>
-		<hkparam name="pruneSkeletonData">false</hkparam>
-		<hkparam name="pruneAnimationData">true</hkparam>
-		<hkparam name="customClasses"></hkparam>
-		<hkparam name="pruneAllSceneData">false</hkparam>
-		<hkparam name="pruneEnvironmentData">false</hkparam>
-		<hkparam name="pruneResourceData">true</hkparam>
-		<hkparam name="pruneDestructionData">true</hkparam>
-		<hkparam name="pruneAnimationTracks">false</hkparam>
-		<hkparam name="pruneAnnotations">false</hkparam>
-		<hkparam name="pruneIdentityBindingIndices">false</hkparam>
-		<hkparam name="pruneQuantizedBindings">false</hkparam>
-		<hkparam name="pruneAttributes">false</hkparam>
-		<hkparam name="pruneMeshUserChannels">false</hkparam>
-		<hkparam name="pruneAttachments">false</hkparam>
-		<hkparam name="pruneSelectionSets">false</hkparam>
-		<hkparam name="selectionSets"></hkparam>
-		<hkparam name="selectionDeletionMode">HK_SELECTION_DELETE_SELECTED</hkparam>
-		<hkparam name="pruneAllAnimationData">false</hkparam>
-		<hkparam name="pruneMeshBindingData">false</hkparam>
-		<hkparam name="pruneRagdollAndMapperData">true</hkparam>
 	</hkobject>
 	<hkobject name="Write to Platform" class="hctFilterData">
 		<hkparam name="id">2876798309</hkparam>

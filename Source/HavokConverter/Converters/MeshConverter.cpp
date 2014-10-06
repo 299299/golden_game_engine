@@ -29,6 +29,14 @@ static const char* s_attrName[bgfx::Attrib::Count] =
     "Attrib::TexCoord7",
 };
 
+static const char* s_dataName[] = 
+{
+    "uint8",
+    "int16",
+    "half",
+    "float"
+};
+
 static uint32_t bgfx_data_stride[bgfx::AttribType::Count] = 
 {
     sizeof(uint8_t), sizeof(int16_t), sizeof(uint16_t), sizeof(float)
@@ -113,6 +121,7 @@ jsonxx::Object MeshConverter::serializeToJson() const
 {
     return jsonxx::Object();
 }
+
 void MeshConverter::processDesc(const hkxVertexDescription& desc)
 {
     m_decl.begin(bgfx::RendererType::Direct3D11);
@@ -128,6 +137,11 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
         {
             //LOGW("unknow attrib");
             continue;
+        }
+
+        if(attrib == bgfx::Attrib::Color0)
+        {
+            elementNum = 4;
         }
 
         if(attrib == bgfx::Attrib::TexCoord0)
@@ -176,6 +190,12 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
         data.m_attribType = type;
         data.m_stride = bgfx_data_stride[type] * elementNum;
         data.m_numElements = elementNum;
+
+        LOGI("attribute ---> %s, num=%d, stride=%d, data_type=%s", 
+            s_attrName[attrib], 
+            data.m_numElements, 
+            data.m_stride,
+            s_dataName[type]);
 
         m_declDatas[attrib] = data;
 #ifndef FLOAT_WEIGHT
