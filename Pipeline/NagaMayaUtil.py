@@ -409,7 +409,7 @@ class NagaMayaUtil(object):
         folderList = os.listdir(self.intermediatePath)
         retList = []
         for folder in folderList:
-            if folder != 'core' and folder != 'preview':
+            if folder != 'core':
                 retList.append(folder)
         return retList
 

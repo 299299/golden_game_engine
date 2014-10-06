@@ -69,34 +69,38 @@ class NagaPipeline(object):
     #
     def _createUI(self):
 
-        if cmds.window(UI_NAME, exists=True):
+        if cmds.window(UI_NAME, exists=1):
             cmds.deleteUI(UI_NAME)
 
         self.myWindow = cmds.window(UI_NAME, t='Pipeline')
-        cmds.columnLayout(cal='center', adj=True)
+        cmds.columnLayout(cal='center', adj=1)
 
-        cmds.frameLayout(l='Export Name', cll=1, h=50)
+        #cmds.frameLayout(l='Export Name', cll=1, h=50)
+        cmds.text(label='Export Name', align='center')
         displayName = '*** %s ***' % NAGA.getSceneName()
         self.nameText = cmds.text(label=displayName,
                                   align='center',
-                                  bgc=[0, 1, 0])
-        cmds.setParent('..')
+                                  bgc=[0, 1, 0],
+                                  h=30)
 
         cmds.frameLayout(l="Export Parameters", cll=1)
-        # line 1
         self.selectCheck = cmds.checkBox(label='Export Select Only', v=False)
-        # line 2
         cmds.text(label='export type:', align='center', bgc=[0, 1, 0])
-        # line 3
         self.hkoTypeGroup = cmds.optionMenuGrp('HkoType')
         for hkoType in HKO_TYPES:
             cmds.menuItem(label=hkoType)
-        # line 4
         cmds.text(label='rig type:', align='center', bgc=[0, 1, 0])
         self.rigTypeGroup = cmds.optionMenuGrp('RigType')
         for rigType in self.naga.getRigList():
             rigName = os.path.basename(rigType)
             cmds.menuItem(label=rigName)
+        cmds.text(label='export package:', align='center', bgc=[0, 1, 0])
+        self.packageGroup = cmds.optionMenuGrp('PackageName')
+        for packageName in self.naga.getPackageList():
+            cmds.menuItem(label=packageName)
+
+        cmds.setParent('..')
+        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -140,18 +144,12 @@ class NagaPipeline(object):
         cmds.file(self.lastMayaScene, o=True)
 
     def onExportButtonClicked(self, *arg):
-        #exportName = NAGA.getSceneName()
-        #packageName = 'animation'
-        #rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
-        #rigName = self.naga.getRigList()[rigIndex]
-        #index = cmds.optionMenuGrp(self.animTypeGroup, q=1, sl=1) - 1
-        #self.export(exportName, packageName, index, rigName)
-        pass
+        self.export(NAGA.getSceneName())
 
     #
     # UTIL FUNCTIONS
     #
-    def export(self, exportName, packageName, hkoType=0, rigName=''):
+    def doExport(self, exportName, packageName, hkoType=0, rigName=''):
         # step1 : export use havok plugin.
         self.naga.exportToHKX(
             exportName, packageName, hkoType, rig=rigName, arg='',
@@ -190,14 +188,32 @@ class NagaPipeline(object):
         rigName = os.path.basename(rigName)
         hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
 
-        self.export(exportName, packageName,
-                    hkoType=hkoIndex, rigName=rigName)
+        self.doExport(exportName,
+                      packageName,
+                      hkoType=hkoIndex,
+                      rigName=rigName)
 
         if not self.webSock.connected:
             self.lunchEngine(packageName)
             time.sleep(0.2)
         else:
             self.reloadCompileResult()
+
+    def export(self, exportName):
+
+        packageIndex = cmds.optionMenuGrp(self.packageGroup, q=1, sl=1) - 1
+        packageName = self.nage.getPackageList()[packageIndex]
+
+        packageName = packageName
+        rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
+        rigName = self.naga.getRigList()[rigIndex]
+        rigName = os.path.basename(rigName)
+        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
+
+        self.doExport(exportName,
+                      packageName,
+                      hkoType=hkoIndex,
+                      rigName=rigName)
 
     def lunchEngine(self, packageName):
         sceneName = NAGA.getSceneName()

@@ -26,9 +26,10 @@ void showHelp()
             "-h set window height\n"
             "-t set window title\n"
             "--package --> package to load\n"
-            "--script --> actor name\n"
-            "--actor previewer --> actor name\n"
-            "--level previewer --> level name\n"
+            "--script --> script name\n"
+            "--actor --> actor name\n"
+            "--level --> level name\n"
+            "--animation --> animation to test\n"
             "--websocket wait for debug attach when launched.\n"
             "--debug wait for debug attach when launched.\n"
             "--headless no graphics & no window\n");

@@ -97,6 +97,7 @@
   <ItemGroup>
     <ClInclude Include="..\Shared\CommonUtils.h" />
     <ClInclude Include="Converters\ActorConverter.h" />
+    <ClInclude Include="Converters\AnimationConverter.h" />
     <ClInclude Include="Converters\AnimRigConverter.h" />
     <ClInclude Include="Converters\CharacterConverter.h" />
     <ClInclude Include="Converters\ComponentConverter.h" />
@@ -118,6 +119,7 @@
   <ItemGroup>
     <ClCompile Include="..\Shared\CommonUtils.cpp" />
     <ClCompile Include="Converters\ActorConverter.cpp" />
+    <ClCompile Include="Converters\AnimationConverter.cpp" />
     <ClCompile Include="Converters\AnimRigConverter.cpp" />
     <ClCompile Include="Converters\CharacterConverter.cpp" />
     <ClCompile Include="Converters\ComponentConverter.cpp" />

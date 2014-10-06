@@ -62,6 +62,9 @@
     <ClInclude Include="..\Shared\CommonUtils.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="Converters\AnimationConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -116,6 +119,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="..\Shared\CommonUtils.cpp">
       <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\AnimationConverter.cpp">
+      <Filter>converters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

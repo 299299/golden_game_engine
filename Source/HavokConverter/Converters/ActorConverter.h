@@ -27,7 +27,7 @@ public:
     void setName(const std::string& name) { m_name = name; };
     void setClass(const std::string& cls) { m_class = cls; };
 
-    Actor_Config*                          m_config;
+    Actor_Config*                           m_config;
     std::vector<ComponentConverter*>        m_components;
     std::string                             m_name;
     std::string                             m_class;

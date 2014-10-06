@@ -115,6 +115,18 @@ static int GM_CDECL script_require(gmThread* a_thread)
     res->pre_load();
     return GM_OK;
 }
+static int GM_CDECL script_is_updating(gmThread* a_thread)
+{
+    a_thread->PushInt(g_engine.updating());
+    return GM_OK;
+}
+static int GM_CDECL script_set_updating(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(b_update, 0);
+    g_engine.set_update(b_update);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -814,7 +826,7 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
     GM_FLOAT_PARAM(scale_x, 7, 1);
     GM_FLOAT_PARAM(scale_y, 8, 1);
     GM_FLOAT_PARAM(scale_z, 9, 1);
-    hkQsTransform t;
+    hkQsTransform t; 
     t.m_translation.set(pos_x, pos_y, pos_z);
     t.m_rotation.setFromEulerAngles(rot_x, rot_y, rot_z);
     t.m_scale.set(scale_x, scale_y, scale_z);
@@ -986,6 +998,8 @@ void register_script_api(gmMachine* machine)
         {"end_profile", end_profile},
         {"show_profile", show_profile},
         {"require", script_require},
+        {"is_updating", script_is_updating},
+        {"set_updating", script_set_updating},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
 #endif
