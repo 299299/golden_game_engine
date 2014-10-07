@@ -2,6 +2,7 @@
 #include "CharacterConverter.h"
 #include "StaticModelConverter.h"
 #include "LevelConverter.h"
+#include "AnimationConverter.h"
 #include "linear_allocator.h"
 #include "HC_Utils.h"
 #include <bx/thread.h>
@@ -49,7 +50,7 @@ void havok_convert(Actor_Config* config)
     hkRootLevelContainer* rlc = config->m_loader->load(config->m_input.c_str());
     if (!rlc)
     {
-        addError("can not load input havok file %s", config->m_input);
+        addError("can not load input havok file %s", config->m_input.c_str());
         g_config.m_exitCode = kExitHavokLoadError;
         SAFE_REMOVEREF(config->m_loader);
         return;
@@ -60,6 +61,9 @@ void havok_convert(Actor_Config* config)
     hkxEnvironment* env = LOAD_OBJECT(rlc, hkxEnvironment);
     if(env)
     {
+        hkStringBuf env_str;
+        env->convertToString(env_str);
+        LOGI(env_str.cString());
         for(int i=0; i<env->getNumVariables(); ++i)
         {
             const char* name = env->getVariableName(i);
@@ -98,6 +102,11 @@ void havok_convert(Actor_Config* config)
     {
         converter = new LevelConverter;
     }
+    else if(config->m_exportMode == "animation")
+    {
+        converter = new AnimationConverter;
+        config->m_output = config->m_exportFolder + config->m_exportName + "." + Animation::get_name();
+    }
     if(!converter)
     {
         SAFE_REMOVEREF(config->m_loader);
@@ -107,6 +116,7 @@ void havok_convert(Actor_Config* config)
     converter->m_config = config;
     converter->setName(config->m_exportName);
     if(config->m_exportMode == "skinning") converter->process(ac);
+    else if(config->m_exportMode == "animation") converter->process(ac);
     else converter->process(scene);
     converter->postProcess();
     converter->serializeToFile(config->m_output.c_str());
@@ -262,7 +272,8 @@ int main(int argc, char* argv[])
         Actor_Config config;
         const char* input = cmdline.findOption('f');
         const char* output = cmdline.findOption('o');
-        if(input && output) {
+        if(input && output) 
+        {
             Actor_Config* cfg = createConfig(input, output);
             if(cfg) havok_convert(cfg);
             delete cfg;

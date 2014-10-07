@@ -19,7 +19,6 @@ public:
 
 private:
     void process(hkpPhysicsData* data);
-    void exportPhysics(const char* fileName);
 
 private:
     std::string                 m_phyFileName;

@@ -72,23 +72,17 @@ void AnimRigConverter::postProcess()
 #endif
 
     m_rigFileName = m_ownner->m_config->m_exportFolder + m_name + "_rig.havok";
-    exportRig(m_rigFileName.c_str());
-}
-
-void AnimRigConverter::exportRig(const char* fileName)
-{
     extern const char* g_humanBodyNames[];
     //if we have a skin rig data
     //we should also write the rig data to a specific havok hkt file
     //here we split the skin and skeleton file
     //as we can share the same rig with difference skin model.
-    LOGD("Write rig file: %s.", fileName);
+    LOGD("Write rig file: %s.", m_rigFileName.c_str());
     hkaSkeleton* skeleton = (hkaSkeleton*)m_skin->m_rig;
     for(int i=0; i<skeleton->m_bones.getSize(); ++i)
     {
-        hkaBone& bone = skeleton->m_bones[i];
+        const hkaBone& bone = skeleton->m_bones[i];
         m_boneNames.push_back(bone.m_name.cString());
-        bone.m_name = "";
         const std::string& boneName = m_boneNames[i];
         int index = findBodyPart(boneName, g_body_names_0);
         if(index < 0) continue;
@@ -98,7 +92,7 @@ void AnimRigConverter::exportRig(const char* fileName)
     }
     hkPackfileWriter::Options options;
     options.m_writeMetaInfo = false;
-    hkOstream ostream(fileName);
+    hkOstream ostream(m_rigFileName.c_str());
     hkBinaryPackfileWriter writer;
     writer.setContents(skeleton, hkaSkeleton::staticClass());
     if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 

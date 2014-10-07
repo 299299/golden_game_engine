@@ -239,6 +239,7 @@ ActorId ActorWorld::create_actor( const StringId& resourceName, const hkQsTransf
 
 void ActorWorld::destroy_actor( ActorId actor_id )
 {
+    if(!actor_id.is_valid()) return;
     uint32_t classId = actor_id.m_class;
     Id id = actor_id.get_id();
     ActorBucket& bucket = g_actorBuckets[classId];
@@ -249,6 +250,7 @@ void ActorWorld::destroy_actor( ActorId actor_id )
 
 Actor* ActorWorld::get_actor( ActorId actor_id )
 {
+    if(!actor_id.is_valid()) return 0;
     uint32_t classId = actor_id.m_class;
     Id id = actor_id.get_id();
     ActorBucket& bucket = g_actorBuckets[classId];
@@ -291,5 +293,6 @@ void ActorWorld::draw()
     g_animMgr.skin_actors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
     Graphics::draw(m_shading_env);
 }
+
 
 

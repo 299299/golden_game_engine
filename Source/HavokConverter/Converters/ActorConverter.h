@@ -20,9 +20,7 @@ public:
     virtual void process(void* pData) = 0;
     virtual void postProcess();
     virtual jsonxx::Object serializeToJson() const;
-    virtual jsonxx::Object serializeToJsonSplit() const;
     virtual void serializeToFile(const char* fileName);
-    virtual void serializeToFileSplit(const char* fileName);
 
     void setName(const std::string& name) { m_name = name; };
     void setClass(const std::string& cls) { m_class = cls; };

@@ -8,15 +8,6 @@ import subprocess
 import math
 import getpass
 
-HKO_FILES = [
-    "simple_scene.hko",
-    "character_skin_full_bone.hko",
-    "character_aniamtion_no_rootmotion.hko",
-    "character_aniamtion_rootmotion_without_rotation.hko",
-    "character_aniamtion_rootmotion_with_rotation.hko",
-    "character_animation_additive_firstframe.hko",
-]
-
 PROXY_PREFIX = 'Proxy_'
 PROXY_GROUP = 'Proxy'
 
@@ -58,7 +49,8 @@ def getMatrix(node):
 
 def decompMatrix(node, matrix):
     '''
-    Decomposes a MMatrix in new api. Returns an list of translation,rotation,scale in world space.
+    Decomposes a MMatrix in new api. Returns an list of translation,rotation,
+    scale in world space.
     '''
     # Rotate order of object
     rotOrder = cmds.getAttr('%s.rotateOrder' % node)
@@ -343,13 +335,14 @@ class NagaMayaUtil(object):
             cmds.setAttr(nodeName + '.rotate', rotate[0], rotate[1], rotate[2])
             cmds.setAttr(nodeName + '.scale', scale[0], scale[1], scale[2])
             proxyNodeNum += 1
-        #cmds.delete(PROXY_GROUP)
+        # cmds.delete(PROXY_GROUP)
         return proxyNodeNum, packageName
 
     def exportToHKX(self, exportName, packageName,
                     hko_index, rig='', arg='', s=False):
 
-        hkoFullPath = self.hkoPath + HKO_FILES[hko_index]
+        hko_file = self.getHkoList()[hko_index]
+        hkoFullPath = self.hkoPath + hko_file
         outputPath = self.getHkxFolder(packageName)
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
@@ -363,19 +356,18 @@ class NagaMayaUtil(object):
         workSpace = cmds.workspace(q=True, dir=True, rd=True)
         envCmd += "WORK_SPACE=" + workSpace + ";"
         exportMode = "model"
-        if(hko_index == 0):
-            if(isLevel(exportName)):
-                exportMode = "level"
-        elif(hko_index == 1):
-            exportMode = "skinning"
-        else:
-            exportMode = "animation"
+        if(isLevel(exportName)):
+            exportMode = "level"
+        elif(hko_file.find('skin_model') != -1):
+            exportMode = 'skinning'
+        elif(hko_file.find('animation') != -1):
+            exportMode = 'animation'
         envCmd += "EXPORT_MODE=" + exportMode + ";"
 
         if(rig):
             rigFile = self.pipelinePath + rig
-            #can not set full rig path
-            #I`m not sure why
+            # can not set full rig path to env
+            # I`m not sure why
             #envCmd += "RIG_FILE=" + rigFile + ";"
             #envCmd += "RIG_FILE=output_rig.txt;"
             envCmd += "SK_NAME=" + exportName + ";"
@@ -393,16 +385,18 @@ class NagaMayaUtil(object):
         print(eval_cmd)
         mel.eval(eval_cmd)
 
-        #if(rig):
+        # if(rig):
         #    shutil.rmFile(tmpRigFile)
 
-    def convertHkx(self, exportName, packageName, bCompile=True):
+    def convertHkx(self, exportName, packageName, bCompile=True, bDebug=False):
         convertOutputDir = 'intermediate/' + packageName + '/'
         arg0 = '-f'
         arg1 = self.getHkxFolder(packageName) + exportName + '.hkx'
         arg2 = '-o'
         arg3 = convertOutputDir
         args = [arg0, arg1, arg2, arg3]
+        if(bDebug):
+            args.append('--debug')
         print('HavokConvert ' + str(args))
         lunchApplication(
             'HavokConverter.exe', self.appPath, args, True)
@@ -423,7 +417,10 @@ class NagaMayaUtil(object):
         return retList
 
     def getRigList(self):
-        return osGetFileList(self.pipelinePath, '_rig.txt')
+        return osGetFileList(self.pipelinePath, '.bones')
+
+    def getHkoList(self):
+        return osGetFileList(self.pipelinePath + 'havok_hko', '.hko')
 
     #
     #
@@ -465,7 +462,7 @@ class NagaMayaUtil(object):
 
         timeDiff = time.clock() - time1
         print('%d file exported, time cost = %s seconds.' %
-             (numBatchExport, str(timeDiff)))
+              (numBatchExport, str(timeDiff)))
 
     def readMayaDatabase(self, fileName):
         if not os.path.exists(fileName):

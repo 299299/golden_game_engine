@@ -19,7 +19,6 @@ public:
 
 private:
     void process(RigSkinData* skin);
-    void exportRig(const char* fileName);
     int findBodyPart(const std::string& boneName, const char** arrayBones);
 
 private:

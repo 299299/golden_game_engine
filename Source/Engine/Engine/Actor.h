@@ -17,10 +17,10 @@ ENGINE_NATIVE_ALIGN struct ActorResource
 
 ENGINE_NATIVE_ALIGN struct Actor
 {
-    hkQsTransform           m_transform;
-    Id                      m_components[kComponentTypeNum];
-    const ActorResource*    m_resource;
-    char*                   m_values;
+    hkQsTransform               m_transform;
+    Id                          m_components[kComponentTypeNum];
+    const ActorResource*        m_resource;
+    char*                       m_values;
 
     void    init(const ActorResource* resource, const hkQsTransform& t);
     void    destroy();

@@ -11,8 +11,13 @@
 #include <Animation/Animation/Rig/hkaPose.h>
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
+#include <Animation/Animation/Animation/ReferencePose/hkaReferencePoseAnimation.h>
+#include <Animation/Animation/Rig/hkaSkeletonUtils.h>
 //=======================================================================================
-
+int HK_CALL bindingCompare( const char* boneName, const char* trackName )
+{
+    return hkString::beginsWith(trackName, boneName ) ? 0 : 1;
+}
 
 int AnimRig::find_joint_index(const StringId& jointName)
 {
@@ -71,8 +76,11 @@ void AnimRigInstance::init( const void* resource )
 void AnimRigInstance::test_animation( const char* animFile )
 {
     Animation* anim = FIND_RESOURCE(Animation, StringId(animFile));
+    if(!anim) return;
     hkaDefaultAnimationControl* ac = new hkaDefaultAnimationControl(anim->m_binding);
+    m_skeleton->setReferencePoseWeightThreshold(0.0f);
     m_skeleton->addAnimationControl(ac);
+    ac->removeReference();
 }
 
 void* load_resource_anim_rig(const char* data, uint32_t size)

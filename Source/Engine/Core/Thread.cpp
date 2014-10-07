@@ -68,8 +68,8 @@ void ThreadSystem::quit()
 void ThreadSystem::process_all_jobs()
 {
     PROFILE(Thread_Process);
-    m_threadPool->processJobQueue( m_jobQueue );
-    m_jobQueue->processAllJobs( );
+    m_threadPool->processJobQueue(m_jobQueue);
+    m_jobQueue->processAllJobs();
 }
 
 void ThreadSystem::wait()

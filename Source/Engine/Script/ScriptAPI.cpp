@@ -29,6 +29,10 @@ struct gmVariableEntry
     gmVariable  m_value;
 };
 
+extern int find_component_type(const StringId& typeName);
+extern uint32_t num_components(uint32_t type);
+extern void* get_components(uint32_t type);
+
 #define SIMPLE_FUNC_REG(func_name, script_name) static int GM_CDECL script_name(gmThread* a_thread) { func_name; return GM_OK; }
 
 gmTableNode* find_table_node(gmTableObject* table, const char* key)
@@ -125,6 +129,15 @@ static int GM_CDECL script_set_updating(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(b_update, 0);
     g_engine.set_update(b_update);
+    return GM_OK;
+}
+static int GM_CDECL get_component_instance_num(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_STRING_PARAM(comp_name, 0);
+    int type = find_component_type(StringId(comp_name));
+    if(type < 0) a_thread->PushInt(0);
+    else a_thread->PushInt(num_components(type));
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -817,15 +830,15 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(type, 0);
-    GM_CHECK_FLOAT_OR_INT_PARAM(pos_x, 1);
-    GM_CHECK_FLOAT_OR_INT_PARAM(pos_y, 2);
-    GM_CHECK_FLOAT_OR_INT_PARAM(pos_z, 3);
-    GM_FLOAT_PARAM(rot_x, 4, 0);
-    GM_FLOAT_PARAM(rot_y, 5, 0);
-    GM_FLOAT_PARAM(rot_z, 6, 0);
-    GM_FLOAT_PARAM(scale_x, 7, 1);
-    GM_FLOAT_PARAM(scale_y, 8, 1);
-    GM_FLOAT_PARAM(scale_z, 9, 1);
+    GM_FLOAT_OR_INT_PARAM(pos_x, 1, 0);
+    GM_FLOAT_OR_INT_PARAM(pos_y, 2, 0);
+    GM_FLOAT_OR_INT_PARAM(pos_z, 3, 0);
+    GM_FLOAT_OR_INT_PARAM(rot_x, 4, 0);
+    GM_FLOAT_OR_INT_PARAM(rot_y, 5, 0);
+    GM_FLOAT_OR_INT_PARAM(rot_z, 6, 0);
+    GM_FLOAT_OR_INT_PARAM(scale_x, 7, 1);
+    GM_FLOAT_OR_INT_PARAM(scale_y, 8, 1);
+    GM_FLOAT_OR_INT_PARAM(scale_z, 9, 1);
     hkQsTransform t; 
     t.m_translation.set(pos_x, pos_y, pos_z);
     t.m_rotation.setFromEulerAngles(rot_x, rot_y, rot_z);
@@ -1000,6 +1013,7 @@ void register_script_api(gmMachine* machine)
         {"require", script_require},
         {"is_updating", script_is_updating},
         {"set_updating", script_set_updating},
+        {"num_components", get_component_instance_num},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
 #endif

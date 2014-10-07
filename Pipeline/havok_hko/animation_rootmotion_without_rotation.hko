@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hkoptions>
+	<hkobject class="hctConfigurationSetData">
+		<hkparam name="filterManagerVersion">65536</hkparam>
+		<hkparam name="activeConfiguration">0</hkparam>
+	</hkobject>
+	<hkobject class="hctConfigurationData">
+		<hkparam name="configurationName">Animation</hkparam>
+		<hkparam name="numFilters">7</hkparam>
+	</hkobject>
+	<hkobject name="Transform Scene" class="hctFilterData">
+		<hkparam name="id">2860016997</hkparam>
+		<hkparam name="ver">66049</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Transform Scene" class="hctSceneTransformOptions">
+		<hkparam name="preset">CUSTOM</hkparam>
+		<hkparam name="applyToNodes">true</hkparam>
+		<hkparam name="applyToBuffers">true</hkparam>
+		<hkparam name="applyToFloatChannels">true</hkparam>
+		<hkparam name="applyToLights">true</hkparam>
+		<hkparam name="applyToCameras">true</hkparam>
+		<hkparam name="flipWinding">false</hkparam>
+		<hkparam name="matrix">(-0.003937 0.000000 0.000000 0.000000)(0.000000 0.003937 0.000000 0.000000)(0.000000 0.000000 0.003937 0.000000)(0.000000 0.000000 0.000000 1.000000)</hkparam>
+	</hkobject>
+	<hkobject name="Bake Scale" class="hctFilterData">
+		<hkparam name="id">2638394286</hkparam>
+		<hkparam name="ver">65792</hkparam>
+		<hkparam name="hasOptions">false</hkparam>
+	</hkobject>
+	<hkobject name="Create Skeletons" class="hctFilterData">
+		<hkparam name="id">769831784</hkparam>
+		<hkparam name="ver">66056</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Create Skeletons" class="hctCreateSkeletonOptions">
+		<hkparam name="moveToOrigin">true</hkparam>
+		<hkparam name="automatic">false</hkparam>
+		<hkparam name="rigNodes">Bip01;Bip01_Pelvis;Bip01_L_Thigh;Bip01_L_Calf;Bip01_L_Foot;Bip01_L_Toe0;Bip01_L_Toe0Nub;Bip01_LCalfTwist;Bip01_LCalfTwist1;Bip01_LThighTwist;Bip01_LThighTwist1;Bip01_R_Thigh;Bip01_R_Calf;Bip01_R_Foot;Bip01_R_Toe0;Bip01_R_Toe0Nub;Bip01_RCalfTwist;Bip01_RCalfTwist1;Bip01_RThighTwist;Bip01_RThighTwist1;Bip01_Spine;Bip01_Spine1;Bip01_Spine2;Bip01_Spine3;Bip01_Neck;Bip01_Head;Bip01_HeadNub;FcFX_BlowCheek_L;FcFX_BlowCheek_R;FcFX_BotNose;FcFX_Cheek_L;FcFX_Cheek_R;FcFX_EyBrw_Inner_L;FcFX_EyBrw_Inner_R;FcFX_EyBrw_Mid_L;FcFX_EyBrw_Mid_R;FcFX_EyBrw_Outer_L;FcFX_EyBrw_Outer_R;FcFx_Eye_L;FcFx_Eye_R;FcFX_EyLd_Bottom_L;FcFX_EyLd_Bottom_R;FcFX_EyLd_Top_L;FcFX_EyLd_Top_R;FcFX_FrHead_Cntr;FcFX_FrHead_L;FcFX_FrHead_R;FcFX_InsideCheek_L;FcFX_InsideCheek_R;FcFX_Jaw;FcFX_Tongue_01;FcFX_Tongue_02;FcFX_Mouth_01;FcFX_Mouth_02;FcFX_Mouth_03;FcFX_Mouth_04;FcFX_Mouth_05;FcFX_Mouth_06;FcFX_Mouth_07;FcFX_Mouth_08;FcFX_Nose_L;FcFX_Nose_R;FcFX_OuterEye_L;FcFX_OuterEye_R;FcFX_Pinch_L;FcFX_Pinch_R;Bip01_L_Clavicle;Bip01_L_UpperArm;Bip01_L_Forearm;Bip01_L_Foretwist;Bip01_L_Foretwist1;Bip01_L_Hand;Bip01_L_Finger0;Bip01_L_Finger01;Bip01_L_Finger02;Bip01_L_Finger0Nub;Bip01_L_Finger1;Bip01_L_Finger11;Bip01_L_Finger12;Bip01_L_Finger1Nub;Bip01_L_Finger2;Bip01_L_Finger21;Bip01_L_Finger22;Bip01_L_Finger2Nub;Bip01_L_Finger3;Bip01_L_Finger31;Bip01_L_Finger32;Bip01_L_Finger3Nub;Bip01_L_Finger4;Bip01_L_Finger41;Bip01_L_Finger42;Bip01_L_Finger4Nub;Gundummy02;Bip01_LUpArmTwist;Bip01_LUpArmTwist1;Bip01_LUpArmTwist2;Bip01_R_Clavicle;Bip01_R_UpperArm;Bip01_R_Forearm;Bip01_R_Foretwist;Bip01_R_Foretwist1;Bip01_R_Hand;Bip01_R_Finger0;Bip01_R_Finger01;Bip01_R_Finger02;Bip01_R_Finger0Nub;Bip01_R_Finger1;Bip01_R_Finger11;Bip01_R_Finger12;Bip01_R_Finger1Nub;Bip01_R_Finger2;Bip01_R_Finger21;Bip01_R_Finger22;Bip01_R_Finger2Nub;Bip01_R_Finger3;Bip01_R_Finger31;Bip01_R_Finger32;Bip01_R_Finger3Nub;Bip01_R_Finger4;Bip01_R_Finger41;Bip01_R_Finger42;Bip01_R_Finger4Nub;Gundummy;Bip01_RUpArmTwist;Bip01_RUpArmTwist1;Bip01_RUpArmTwist2;</hkparam>
+		<hkparam name="rigFile">output_rig.txt</hkparam>
+		<hkparam name="selected">false</hkparam>
+		<hkparam name="skinBindings">false</hkparam>
+		<hkparam name="floatSlots"></hkparam>
+		<hkparam name="useOrderInFile">false</hkparam>
+		<hkparam name="substringMatch">false</hkparam>
+		<hkparam name="skeletonName">$(SK_NAME)</hkparam>
+		<hkparam name="partitions"></hkparam>
+		<hkparam name="partitionStartBoneNames"></hkparam>
+		<hkparam name="partitionEndBoneNames"></hkparam>
+		<hkparam name="useRootBoneNameAsSkeletonName">true</hkparam>
+	</hkobject>
+	<hkobject name="Create Animations" class="hctFilterData">
+		<hkparam name="id">769831785</hkparam>
+		<hkparam name="ver">66054</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Create Animations" class="hctCreateAnimationsOptions">
+		<hkparam name="moveToOriginX">true</hkparam>
+		<hkparam name="moveToOriginY">false</hkparam>
+		<hkparam name="moveToOriginZ">true</hkparam>
+		<hkparam name="animationStartNodes">This member is no longer in use.</hkparam>
+		<hkparam name="subAnimation">false</hkparam>
+		<hkparam name="subAnimationStartFrame">0</hkparam>
+		<hkparam name="subAnimationEndFrame">0</hkparam>
+		<hkparam name="selected">false</hkparam>
+		<hkparam name="manual">false</hkparam>
+		<hkparam name="rigFilename">&#9216;</hkparam>
+		<hkparam name="partialAnimationNodes"></hkparam>
+		<hkparam name="nameAnimationTracks">false</hkparam>
+		<hkparam name="previewColor">4286545791</hkparam>
+		<hkparam name="floatTracks"></hkparam>
+	</hkobject>
+	<hkobject name="Extract Motion" class="hctFilterData">
+		<hkparam name="id">355779994</hkparam>
+		<hkparam name="ver">66048</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Extract Motion" class="hctExtractMotionOptions">
+		<hkparam name="allowUpDown">false</hkparam>
+		<hkparam name="allowFrontBack">true</hkparam>
+		<hkparam name="allowRightLeft">false</hkparam>
+		<hkparam name="allowTurning">false</hkparam>
+		<hkparam name="ignoreUpDown">false</hkparam>
+		<hkparam name="ignoreFrontBack">false</hkparam>
+		<hkparam name="ignoreRightLeft">false</hkparam>
+		<hkparam name="customNumSamples">false</hkparam>
+		<hkparam name="numSamples">-1</hkparam>
+		<hkparam name="upAxis">AXIS_Y</hkparam>
+		<hkparam name="forwardAxis">AXIS_Z</hkparam>
+		<hkparam name="alternateReferenceFrame">&#9216;</hkparam>
+		<hkparam name="useFrameRange">false</hkparam>
+		<hkparam name="startFrame">0</hkparam>
+		<hkparam name="endFrame">0</hkparam>
+		<hkparam name="type">MET_DEFAULT</hkparam>
+	</hkobject>
+	<hkobject name="Prune Types" class="hctFilterData">
+		<hkparam name="id">2496164476</hkparam>
+		<hkparam name="ver">66048</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Prune Types" class="hctPruneTypesOptions">
+		<hkparam name="pruneSceneData">false</hkparam>
+		<hkparam name="pruneMeshData">true</hkparam>
+		<hkparam name="pruneSkeletonData">true</hkparam>
+		<hkparam name="pruneAnimationData">false</hkparam>
+		<hkparam name="customClasses"></hkparam>
+		<hkparam name="pruneAllSceneData">false</hkparam>
+		<hkparam name="pruneEnvironmentData">false</hkparam>
+		<hkparam name="pruneResourceData">true</hkparam>
+		<hkparam name="pruneDestructionData">true</hkparam>
+		<hkparam name="pruneAnimationTracks">false</hkparam>
+		<hkparam name="pruneAnnotations">false</hkparam>
+		<hkparam name="pruneIdentityBindingIndices">false</hkparam>
+		<hkparam name="pruneQuantizedBindings">false</hkparam>
+		<hkparam name="pruneAttributes">false</hkparam>
+		<hkparam name="pruneMeshUserChannels">false</hkparam>
+		<hkparam name="pruneAttachments">true</hkparam>
+		<hkparam name="pruneSelectionSets">false</hkparam>
+		<hkparam name="selectionSets"></hkparam>
+		<hkparam name="selectionDeletionMode">HK_SELECTION_DELETE_SELECTED</hkparam>
+		<hkparam name="pruneAllAnimationData">false</hkparam>
+		<hkparam name="pruneMeshBindingData">true</hkparam>
+		<hkparam name="pruneRagdollAndMapperData">true</hkparam>
+	</hkobject>
+	<hkobject name="Write to Platform" class="hctFilterData">
+		<hkparam name="id">2876798309</hkparam>
+		<hkparam name="ver">66048</hkparam>
+		<hkparam name="hasOptions">true</hkparam>
+	</hkobject>
+	<hkobject name="Write to Platform" class="hctPlatformWriterOptions">
+		<hkparam name="filename">$(HK_OUTPUT)</hkparam>
+		<hkparam name="tagfile">false</hkparam>
+		<hkparam name="preset">MSVC_WIN32</hkparam>
+		<hkparam name="bytesInPointer">4</hkparam>
+		<hkparam name="littleEndian">1</hkparam>
+		<hkparam name="reusePaddingOptimized">0</hkparam>
+		<hkparam name="emptyBaseClassOptimized">1</hkparam>
+		<hkparam name="removeMetadata">false</hkparam>
+		<hkparam name="userTag">0</hkparam>
+		<hkparam name="saveEnvironmentData">true</hkparam>
+		<hkparam name="xmlFormat">false</hkparam>
+	</hkobject>
+</hkoptions>

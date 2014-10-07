@@ -17,7 +17,8 @@ public:
     virtual void process(void* pData);
     virtual void postProcess();
     virtual jsonxx::Object serializeToJson() const;
-    virtual jsonxx::Object serializeToJsonSplit() const;
-    virtual void serializeToFile(const char* fileName);
-    virtual void serializeToFileSplit(const char* fileName);
+
+private:
+    hkaAnimationContainer*          m_ac;
+    std::string                     m_animationFile;
 };

@@ -13,15 +13,6 @@ PREVIEW_PACK = 'preview'
 GAME_APP = 'Game_Debug'
 UI_NAME = 'Naga_UI'
 
-HKO_TYPES = [
-    'default',
-    'skin-model',
-    'animation-default',
-    'animation-rootmotion-no-rotation',
-    'animation-rootmotion-rotation',
-    'animation-additive-first-frame',
-]
-
 
 class NagaPipeline(object):
     NagaObject = None
@@ -85,23 +76,19 @@ class NagaPipeline(object):
 
         cmds.frameLayout(l="Export Parameters", cll=1)
         self.selectCheck = cmds.checkBox(label='Export Select Only', v=False)
-        cmds.text(label='export type:', align='center', bgc=[0, 1, 0])
-        self.hkoTypeGroup = cmds.optionMenuGrp('HkoType')
-        for hkoType in HKO_TYPES:
+        self.hkoTypeGroup = cmds.optionMenuGrp('HkoType', l='type:')
+        for hkoType in self.naga.getHkoList():
+            hkoType = os.path.basename(hkoType)
             cmds.menuItem(label=hkoType)
-        cmds.text(label='rig type:', align='center', bgc=[0, 1, 0])
-        self.rigTypeGroup = cmds.optionMenuGrp('RigType')
+        self.rigTypeGroup = cmds.optionMenuGrp('RigType', l='rig:')
         for rigType in self.naga.getRigList():
             rigName = os.path.basename(rigType)
+            rigName = rigName[:-6]
             cmds.menuItem(label=rigName)
-        cmds.text(label='export package:', align='center', bgc=[0, 1, 0])
-        self.packageGroup = cmds.optionMenuGrp('PackageName')
+        self.packageGroup = cmds.optionMenuGrp('PackageName', l='package:')
         for packageName in self.naga.getPackageList():
             cmds.menuItem(label=packageName)
 
-        cmds.setParent('..')
-        cmds.setParent('..')
-        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -158,7 +145,7 @@ class NagaPipeline(object):
         # step2 : convert the hkx to intermediate data
         # using havok converter
         # step3: lunch data-compiler to convert intermediate to finally package
-        self.naga.convertHkx(exportName, packageName)
+        self.naga.convertHkx(exportName, packageName, bDebug=False)
 
     def reloadCompileResult(self):
         if not self.webSock.connected:
@@ -194,7 +181,7 @@ class NagaPipeline(object):
                       rigName=rigName)
 
         if not self.webSock.connected:
-            self.lunchEngine(packageName)
+            self.lunchEngine(packageName, debug=True)
             time.sleep(0.2)
         else:
             self.reloadCompileResult()
@@ -202,7 +189,7 @@ class NagaPipeline(object):
     def export(self, exportName):
 
         packageIndex = cmds.optionMenuGrp(self.packageGroup, q=1, sl=1) - 1
-        packageName = self.nage.getPackageList()[packageIndex]
+        packageName = self.naga.getPackageList()[packageIndex]
 
         packageName = packageName
         rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
@@ -215,24 +202,50 @@ class NagaPipeline(object):
                       hkoType=hkoIndex,
                       rigName=rigName)
 
-    def lunchEngine(self, packageName):
+    def lunchEngine(self, packageName, debug=False):
         sceneName = NAGA.getSceneName()
         width = 800
         height = 600
         args = ['--websocket',
                 '--package', 'data/' + packageName + '.package',
                 '--script', 'core/scripts/preview',
-                '-w', str(width), '-h', str(height)]
+                '-w', str(width),
+                '-h', str(height)]
 
         if(NAGA.isLevel(sceneName)):
+            print('preview ---- level')
             previewName = packageName + '/' + sceneName
             args.append('--level')
             args.append(previewName)
+        elif(self.isAnimationType()):
+            print('preview ---- animation')
+            # add animation
+            previewName = packageName + '/actor/' + sceneName
+            args.append('--animation')
+            args.append(previewName)
+            # add rig actor
+            rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
+            rigName = self.naga.getRigList()[rigIndex]
+            rigName = os.path.basename(rigName)
+            rigName = rigName[:-6]
+            rigName = packageName + '/actor/' + rigName
+
+            args.append('--actor')
+            args.append(rigName)
         else:
+            print('preview ---- actor')
             previewName = packageName + '/actor/' + sceneName
             args.append('--actor')
             args.append(previewName)
+        if(debug):
+            args.append('--debug')
         NAGA.lunchApplication(GAME_APP, self.naga.appPath, args, False)
+
+    def isAnimationType(self):
+        hkoList = self.naga.getHkoList()
+        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
+        hkoFile = hkoList[hkoIndex]
+        return hkoFile.find('animation') != -1
 
     #
     # WEB SOCKET FUNCTIONS

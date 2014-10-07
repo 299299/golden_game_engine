@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: Level_Test.ma
-//Last modified: Wed, Oct 01, 2014 07:26:33 PM
+//Last modified: Tue, Oct 07, 2014 05:44:07 PM
 //Codeset: 936
 requires maya "2015";
 requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType "mentalrayGlobals"
@@ -15,13 +15,13 @@ fileInfo "cutIdentifier" "201408201531-928694";
 fileInfo "osv" "Microsoft Windows 7 Ultimate Edition, 64-bit Windows 7 Service Pack 1 (Build 7601)\n";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 6113.2309014694692 2231.3882715435248 -612.83555880695644 ;
-	setAttr ".r" -type "double3" -24.921846615220748 -2054.1999999996374 0 ;
+	setAttr ".t" -type "double3" -2608.5835360718597 1211.803308149453 263.68903877114781 ;
+	setAttr ".r" -type "double3" -18.921846615507725 -2255.7999999997355 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
 	setAttr ".fcp" 990000;
-	setAttr ".coi" 5657.4597233721561;
+	setAttr ".coi" 4527.1544274464268;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -502,6 +502,24 @@ createNode hkNodeShape -n "Collision_Level_hkShape" -p "|Physics|Collision_Level
 	setAttr -cb off ".lsz";
 	setAttr ".st" 6;
 	setAttr ".ver" 7000;
+createNode transform -n "cube_2m";
+createNode mesh -n "cube_2mShape" -p "cube_2m";
+	setAttr -k off ".v";
+	setAttr ".vir" yes;
+	setAttr ".vif" yes;
+	setAttr ".uvst[0].uvsn" -type "string" "map1";
+	setAttr ".cuvs" -type "string" "map1";
+	setAttr ".dcc" -type "string" "Ambient+Diffuse";
+	setAttr ".covm[0]"  0 1 1;
+	setAttr ".cdvm[0]"  0 1 1;
+createNode transform -n "_m:annotationLocator1" -p "cube_2m";
+createNode locator -n "_m:annotationLocator1Shape" -p "_m:annotationLocator1";
+	setAttr -k off ".v";
+createNode transform -n "_m:annotation1" -p "_m:annotationLocator1";
+	setAttr ".t" -type "double3" 150 100 150 ;
+createNode annotationShape -n "_m:annotationShape1" -p "_m:annotation1";
+	setAttr -k off ".v";
+	setAttr ".txt" -type "string" "2 M";
 createNode transform -n "Proxy";
 	addAttr -ci true -sn "ht" -ln "hkType" -dt "string";
 	addAttr -ci true -sn "pn" -ln "packageName" -dt "string";
@@ -875,8 +893,8 @@ createNode mentalrayOptions -s -n "miDefaultOptions";
 	setAttr ".stringOptions[44].type" -type "string" "string";
 createNode mentalrayFramebuffer -s -n "miDefaultFramebuffer";
 createNode lightLinker -s -n "lightLinker1";
-	setAttr -s 801 ".lnk";
-	setAttr -s 801 ".slnk";
+	setAttr -s 807 ".lnk";
+	setAttr -s 807 ".slnk";
 createNode displayLayerManager -n "layerManager";
 	setAttr ".cdl" 3;
 	setAttr -s 4 ".dli[1:3]"  1 2 3;
@@ -942,7 +960,8 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"dynRelEdPanel\" (localizedPanelLabel(\"Dynamic Relationships\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"dynRelEdPanel\" -l (localizedPanelLabel(\"Dynamic Relationships\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Dynamic Relationships\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"relationshipPanel\" (localizedPanelLabel(\"Relationship Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"relationshipPanel\" -l (localizedPanelLabel(\"Relationship Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Relationship Editor\")) -mbv $menusOkayInPanels  $panelName;\n"
 		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"referenceEditorPanel\" (localizedPanelLabel(\"Reference Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"referenceEditorPanel\" -l (localizedPanelLabel(\"Reference Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Reference Editor\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"componentEditorPanel\" (localizedPanelLabel(\"Component Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"componentEditorPanel\" -l (localizedPanelLabel(\"Component Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Component Editor\")) -mbv $menusOkayInPanels  $panelName;\n"
 		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"dynPaintScriptedPanelType\" (localizedPanelLabel(\"Paint Effects\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"dynPaintScriptedPanelType\" -l (localizedPanelLabel(\"Paint Effects\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Paint Effects\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"scriptEditorPanel\" (localizedPanelLabel(\"Script Editor\")) `;\n\tif (\"\" == $panelName) {\n\t\tif ($useSceneConfig) {\n\t\t\t$panelName = `scriptedPanel -unParent  -type \"scriptEditorPanel\" -l (localizedPanelLabel(\"Script Editor\")) -mbv $menusOkayInPanels `;\n\t\t}\n\t} else {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Script Editor\")) -mbv $menusOkayInPanels  $panelName;\n"
-		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n\t\t\t\t-defaultImage \"\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"vertical2\\\" -ps 1 25 100 -ps 2 75 100 $gMainPane;\"\n\t\t\t\t-removeAllPanels\n\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Outliner\")) \n\t\t\t\t\t\"outlinerPanel\"\n\t\t\t\t\t\"$panelName = `outlinerPanel -unParent -l (localizedPanelLabel(\\\"Outliner\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\noutlinerEditor -e \\n    -showShapes 0\\n    -showReferenceNodes 0\\n    -showReferenceMembers 0\\n    -showAttributes 0\\n    -showConnected 0\\n    -showAnimCurvesOnly 0\\n    -showMuteInfo 0\\n    -organizeByLayer 1\\n    -showAnimLayerWeight 1\\n    -autoExpandLayers 1\\n    -autoExpand 0\\n    -showDagOnly 1\\n    -showAssets 1\\n    -showContainedOnly 1\\n    -showPublishedAsConnected 0\\n    -showContainerContents 1\\n    -ignoreDagHierarchy 0\\n    -expandConnections 0\\n    -showUpstreamCurves 1\\n    -showUnitlessCurves 1\\n    -showCompounds 1\\n    -showLeafs 1\\n    -showNumericAttrsOnly 0\\n    -highlightActive 1\\n    -autoSelectNewObjects 0\\n    -doNotSelectNewObjects 0\\n    -dropIsParent 1\\n    -transmitFilters 0\\n    -setFilter \\\"defaultSetFilter\\\" \\n    -showSetMembers 1\\n    -allowMultiSelection 1\\n    -alwaysToggleSelect 0\\n    -directSelect 0\\n    -displayMode \\\"DAG\\\" \\n    -expandObjects 0\\n    -setsIgnoreFilters 1\\n    -containersIgnoreFilters 0\\n    -editAttrName 0\\n    -showAttrValues 0\\n    -highlightSecondary 0\\n    -showUVAttrsOnly 0\\n    -showTextureNodesOnly 0\\n    -attrAlphaOrder \\\"default\\\" \\n    -animLayerFilterOptions \\\"allAffecting\\\" \\n    -sortOrder \\\"none\\\" \\n    -longNames 0\\n    -niceNames 1\\n    -showNamespace 1\\n    -showPinIcons 0\\n    -mapMotionTrails 0\\n    -ignoreHiddenAttribute 0\\n    $editorName\"\n"
+		+ "\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\tif ($useSceneConfig) {\n\t\tscriptedPanel -e -to $panelName;\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n\t\t\t\t-defaultImage \"\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"vertical2\\\" -ps 1 36 100 -ps 2 64 100 $gMainPane;\"\n\t\t\t\t-removeAllPanels\n\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Outliner\")) \n\t\t\t\t\t\"outlinerPanel\"\n"
+		+ "\t\t\t\t\t\"$panelName = `outlinerPanel -unParent -l (localizedPanelLabel(\\\"Outliner\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\noutlinerEditor -e \\n    -showShapes 0\\n    -showReferenceNodes 0\\n    -showReferenceMembers 0\\n    -showAttributes 0\\n    -showConnected 0\\n    -showAnimCurvesOnly 0\\n    -showMuteInfo 0\\n    -organizeByLayer 1\\n    -showAnimLayerWeight 1\\n    -autoExpandLayers 1\\n    -autoExpand 0\\n    -showDagOnly 1\\n    -showAssets 1\\n    -showContainedOnly 1\\n    -showPublishedAsConnected 0\\n    -showContainerContents 1\\n    -ignoreDagHierarchy 0\\n    -expandConnections 0\\n    -showUpstreamCurves 1\\n    -showUnitlessCurves 1\\n    -showCompounds 1\\n    -showLeafs 1\\n    -showNumericAttrsOnly 0\\n    -highlightActive 1\\n    -autoSelectNewObjects 0\\n    -doNotSelectNewObjects 0\\n    -dropIsParent 1\\n    -transmitFilters 0\\n    -setFilter \\\"defaultSetFilter\\\" \\n    -showSetMembers 1\\n    -allowMultiSelection 1\\n    -alwaysToggleSelect 0\\n    -directSelect 0\\n    -displayMode \\\"DAG\\\" \\n    -expandObjects 0\\n    -setsIgnoreFilters 1\\n    -containersIgnoreFilters 0\\n    -editAttrName 0\\n    -showAttrValues 0\\n    -highlightSecondary 0\\n    -showUVAttrsOnly 0\\n    -showTextureNodesOnly 0\\n    -attrAlphaOrder \\\"default\\\" \\n    -animLayerFilterOptions \\\"allAffecting\\\" \\n    -sortOrder \\\"none\\\" \\n    -longNames 0\\n    -niceNames 1\\n    -showNamespace 1\\n    -showPinIcons 0\\n    -mapMotionTrails 0\\n    -ignoreHiddenAttribute 0\\n    $editorName\"\n"
 		+ "\t\t\t\t\t\"outlinerPanel -edit -l (localizedPanelLabel(\\\"Outliner\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\noutlinerEditor -e \\n    -showShapes 0\\n    -showReferenceNodes 0\\n    -showReferenceMembers 0\\n    -showAttributes 0\\n    -showConnected 0\\n    -showAnimCurvesOnly 0\\n    -showMuteInfo 0\\n    -organizeByLayer 1\\n    -showAnimLayerWeight 1\\n    -autoExpandLayers 1\\n    -autoExpand 0\\n    -showDagOnly 1\\n    -showAssets 1\\n    -showContainedOnly 1\\n    -showPublishedAsConnected 0\\n    -showContainerContents 1\\n    -ignoreDagHierarchy 0\\n    -expandConnections 0\\n    -showUpstreamCurves 1\\n    -showUnitlessCurves 1\\n    -showCompounds 1\\n    -showLeafs 1\\n    -showNumericAttrsOnly 0\\n    -highlightActive 1\\n    -autoSelectNewObjects 0\\n    -doNotSelectNewObjects 0\\n    -dropIsParent 1\\n    -transmitFilters 0\\n    -setFilter \\\"defaultSetFilter\\\" \\n    -showSetMembers 1\\n    -allowMultiSelection 1\\n    -alwaysToggleSelect 0\\n    -directSelect 0\\n    -displayMode \\\"DAG\\\" \\n    -expandObjects 0\\n    -setsIgnoreFilters 1\\n    -containersIgnoreFilters 0\\n    -editAttrName 0\\n    -showAttrValues 0\\n    -highlightSecondary 0\\n    -showUVAttrsOnly 0\\n    -showTextureNodesOnly 0\\n    -attrAlphaOrder \\\"default\\\" \\n    -animLayerFilterOptions \\\"allAffecting\\\" \\n    -sortOrder \\\"none\\\" \\n    -longNames 0\\n    -niceNames 1\\n    -showNamespace 1\\n    -showPinIcons 0\\n    -mapMotionTrails 0\\n    -ignoreHiddenAttribute 0\\n    $editorName\"\n"
 		+ "\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Persp View\")) \n\t\t\t\t\t\"modelPanel\"\n"
 		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 1\\n    -headsUpDisplay 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 1\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 1\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 1\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 16384\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -greasePencils 1\\n    -shadows 0\\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
@@ -2792,25 +2811,128 @@ createNode displayLayer -n "physics";
 	setAttr ".dt" 1;
 	setAttr ".c" 18;
 	setAttr ".do" 3;
+createNode polyCube -n "_m:polyCube1";
+	setAttr ".w" 100;
+	setAttr ".h" 200;
+	setAttr ".d" 100;
+	setAttr ".cuv" 4;
+createNode hyperGraphInfo -n "_m:nodeEditorPanel1Info";
+createNode hyperView -n "_m:hyperView1";
+	setAttr ".dag" no;
+createNode hyperLayout -n "_m:hyperLayout1";
+	setAttr ".ihi" 0;
+	setAttr -s 6 ".hyp";
+	setAttr ".hyp[0].nvs" 1920;
+	setAttr ".hyp[1].nvs" 1920;
+	setAttr ".hyp[2].nvs" 1920;
+	setAttr ".hyp[3].nvs" 1920;
+	setAttr ".hyp[4].nvs" 1920;
+	setAttr ".hyp[5].nvs" 1920;
+	setAttr ".anf" yes;
+createNode phong -n "bruce:BruceWayne_Suit_Torso_MIC";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode shadingEngine -n "bruce:BruceWayne_BodySG";
+	setAttr ".ihi" 0;
+	setAttr ".ro" yes;
+createNode materialInfo -n "bruce:materialInfo1";
+createNode phong -n "bruce:BruceWayne_Suit_Legs_MIC";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode shadingEngine -n "bruce:BruceWayne_BodySG1";
+	setAttr ".ihi" 0;
+	setAttr ".ro" yes;
+createNode materialInfo -n "bruce:materialInfo2";
+createNode file -n "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1";
+	setAttr ".ftn" -type "string" "BruceWayne_Suit_Torso_MIC";
+createNode place2dTexture -n "bruce:place2dTexture1";
+createNode file -n "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1";
+	setAttr ".ftn" -type "string" "BruceWayne_Suit_Legs_MIC";
+createNode place2dTexture -n "bruce:place2dTexture2";
+createNode phong -n "bruce:BruceWayne_Head_MIC";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode shadingEngine -n "bruce:BruceWayne_HeadSG";
+	setAttr ".ihi" 0;
+	setAttr ".ro" yes;
+createNode materialInfo -n "bruce:materialInfo3";
+createNode phong -n "bruce:BruceWayne_OZ_Eyes_MIC";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode shadingEngine -n "bruce:BruceWayne_HeadSG1";
+	setAttr ".ihi" 0;
+	setAttr ".ro" yes;
+createNode materialInfo -n "bruce:materialInfo4";
+createNode phong -n "bruce:BruceWayne_Hair_MIC";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode shadingEngine -n "bruce:BruceWayne_HeadSG2";
+	setAttr ".ihi" 0;
+	setAttr ".ro" yes;
+createNode materialInfo -n "bruce:materialInfo5";
+createNode phong -n "bruce:Character_FakeShadow";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode shadingEngine -n "bruce:BruceWayne_HeadSG3";
+	setAttr ".ihi" 0;
+	setAttr ".ro" yes;
+createNode materialInfo -n "bruce:materialInfo6";
+createNode file -n "bruce:BruceWayne_Head_MIC_ncl1_1";
+	setAttr ".ftn" -type "string" "BruceWayne_Head_MIC";
+createNode place2dTexture -n "bruce:place2dTexture3";
+createNode file -n "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1";
+	setAttr ".ftn" -type "string" "BruceWayne_OZ_Eyes_MIC";
+createNode place2dTexture -n "bruce:place2dTexture4";
+createNode file -n "bruce:BruceWayne_Hair_MIC_ncl1_1";
+	setAttr ".ftn" -type "string" "BruceWayne_Hair_MIC";
+createNode place2dTexture -n "bruce:place2dTexture5";
+createNode file -n "bruce:Character_FakeShadow_ncl1_1";
+	setAttr ".ftn" -type "string" "Character_FakeShadow";
+createNode place2dTexture -n "bruce:place2dTexture6";
+createNode hyperGraphInfo -n "bruce:nodeEditorPanel1Info";
+createNode hyperView -n "bruce:hyperView1";
+	setAttr ".dag" no;
+createNode hyperLayout -n "bruce:hyperLayout1";
+	setAttr ".ihi" 0;
+	setAttr ".anf" yes;
 select -ne :time1;
 	setAttr ".o" 1;
 	setAttr ".unw" 1;
 select -ne :renderPartition;
-	setAttr -s 801 ".st";
+	setAttr -s 807 ".st";
 select -ne :renderGlobalsList1;
 select -ne :defaultShaderList1;
-	setAttr -s 129 ".s";
+	setAttr -s 135 ".s";
 select -ne :postProcessList1;
 	setAttr -s 2 ".p";
 select -ne :defaultRenderUtilityList1;
-	setAttr -s 354 ".u";
+	setAttr -s 360 ".u";
 select -ne :defaultRenderingList1;
 select -ne :lightList1;
 select -ne :defaultTextureList1;
-	setAttr -s 264 ".tx";
+	setAttr -s 270 ".tx";
 select -ne :initialShadingGroup;
 	setAttr -k on ".cch";
 	setAttr -k on ".nds";
+	setAttr -s 2 ".dsm";
 	setAttr ".ro" yes;
 select -ne :initialParticleSE;
 	setAttr -k on ".cch";
@@ -2873,6 +2995,8 @@ connectAttr "groupId1.id" "|Physics|Collision_Level|Collision_Level.iog.og[0].gi
 		;
 connectAttr ":initialShadingGroup.mwc" "|Physics|Collision_Level|Collision_Level.iog.og[0].gco"
 		;
+connectAttr "_m:polyCube1.out" "cube_2mShape.i";
+connectAttr "_m:annotationLocator1Shape.wm" "_m:annotationShape1.dom" -na;
 connectAttr ":mentalrayGlobals.msg" ":mentalrayItemsList.glb";
 connectAttr ":miDefaultOptions.msg" ":mentalrayItemsList.opt" -na;
 connectAttr ":miDefaultFramebuffer.msg" ":mentalrayItemsList.fb" -na;
@@ -3182,6 +3306,12 @@ relationship "link" ":lightLinker1" "Gotham_GCPD_Window1024_material_21.message"
 relationship "link" ":lightLinker1" "Gotham_GCPD_Window1024_material_22.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" "Gotham_GCPD_Window1024_material_23.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" "Gotham_GCPD_Window1024_material_24.message" ":defaultLightSet.message";
+relationship "link" ":lightLinker1" "bruce:BruceWayne_BodySG.message" ":defaultLightSet.message";
+relationship "link" ":lightLinker1" "bruce:BruceWayne_BodySG1.message" ":defaultLightSet.message";
+relationship "link" ":lightLinker1" "bruce:BruceWayne_HeadSG.message" ":defaultLightSet.message";
+relationship "link" ":lightLinker1" "bruce:BruceWayne_HeadSG1.message" ":defaultLightSet.message";
+relationship "link" ":lightLinker1" "bruce:BruceWayne_HeadSG2.message" ":defaultLightSet.message";
+relationship "link" ":lightLinker1" "bruce:BruceWayne_HeadSG3.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" "Gotham_GroundFloor_Shop_OlddB5_512_material_0.message" ":defaultLightSet.message";
@@ -3486,6 +3616,12 @@ relationship "shadowLink" ":lightLinker1" "Gotham_GCPD_Window1024_material_21.me
 relationship "shadowLink" ":lightLinker1" "Gotham_GCPD_Window1024_material_22.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" "Gotham_GCPD_Window1024_material_23.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" "Gotham_GCPD_Window1024_material_24.message" ":defaultLightSet.message";
+relationship "shadowLink" ":lightLinker1" "bruce:BruceWayne_BodySG.message" ":defaultLightSet.message";
+relationship "shadowLink" ":lightLinker1" "bruce:BruceWayne_BodySG1.message" ":defaultLightSet.message";
+relationship "shadowLink" ":lightLinker1" "bruce:BruceWayne_HeadSG.message" ":defaultLightSet.message";
+relationship "shadowLink" ":lightLinker1" "bruce:BruceWayne_HeadSG1.message" ":defaultLightSet.message";
+relationship "shadowLink" ":lightLinker1" "bruce:BruceWayne_HeadSG2.message" ":defaultLightSet.message";
+relationship "shadowLink" ":lightLinker1" "bruce:BruceWayne_HeadSG3.message" ":defaultLightSet.message";
 connectAttr "layerManager.dli[0]" "defaultLayer.id";
 connectAttr "renderLayerManager.rlmi[0]" "defaultRenderLayer.rlid";
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_phong1.oc" "Gotham_GroundFloor_Shop_OlddB5_512_material_0.ss"
@@ -10104,6 +10240,147 @@ connectAttr "polySphere1.out" "polyNormal1.ip";
 connectAttr "layerManager.dli[1]" "sky.id";
 connectAttr "layerManager.dli[2]" "ad_references.id";
 connectAttr "layerManager.dli[3]" "physics.id";
+connectAttr "_m:hyperView1.msg" "_m:nodeEditorPanel1Info.b[0]";
+connectAttr "_m:hyperLayout1.msg" "_m:hyperView1.hl";
+connectAttr "_m:polyCube1.msg" "_m:hyperLayout1.hyp[3].dn";
+connectAttr "cube_2m.msg" "_m:hyperLayout1.hyp[4].dn";
+connectAttr "cube_2mShape.msg" "_m:hyperLayout1.hyp[5].dn";
+connectAttr "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.oc" "bruce:BruceWayne_Suit_Torso_MIC.c"
+		;
+connectAttr "bruce:BruceWayne_Suit_Torso_MIC.oc" "bruce:BruceWayne_BodySG.ss";
+connectAttr "bruce:BruceWayne_BodySG.msg" "bruce:materialInfo1.sg";
+connectAttr "bruce:BruceWayne_Suit_Torso_MIC.msg" "bruce:materialInfo1.m";
+connectAttr "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.msg" "bruce:materialInfo1.t"
+		 -na;
+connectAttr "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.oc" "bruce:BruceWayne_Suit_Legs_MIC.c"
+		;
+connectAttr "bruce:BruceWayne_Suit_Legs_MIC.oc" "bruce:BruceWayne_BodySG1.ss";
+connectAttr "bruce:BruceWayne_BodySG1.msg" "bruce:materialInfo2.sg";
+connectAttr "bruce:BruceWayne_Suit_Legs_MIC.msg" "bruce:materialInfo2.m";
+connectAttr "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.msg" "bruce:materialInfo2.t" 
+		-na;
+connectAttr "bruce:place2dTexture1.o" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.uv"
+		;
+connectAttr "bruce:place2dTexture1.ofu" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.ofu"
+		;
+connectAttr "bruce:place2dTexture1.ofv" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.ofv"
+		;
+connectAttr "bruce:place2dTexture1.rf" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.rf"
+		;
+connectAttr "bruce:place2dTexture1.reu" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.reu"
+		;
+connectAttr "bruce:place2dTexture1.rev" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.rev"
+		;
+connectAttr "bruce:place2dTexture1.vt1" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.vt1"
+		;
+connectAttr "bruce:place2dTexture1.vt2" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.vt2"
+		;
+connectAttr "bruce:place2dTexture1.vt3" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.vt3"
+		;
+connectAttr "bruce:place2dTexture1.vc1" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.vc1"
+		;
+connectAttr "bruce:place2dTexture1.ofs" "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.fs"
+		;
+connectAttr "bruce:place2dTexture2.o" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.uv"
+		;
+connectAttr "bruce:place2dTexture2.ofu" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.ofu"
+		;
+connectAttr "bruce:place2dTexture2.ofv" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.ofv"
+		;
+connectAttr "bruce:place2dTexture2.rf" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.rf"
+		;
+connectAttr "bruce:place2dTexture2.reu" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.reu"
+		;
+connectAttr "bruce:place2dTexture2.rev" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.rev"
+		;
+connectAttr "bruce:place2dTexture2.vt1" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.vt1"
+		;
+connectAttr "bruce:place2dTexture2.vt2" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.vt2"
+		;
+connectAttr "bruce:place2dTexture2.vt3" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.vt3"
+		;
+connectAttr "bruce:place2dTexture2.vc1" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.vc1"
+		;
+connectAttr "bruce:place2dTexture2.ofs" "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.fs"
+		;
+connectAttr "bruce:BruceWayne_Head_MIC_ncl1_1.oc" "bruce:BruceWayne_Head_MIC.c";
+connectAttr "bruce:BruceWayne_Head_MIC.oc" "bruce:BruceWayne_HeadSG.ss";
+connectAttr "bruce:BruceWayne_HeadSG.msg" "bruce:materialInfo3.sg";
+connectAttr "bruce:BruceWayne_Head_MIC.msg" "bruce:materialInfo3.m";
+connectAttr "bruce:BruceWayne_Head_MIC_ncl1_1.msg" "bruce:materialInfo3.t" -na;
+connectAttr "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.oc" "bruce:BruceWayne_OZ_Eyes_MIC.c"
+		;
+connectAttr "bruce:BruceWayne_OZ_Eyes_MIC.oc" "bruce:BruceWayne_HeadSG1.ss";
+connectAttr "bruce:BruceWayne_HeadSG1.msg" "bruce:materialInfo4.sg";
+connectAttr "bruce:BruceWayne_OZ_Eyes_MIC.msg" "bruce:materialInfo4.m";
+connectAttr "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.msg" "bruce:materialInfo4.t" -na
+		;
+connectAttr "bruce:BruceWayne_Hair_MIC_ncl1_1.oc" "bruce:BruceWayne_Hair_MIC.c";
+connectAttr "bruce:BruceWayne_Hair_MIC.oc" "bruce:BruceWayne_HeadSG2.ss";
+connectAttr "bruce:BruceWayne_HeadSG2.msg" "bruce:materialInfo5.sg";
+connectAttr "bruce:BruceWayne_Hair_MIC.msg" "bruce:materialInfo5.m";
+connectAttr "bruce:BruceWayne_Hair_MIC_ncl1_1.msg" "bruce:materialInfo5.t" -na;
+connectAttr "bruce:Character_FakeShadow_ncl1_1.oc" "bruce:Character_FakeShadow.c"
+		;
+connectAttr "bruce:Character_FakeShadow.oc" "bruce:BruceWayne_HeadSG3.ss";
+connectAttr "bruce:BruceWayne_HeadSG3.msg" "bruce:materialInfo6.sg";
+connectAttr "bruce:Character_FakeShadow.msg" "bruce:materialInfo6.m";
+connectAttr "bruce:Character_FakeShadow_ncl1_1.msg" "bruce:materialInfo6.t" -na;
+connectAttr "bruce:place2dTexture3.o" "bruce:BruceWayne_Head_MIC_ncl1_1.uv";
+connectAttr "bruce:place2dTexture3.ofu" "bruce:BruceWayne_Head_MIC_ncl1_1.ofu";
+connectAttr "bruce:place2dTexture3.ofv" "bruce:BruceWayne_Head_MIC_ncl1_1.ofv";
+connectAttr "bruce:place2dTexture3.rf" "bruce:BruceWayne_Head_MIC_ncl1_1.rf";
+connectAttr "bruce:place2dTexture3.reu" "bruce:BruceWayne_Head_MIC_ncl1_1.reu";
+connectAttr "bruce:place2dTexture3.rev" "bruce:BruceWayne_Head_MIC_ncl1_1.rev";
+connectAttr "bruce:place2dTexture3.vt1" "bruce:BruceWayne_Head_MIC_ncl1_1.vt1";
+connectAttr "bruce:place2dTexture3.vt2" "bruce:BruceWayne_Head_MIC_ncl1_1.vt2";
+connectAttr "bruce:place2dTexture3.vt3" "bruce:BruceWayne_Head_MIC_ncl1_1.vt3";
+connectAttr "bruce:place2dTexture3.vc1" "bruce:BruceWayne_Head_MIC_ncl1_1.vc1";
+connectAttr "bruce:place2dTexture3.ofs" "bruce:BruceWayne_Head_MIC_ncl1_1.fs";
+connectAttr "bruce:place2dTexture4.o" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.uv";
+connectAttr "bruce:place2dTexture4.ofu" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.ofu"
+		;
+connectAttr "bruce:place2dTexture4.ofv" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.ofv"
+		;
+connectAttr "bruce:place2dTexture4.rf" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.rf";
+connectAttr "bruce:place2dTexture4.reu" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.reu"
+		;
+connectAttr "bruce:place2dTexture4.rev" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.rev"
+		;
+connectAttr "bruce:place2dTexture4.vt1" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.vt1"
+		;
+connectAttr "bruce:place2dTexture4.vt2" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.vt2"
+		;
+connectAttr "bruce:place2dTexture4.vt3" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.vt3"
+		;
+connectAttr "bruce:place2dTexture4.vc1" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.vc1"
+		;
+connectAttr "bruce:place2dTexture4.ofs" "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.fs"
+		;
+connectAttr "bruce:place2dTexture5.o" "bruce:BruceWayne_Hair_MIC_ncl1_1.uv";
+connectAttr "bruce:place2dTexture5.ofu" "bruce:BruceWayne_Hair_MIC_ncl1_1.ofu";
+connectAttr "bruce:place2dTexture5.ofv" "bruce:BruceWayne_Hair_MIC_ncl1_1.ofv";
+connectAttr "bruce:place2dTexture5.rf" "bruce:BruceWayne_Hair_MIC_ncl1_1.rf";
+connectAttr "bruce:place2dTexture5.reu" "bruce:BruceWayne_Hair_MIC_ncl1_1.reu";
+connectAttr "bruce:place2dTexture5.rev" "bruce:BruceWayne_Hair_MIC_ncl1_1.rev";
+connectAttr "bruce:place2dTexture5.vt1" "bruce:BruceWayne_Hair_MIC_ncl1_1.vt1";
+connectAttr "bruce:place2dTexture5.vt2" "bruce:BruceWayne_Hair_MIC_ncl1_1.vt2";
+connectAttr "bruce:place2dTexture5.vt3" "bruce:BruceWayne_Hair_MIC_ncl1_1.vt3";
+connectAttr "bruce:place2dTexture5.vc1" "bruce:BruceWayne_Hair_MIC_ncl1_1.vc1";
+connectAttr "bruce:place2dTexture5.ofs" "bruce:BruceWayne_Hair_MIC_ncl1_1.fs";
+connectAttr "bruce:place2dTexture6.o" "bruce:Character_FakeShadow_ncl1_1.uv";
+connectAttr "bruce:place2dTexture6.ofu" "bruce:Character_FakeShadow_ncl1_1.ofu";
+connectAttr "bruce:place2dTexture6.ofv" "bruce:Character_FakeShadow_ncl1_1.ofv";
+connectAttr "bruce:place2dTexture6.rf" "bruce:Character_FakeShadow_ncl1_1.rf";
+connectAttr "bruce:place2dTexture6.reu" "bruce:Character_FakeShadow_ncl1_1.reu";
+connectAttr "bruce:place2dTexture6.rev" "bruce:Character_FakeShadow_ncl1_1.rev";
+connectAttr "bruce:place2dTexture6.vt1" "bruce:Character_FakeShadow_ncl1_1.vt1";
+connectAttr "bruce:place2dTexture6.vt2" "bruce:Character_FakeShadow_ncl1_1.vt2";
+connectAttr "bruce:place2dTexture6.vt3" "bruce:Character_FakeShadow_ncl1_1.vt3";
+connectAttr "bruce:place2dTexture6.vc1" "bruce:Character_FakeShadow_ncl1_1.vc1";
+connectAttr "bruce:place2dTexture6.ofs" "bruce:Character_FakeShadow_ncl1_1.fs";
+connectAttr "bruce:hyperView1.msg" "bruce:nodeEditorPanel1Info.b[0]";
+connectAttr "bruce:hyperLayout1.msg" "bruce:hyperView1.hl";
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_material_0.pa" ":renderPartition.st"
 		 -na;
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_material_1.pa" ":renderPartition.st"
@@ -10566,6 +10843,12 @@ connectAttr "Gotham_GCPD_Window1024_material_22.pa" ":renderPartition.st" -na;
 connectAttr "Gotham_GCPD_Window1024_material_23.pa" ":renderPartition.st" -na;
 connectAttr "Gotham_GCPD_Window1024_material_24.pa" ":renderPartition.st" -na;
 connectAttr "blinn2SG.pa" ":renderPartition.st" -na;
+connectAttr "bruce:BruceWayne_BodySG.pa" ":renderPartition.st" -na;
+connectAttr "bruce:BruceWayne_BodySG1.pa" ":renderPartition.st" -na;
+connectAttr "bruce:BruceWayne_HeadSG.pa" ":renderPartition.st" -na;
+connectAttr "bruce:BruceWayne_HeadSG1.pa" ":renderPartition.st" -na;
+connectAttr "bruce:BruceWayne_HeadSG2.pa" ":renderPartition.st" -na;
+connectAttr "bruce:BruceWayne_HeadSG3.pa" ":renderPartition.st" -na;
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_phong1.msg" ":defaultShaderList1.s"
 		 -na;
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_phong2.msg" ":defaultShaderList1.s"
@@ -10656,6 +10939,12 @@ connectAttr "Gotham_GCPD_Window1024_material_0_lambert.msg" ":defaultShaderList1
 		 -na;
 connectAttr "Gotham_GCPD_Window1024_phong1.msg" ":defaultShaderList1.s" -na;
 connectAttr "surfaceShader1.msg" ":defaultShaderList1.s" -na;
+connectAttr "bruce:BruceWayne_Suit_Torso_MIC.msg" ":defaultShaderList1.s" -na;
+connectAttr "bruce:BruceWayne_Suit_Legs_MIC.msg" ":defaultShaderList1.s" -na;
+connectAttr "bruce:BruceWayne_Head_MIC.msg" ":defaultShaderList1.s" -na;
+connectAttr "bruce:BruceWayne_OZ_Eyes_MIC.msg" ":defaultShaderList1.s" -na;
+connectAttr "bruce:BruceWayne_Hair_MIC.msg" ":defaultShaderList1.s" -na;
+connectAttr "bruce:Character_FakeShadow.msg" ":defaultShaderList1.s" -na;
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_place2dTexture1.msg" ":defaultRenderUtilityList1.u"
 		 -na;
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_place2dTexture2.msg" ":defaultRenderUtilityList1.u"
@@ -10929,6 +11218,12 @@ connectAttr "Gotham_GCPD_Window1024_place2dTexture5.msg" ":defaultRenderUtilityL
 connectAttr "Gotham_GCPD_Window1024_place2dTexture6.msg" ":defaultRenderUtilityList1.u"
 		 -na;
 connectAttr "place2dTexture12.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bruce:place2dTexture1.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bruce:place2dTexture2.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bruce:place2dTexture3.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bruce:place2dTexture4.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bruce:place2dTexture5.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bruce:place2dTexture6.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
 connectAttr "sun_lightShape.ltd" ":lightList1.l" -na;
 connectAttr "Gotham_GroundFloor_Shop_OlddB5_512_file1.msg" ":defaultTextureList1.tx"
@@ -11109,12 +11404,25 @@ connectAttr "Gotham_GCPD_Window1024_file4.msg" ":defaultTextureList1.tx" -na;
 connectAttr "Gotham_GCPD_Window1024_file5.msg" ":defaultTextureList1.tx" -na;
 connectAttr "Gotham_GCPD_Window1024_file6.msg" ":defaultTextureList1.tx" -na;
 connectAttr "SkyFile.msg" ":defaultTextureList1.tx" -na;
+connectAttr "bruce:BruceWayne_Suit_Torso_MIC_ncl1_1.msg" ":defaultTextureList1.tx"
+		 -na;
+connectAttr "bruce:BruceWayne_Suit_Legs_MIC_ncl1_1.msg" ":defaultTextureList1.tx"
+		 -na;
+connectAttr "bruce:BruceWayne_Head_MIC_ncl1_1.msg" ":defaultTextureList1.tx" -na
+		;
+connectAttr "bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1.msg" ":defaultTextureList1.tx" 
+		-na;
+connectAttr "bruce:BruceWayne_Hair_MIC_ncl1_1.msg" ":defaultTextureList1.tx" -na
+		;
+connectAttr "bruce:Character_FakeShadow_ncl1_1.msg" ":defaultTextureList1.tx" -na
+		;
 connectAttr "|Physics|Collision_Level|Collision_Level.iog.og[0]" ":initialShadingGroup.dsm"
 		 -na;
+connectAttr "cube_2mShape.iog" ":initialShadingGroup.dsm" -na;
 connectAttr "groupId1.msg" ":initialShadingGroup.gn" -na;
 connectAttr ":perspShape.msg" ":defaultRenderGlobals.sc";
 connectAttr "sun_light.iog" ":defaultLightSet.dsm" -na;
 dataStructure -fmt "raw" -as "name=externalContentTable:string=node:string=key:string=upath:uint32=upathcrc:string=rpath:string=roles";
-applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"|AD_Gotham_GroundFloor_Shop_OlddB5_512\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n1\n\"|AD_Gotham_GroundFloor_Shop_OlddB5_512\" \"representations[0].repData\" \"LevelData/Gotham2/Gotham_GroundFloor_Shop_OlddB5_512.mb\" 2489887621 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham2/Gotham_GroundFloor_Shop_OlddB5_512.mb\" \"\"\n2\n\"|AD_Gotham_Groundfloor_Shop_OldB2\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n3\n\"|AD_Gotham_Groundfloor_Shop_OldB2\" \"representations[0].repData\" \"LevelData/Gotham2/Gotham_Groundfloor_Shop_OldB2.mb\" 1360868314 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham2/Gotham_Groundfloor_Shop_OldB2.mb\" \"\"\n4\n\"|AD_OZ_Gotham_GroundFloor_Shop_OldA_03\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n5\n\"|AD_OZ_Gotham_GroundFloor_Shop_OldA_03\" \"representations[0].repData\" \"LevelData/Gotham2/OZ_Gotham_GroundFloor_Shop_OldA_03.mb\" 2274961572 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham2/OZ_Gotham_GroundFloor_Shop_OldA_03.mb\" \"\"\n6\n\"|AD_Gotham_ARCH_Classic_BigWinx2\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n7\n\"|AD_Gotham_ARCH_Classic_BigWinx2\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" 3753359945 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" \"\"\n8\n\"|AD_Gotham_ARCH_Classic_BigWinx3\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n9\n\"|AD_Gotham_ARCH_Classic_BigWinx3\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" 3753359945 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" \"\"\n10\n\"|AD_Gotham_ARCH_Classic_WinBCorner\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n11\n\"|AD_Gotham_ARCH_Classic_WinBCorner\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" 1900794556 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" \"\"\n12\n\"|AD_Gotham_ARCH_Classic_WinBCorner1\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n13\n\"|AD_Gotham_ARCH_Classic_WinBCorner1\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" 1900794556 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" \"\"\n14\n\"|AD_Gotham_Fences_Mall768\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n15\n\"|AD_Gotham_Fences_Mall768\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_Mall768.mb\" 1799560506 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_Mall768.mb\" \"\"\n16\n\"|AD_Gotham_Fences_Mall769\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n17\n\"|AD_Gotham_Fences_Mall769\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_Mall768.mb\" 1799560506 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_Mall768.mb\" \"\"\n18\n\"|AD_Gotham_Fences_PoleSolid_128C\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n19\n\"|AD_Gotham_Fences_PoleSolid_128C\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_128C.mb\" 568374597 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_128C.mb\" \"\"\n20\n\"|AD_Gotham_Fences_PoleSolid_512\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n21\n\"|AD_Gotham_Fences_PoleSolid_512\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" 3812819446 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" \"\"\n22\n\"|AD_Gotham_Fences_PoleSolid_513\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n23\n\"|AD_Gotham_Fences_PoleSolid_513\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" 3812819446 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" \"\"\n24\n\"|AD_ARCH_GCPD_EntranceRoof_04\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n25\n\"|AD_ARCH_GCPD_EntranceRoof_04\" \"representations[0].repData\" \"LevelData/Gotham/ARCH_GCPD_EntranceRoof_04.mb\" 4273868373 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/ARCH_GCPD_EntranceRoof_04.mb\" \"\"\n26\n\"|AD_Gotham_Arch_Classic_BigWiny2\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n27\n\"|AD_Gotham_Arch_Classic_BigWiny2\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Arch_Classic_BigWiny2.mb\" 4284819578 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Arch_Classic_BigWiny2.mb\" \"\"\n28\n\"|AD_BridgeRoad_Destroyed_2048_Custom_02\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n29\n\"|AD_BridgeRoad_Destroyed_2048_Custom_02\" \"representations[0].repData\" \"LevelData/Bridge/BridgeRoad_Destroyed_2048_Custom_02.mb\" 830170048 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/BridgeRoad_Destroyed_2048_Custom_02.mb\" \"\"\n30\n\"|AD_ConcreteBarrier01\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n31\n\"|AD_ConcreteBarrier01\" \"representations[0].repData\" \"LevelData/Bridge/ConcreteBarrier01.mb\" 2120712365 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/ConcreteBarrier01.mb\" \"\"\n32\n\"|AD_ConcreteBarrier02\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n33\n\"|AD_ConcreteBarrier02\" \"representations[0].repData\" \"LevelData/Bridge/ConcreteBarrier01.mb\" 2120712365 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/ConcreteBarrier01.mb\" \"\"\n34\n\"|AD_Bridge_Rail_01_1024\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n35\n\"|AD_Bridge_Rail_01_1024\" \"representations[0].repData\" \"LevelData/Bridge/Bridge_Rail_01_1024.mb\" 118358252 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/Bridge_Rail_01_1024.mb\" \"\"\n36\n\"|AD_Gotham_GCPD_Window1024\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n37\n\"|AD_Gotham_GCPD_Window1024\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_GCPD_Window1024.mb\" 916622624 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_GCPD_Window1024.mb\" \"\"\n38\n\"|AD_Gotham_GCPD_Window1025\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n39\n\"|AD_Gotham_GCPD_Window1025\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_GCPD_Window1024.mb\" 916622624 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_GCPD_Window1024.mb\" \"\"\n40\n\"|AD_Gotham_Fences_PoleSolid_514\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n41\n\"|AD_Gotham_Fences_PoleSolid_514\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" 3812819446 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" \"\"\n42\n\"|sun_light|sun_lightShape\" \"dmapName\" \"depthmap\" 2097411553 \"\" \"sourceImages\"\n43\n\"Gotham_GroundFloor_Shop_OlddB5_512_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_02_D.tga\" 2689655935 \"\" \"sourceImages\"\n44\n\"Gotham_GroundFloor_Shop_OlddB5_512_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_N.tga\" 39221344 \"\" \"sourceImages\"\n45\n\"Gotham_GroundFloor_Shop_OlddB5_512_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_S.tga\" 2586192723 \"\" \"sourceImages\"\n46\n\"Gotham_GroundFloor_Shop_OlddB5_512_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_D.tga\" 2272928930 \"\" \"sourceImages\"\n47\n\"Gotham_GroundFloor_Shop_OlddB5_512_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_N.tga\" 3452582915 \"\" \"sourceImages\"\n48\n\"Gotham_GroundFloor_Shop_OlddB5_512_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_D.tga\" 1418502102 \"\" \"sourceImages\"\n49\n\"Gotham_GroundFloor_Shop_OlddB5_512_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_E.tga\" 3122269458 \"\" \"sourceImages\"\n50\n\"file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_N.tga\" 507283319 \"\" \"sourceImages\"\n51\n\"Gotham_Groundfloor_Shop_OldB2_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_02_D.tga\" 2689655935 \"\" \"sourceImages\"\n52\n\"Gotham_Groundfloor_Shop_OldB2_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_N.tga\" 39221344 \"\" \"sourceImages\"\n53\n\"Gotham_Groundfloor_Shop_OldB2_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_S.tga\" 2586192723 \"\" \"sourceImages\"\n54\n\"Gotham_Groundfloor_Shop_OldB2_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_D.tga\" 2272928930 \"\" \"sourceImages\"\n55\n\"Gotham_Groundfloor_Shop_OldB2_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_N.tga\" 3452582915 \"\" \"sourceImages\"\n56\n\"Gotham_Groundfloor_Shop_OldB2_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_D.tga\" 1418502102 \"\" \"sourceImages\"\n57\n\"Gotham_Groundfloor_Shop_OldB2_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_E.tga\" 3122269458 \"\" \"sourceImages\"\n58\n\"Gotham_Groundfloor_Shop_OldB2_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_N.tga\" 507283319 \"\" \"sourceImages\"\n59\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/OZ_Gotham_Groundfloor_Shop_Old_D.tga\" 4056168653 \"\" \"sourceImages\"\n60\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/OZ_Gotham_Groundfloor_Shop_Old_N.tga\" 3144949868 \"\" \"sourceImages\"\n61\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_S.tga\" 2586192723 \"\" \"sourceImages\"\n62\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_D.tga\" 2272928930 \"\" \"sourceImages\"\n63\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_N.tga\" 3452582915 \"\" \"sourceImages\"\n64\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_D.tga\" 1418502102 \"\" \"sourceImages\"\n65\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_E.tga\" 3122269458 \"\" \"sourceImages\"\n66\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_N.tga\" 507283319 \"\" \"sourceImages\"\n67\n\"Gotham_ARCH_Classic_BigWinx2_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_d.tga\" 1537557673 \"\" \"sourceImages\"\n68\n\"Gotham_ARCH_Classic_BigWinx2_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_N.tga\" 3503584012 \"\" \"sourceImages\"\n69\n\"Gotham_ARCH_Classic_BigWinx2_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_D.tga\" 895219309 \"\" \"sourceImages\"\n70\n\"Gotham_ARCH_Classic_BigWinx2_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n71\n\"Gotham_ARCH_Classic_BigWinx2_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_D.tga\" 3464531457 \"\" \"sourceImages\"\n72\n\"Gotham_ARCH_Classic_BigWinx2_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n73\n\"Gotham_ARCH_Classic_BigWinx2_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_D.tga\" 1668251090 \"\" \"sourceImages\"\n74\n\"file9\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_N.tga\" 702506355 \"\" \"sourceImages\"\n75\n\"file10\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_S.tga\" 474006931 \"\" \"sourceImages\"\n76\n\"file11\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_S.tga\" 2981049920 \"\" \"sourceImages\"\n77\n\"Gotham_ARCH_Classic_WinBCorner_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_d.tga\" 1537557673 \"\" \"sourceImages\"\n78\n\"Gotham_ARCH_Classic_WinBCorner_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_N.tga\" 3503584012 \"\" \"sourceImages\"\n79\n\"Gotham_ARCH_Classic_WinBCorner_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_D.tga\" 895219309 \"\" \"sourceImages\"\n80\n\"Gotham_ARCH_Classic_WinBCorner_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n81\n\"Gotham_ARCH_Classic_WinBCorner_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_D.tga\" 3464531457 \"\" \"sourceImages\"\n82\n\"Gotham_ARCH_Classic_WinBCorner_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n83\n\"Gotham_ARCH_Classic_WinBCorner_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_D.tga\" 1668251090 \"\" \"sourceImages\"\n84\n\"Gotham_ARCH_Classic_WinBCorner_file9\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_N.tga\" 702506355 \"\" \"sourceImages\"\n85\n\"Gotham_ARCH_Classic_WinBCorner_file10\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_S.tga\" 474006931 \"\" \"sourceImages\"\n86\n\"Gotham_ARCH_Classic_WinBCorner_file11\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_S.tga\" 2981049920 \"\" \"sourceImages\"\n87\n\"Gotham_Fences_Mall768_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_D.tga\" 3590571595 \"\" \"sourceImages\"\n88\n\"Gotham_Fences_Mall768_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O.tga\" 2715023194 \"\" \"sourceImages\"\n89\n\"Gotham_Fences_Mall768_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_N.tga\" 2629033706 \"\" \"sourceImages\"\n90\n\"Gotham_Fences_Mall768_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O_SDF.tga\" 2778658450 \"\" \"sourceImages\"\n91\n\"Gotham_Fences_Mall768_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n92\n\"Gotham_Fences_Mall768_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Textures/Gotham_Fences_FloodBarrier_D.tga\" 1475522209 \"\" \"sourceImages\"\n93\n\"Gotham_Fences_Mall768_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n94\n\"Gotham_Fences_PoleSolid_128C_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_D.tga\" 3590571595 \"\" \"sourceImages\"\n95\n\"Gotham_Fences_PoleSolid_128C_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O.tga\" 2715023194 \"\" \"sourceImages\"\n96\n\"Gotham_Fences_PoleSolid_128C_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_N.tga\" 2629033706 \"\" \"sourceImages\"\n97\n\"Gotham_Fences_PoleSolid_128C_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O_SDF.tga\" 2778658450 \"\" \"sourceImages\"\n98\n\"Gotham_Fences_PoleSolid_128C_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n99\n\"Gotham_Fences_PoleSolid_128C_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Textures/Gotham_Fences_FloodBarrier_D.tga\" 1475522209 \"\" \"sourceImages\"\n100\n\"Gotham_Fences_PoleSolid_128C_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n101\n\"Gotham_Fences_PoleSolid_512_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_D.tga\" 3590571595 \"\" \"sourceImages\"\n102\n\"Gotham_Fences_PoleSolid_512_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O.tga\" 2715023194 \"\" \"sourceImages\"\n103\n\"Gotham_Fences_PoleSolid_512_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_N.tga\" 2629033706 \"\" \"sourceImages\"\n104\n\"Gotham_Fences_PoleSolid_512_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O_SDF.tga\" 2778658450 \"\" \"sourceImages\"\n105\n\"Gotham_Fences_PoleSolid_512_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n106\n\"Gotham_Fences_PoleSolid_512_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Textures/Gotham_Fences_FloodBarrier_D.tga\" 1475522209 \"\" \"sourceImages\"\n107\n\"Gotham_Fences_PoleSolid_512_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n108\n\"ARCH_GCPD_EntranceRoof_04_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_D.tga\" 3861339948 \"\" \"sourceImages\"\n109\n\"ARCH_GCPD_EntranceRoof_04_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_N.tga\" 2895595405 \"\" \"sourceImages\"\n110\n\"Gotham_Arch_Classic_BigWiny2_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_d.tga\" 1537557673 \"\" \"sourceImages\"\n111\n\"Gotham_Arch_Classic_BigWiny2_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_N.tga\" 3503584012 \"\" \"sourceImages\"\n112\n\"Gotham_Arch_Classic_BigWiny2_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_D.tga\" 895219309 \"\" \"sourceImages\"\n113\n\"Gotham_Arch_Classic_BigWiny2_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n114\n\"Gotham_Arch_Classic_BigWiny2_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_D.tga\" 3464531457 \"\" \"sourceImages\"\n115\n\"Gotham_Arch_Classic_BigWiny2_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n116\n\"Gotham_Arch_Classic_BigWiny2_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_D.tga\" 1668251090 \"\" \"sourceImages\"\n117\n\"Gotham_Arch_Classic_BigWiny2_file9\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_N.tga\" 702506355 \"\" \"sourceImages\"\n118\n\"Gotham_Arch_Classic_BigWiny2_file10\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_S.tga\" 474006931 \"\" \"sourceImages\"\n119\n\"Gotham_Arch_Classic_BigWiny2_file11\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_S.tga\" 2981049920 \"\" \"sourceImages\"\n120\n\"BridgeRoad_Destroyed_2048_Custom_02_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_D.tga\" 140519586 \"\" \"sourceImages\"\n121\n\"BridgeRoad_Destroyed_2048_Custom_02_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_N.tga\" 1120940035 \"\" \"sourceImages\"\n122\n\"BridgeRoad_Destroyed_2048_Custom_02_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_S.tga\" 3667944240 \"\" \"sourceImages\"\n123\n\"BridgeRoad_Destroyed_2048_Custom_02_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_D.tga\" 2920751894 \"\" \"sourceImages\"\n124\n\"BridgeRoad_Destroyed_2048_Custom_02_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_N.tga\" 3836165047 \"\" \"sourceImages\"\n125\n\"BridgeRoad_Destroyed_2048_Custom_02_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_S.tga\" 2094491780 \"\" \"sourceImages\"\n126\n\"ConcreteBarrier01_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_D.tga\" 140519586 \"\" \"sourceImages\"\n127\n\"ConcreteBarrier01_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_N.tga\" 1120940035 \"\" \"sourceImages\"\n128\n\"ConcreteBarrier01_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_S.tga\" 3667944240 \"\" \"sourceImages\"\n129\n\"ConcreteBarrier01_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_D.tga\" 2920751894 \"\" \"sourceImages\"\n130\n\"ConcreteBarrier01_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_N.tga\" 3836165047 \"\" \"sourceImages\"\n131\n\"ConcreteBarrier01_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_S.tga\" 2094491780 \"\" \"sourceImages\"\n132\n\"Bridge_Rail_01_1024_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_D.tga\" 140519586 \"\" \"sourceImages\"\n133\n\"Bridge_Rail_01_1024_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_N.tga\" 1120940035 \"\" \"sourceImages\"\n134\n\"Bridge_Rail_01_1024_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_S.tga\" 3667944240 \"\" \"sourceImages\"\n135\n\"Bridge_Rail_01_1024_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_D.tga\" 2920751894 \"\" \"sourceImages\"\n136\n\"Bridge_Rail_01_1024_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_N.tga\" 3836165047 \"\" \"sourceImages\"\n137\n\"Bridge_Rail_01_1024_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_S.tga\" 2094491780 \"\" \"sourceImages\"\n138\n\"Gotham_GCPD_Window1024_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_D.tga\" 3861339948 \"\" \"sourceImages\"\n139\n\"Gotham_GCPD_Window1024_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_N.tga\" 2895595405 \"\" \"sourceImages\"\n140\n\"Gotham_GCPD_Window1024_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Main_D.tga\" 230693179 \"\" \"sourceImages\"\n141\n\"Gotham_GCPD_Window1024_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Main_N.tga\" 1198522778 \"\" \"sourceImages\"\n142\n\"Gotham_GCPD_Window1024_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Main_S.tga\" 3741340329 \"\" \"sourceImages\"\n143\n\"Gotham_GCPD_Window1024_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_ARCH_GCPD_Main_E.tga\" 334878717 \"\" \"sourceImages\"\n144\n\"SkyFile\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Level_Combine/Texture/sky.jpg\" 718479912 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Level_Combine/Texture/sky.jpg\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
+applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"|AD_Gotham_GroundFloor_Shop_OlddB5_512\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n1\n\"|AD_Gotham_GroundFloor_Shop_OlddB5_512\" \"representations[0].repData\" \"LevelData/Gotham2/Gotham_GroundFloor_Shop_OlddB5_512.mb\" 2489887621 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham2/Gotham_GroundFloor_Shop_OlddB5_512.mb\" \"\"\n2\n\"|AD_Gotham_Groundfloor_Shop_OldB2\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n3\n\"|AD_Gotham_Groundfloor_Shop_OldB2\" \"representations[0].repData\" \"LevelData/Gotham2/Gotham_Groundfloor_Shop_OldB2.mb\" 1360868314 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham2/Gotham_Groundfloor_Shop_OldB2.mb\" \"\"\n4\n\"|AD_OZ_Gotham_GroundFloor_Shop_OldA_03\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n5\n\"|AD_OZ_Gotham_GroundFloor_Shop_OldA_03\" \"representations[0].repData\" \"LevelData/Gotham2/OZ_Gotham_GroundFloor_Shop_OldA_03.mb\" 2274961572 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham2/OZ_Gotham_GroundFloor_Shop_OldA_03.mb\" \"\"\n6\n\"|AD_Gotham_ARCH_Classic_BigWinx2\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n7\n\"|AD_Gotham_ARCH_Classic_BigWinx2\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" 3753359945 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" \"\"\n8\n\"|AD_Gotham_ARCH_Classic_BigWinx3\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n9\n\"|AD_Gotham_ARCH_Classic_BigWinx3\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" 3753359945 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_BigWinx2.mb\" \"\"\n10\n\"|AD_Gotham_ARCH_Classic_WinBCorner\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n11\n\"|AD_Gotham_ARCH_Classic_WinBCorner\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" 1900794556 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" \"\"\n12\n\"|AD_Gotham_ARCH_Classic_WinBCorner1\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n13\n\"|AD_Gotham_ARCH_Classic_WinBCorner1\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" 1900794556 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_ARCH_Classic_WinBCorner.mb\" \"\"\n14\n\"|AD_Gotham_Fences_Mall768\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n15\n\"|AD_Gotham_Fences_Mall768\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_Mall768.mb\" 1799560506 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_Mall768.mb\" \"\"\n16\n\"|AD_Gotham_Fences_Mall769\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n17\n\"|AD_Gotham_Fences_Mall769\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_Mall768.mb\" 1799560506 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_Mall768.mb\" \"\"\n18\n\"|AD_Gotham_Fences_PoleSolid_128C\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n19\n\"|AD_Gotham_Fences_PoleSolid_128C\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_128C.mb\" 568374597 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_128C.mb\" \"\"\n20\n\"|AD_Gotham_Fences_PoleSolid_512\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n21\n\"|AD_Gotham_Fences_PoleSolid_512\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" 3812819446 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" \"\"\n22\n\"|AD_Gotham_Fences_PoleSolid_513\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n23\n\"|AD_Gotham_Fences_PoleSolid_513\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" 3812819446 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" \"\"\n24\n\"|AD_ARCH_GCPD_EntranceRoof_04\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n25\n\"|AD_ARCH_GCPD_EntranceRoof_04\" \"representations[0].repData\" \"LevelData/Gotham/ARCH_GCPD_EntranceRoof_04.mb\" 4273868373 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/ARCH_GCPD_EntranceRoof_04.mb\" \"\"\n26\n\"|AD_Gotham_Arch_Classic_BigWiny2\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n27\n\"|AD_Gotham_Arch_Classic_BigWiny2\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Arch_Classic_BigWiny2.mb\" 4284819578 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Arch_Classic_BigWiny2.mb\" \"\"\n28\n\"|AD_BridgeRoad_Destroyed_2048_Custom_02\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n29\n\"|AD_BridgeRoad_Destroyed_2048_Custom_02\" \"representations[0].repData\" \"LevelData/Bridge/BridgeRoad_Destroyed_2048_Custom_02.mb\" 830170048 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/BridgeRoad_Destroyed_2048_Custom_02.mb\" \"\"\n30\n\"|AD_ConcreteBarrier01\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n31\n\"|AD_ConcreteBarrier01\" \"representations[0].repData\" \"LevelData/Bridge/ConcreteBarrier01.mb\" 2120712365 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/ConcreteBarrier01.mb\" \"\"\n32\n\"|AD_ConcreteBarrier02\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n33\n\"|AD_ConcreteBarrier02\" \"representations[0].repData\" \"LevelData/Bridge/ConcreteBarrier01.mb\" 2120712365 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/ConcreteBarrier01.mb\" \"\"\n34\n\"|AD_Bridge_Rail_01_1024\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n35\n\"|AD_Bridge_Rail_01_1024\" \"representations[0].repData\" \"LevelData/Bridge/Bridge_Rail_01_1024.mb\" 118358252 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Bridge/Bridge_Rail_01_1024.mb\" \"\"\n36\n\"|AD_Gotham_GCPD_Window1024\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n37\n\"|AD_Gotham_GCPD_Window1024\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_GCPD_Window1024.mb\" 916622624 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_GCPD_Window1024.mb\" \"\"\n38\n\"|AD_Gotham_GCPD_Window1025\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n39\n\"|AD_Gotham_GCPD_Window1025\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_GCPD_Window1024.mb\" 916622624 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_GCPD_Window1024.mb\" \"\"\n40\n\"|AD_Gotham_Fences_PoleSolid_514\" \"iconName\" \"out_assemblyDefinition.png\" 4223031819 \"\" \"ui\"\n41\n\"|AD_Gotham_Fences_PoleSolid_514\" \"representations[0].repData\" \"LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" 3812819446 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Gotham/Gotham_Fences_PoleSolid_512.mb\" \"\"\n42\n\"|sun_light|sun_lightShape\" \"dmapName\" \"depthmap\" 2097411553 \"\" \"sourceImages\"\n43\n\"Gotham_GroundFloor_Shop_OlddB5_512_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_02_D.tga\" 2689655935 \"\" \"sourceImages\"\n44\n\"Gotham_GroundFloor_Shop_OlddB5_512_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_N.tga\" 39221344 \"\" \"sourceImages\"\n45\n\"Gotham_GroundFloor_Shop_OlddB5_512_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_S.tga\" 2586192723 \"\" \"sourceImages\"\n46\n\"Gotham_GroundFloor_Shop_OlddB5_512_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_D.tga\" 2272928930 \"\" \"sourceImages\"\n47\n\"Gotham_GroundFloor_Shop_OlddB5_512_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_N.tga\" 3452582915 \"\" \"sourceImages\"\n48\n\"Gotham_GroundFloor_Shop_OlddB5_512_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_D.tga\" 1418502102 \"\" \"sourceImages\"\n49\n\"Gotham_GroundFloor_Shop_OlddB5_512_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_E.tga\" 3122269458 \"\" \"sourceImages\"\n50\n\"file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_N.tga\" 507283319 \"\" \"sourceImages\"\n51\n\"Gotham_Groundfloor_Shop_OldB2_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_02_D.tga\" 2689655935 \"\" \"sourceImages\"\n52\n\"Gotham_Groundfloor_Shop_OldB2_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_N.tga\" 39221344 \"\" \"sourceImages\"\n53\n\"Gotham_Groundfloor_Shop_OldB2_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_S.tga\" 2586192723 \"\" \"sourceImages\"\n54\n\"Gotham_Groundfloor_Shop_OldB2_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_D.tga\" 2272928930 \"\" \"sourceImages\"\n55\n\"Gotham_Groundfloor_Shop_OldB2_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_N.tga\" 3452582915 \"\" \"sourceImages\"\n56\n\"Gotham_Groundfloor_Shop_OldB2_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_D.tga\" 1418502102 \"\" \"sourceImages\"\n57\n\"Gotham_Groundfloor_Shop_OldB2_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_E.tga\" 3122269458 \"\" \"sourceImages\"\n58\n\"Gotham_Groundfloor_Shop_OldB2_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_N.tga\" 507283319 \"\" \"sourceImages\"\n59\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/OZ_Gotham_Groundfloor_Shop_Old_D.tga\" 4056168653 \"\" \"sourceImages\"\n60\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/OZ_Gotham_Groundfloor_Shop_Old_N.tga\" 3144949868 \"\" \"sourceImages\"\n61\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_Old_S.tga\" 2586192723 \"\" \"sourceImages\"\n62\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_D.tga\" 2272928930 \"\" \"sourceImages\"\n63\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_N.tga\" 3452582915 \"\" \"sourceImages\"\n64\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_D.tga\" 1418502102 \"\" \"sourceImages\"\n65\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_02_E.tga\" 3122269458 \"\" \"sourceImages\"\n66\n\"OZ_Gotham_GroundFloor_Shop_OldA_03_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Groundfloor/Shop/Gotham_Groundfloor_Shop_OldB_N.tga\" 507283319 \"\" \"sourceImages\"\n67\n\"Gotham_ARCH_Classic_BigWinx2_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_d.tga\" 1537557673 \"\" \"sourceImages\"\n68\n\"Gotham_ARCH_Classic_BigWinx2_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_N.tga\" 3503584012 \"\" \"sourceImages\"\n69\n\"Gotham_ARCH_Classic_BigWinx2_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_D.tga\" 895219309 \"\" \"sourceImages\"\n70\n\"Gotham_ARCH_Classic_BigWinx2_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n71\n\"Gotham_ARCH_Classic_BigWinx2_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_D.tga\" 3464531457 \"\" \"sourceImages\"\n72\n\"Gotham_ARCH_Classic_BigWinx2_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n73\n\"Gotham_ARCH_Classic_BigWinx2_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_D.tga\" 1668251090 \"\" \"sourceImages\"\n74\n\"file9\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_N.tga\" 702506355 \"\" \"sourceImages\"\n75\n\"file10\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_S.tga\" 474006931 \"\" \"sourceImages\"\n76\n\"file11\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_S.tga\" 2981049920 \"\" \"sourceImages\"\n77\n\"Gotham_ARCH_Classic_WinBCorner_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_d.tga\" 1537557673 \"\" \"sourceImages\"\n78\n\"Gotham_ARCH_Classic_WinBCorner_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_N.tga\" 3503584012 \"\" \"sourceImages\"\n79\n\"Gotham_ARCH_Classic_WinBCorner_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_D.tga\" 895219309 \"\" \"sourceImages\"\n80\n\"Gotham_ARCH_Classic_WinBCorner_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n81\n\"Gotham_ARCH_Classic_WinBCorner_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_D.tga\" 3464531457 \"\" \"sourceImages\"\n82\n\"Gotham_ARCH_Classic_WinBCorner_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n83\n\"Gotham_ARCH_Classic_WinBCorner_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_D.tga\" 1668251090 \"\" \"sourceImages\"\n84\n\"Gotham_ARCH_Classic_WinBCorner_file9\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_N.tga\" 702506355 \"\" \"sourceImages\"\n85\n\"Gotham_ARCH_Classic_WinBCorner_file10\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_S.tga\" 474006931 \"\" \"sourceImages\"\n86\n\"Gotham_ARCH_Classic_WinBCorner_file11\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_S.tga\" 2981049920 \"\" \"sourceImages\"\n87\n\"Gotham_Fences_Mall768_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_D.tga\" 3590571595 \"\" \"sourceImages\"\n88\n\"Gotham_Fences_Mall768_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O.tga\" 2715023194 \"\" \"sourceImages\"\n89\n\"Gotham_Fences_Mall768_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_N.tga\" 2629033706 \"\" \"sourceImages\"\n90\n\"Gotham_Fences_Mall768_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O_SDF.tga\" 2778658450 \"\" \"sourceImages\"\n91\n\"Gotham_Fences_Mall768_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n92\n\"Gotham_Fences_Mall768_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Textures/Gotham_Fences_FloodBarrier_D.tga\" 1475522209 \"\" \"sourceImages\"\n93\n\"Gotham_Fences_Mall768_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n94\n\"Gotham_Fences_PoleSolid_128C_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_D.tga\" 3590571595 \"\" \"sourceImages\"\n95\n\"Gotham_Fences_PoleSolid_128C_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O.tga\" 2715023194 \"\" \"sourceImages\"\n96\n\"Gotham_Fences_PoleSolid_128C_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_N.tga\" 2629033706 \"\" \"sourceImages\"\n97\n\"Gotham_Fences_PoleSolid_128C_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O_SDF.tga\" 2778658450 \"\" \"sourceImages\"\n98\n\"Gotham_Fences_PoleSolid_128C_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n99\n\"Gotham_Fences_PoleSolid_128C_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Textures/Gotham_Fences_FloodBarrier_D.tga\" 1475522209 \"\" \"sourceImages\"\n100\n\"Gotham_Fences_PoleSolid_128C_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n101\n\"Gotham_Fences_PoleSolid_512_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_D.tga\" 3590571595 \"\" \"sourceImages\"\n102\n\"Gotham_Fences_PoleSolid_512_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O.tga\" 2715023194 \"\" \"sourceImages\"\n103\n\"Gotham_Fences_PoleSolid_512_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_N.tga\" 2629033706 \"\" \"sourceImages\"\n104\n\"Gotham_Fences_PoleSolid_512_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_3BarGate_O_SDF.tga\" 2778658450 \"\" \"sourceImages\"\n105\n\"Gotham_Fences_PoleSolid_512_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n106\n\"Gotham_Fences_PoleSolid_512_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Textures/Gotham_Fences_FloodBarrier_D.tga\" 1475522209 \"\" \"sourceImages\"\n107\n\"Gotham_Fences_PoleSolid_512_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Fences/Gotham_Fences_Mall_D.tga\" 1535523530 \"\" \"sourceImages\"\n108\n\"ARCH_GCPD_EntranceRoof_04_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_D.tga\" 3861339948 \"\" \"sourceImages\"\n109\n\"ARCH_GCPD_EntranceRoof_04_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_N.tga\" 2895595405 \"\" \"sourceImages\"\n110\n\"Gotham_Arch_Classic_BigWiny2_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_d.tga\" 1537557673 \"\" \"sourceImages\"\n111\n\"Gotham_Arch_Classic_BigWiny2_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Gotham_ARCH_Classic_Fence_N.tga\" 3503584012 \"\" \"sourceImages\"\n112\n\"Gotham_Arch_Classic_BigWiny2_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_D.tga\" 895219309 \"\" \"sourceImages\"\n113\n\"Gotham_Arch_Classic_BigWiny2_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n114\n\"Gotham_Arch_Classic_BigWiny2_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_D.tga\" 3464531457 \"\" \"sourceImages\"\n115\n\"Gotham_Arch_Classic_BigWiny2_file7\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main_N_New.tga\" 235809174 \"\" \"sourceImages\"\n116\n\"Gotham_Arch_Classic_BigWiny2_file8\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_D.tga\" 1668251090 \"\" \"sourceImages\"\n117\n\"Gotham_Arch_Classic_BigWiny2_file9\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_N.tga\" 702506355 \"\" \"sourceImages\"\n118\n\"Gotham_Arch_Classic_BigWiny2_file10\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Main02_S.tga\" 474006931 \"\" \"sourceImages\"\n119\n\"Gotham_Arch_Classic_BigWiny2_file11\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_Arch/Classic/Gotham_ARCH_Hotel_Ornate_S.tga\" 2981049920 \"\" \"sourceImages\"\n120\n\"BridgeRoad_Destroyed_2048_Custom_02_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_D.tga\" 140519586 \"\" \"sourceImages\"\n121\n\"BridgeRoad_Destroyed_2048_Custom_02_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_N.tga\" 1120940035 \"\" \"sourceImages\"\n122\n\"BridgeRoad_Destroyed_2048_Custom_02_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_S.tga\" 3667944240 \"\" \"sourceImages\"\n123\n\"BridgeRoad_Destroyed_2048_Custom_02_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_D.tga\" 2920751894 \"\" \"sourceImages\"\n124\n\"BridgeRoad_Destroyed_2048_Custom_02_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_N.tga\" 3836165047 \"\" \"sourceImages\"\n125\n\"BridgeRoad_Destroyed_2048_Custom_02_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_S.tga\" 2094491780 \"\" \"sourceImages\"\n126\n\"ConcreteBarrier01_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_D.tga\" 140519586 \"\" \"sourceImages\"\n127\n\"ConcreteBarrier01_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_N.tga\" 1120940035 \"\" \"sourceImages\"\n128\n\"ConcreteBarrier01_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_S.tga\" 3667944240 \"\" \"sourceImages\"\n129\n\"ConcreteBarrier01_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_D.tga\" 2920751894 \"\" \"sourceImages\"\n130\n\"ConcreteBarrier01_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_N.tga\" 3836165047 \"\" \"sourceImages\"\n131\n\"ConcreteBarrier01_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_S.tga\" 2094491780 \"\" \"sourceImages\"\n132\n\"Bridge_Rail_01_1024_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_D.tga\" 140519586 \"\" \"sourceImages\"\n133\n\"Bridge_Rail_01_1024_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_N.tga\" 1120940035 \"\" \"sourceImages\"\n134\n\"Bridge_Rail_01_1024_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_03_S.tga\" 3667944240 \"\" \"sourceImages\"\n135\n\"Bridge_Rail_01_1024_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_D.tga\" 2920751894 \"\" \"sourceImages\"\n136\n\"Bridge_Rail_01_1024_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_N.tga\" 3836165047 \"\" \"sourceImages\"\n137\n\"Bridge_Rail_01_1024_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Bridge/Bridge_Roads/Mesh/Bridge_Road_02_S.tga\" 2094491780 \"\" \"sourceImages\"\n138\n\"Gotham_GCPD_Window1024_file1\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_D.tga\" 3861339948 \"\" \"sourceImages\"\n139\n\"Gotham_GCPD_Window1024_file2\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Roof_N.tga\" 2895595405 \"\" \"sourceImages\"\n140\n\"Gotham_GCPD_Window1024_file3\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Main_D.tga\" 230693179 \"\" \"sourceImages\"\n141\n\"Gotham_GCPD_Window1024_file4\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Main_N.tga\" 1198522778 \"\" \"sourceImages\"\n142\n\"Gotham_GCPD_Window1024_file5\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_GCPD_Main_S.tga\" 3741340329 \"\" \"sourceImages\"\n143\n\"Gotham_GCPD_Window1024_file6\" \"fileTextureName\" \"L:/Umodel_BatmanOG/Gotham/Gotham_GCPD/Gotham_ARCH_GCPD_Main_E.tga\" 334878717 \"\" \"sourceImages\"\n144\n\"SkyFile\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Level_Combine/Texture/sky.jpg\" 718479912 \"C:/Project/NagaGame/Arts/LevelProject/LevelData/Level_Combine/Texture/sky.jpg\" \"sourceImages\"\n145\n\"bruce:BruceWayne_Suit_Torso_MIC_ncl1_1\" \"fileTextureName\" \"BruceWayne_Suit_Torso_MIC\" 117595803 \"\" \"sourceImages\"\n146\n\"bruce:BruceWayne_Suit_Legs_MIC_ncl1_1\" \"fileTextureName\" \"BruceWayne_Suit_Legs_MIC\" 1408612156 \"\" \"sourceImages\"\n147\n\"bruce:BruceWayne_Head_MIC_ncl1_1\" \"fileTextureName\" \"BruceWayne_Head_MIC\" 3343600568 \"\" \"sourceImages\"\n148\n\"bruce:BruceWayne_OZ_Eyes_MIC_ncl1_1\" \"fileTextureName\" \"BruceWayne_OZ_Eyes_MIC\" 2776888349 \"\" \"sourceImages\"\n149\n\"bruce:BruceWayne_Hair_MIC_ncl1_1\" \"fileTextureName\" \"BruceWayne_Hair_MIC\" 821530596 \"\" \"sourceImages\"\n150\n\"bruce:Character_FakeShadow_ncl1_1\" \"fileTextureName\" \"Character_FakeShadow\" 122788588 \"\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
 		-scn;
 // End of Level_Test.ma

@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <windows.h>
 #include <dbghelp.h>
-#include "Prerequisites.h"
+#include "Log.h"
 
 void error_abort( const char* file, int line, const char* message, ... )
 {
@@ -16,6 +16,7 @@ void error_abort( const char* file, int line, const char* message, ... )
     char buf2[1024];
     sprintf_s(buf2, "%s \tIn: %s:%d\n", buf, file, line);
     printf("%s\n", buf2);
+    LOGE(buf2);
     MessageBox(NULL, buf2, "ENGINE ASSERT", MB_TOPMOST);
     //HK_ASSERT2(0, false, buf2);
     stacktrace();

@@ -17,18 +17,6 @@ PhysicsConverter::~PhysicsConverter()
 
 }
 
-void PhysicsConverter::exportPhysics(const char* fileName)
-{
-    LOGD("Write physics file: %s.", fileName);
-    hkPackfileWriter::Options options;
-    options.m_writeMetaInfo = false;
-    hkOstream ostream(fileName);
-    hkBinaryPackfileWriter writer;
-    writer.setContents(m_physics, hkpPhysicsData::staticClass());
-    if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-        addError(__FUNCTION__" write error.");
-}
-
 void PhysicsConverter::process(void* pData, int hint)
 {
     process((hkpPhysicsData*)pData);
@@ -58,7 +46,14 @@ void PhysicsConverter::process(hkpPhysicsData* data)
 void PhysicsConverter::postProcess()
 {
     m_phyFileName = m_ownner->m_config->m_exportFolder + m_name + ".havok";
-    exportPhysics(m_phyFileName.c_str());
+    LOGD("Write physics file: %s.", m_phyFileName.c_str());
+    hkPackfileWriter::Options options;
+    options.m_writeMetaInfo = false;
+    hkOstream ostream(m_phyFileName.c_str());
+    hkBinaryPackfileWriter writer;
+    writer.setContents(m_physics, hkpPhysicsData::staticClass());
+    if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
+        addError(__FUNCTION__" write error.");
 
 #if 0
     char* buf = 0;

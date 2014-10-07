@@ -12,6 +12,7 @@
 #include "Utils.h"
 #include "Actor.h"
 #include "Level.h"
+#include "AnimRig.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -29,7 +30,7 @@ void showHelp()
             "--script --> script name\n"
             "--actor --> actor name\n"
             "--level --> level name\n"
-            "--animation --> animation to test\n"
+            "--animation --> animation name\n"
             "--websocket wait for debug attach when launched.\n"
             "--debug wait for debug attach when launched.\n"
             "--headless no graphics & no window\n");
@@ -121,10 +122,11 @@ int _tmain(int argc, _TCHAR* argv[])
         create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)));
     }
 
+    ActorId id;
     if(actor_name) 
     {
         printf("loading actor %s \n", actor_name);
-        g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
+        id = g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
     }
     if(level_name)
     {
@@ -132,6 +134,31 @@ int _tmain(int argc, _TCHAR* argv[])
         Level* level = FIND_RESOURCE(Level, StringId(level_name));
         if(level) level->load();
     }
+
+    const char* anim_name = cmdline.findOption("animation");
+    if(anim_name && actor_name)
+    {
+        Actor* actor = g_actorWorld.get_actor(id);
+        if(actor)
+        {
+            LOGI("loading animation %s to actor %s", anim_name, actor_name);
+            extern void* get_anim_rig(Id);
+            AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(id.get_id());
+            if(rig)
+            {
+               rig->test_animation(anim_name);
+            }
+        }
+    }
+
+    //---------------------------------------------------------
+    // funny hack here
+    extern uint32_t num_render_lights();
+    if(num_render_lights() == 0)
+    {
+        g_actorWorld.create_actor(StringId("core/common/sun"), hkQsTransform::getIdentity());
+    }
+    //---------------------------------------------------------
 
     g_engine.run();
     quitWebServerTool();
