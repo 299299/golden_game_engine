@@ -143,12 +143,7 @@ void* load_resource_animation( const char* data, uint32_t size)
     anim->m_triggers = (AnimationTrigger*)(data + sizeof(Animation));
     anim->m_beats = (AnimationBeat*)(data + sizeof(Animation) + sizeof(AnimationTrigger) * anim->m_numTriggers);
     char* p = (char*)data + anim->m_havokDataOffset;
-#if 0
-    hkRootLevelContainer* container = (hkRootLevelContainer*)load_havok_inplace(p, anim->m_havokDataSize);
-    hkaAnimationContainer* ac = LOAD_OBJECT(container, hkaAnimationContainer);
-#else
     hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havokDataSize);
-#endif
     anim->m_animation = ac->m_animations[0];
     anim->m_binding = ac->m_bindings[0];
 #ifdef DUMP_RESOURCE

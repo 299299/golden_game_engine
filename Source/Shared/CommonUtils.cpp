@@ -303,7 +303,7 @@ uint32_t read_file(const std::string& fileName, char** outBuf)
     LARGE_INTEGER nFileLen;
     GetFileSizeEx(hFile, &nFileLen);
     DWORD fileSize = (DWORD)nFileLen.QuadPart;
-    char* p = (char*)malloc(fileSize + 1);
+    char* p = (char*)_aligned_malloc(fileSize + 1, 16);
     memset(p, 0x00, fileSize + 1);
     DWORD readLen = 0;
     ReadFile(hFile, p, fileSize, &readLen, 0);
@@ -335,6 +335,11 @@ bool write_file(const std::string& fileName, void* buf, uint32_t bufSize)
     }
     CloseHandle(hFile);
     return true;
+}
+
+void delete_file_buffer( char* ptr )
+{
+    _aligned_free(ptr);
 }
 
 void addBackSlash( std::string& outStr )
@@ -491,6 +496,8 @@ bool is_common_package( const std::string& pack_name )
 
 
 
+
+
 //========================================================================
 //  RESOURCE DB
 //
@@ -558,3 +565,27 @@ void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  con
 }
 
 //========================================================================
+
+FileReader::FileReader( const std::string& fileName )
+:m_buf(0)
+,m_size(0)
+{
+    m_size = read_file(fileName, &m_buf);
+}
+
+FileReader::~FileReader()
+{
+    delete_file_buffer(m_buf);
+}
+
+MemoryBuffer::MemoryBuffer( uint32_t size )
+:m_size(size)
+{
+    m_buf = (char*)_aligned_malloc(size, 16);
+    memset(m_buf, 0x00, size);
+}
+
+MemoryBuffer::~MemoryBuffer()
+{
+    _aligned_free(m_buf);
+}

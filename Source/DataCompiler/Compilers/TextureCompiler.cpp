@@ -53,21 +53,17 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     
 
     //2. read the dds file back
-    char* buf = 0;
-    uint32_t fileSize = read_file(ddsFile, &buf);
-    if(!fileSize) return false;
+    FileReader texutreReader(ddsFile);
+    if(!texutreReader.m_size) return false;
 
     //3. back the whole file to one blob.
-    uint32_t memSize = fileSize + sizeof(Texture);
-    char* bigBlob = (char*)malloc(memSize);
-    memset(bigBlob, 0x00, memSize);
-    Texture* tex = (Texture*)bigBlob;
+    uint32_t memSize = texutreReader.m_size + sizeof(Texture);
+    MemoryBuffer mem(memSize);
+    Texture* tex = (Texture*)mem.m_buf;
     tex->m_handle.idx = bgfx::invalidHandle;
-    tex->m_size = fileSize;
-    memcpy(bigBlob + sizeof(Texture), buf, fileSize);
-    write_file(output, bigBlob, memSize);
-    free(buf);
-    free(bigBlob);
+    tex->m_size = texutreReader.m_size;
+    memcpy(mem.m_buf + sizeof(Texture), texutreReader.m_buf, texutreReader.m_size);
+    write_file(output, mem.m_buf, memSize);
 
     //4. delete the temp dds file.
     delete_file(ddsFile);
@@ -84,21 +80,16 @@ void TextureCompiler::postProcess()
 
 bool DDSCompiler::process( const std::string& input, const std::string& output )
 {
-    char* buf = 0;
-    uint32_t fileSize = read_file(input, &buf);
-    if(fileSize == 0) return false;
+    FileReader ddsReader(input);
+    if(!ddsReader.m_size) return false;
 
-    uint32_t memSize = fileSize + sizeof(Texture);
-    char* bigBlob = (char*)malloc(memSize);
-    memset(bigBlob, 0x00, memSize);
-    Texture* tex = (Texture*)bigBlob;
+    uint32_t memSize = ddsReader.m_size + sizeof(Texture);
+    MemoryBuffer mem(memSize);
+    Texture* tex = (Texture*)mem.m_buf;
     tex->m_handle.idx = bgfx::invalidHandle;
-    tex->m_size = fileSize;
-    memcpy(bigBlob + sizeof(Texture), buf, fileSize);
-    write_file(output, bigBlob, memSize);
-    free(buf);
-    free(bigBlob);
-    return true;
+    tex->m_size = ddsReader.m_size;
+    memcpy(mem.m_buf + sizeof(Texture), ddsReader.m_buf, ddsReader.m_size);
+    return write_file(output, mem.m_buf, memSize);
 }
 
 bool Texture3DCompiler::readJSON(const JsonValue& root)
@@ -118,10 +109,9 @@ bool Texture3DCompiler::readJSON(const JsonValue& root)
     }
 
     uint32_t memSize = sizeof(Raw3DTexture) + COLOR_LUT_SIZE*COLOR_LUT_SIZE*COLOR_LUT_SIZE*4;
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    Raw3DTexture* tex3d = (Raw3DTexture*)p;
-    tex3d->m_blob = p + sizeof(Raw3DTexture);
+   MemoryBuffer mem(memSize);
+    Raw3DTexture* tex3d = (Raw3DTexture*)mem.m_buf;
+    tex3d->m_blob = mem.m_buf + sizeof(Raw3DTexture);
     tex3d->m_width = 16;
     tex3d->m_height = 16;
     tex3d->m_depth = 16;
@@ -133,10 +123,8 @@ bool Texture3DCompiler::readJSON(const JsonValue& root)
     std::string outputPath = getFilePath(m_output);
     std::string fileName = getFileName(outputLut);
     outputLut = outputPath + "/" + fileName + "." +Raw3DTexture::get_name();
-    write_file(outputLut, p, memSize);
-    free(p);
     stbi_image_free(image);
-    return true;
+    return write_file(outputLut, mem.m_buf, memSize);
 }
 
 bool Texture2DCompiler::readJSON( const JsonValue& root )

@@ -341,8 +341,7 @@ class NagaMayaUtil(object):
     def exportToHKX(self, exportName, packageName,
                     hko_index, rig='', arg='', s=False):
 
-        hko_file = self.getHkoList()[hko_index]
-        hkoFullPath = self.hkoPath + hko_file
+        hkoFullPath = self.getHkoList()[hko_index]
         outputPath = self.getHkxFolder(packageName)
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
@@ -358,9 +357,9 @@ class NagaMayaUtil(object):
         exportMode = "model"
         if(isLevel(exportName)):
             exportMode = "level"
-        elif(hko_file.find('skin_model') != -1):
+        elif(hkoFullPath.find('skin_model') != -1):
             exportMode = 'skinning'
-        elif(hko_file.find('animation') != -1):
+        elif(hkoFullPath.find('animation') != -1):
             exportMode = 'animation'
         envCmd += "EXPORT_MODE=" + exportMode + ";"
 

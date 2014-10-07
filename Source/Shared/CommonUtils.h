@@ -42,6 +42,7 @@ std::string getWorkingDir();
 void        runProcess(const std::string& process, const std::string& workingDir, const std::string& args);
 void        findFiles(const std::string& folder, const std::string& ext, bool bRecursive, std::vector<std::string>& outFiles);
 uint32_t    read_file(const std::string& fileName, char** outBuf); //malloc need to free manually
+void        delete_file_buffer(char* ptr);
 bool        write_file(const std::string& fileName, void* buf, uint32_t bufSize);
 void        findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders);
 uint64_t    get_file_size(const std::string& fileName);
@@ -67,4 +68,20 @@ struct ResourceFileDataBase
     void save(const char* fileName);
     bool isFileChanged(const std::string& fileName, uint64_t& modifyTime) const;
     void insertResourceFile(const std::string& fileName,  const uint64_t& modifyTime);
+};
+
+struct FileReader
+{
+    char*           m_buf;
+    uint32_t        m_size;
+    FileReader(const std::string& fileName);
+    ~FileReader();
+};
+
+struct MemoryBuffer
+{
+    char*           m_buf;
+    uint32_t        m_size;
+    MemoryBuffer(uint32_t size);
+    ~MemoryBuffer();
 };

@@ -15,21 +15,19 @@ bool RagdollCompiler::readJSON(const JsonValue& root)
 {
     __super::readJSON(root);
     std::string havokFile = JSON_GetString(root.GetValue("havok_file"));
-    char* havokData = 0;
-    uint32_t havokFileSize = read_file(havokFile.c_str(), &havokData);
-    if(havokFileSize < 16)
+    FileReader havokReader(havokFile);
+    if(havokReader.m_size < 16)
     {
         addError(__FUNCTION__ "can not find havok file [%s]", havokFile.c_str());
         return false;
     }
     
     uint32_t havokOffset = sizeof(RagdollResource);
-    uint32_t memSize = havokOffset + havokFileSize;
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    memcpy(p + havokOffset, havokData, havokFileSize);
-    free(havokData);
-    RagdollResource* ragdoll = (RagdollResource*)p;
+    uint32_t memSize = havokOffset + havokReader.m_size;
+    MemoryBuffer mem(memSize);
+    memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
+
+    RagdollResource* ragdoll = (RagdollResource*)mem.m_buf;
     ragdoll->m_velocityGain = JSON_GetFloat(root.GetValue("velocity_gain"), 0.6f);
     ragdoll->m_positionGain = JSON_GetFloat(root.GetValue("position_gain"), 0.33f);
     ragdoll->m_positionMaxLinearVelocity = JSON_GetFloat(root.GetValue("position_max_linear_velocity"), 1.4f);
@@ -49,8 +47,5 @@ bool RagdollCompiler::readJSON(const JsonValue& root)
     ragdoll->m_rightLeg = JSON_GetStringId(root.GetValue("right_leg"));
     ragdoll->m_keyframeLayer = JSON_GetStringId(root.GetValue("keyframe_layer"), StringId("ragdoll_keyframe"));
     ragdoll->m_dynamicLayer = JSON_GetStringId(root.GetValue("dynamic_layer"), StringId("ragdoll_dynamic"));
-
-    bool bRet = write_file(m_output, p, memSize);
-    free(p);
-    return bRet;
+    return write_file(m_output, mem.m_buf, memSize);
 }

@@ -14,10 +14,6 @@
 #include <Animation/Animation/Animation/ReferencePose/hkaReferencePoseAnimation.h>
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
 //=======================================================================================
-int HK_CALL bindingCompare( const char* boneName, const char* trackName )
-{
-    return hkString::beginsWith(trackName, boneName ) ? 0 : 1;
-}
 
 int AnimRig::find_joint_index(const StringId& jointName)
 {
@@ -52,11 +48,6 @@ void AnimRigInstance::destroy()
 {
     SAFE_DELETE(m_pose);
     SAFE_REMOVEREF(m_skeleton);
-}
-
-int AnimRigInstance::get_triggers(int layer, float dt, AnimationTrigger* outTriggers)
-{
-    return 0;
 }
 
 void AnimRigInstance::update_local_clock(float dt)

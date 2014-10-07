@@ -35,8 +35,8 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     uint32_t havokOffset = memSize;
 
     std::string havokFile = JSON_GetString(root.GetValue("havok_file"));
-    char* havokData = 0;
-    uint32_t havokFileSize = read_file(havokFile.c_str(), &havokData);
+    FileReader havokReader(havokFile);
+    uint32_t havokFileSize = havokReader.m_size;
     if(havokFileSize < 16)
     {
         addError(__FUNCTION__ "can not find havok file [%s]", havokFile.c_str());
@@ -46,15 +46,13 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     memSize += havokFileSize;
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
 
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    char* offset = p;
+    MemoryBuffer mem(memSize);
+    char* offset = mem.m_buf;
 
-    char* havokP = p + havokOffset;
-    memcpy(havokP, havokData, havokFileSize);
-    free(havokData);
+    char* havokP = offset + havokOffset;
+    memcpy(havokP, havokReader.m_buf, havokFileSize);
 
-    AnimRig* rig = (AnimRig*)p;
+    AnimRig* rig = (AnimRig*)offset;
     rig->m_havokDataOffset = havokOffset;
     rig->m_havokDataSize = havokFileSize;
     rig->m_jointNum = JSON_GetInt(root.GetValue("joint_num"));
@@ -93,7 +91,5 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
         JSON_GetFloats(attachmentValue.GetValue("transform"), ba.m_transform, 16);
     }
     
-    bool bRet = write_file(m_output, p, memSize);
-    free(p);
-    return bRet;
+    return write_file(m_output, mem.m_buf, memSize);
 }

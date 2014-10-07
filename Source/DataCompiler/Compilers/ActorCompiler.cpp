@@ -31,11 +31,10 @@ bool ActorCompiler::readJSON(const JsonValue& root)
     uint32_t resSize = memSize;
     memSize += (numOfData * sizeof(float) * 4);
 
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    char* offset = p;
+    MemoryBuffer mem(memSize);
+    char* offset = mem.m_buf;
     
-    ActorResource* actor = (ActorResource*)p;
+    ActorResource* actor = (ActorResource*)mem.m_buf;
     extern const char* g_actorClassNames[];
     actor->m_class = JSON_GetEnum(root.GetValue("class"), g_actorClassNames);
     
@@ -82,7 +81,7 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         Key& key = fact.m_keys[i];
         key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_fact_keynames);
         key.m_name = JSON_GetStringId(dataValue.GetValue("name"));
-        key.m_offset = (uint32_t)(values - p);
+        key.m_offset = (uint32_t)(values - mem.m_buf);
 
         JsonValue jValue = dataValue.GetValue("value");
         switch(key.m_type)
@@ -95,14 +94,6 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         }
         values += g_fact_valuesizes[key.m_type];
     }
-    ENGINE_ASSERT(values == p + resSize, "offset address");
-
-    if(!write_file(m_output, p, memSize))
-    {
-        free(p);
-        return false;
-    }
-
-    free(p);
-    return true;
+    ENGINE_ASSERT(values == mem.m_buf + resSize, "offset address");
+    return write_file(m_output, mem.m_buf, memSize);
 }

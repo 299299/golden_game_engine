@@ -86,16 +86,15 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     memSize += sizeof(ResourceGroup) * m_groups.size();
     LOGI(__FUNCTION__" resource package group num = %d, total mem len = %d, total file size = %d", m_groups.size(), memSize, totalFileSize);
 
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    ResourcePackage* package = (ResourcePackage*)p;
+    MemoryBuffer mem(memSize);
+    ResourcePackage* package = (ResourcePackage*)mem.m_buf;
     package->m_bundled = bundled;
     totalFileSize = HK_NEXT_MULTIPLE_OF(16, totalFileSize);
     if(!bundled) package->m_memBudget = totalFileSize;
     package->m_name = StringId(output.c_str());
     package->m_numGroups = m_groups.size();
 
-    char* offset = p + sizeof(ResourcePackage);
+    char* offset = mem.m_buf + sizeof(ResourcePackage);
     package->m_groups = (ResourceGroup*)offset;
     offset += sizeof(ResourceGroup) * m_groups.size();
     
@@ -109,7 +108,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         out_group.m_numResources = in_group->m_files.size();
         out_group.m_type = in_group->m_type;
         out_group.m_resources = (ResourceInfo*)offset;
-        out_group.m_resourceInfoOffset = (offset - p);
+        out_group.m_resourceInfoOffset = (offset - mem.m_buf);
         offset += sizeof(ResourceInfo) * out_group.m_numResources;
         LOGI("group[%d] name = %s, num-resources = %d, type=%u, info-offset=%d", i, 
             in_group->m_ext.c_str(), 
@@ -155,16 +154,15 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             else
             {
                 info.m_size = fileName.length();
-                info.m_offset = offset - p;
+                info.m_offset = offset - mem.m_buf;
                 memcpy(offset, fileName.c_str(), info.m_size);
                 offset += info.m_size;
             }
         }
     }
 
-    fwrite(p, 1, memSize, fp);
-    free(p);
-    ENGINE_ASSERT((memSize == (offset - p)), "offset error");
+    fwrite(mem.m_buf, 1, memSize, fp);
+    ENGINE_ASSERT(offset == mem.m_buf + memSize, "offset error.");
 
     if(bundled)
     {
@@ -176,14 +174,11 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             for(size_t j=0; j<in_group->m_files.size(); ++j)
             {
                 const std::string& fileName = *in_group->m_files[j];
-                char* fileBuf = 0;
-                uint32_t fileSize = read_file(fileName, &fileBuf);
-                uint32_t memSize = HK_NEXT_MULTIPLE_OF(16, fileSize);
-                ENGINE_ASSERT(fileBuf, "bundle file [%s] not found.", fileName.c_str());
-                fwrite(fileBuf, 1, fileSize, fp);
-                if(memSize>fileSize)
-                    fwrite(g_temp_buf, 1, memSize-fileSize, fp);
-                free(fileBuf);
+                FileReader reader(fileName);
+                uint32_t memSize = HK_NEXT_MULTIPLE_OF(16, reader.m_size);
+                ENGINE_ASSERT(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
+                fwrite(reader.m_buf, 1, reader.m_size, fp);
+                if(memSize > reader.m_size) fwrite(g_temp_buf, 1, memSize - reader.m_size, fp);
             }
         }
     }

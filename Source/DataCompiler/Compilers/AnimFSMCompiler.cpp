@@ -139,10 +139,11 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
     uint32_t memSize = sizeof(AnimFSM) + totalNumState * sizeof(State) + totalNumAnimation * (sizeof(void*) + sizeof(StringId)) + totalNumTransition * sizeof(Transition);
     LOGI("TOTAL STATES = %d, ANIMATION = %d, TRANSITION = %d, MEMSIZE=%d", totalNumState, totalNumAnimation, totalNumTransition, memSize);
 
-    char* p = (char*)malloc(memSize);
-    char* head = p;
+    MemoryBuffer mem(memSize);
+    char* head = mem.m_buf;
+    char* p = mem.m_buf;
     
-    AnimFSM* fsm = (AnimFSM*)p;
+    AnimFSM* fsm = (AnimFSM*)head;
     fsm->m_numLayers = layers.size();
     fsm->m_numStates = totalNumState;
     fsm->m_numAnimations = totalNumAnimation;
@@ -166,8 +167,8 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
             memcpy(&state, in_state.m_state, sizeof(State));
             
             state.m_numTransitions = in_state.m_transitions.size();
-            state.m_transitions = (Transition*)p;
-            state.m_transitionOffset = (uint32_t)(p - head);
+            state.m_transitions = (Transition*)mem.m_buf;
+            state.m_transitionOffset = (uint32_t)(mem.m_buf - head);
             p += state.m_numTransitions * sizeof(Transition);
             
             for(uint32_t k=0; k<state.m_numTransitions; ++k)
@@ -179,12 +180,12 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
             }
             
             state.m_numAnimations = in_state.m_animations.size();
-            state.m_animations = (Animation**)p;
-            state.m_animationOffset = (uint32_t)(p - head);
+            state.m_animations = (Animation**)mem.m_buf;
+            state.m_animationOffset = (uint32_t)(mem.m_buf - head);
             p += state.m_numAnimations * sizeof(void*);
             
-            state.m_animNames = (StringId*)p;
-            state.m_animNameOffset = (uint32_t)(p - head);
+            state.m_animNames = (StringId*)mem.m_buf;
+            state.m_animNameOffset = (uint32_t)(mem.m_buf - head);
             p += state.m_numAnimations * sizeof(StringId);
             
             for(uint32_t k=0; k<state.m_numAnimations; ++k)
@@ -196,8 +197,6 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
         }
     }    
     
-    ENGINE_ASSERT(p == head + memSize, "offset error");
-    bool bRet = write_file(m_output, head, memSize);
-    free(head);
-    return bRet;
+    ENGINE_ASSERT(mem.m_buf == head + memSize, "offset error");
+    return write_file(m_output, head, memSize);
 }

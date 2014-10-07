@@ -39,28 +39,24 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
         return false;
     }
 
-    char* blob = 0;
-    uint32_t blobSize = read_file(input, &blob);
-    if (!blobSize)
-    {
-        return false;
-    }
+
+    FileReader shaderReader(input);
+    if(!shaderReader.m_size) return false;
 
     //find first line with def.
     const char* defMark = "[def=";
-    char* defHead = blob;
-    int index1 = find_char(defHead, blobSize, '[');
+    char* defHead = shaderReader.m_buf;
+    int index1 = find_char(defHead, shaderReader.m_size, '[');
     defHead += index1;
     defHead += strlen(defMark);
-    int index2 = find_char(defHead, blobSize, ']');
+    int index2 = find_char(defHead, shaderReader.m_size, ']');
     std::string def(defHead, index2);
-    free(blob);
 
     bool vs = (firstChar == 'v');
     compile_shader(input, output, def, vs);
 
-    blobSize = read_file(output, &blob);
-    if(!blobSize)
+    FileReader outputReader(output);
+    if(!outputReader.m_size)
     {
         LOGE("[%s] shader compile error!", input.c_str());
         return false;
@@ -68,25 +64,15 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
     //delete the temp file of shaderc compiled.
     delete_file(output);
 
-    uint32_t memSize = blobSize + sizeof(Shader);
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    Shader* shader = (Shader*)p;
-    shader->m_size = blobSize;
-    shader->m_blob = p + sizeof(Shader);
+    uint32_t memSize = outputReader.m_size + sizeof(Shader);
+    MemoryBuffer mem(memSize);
+    Shader* shader = (Shader*)mem.m_buf;
+    shader->m_size = outputReader.m_size;
+    shader->m_blob = mem.m_buf + sizeof(Shader);
     shader->m_handle.idx = bgfx::invalidHandle;
     shader->m_name = StringId(getFileName(m_input).c_str());
-    memcpy(shader->m_blob, blob, blobSize);
-    free(blob);
-
-    if(!write_file(output, shader, memSize))
-    {
-        free(p);
-        return false;
-    }
-    free(p);
-    m_processed = true;
-    return true;
+    memcpy(shader->m_blob, outputReader.m_buf, outputReader.m_size);
+    return write_file(output, shader, memSize);
 }
 
 ProgramCompiler::ProgramCompiler()

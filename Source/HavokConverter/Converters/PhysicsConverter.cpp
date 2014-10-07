@@ -46,21 +46,16 @@ void PhysicsConverter::process(hkpPhysicsData* data)
 void PhysicsConverter::postProcess()
 {
     m_phyFileName = m_ownner->m_config->m_exportFolder + m_name + ".havok";
-    LOGD("Write physics file: %s.", m_phyFileName.c_str());
-    hkPackfileWriter::Options options;
-    options.m_writeMetaInfo = false;
-    hkOstream ostream(m_phyFileName.c_str());
-    hkBinaryPackfileWriter writer;
-    writer.setContents(m_physics, hkpPhysicsData::staticClass());
-    if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-        addError(__FUNCTION__" write error.");
-
-#if 0
-    char* buf = 0;
-    uint32_t fileSize = read_file(m_phyFileName, &buf);
-    hkpPhysicsData* data = (hkpPhysicsData*)load_havok_inplace(buf, fileSize);
-    free(buf);
-#endif
+    {
+        LOGD("Write physics file: %s.", m_phyFileName.c_str());
+        hkPackfileWriter::Options options;
+        options.m_writeMetaInfo = false;
+        hkOstream ostream(m_phyFileName.c_str());
+        hkBinaryPackfileWriter writer;
+        writer.setContents(m_physics, hkpPhysicsData::staticClass());
+        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
+            addError(__FUNCTION__" write error.");
+    }
 }
 
 jsonxx::Object PhysicsConverter::serializeToJson() const

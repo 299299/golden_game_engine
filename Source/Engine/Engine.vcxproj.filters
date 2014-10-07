@@ -37,9 +37,6 @@
     <Filter Include="Network">
       <UniqueIdentifier>{089c8644-62fc-41ac-9ec0-b326a6abd98f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI">
-      <UniqueIdentifier>{7cf7d848-f780-4a99-8ab8-27036b428c02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ThirdParty\bx">
       <UniqueIdentifier>{909732b3-a004-4d48-9eb2-99f08fe14d50}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="Core\memory">
       <UniqueIdentifier>{2809e10d-2957-47f0-8c4e-eb935ca48f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{7cf7d848-f780-4a99-8ab8-27036b428c02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

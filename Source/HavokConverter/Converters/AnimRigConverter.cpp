@@ -54,23 +54,6 @@ void AnimRigConverter::postProcess()
 {
     __super::postProcess();
 
-#if 0
-    hkaSkeleton* skeleton = (hkaSkeleton*)m_skin->m_rig;
-    std::string rigFileName = "../pipeline/";
-    rigFileName += m_name + "_rig.txt";
-    FILE* fp = fopen(rigFileName.c_str(), "w");
-    fprintf(fp,"[HAVOK SKELETON DEFINITION FILE]\n");
-    fprintf(fp,"\n");
-    fprintf(fp,"[BONES START]\n");
-    for(int i=0; i<skeleton->m_bones.getSize(); ++i)
-    {
-        const hkaBone& bone = skeleton->m_bones[i];
-        fprintf(fp,"%s\n", bone.m_name.cString());
-    }
-    fprintf(fp,"[END]\n");
-    fclose(fp);
-#endif
-
     m_rigFileName = m_ownner->m_config->m_exportFolder + m_name + "_rig.havok";
     extern const char* g_humanBodyNames[];
     //if we have a skin rig data
@@ -90,13 +73,17 @@ void AnimRigConverter::postProcess()
         m_bodyPart[index] = i;
         LOGD("find body part %s --> %s", boneName.c_str(), g_humanBodyNames[index]);
     }
-    hkPackfileWriter::Options options;
-    options.m_writeMetaInfo = false;
-    hkOstream ostream(m_rigFileName.c_str());
-    hkBinaryPackfileWriter writer;
-    writer.setContents(skeleton, hkaSkeleton::staticClass());
-    if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-        addError(__FUNCTION__" write error.");
+
+    {
+        hkPackfileWriter::Options options;
+        options.m_writeMetaInfo = false;
+        hkOstream ostream(m_rigFileName.c_str());
+        hkBinaryPackfileWriter writer;
+        writer.setContents(skeleton, hkaSkeleton::staticClass());
+        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
+            addError(__FUNCTION__" write error.");
+    }
+    
 }
 
 jsonxx::Object AnimRigConverter::serializeToJson() const

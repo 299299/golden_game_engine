@@ -29,11 +29,9 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
         beatNum = beatsValue.GetElementsCount();
     }
 
-    
     std::string havokFile = JSON_GetString(root.GetValue("havok_file"));
-    char* havokData = 0;
-    uint32_t havokFileSize = read_file(havokFile.c_str(), &havokData);
-    if(havokFileSize < 16)
+    FileReader havokReader(havokFile);
+    if(havokReader.m_size < 16)
     {
         addError(__FUNCTION__ "can not find havok file [%s]", havokFile.c_str());
         return false;
@@ -41,16 +39,14 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     
     uint32_t havokOffset = sizeof(Animation) + beatNum * sizeof(AnimationBeat) + triggerNum * sizeof(triggerNum);
     havokOffset = HK_NEXT_MULTIPLE_OF(16, havokOffset);
-    uint32_t memSize = havokOffset + havokFileSize;
+    uint32_t memSize = havokOffset + havokReader.m_size;
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
     
-    char* p = (char*)malloc(memSize);
-    char* offset = p;
-    memset(p, 0x00, memSize);
-    memcpy(p + havokOffset, havokData, havokFileSize);
-    free(havokData);
+    MemoryBuffer mem(memSize);
+    char* offset = mem.m_buf;
+    memcpy(offset + havokOffset, havokReader.m_buf, havokReader.m_size);
 
-    Animation* anim = (Animation*)p;
+    Animation* anim = (Animation*)mem.m_buf;
     JsonValue mirrorValue = root.GetValue("mirrored_from");
     if(mirrorValue.IsValid())
     {
@@ -70,7 +66,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     offset += (triggerNum * sizeof(triggerNum));
     anim->m_beats = (AnimationBeat*)offset;
     anim->m_havokDataOffset = havokOffset;
-    anim->m_havokDataSize = havokFileSize;
+    anim->m_havokDataSize = havokReader.m_size;
     
     for (uint32_t i=0; i<anim->m_numTriggers; ++i)
     {
@@ -89,7 +85,5 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
         beat.m_time = JSON_GetFloat(beatValue.GetValue("time"));
     }
     
-    bool bRet = write_file(m_output, p, memSize);
-    free(p);
-    return bRet;
+    return write_file(m_output, mem.m_buf, memSize);
 }

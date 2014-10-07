@@ -25,9 +25,8 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     }
     
     uint32_t memSize = sizeof(Material) + sizeof(MatSampler) * samplerNum;
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    Material* m = (Material*)p;
+    MemoryBuffer mem(memSize);
+    Material* m = (Material*)mem.m_buf;
     
     m->m_numSamplers = samplerNum;
     
@@ -97,7 +96,7 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
 
     if(samplersValue.IsValid())
     {
-        m->m_samplers = (MatSampler*)(p + sizeof(Material));
+        m->m_samplers = (MatSampler*)(mem.m_buf + sizeof(Material));
         for(unsigned i=0; i<m->m_numSamplers; ++i)
         {
             JsonValue samplerValue = samplersValue[i];
@@ -208,8 +207,5 @@ bool MaterialCompiler::readJSON( const JsonValue& root )
     
     m->m_state = renderState;
     m->m_flags = flags;
-    
-    bool bRet = write_file(m_output, p, memSize);
-    free(p);
-    return bRet;
+    return write_file(m_output, mem.m_buf, memSize);
 }

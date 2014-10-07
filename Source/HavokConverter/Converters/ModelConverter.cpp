@@ -92,9 +92,9 @@ void ModelConverter::writeMesh(const std::string& fileName)
     }
     memorySize += m_joints.size() * sizeof(Matrix);
     //LOGI("mesh memory size = %d.", memorySize);
-    char* p = (char*)malloc(memorySize);
+    MemoryBuffer mem(memorySize);
+    char* p = mem.m_buf;
     char* head = p;
-    memset(p, 0x00, memorySize);
     Mesh* pMesh = (Mesh*)p;
     pMesh->m_decl = m_meshes[0]->getDecl();
     pMesh->m_numSubMeshes = m_meshes.size();
@@ -155,7 +155,6 @@ void ModelConverter::writeMesh(const std::string& fileName)
 
     ENGINE_ASSERT((head + memorySize) == p, "error offset");
     write_file(fileName, head, memorySize);
-    free(pMesh);
 }
 
 void ModelConverter::postProcess()

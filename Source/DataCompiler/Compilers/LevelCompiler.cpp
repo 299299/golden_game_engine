@@ -76,27 +76,25 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     }
 
     uint32_t numOfResources = resourceNames.size();
-    uint32_t memSize = sizeof(Level) + sizeof(LevelObject) * numOfActors + 
-                       sizeof(LevelActorResource) * numOfResources;
-    char* p = (char*)malloc(memSize);
-    memset(p, 0x00, memSize);
-    char* offset = p;
+    uint32_t memSize = sizeof(Level) + sizeof(LevelObject) * numOfActors + sizeof(LevelActorResource) * numOfResources;
+    MemoryBuffer mem(memSize);
+    char* offset = mem.m_buf;
 
     LOGI("num of entities = %d, num of actor resources = %d", numOfActors, numOfResources);
 
-    Level* level = (Level*)p;
+    Level* level = (Level*)mem.m_buf;
     level->m_numObject = numOfActors;
     level->m_numResources = numOfResources;
     //============================================================
     offset += sizeof(Level);
     level->m_objects = (LevelObject*)offset;
-    level->m_objectOffset = (uint32_t)(offset - p);
+    level->m_objectOffset = (uint32_t)(offset - mem.m_buf);
     offset += (sizeof(LevelObject) * numOfActors);
     //============================================================
     level->m_resources = (LevelActorResource*)offset;
-    level->m_resourceOffset = (uint32_t)(offset - p);
+    level->m_resourceOffset = (uint32_t)(offset - mem.m_buf);
     offset += (sizeof(LevelActorResource) * numOfResources);
-    ENGINE_ASSERT(offset == p + memSize, "offset error.");
+    ENGINE_ASSERT(offset == mem.m_buf + memSize, "offset error.");
 
     for (uint32_t i = 0; i < numOfActors; ++i)
     {
@@ -112,9 +110,7 @@ bool LevelCompiler::readJSON( const JsonValue& root )
         level->m_resources[i].m_name = StringId(resourceNames[i]);
     }
 
-    bool bRet = write_file(m_output, p, memSize);
-    free(p);
-    return bRet;
+    return write_file(m_output, mem.m_buf, memSize);
 }
 
 bool LevelCompiler::isResourceInLevel( const std::string& resourceName ) const
