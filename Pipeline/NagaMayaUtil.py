@@ -120,10 +120,6 @@ def osGetFileList(directory, ext):
     return fileList
 
 
-def listAttribute():
-    cmds.listAttr(cmds.ls(sl=True))
-
-
 def isLevel(name):
     return name.startswith('Level')
     # return len(findNodeNamePrefix('Proxy')) > 0

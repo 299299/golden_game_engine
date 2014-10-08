@@ -7,7 +7,7 @@
 #include "DebugDraw.h"
 #include "id_array.h"
 #include "config.h"
-//===================================
+//=======================================================================================
 // RESOURCES
 #include "Resource.h"
 #include "Actor.h"
@@ -18,7 +18,7 @@
 #include "Ragdoll.h"
 #include "AnimRig.h"
 #include "AnimFSM.h"
-//===================================
+//=======================================================================================
 //=======================================================================================
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Container/LocalArray/hkLocalArray.h>
@@ -42,6 +42,8 @@ static IdArray<MAX_ANIM_FSM, AnimFSMInstance>      m_fsms;
 static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
 static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
+
+//#define MT_ANIMATION
 
 static void check_status()
 {
@@ -72,6 +74,7 @@ void AnimationSystem::kick_in_jobs()
 {
     uint32_t numSkeletons = id_array::size(m_rigs);
     if(numSkeletons == 0) return;
+#ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
     set_status(kTickProcessing);
     AnimRigInstance* rigs = id_array::begin(m_rigs);
@@ -87,10 +90,22 @@ void AnimationSystem::kick_in_jobs()
         jobPointers.pushBack(&( m_animJobs[i]));
     }
     g_threadMgr.get_jobqueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
+#else
+    for (uint32_t i=0; i<numSkeletons;++i)
+    {
+        AnimRigInstance& instance = rigs[i];
+        hkaAnimatedSkeleton* skel = instance.m_skeleton;
+        hkaPose* pose = instance.m_pose;
+        skel->sampleAndCombineAnimations( 
+            pose->accessUnsyncedPoseLocalSpace().begin(), 
+            pose->getFloatSlotValues().begin() );
+    }
+#endif
 }
 
 void AnimationSystem::tick_finished_jobs()
 {
+#ifdef MT_ANIMATION
     uint32_t numSkeletons = id_array::size(m_rigs);
     if(!numSkeletons) return;
     PROFILE(AnimationFinishJobs);
@@ -99,6 +114,7 @@ void AnimationSystem::tick_finished_jobs()
         m_animJobs[i].destroy();
     }
     set_status(kTickFinishedJobs);
+#endif
 }
 
 void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
