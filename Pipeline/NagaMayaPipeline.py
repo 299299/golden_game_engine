@@ -94,17 +94,17 @@ class NagaPipeline(object):
         cmds.setParent('..')
         cmds.setParent('..')
 
-        height = 30
-        margin_w = 5
-        margin_h = 5
-        cmds.frameLayout(
-            l="Level Helper", cll=1, mh=margin_h, mw=margin_w)
-        cmds.button('Open Selection AR', h=height, c=self.onOpenARClicked)
-        cmds.button('Back To Last Level', h=height, c=self.onBackLevelClicked)
+        cmds.frameLayout(l="Util", cll=1)
+        cmds.button('Open Selection AR', c=self.onOpenARClicked)
+        cmds.button('Back To Last Level', c=self.onBackLevelClicked)
+        cmds.button('Add Trigger Node', c=self.onAddTriggerClicked)
+        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
 
         height = 75
+        margin_w = 5
+        margin_h = 5
         cmds.frameLayout(
             l="Preview and Export", cll=1, mh=margin_h, mw=margin_w)
         cmds.button('Preview', h=height, bgc=[1, 1, 0],
@@ -132,6 +132,9 @@ class NagaPipeline(object):
 
     def onExportButtonClicked(self, *arg):
         self.export(NAGA.getSceneName())
+
+    def onAddTriggerClicked(self, *arg):
+        NAGA.createTriggerNode()
 
     #
     # UTIL FUNCTIONS

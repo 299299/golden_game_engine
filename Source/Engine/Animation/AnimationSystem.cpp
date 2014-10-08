@@ -43,7 +43,7 @@ static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
 static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
 
-//#define MT_ANIMATION
+#define MT_ANIMATION
 
 static void check_status()
 {
@@ -81,7 +81,7 @@ void AnimationSystem::kick_in_jobs()
     for (uint32_t i=0; i<numSkeletons;++i)
     {
         AnimRigInstance& instance = rigs[i];
-        m_animJobs[i].build(instance.m_skeleton, instance.m_pose, true);
+        m_animJobs[i].build(instance.m_skeleton, instance.m_pose);
     }
     hkLocalArray<hkJob*> jobPointers( numSkeletons );
     jobPointers.reserve( numSkeletons );
@@ -146,42 +146,36 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         int num_of_pose = poseMS.getSize();
         model->alloc_skinning_mat();
 
-        float* matrix = model->m_skinMatrix;
-        hkQsTransform tempT1, tempT2;
-        for (int i=0; i < num_of_pose; ++i)
         {
-            transform_matrix(tempT2, invMats[i].m_x);
-            tempT1.setMul(poseMS[i], tempT2);
-            tempT2.setMul(actor.m_transform, tempT1);
-            transform_matrix(matrix, tempT2);
-            matrix += 16;
+            PROFILE(Animation_SkinMatrix);
+            float* matrix = model->m_skinMatrix;
+            hkQsTransform tempT1, tempT2;
+            for (int i=0; i < num_of_pose; ++i)
+            {
+                transform_matrix(tempT2, invMats[i].m_x);
+                tempT1.setMul(poseMS[i], tempT2);
+                tempT2.setMul(actor.m_transform, tempT1);
+                transform_matrix(matrix, tempT2);
+                matrix += 16;
+            }
         }
-
-        hkAabb aabb;
-        const hkQsTransform& t = actor.m_transform;
         
-#if 0
-        Aabb bbox;
-        pose->getModelSpaceAabb(aabb);
-        float minTmp[3], maxTmp[3];
-        transform_vec3(minTmp, aabb.m_min);
-        transform_vec3(maxTmp, aabb.m_max);
-        const float adFSize = 0.25f;
-        const float adVSize[3] = {adFSize, adFSize, adFSize};
-        bx::vec3Add(bbox.m_max, maxTmp, adVSize);
-        bx::vec3Sub(bbox.m_min, minTmp, adVSize);
-        transform_matrix(model->m_transform, t);
-        transform_aabb(model->m_aabb.m_min, model->m_aabb.m_max, model->m_transform, bbox.m_min, bbox.m_max);
-#else
-        hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), skeleton->m_parentIndices.begin(), t, aabb);
-        Aabb& bbox = model->m_aabb;
-        transform_vec3(bbox.m_min, aabb.m_min);
-        transform_vec3(bbox.m_max, aabb.m_max);
-        transform_matrix(model->m_transform, t);
-#endif
-        REMOVE_BITS(model->m_flag, kNodeTransformDirty);
+
+        const hkQsTransform& t = actor.m_transform;
+        {
+            PROFILE(Animation_UpdateAABB);
+            hkAabb aabb;
+            hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), skeleton->m_parentIndices.begin(), t, aabb);
+            Aabb& bbox = model->m_aabb;
+            transform_vec3(bbox.m_min, aabb.m_min);
+            transform_vec3(bbox.m_max, aabb.m_max);
+            transform_matrix(model->m_transform, t);
+            REMOVE_BITS(model->m_flag, kNodeTransformDirty);
+        }
+        
 
 #ifndef _RETIAL
+        PROFILE(Animation_DrawPose);
         draw_pose(*pose, t, RGBA(125,125,255,255));
 #endif
     }

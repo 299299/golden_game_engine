@@ -146,9 +146,6 @@ void* load_resource_animation( const char* data, uint32_t size)
     hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havokDataSize);
     anim->m_animation = ac->m_animations[0];
     anim->m_binding = ac->m_bindings[0];
-#ifdef DUMP_RESOURCE
-    anim->dump();
-#endif
     return anim;
 }
 

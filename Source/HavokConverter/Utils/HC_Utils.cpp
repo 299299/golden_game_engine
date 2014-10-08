@@ -11,13 +11,19 @@ void dumpNodeRec(hkxNode* theNode)
         className = va.m_class->getName();
     }
 
-    LOGD("node name=%s, object class=%s", theNode->m_name.cString(), className);
+    LOGD("node name=%s, object class=%s, properties=%s", theNode->m_name.cString(), className, theNode->m_userProperties.cString());
     LOGD("keyFrameSize=%d, childrenSize=%d, annotationSize=%d, linearKeyFrameSize=%d, selected=%s",
                         theNode->m_keyFrames.getSize(),
                         theNode->m_children.getSize(),
                         theNode->m_annotations.getSize(),
                         theNode->m_linearKeyFrameHints.getSize(),
                         theNode->m_selected ? "true" : "false");
+
+    for (int i=0; i<theNode->m_annotations.getSize(); ++i)
+    {
+        const hkxNode::AnnotationData& annotation = theNode->m_annotations[i];
+        LOGD("annotation[%d], time=%f, text=%s", i, annotation.m_time, annotation.m_description.cString());
+    }
 
     for(int i=0; i<theNode->m_attributeGroups.getSize(); ++i)
     {

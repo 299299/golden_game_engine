@@ -36,11 +36,6 @@
         static const char* get_name() {return #name; } \
         static const StringId& get_type() { static StringId type(get_name()); return type; };
 
-
-#ifdef _DEBUG
-//#define DUMP_RESOURCE
-#endif
-
 #ifndef _RETAIL
 #define RESOURCE_RELOAD
 #endif

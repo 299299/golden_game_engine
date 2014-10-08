@@ -218,6 +218,28 @@ def addBackSlash(str):
     return str
 
 
+def createTriggerNode():
+    TRIGGER_GROUP = 'triggers'
+    trigger_group = findNodeNameEqual(TRIGGER_GROUP)
+    if(trigger_group != ''):
+        cmds.delete(TRIGGER_GROUP)
+    trigger_group = cmds.group(em=1, name=TRIGGER_GROUP)
+    triggers = ['attack', 'dust']
+    enNames = ''
+    for trigger in triggers:
+        enNames += trigger
+        enNames += ':'
+    cmds.addAttr(sn='tr', ln='hk_trigger_', at='enum', en=enNames)
+
+    BEAT_GROUP = 'beats'
+    beat_group = findNodeNameEqual(BEAT_GROUP)
+    if(beat_group != ''):
+        cmds.delete(beat_group)
+    beat_group = cmds.group(em=1, name=BEAT_GROUP)
+    cmds.addAttr(
+        sn='be', ln='hk_beat_', at='enum', en='left_foot_down:right_foot_down')
+
+
 class NagaMayaUtil(object):
 
     def __init__(self):
@@ -287,8 +309,7 @@ class NagaMayaUtil(object):
         print('havok export folder = ' + hkxFolder)
         group = cmds.group(em=1, name=PROXY_GROUP)
         cmds.addAttr(sn='ht', ln='hkType', dt='string')
-        cmds.setAttr(
-            group + '.hkType', 'engineAttributes', type='string')
+        cmds.setAttr(group + '.hkType', 'engineAttributes', type='string')
         cmds.addAttr(sn='pn', ln='packageName', dt='string')
         cmds.setAttr(group + '.packageName', packageName, type='string')
 
