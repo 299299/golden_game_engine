@@ -74,10 +74,10 @@ void AnimationSystem::kick_in_jobs()
 {
     uint32_t numSkeletons = id_array::size(m_rigs);
     if(numSkeletons == 0) return;
+    AnimRigInstance* rigs = id_array::begin(m_rigs);
 #ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
     set_status(kTickProcessing);
-    AnimRigInstance* rigs = id_array::begin(m_rigs);
     for (uint32_t i=0; i<numSkeletons;++i)
     {
         AnimRigInstance& instance = rigs[i];

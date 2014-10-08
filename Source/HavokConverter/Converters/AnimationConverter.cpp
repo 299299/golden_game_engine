@@ -43,14 +43,14 @@ jsonxx::Object AnimationConverter::serializeToJson() const
 
     hkxScene* scene = m_config->m_scene;
     hkxNode* triggers_node = scene->findNodeByName("triggers");
-    if(triggers)
+    if(triggers_node)
     {
-        dumpNode(triggers_node);
+        dumpNodeRec(triggers_node);
     }
     hkxNode* beats_node = scene->findNodeByName("beats");
     if(beats_node)
     {
-        dumpNode(beats_node);
+        dumpNodeRec(beats_node);
     }
 
     object << "triggers" << triggers;
