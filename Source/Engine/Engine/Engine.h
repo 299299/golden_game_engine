@@ -24,7 +24,6 @@ enum EngineFrameState
     kFrameInvalid
 };
 
-
 struct Engine
 {
     void init(const EngineConfig& cfg);

@@ -36,7 +36,7 @@ void showHelp()
             "--headless no graphics & no window\n");
 }
 
-#define MUTEX_NAME     _T("Global//GOLDEN_ENGINE_GAME_SINGLE_MUTEX")
+#define MUTEX_NAME     _T("Global//NAGA_ENGINE_GAME_SINGLE_MUTEX")
 BOOL checkSingleProcess()
 {
     HANDLE hMutex = CreateMutex(NULL, FALSE, MUTEX_NAME);

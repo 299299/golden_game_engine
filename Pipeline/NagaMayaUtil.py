@@ -221,9 +221,10 @@ def addBackSlash(str):
 def createTriggerNode():
     TRIGGER_GROUP = 'triggers'
     trigger_group = findNodeNameEqual(TRIGGER_GROUP)
-    if(trigger_group != ''):
-        cmds.delete(TRIGGER_GROUP)
-    trigger_group = cmds.group(em=1, name=TRIGGER_GROUP)
+    #if(trigger_group != ''):
+    #    cmds.delete(TRIGGER_GROUP)
+    if(trigger_group == ''):
+        trigger_group = cmds.group(em=1, name=TRIGGER_GROUP)
     triggers = ['attack', 'dust']
     enNames = ''
     for trigger in triggers:
@@ -233,9 +234,10 @@ def createTriggerNode():
 
     BEAT_GROUP = 'beats'
     beat_group = findNodeNameEqual(BEAT_GROUP)
-    if(beat_group != ''):
-        cmds.delete(beat_group)
-    beat_group = cmds.group(em=1, name=BEAT_GROUP)
+    #if(beat_group != ''):
+    #    cmds.delete(beat_group)
+    if(beat_group == ''):
+        beat_group = cmds.group(em=1, name=BEAT_GROUP)
     cmds.addAttr(
         sn='be', ln='hk_beat_', at='enum', en='left_foot_down:right_foot_down')
 
