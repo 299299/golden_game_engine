@@ -14,7 +14,7 @@ global create_preview = function(id)
         physics.create_plane(500);
         graphics.camera_set_position(-5, 5, 0);
         graphics.camera_set_lookat(0, 0, 0);
-        world.create_actor(string_to_id("core/common/cube"), 2, 0, 0, 0, 0, 0, 1, 2, 1);
+        world.create_actor(string_to_id("core/common/cube"), 2, 1, 0, 0, 0, 0, 1, 2, 1);
         this:stateSet(.running_state);
     };
 

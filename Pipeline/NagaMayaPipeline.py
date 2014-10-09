@@ -184,7 +184,7 @@ class NagaPipeline(object):
                       rigName=rigName)
 
         if not self.webSock.connected:
-            self.lunchEngine(packageName, debug=True)
+            self.lunchEngine(packageName, debug=0)
             time.sleep(0.2)
         else:
             self.reloadCompileResult()

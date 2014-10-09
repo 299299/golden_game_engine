@@ -38,5 +38,6 @@ struct DebugFPSCamera
     DebugFPSCamera();
     void update(float dt);
     void sync();
+    void set(const float* eye, const float* at);
 };
 void debug_update_vdb_camera(const char* name = "user-camera");

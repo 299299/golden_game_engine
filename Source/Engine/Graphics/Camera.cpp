@@ -1,7 +1,8 @@
 #include "Camera.h"
-#include <string.h>
 #include "Win32Context.h"
 #include "XBoxInput.h"
+#include <string.h>
+#include <stdio.h>
 #include <Common/Visualize/hkDebugDisplay.h>
 
 Camera              g_camera;
@@ -150,9 +151,9 @@ void DebugFPSCamera::update(float dt)
 
     float right[3] =
     {
-        sinf(m_horizontalAngle - float(M_PI)/2.0f),
+        sinf(m_horizontalAngle - (float)M_PI_2),
         0,
-        cosf(m_horizontalAngle - float(M_PI)/2.0f),
+        cosf(m_horizontalAngle - (float)M_PI_2),
     };
 
     //translate
@@ -229,6 +230,19 @@ void DebugFPSCamera::update(float dt)
 void DebugFPSCamera::sync()
 {
     g_camera.update(m_eye, m_at);
+}
+
+void DebugFPSCamera::set( const float* eye, const float* at )
+{
+    bx::vec3Move(m_eye, eye);
+    bx::vec3Move(m_at, at);
+    float dir[3];
+    bx::vec3Sub(dir, m_at, m_eye);
+    float z = dir[2];
+    m_horizontalAngle = atanf(dir[0]/z);
+    z = sqrt(dir[0]*dir[0] + dir[1]*dir[1]);
+    m_verticalAngle =  atanf(dir[1]/z);
+    printf("m_verticalAngle = %f\n", m_verticalAngle);
 }
 
 void debug_update_vdb_camera(const char* name)

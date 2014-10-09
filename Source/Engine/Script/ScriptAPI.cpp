@@ -769,6 +769,8 @@ static int GM_CDECL camera_set_position(gmThread* a_thread)
     float at[3];
     bx::vec3Move(at, g_camera.m_at);
     g_camera.update(pos, at);
+    extern DebugFPSCamera g_fpsCamera;
+    g_fpsCamera.set(pos, at);
     return GM_OK;
 }
 static int GM_CDECL camera_set_lookat(gmThread* a_thread)
@@ -781,6 +783,8 @@ static int GM_CDECL camera_set_lookat(gmThread* a_thread)
     float eye[3];
     bx::vec3Move(eye, g_camera.m_eye);
     g_camera.update(eye, pos);
+    extern DebugFPSCamera g_fpsCamera;
+    g_fpsCamera.set(eye, pos);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
