@@ -242,7 +242,6 @@ void DebugFPSCamera::set( const float* eye, const float* at )
     m_horizontalAngle = atanf(dir[0]/z);
     z = sqrt(dir[0]*dir[0] + dir[1]*dir[1]);
     m_verticalAngle =  atanf(dir[1]/z);
-    printf("m_verticalAngle = %f\n", m_verticalAngle);
 }
 
 void debug_update_vdb_camera(const char* name)

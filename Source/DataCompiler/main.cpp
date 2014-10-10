@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Profiler.h"
 #include "DC_Utils.h"
 #include "Mesh.h"
 //=================================================================

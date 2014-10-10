@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Log.h"
+#include "Profiler.h"
 #include "WebServerTool.h"
 #include "MemorySystem.h"
 #include "Utils.h"

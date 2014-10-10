@@ -168,7 +168,7 @@ private:
                     bool showUnused, 
                     bool showTotal) const;
 
-    void dump_block_to_file(struct FILE* fp,
+    void dump_block_to_file(void* fp,
                             ProfilerBlock* block, 
                             int depth, 
                             int maxDepth, 

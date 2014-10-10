@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Profiler.h"
 #include "CharacterConverter.h"
 #include "StaticModelConverter.h"
 #include "LevelConverter.h"

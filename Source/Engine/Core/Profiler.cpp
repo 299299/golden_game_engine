@@ -212,13 +212,14 @@ void Profiler::dump_block(  ProfilerBlock* block,
     }
 }
 
-void Profiler::dump_block_to_file(  FILE* fp, 
+void Profiler::dump_block_to_file(  void* fp_, 
                                     ProfilerBlock* block, 
                                     int depth, 
                                     int maxDepth, 
                                     bool showUnused, 
                                     bool showTotal ) const
 {
+    FILE* fp = (FILE*)fp_;
     char indentedName[LINE_MAX_LENGTH];
     unsigned intervalFrames = max(intervalFrames_, 1);
 
