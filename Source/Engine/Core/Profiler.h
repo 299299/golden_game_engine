@@ -212,10 +212,8 @@ public:
 #define PROFILE(name)       AutoProfileBlock profile_##name (#name)
 #define PROFILE_BEGIN()     g_profiler.begin_frame();
 #define PROFILE_END()       g_profiler.end_frame();
-#define PROFILE_INIT()      g_profiler.init();
 #else
 #define PROFILE(name)
 #define PROFILE_BEGIN()
 #define PROFILE_END()
-#define PROFILE_INIT()
 #endif

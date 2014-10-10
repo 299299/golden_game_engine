@@ -159,7 +159,8 @@ void string_replace( std::string &strBig, const std::string &strsrc, const std::
 
 bool fileSystemCopy(const std::string& src, const std::string& destFolder)
 {
-    //LOGD("file system copy from %s to %s", src.c_str(), destFolder.c_str()); 
+    LOGD("file system copy from %s to %s", src.c_str(), destFolder.c_str());
+    PROFILE(file_system_copy);
     SHFILEOPSTRUCT sfo; 
     ZeroMemory(&sfo, sizeof(sfo)); 
     sfo.wFunc = FO_COPY;
@@ -294,6 +295,7 @@ void findFolders(const std::string& folder, bool bRecursive, std::vector<std::st
 
 uint32_t read_file(const std::string& fileName, char** outBuf)
 {
+    PROFILE(read_file);
     HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if(hFile == INVALID_HANDLE_VALUE)
     {
@@ -320,6 +322,7 @@ uint32_t read_file(const std::string& fileName, char** outBuf)
 
 bool write_file(const std::string& fileName, void* buf, uint32_t bufSize)
 {
+    PROFILE(write_file);
     HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     if(hFile == INVALID_HANDLE_VALUE)
     {
@@ -413,9 +416,7 @@ std::string name_to_file_path( const std::string& resourceName, const std::strin
 
 void delete_file(const std::string& fileName)
 {
-    if(!isFileExist(fileName))
-        return;
-    //LOGD("deleting file %s", fileName.c_str());
+    if(!isFileExist(fileName)) return;
     int nRet = ::DeleteFile(fileName.c_str());
     if(nRet != 0) return;
     LOGE(__FUNCTION__" failed, GetLastError() = %d", GetLastError());
@@ -433,6 +434,7 @@ bool delete_folder(const std::string& folderName)
 
 void compile_shader(const std::string& src, const std::string& dst, const std::string& def, bool vs)
 {
+    PROFILE(compile_shader);
     char buf[256];
     const char* type = vs ? "v" : "f";
     const char* target = vs ? "vs_5_0" : "ps_5_0";

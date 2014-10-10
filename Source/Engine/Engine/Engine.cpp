@@ -146,7 +146,6 @@ void Engine::apply_framelimit(double timeMS)
 void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
-    PROFILE_INIT();
     g_memoryMgr.init(1024*1024*4, 1024*1024*2, true, m_cfg.m_checkMemory);
     g_threadMgr.init(true);
     g_resourceMgr.init();

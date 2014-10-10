@@ -1,4 +1,5 @@
 #include "HC_Utils.h"
+#include "Profiler.h"
 #include "CommonUtils.h"
 #include "Level.h"
 

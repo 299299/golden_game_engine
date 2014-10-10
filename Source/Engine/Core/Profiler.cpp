@@ -58,7 +58,9 @@ Profiler::Profiler() :
     intervalFrames_(0),
     totalFrames_(0)
 {
-    
+    numBlocks_ = 0;
+    root_ = alloc_block("Root");
+    current_ = root_
 }
 
 Profiler::~Profiler()
@@ -93,12 +95,6 @@ void Profiler::begin_interval()
     intervalFrames_ = 0;
 }
 
-void Profiler::init()
-{
-    numBlocks_ = 0;
-    root_ = alloc_block("Root");
-    current_ = root_;
-}
 
 ProfilerBlock* Profiler::alloc_block( const char* name )
 {

@@ -1,5 +1,6 @@
 #include "DC_Utils.h"
 #include <ShlObj.h>
+#include "Profiler.h"
 #include "Prerequisites.h"
 #include "LevelCompiler.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
@@ -12,6 +13,7 @@ extern DC_Config    g_config;
 
 void lut2d_to_3d(const uint8_t* inData, uint8_t* outData)
 {
+    PROFILE(lut2d_to_3d);
     for (int z = 0; z < COLOR_LUT_SIZE; ++z)
     {
         for (int y = 0; y < COLOR_LUT_SIZE; ++y)
@@ -97,6 +99,8 @@ struct JsonMemMgr
 static JsonMemMgr g_jsonMgr;
 bool parse_json(const std::string& fileName, JsonParser& parser)
 {
+    PROFILE(parse_json);
+
     HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if(hFile == INVALID_HANDLE_VALUE)
     {
@@ -236,6 +240,7 @@ void saveCompileResult(const std::string& fileName)
 
 void nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt)
 {
+    PROFILE(nvtt_compress);
     std::string args = "-" + fmt + " ";
     if(fmt == DDS_NM_FORMAT) args += "-normal ";
     args += src;
@@ -246,6 +251,7 @@ void nvtt_compress(const std::string& src, const std::string& dst, const std::st
 
 void texconv_compress( const std::string& src, const std::string& folder, const std::string& fmt )
 {
+    PROFILE(texconv_compress);
     std::string srcFile = src;
     string_replace(srcFile, "/", "\\");
     std::string dstDir = folder;
