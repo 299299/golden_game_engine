@@ -431,7 +431,7 @@ int PhysicsWorld::get_layer(const StringId& name) const
     return 0;
 }
 
-void PhysicsWorld::sync_actors( struct Actor* actors, uint32_t num )
+void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 {
     check_status();
     hkQsTransform t;
@@ -444,6 +444,7 @@ void PhysicsWorld::sync_actors( struct Actor* actors, uint32_t num )
         physics_object->fetch_transform(0, t1);
         t.setFromTransformNoScale(t1);
         actor.transform_renders(t);
+        physics_object->m_dirty = false;
     }
 }
 

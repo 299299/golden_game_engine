@@ -494,6 +494,8 @@ int _tmain(int argc, _TCHAR* argv[])
     g_script.quit();
     g_memoryMgr.quit();
 
+    g_profiler.dump_to_file("datacompiler_profile.txt", true, true);
+
     LOGD("******************************************************");
     LOGD("******************************************************");
     LOGD("* TOTAL TIME COST = %d[MS] *", timeMS);

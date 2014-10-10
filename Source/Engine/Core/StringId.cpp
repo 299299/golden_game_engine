@@ -66,14 +66,14 @@ void save_string_table(const char* fName)
         LOGE(__FUNCTION__ " can not open file %s", fName);
         return;
     }
-    
+    TIMELOG("save string table");
     StringTable::const_iterator iter = g_stringTable.begin();
     for(; iter != g_stringTable.end(); ++iter)
     {
         fprintf(fp, STRING_TABLE_FMT, iter->first, iter->first, iter->second);
     }
-    
     fclose(fp);
+    g_stringTable.clear();
 }
 #else
 static char g_buffer[32];

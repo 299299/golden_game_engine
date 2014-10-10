@@ -11,6 +11,7 @@
 #include "Log.h"
 #include "Prerequisites.h"
 #include "EngineAssert.h"
+#include "Profiler.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 
 static hkCriticalSection g_errorCS;

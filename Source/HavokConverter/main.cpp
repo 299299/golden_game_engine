@@ -287,6 +287,8 @@ int main(int argc, char* argv[])
 
     g_memoryMgr.quit();
 
+    g_profiler.dump_to_file("havokconverter_profile.txt", true, true);
+
     timeMS = ::GetTickCount() - timeMS;
     LOGD("******************************************************");
     LOGD("******************************************************");

@@ -10,9 +10,6 @@
 long long HiresTimer::frequency = 0;
 static const int LINE_MAX_LENGTH = 256;
 static const int NAME_MAX_LENGTH = 30;
-//static const int64_t hpFreq = bx::getHPFrequency();
-//static const double freq = double(hpFreq);
-//static const double toMs = 1000.0/freq;
 
 void HiresTimer::init()
 {
@@ -111,7 +108,7 @@ ProfilerBlock* Profiler::alloc_block( const char* name )
     return newBlock;
 }
 
-void Profiler::dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
+void Profiler::dump( bool showUnused, bool showTotal, int maxDepth ) const
 {
     const uint8_t color = 0x1f;
     if (!showTotal)
@@ -126,7 +123,28 @@ void Profiler::dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
     dump_block(root_, 0, maxDepth, showUnused, showTotal);
 }
 
-void Profiler::dump_block( ProfilerBlock* block, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal ) const
+void Profiler::dump_to_file(const char* fileName, bool showUnused, bool showTotal, int maxDepth ) const
+{
+    FILE* fp = fopen(fileName, "w");
+    if(!fp) return;
+    if (!showTotal)
+    {
+        fprintf(fp, "Block                            Cnt     Avg      Max     Frame     Total\n");
+    }
+    else
+    {
+        fprintf(fp, "Block                                       Last frame                       Whole execution time\n");
+        fprintf(fp, "                                 Cnt     Avg      Max      Total      Cnt      Avg       Max        Total\n");
+    }
+    dump_block_to_file(fp, root_, 0, maxDepth, showUnused, showTotal);
+    fclose(fp);
+}
+
+void Profiler::dump_block(  ProfilerBlock* block, 
+                            int depth, 
+                            int maxDepth, 
+                            bool showUnused, 
+                            bool showTotal ) const
 {
     char indentedName[LINE_MAX_LENGTH];
 
@@ -172,7 +190,7 @@ void Profiler::dump_block( ProfilerBlock* block, unsigned depth, unsigned maxDep
                 float totalMax = block->totalMaxTime_ / 1000.0f;
                 float totalAll = block->totalTime_ / 1000.0f;
 
-                DBG_TEX_PRINTF(color, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f", 
+                DBG_TEX_PRINTF( color, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f", 
                                 indentedName, 
                                 min(block->frameCount_, 99999),
                                 avg, 
@@ -191,6 +209,76 @@ void Profiler::dump_block( ProfilerBlock* block, unsigned depth, unsigned maxDep
     for (uint32_t i=0; i<block->numChildren_; ++i)
     {
         dump_block(block->children_[i], depth, maxDepth, showUnused, showTotal);
+    }
+}
+
+void Profiler::dump_block_to_file(  FILE* fp, 
+                                    ProfilerBlock* block, 
+                                    int depth, 
+                                    int maxDepth, 
+                                    bool showUnused, 
+                                    bool showTotal ) const
+{
+    char indentedName[LINE_MAX_LENGTH];
+    unsigned intervalFrames = max(intervalFrames_, 1);
+
+    if (depth >= maxDepth)
+        return;
+
+    // Do not print the root block as it does not collect any actual data
+    if (block != root_)
+    {
+        if (showUnused || block->intervalCount_ || (showTotal && block->totalCount_))
+        {
+            memset(indentedName, ' ', NAME_MAX_LENGTH);
+            indentedName[depth] = 0;
+            strcat(indentedName, block->name_);
+            indentedName[strlen(indentedName)] = ' ';
+            indentedName[NAME_MAX_LENGTH] = 0;
+
+            if (!showTotal)
+            {
+                float avg = (block->intervalCount_ ? block->intervalTime_ / block->intervalCount_ : 0.0f) / 1000.0f;
+                float max = block->intervalMaxTime_ / 1000.0f;
+                float frame = block->intervalTime_ / intervalFrames / 1000.0f;
+                float all = block->intervalTime_ / 1000.0f;
+                fprintf( fp,    "%s %5u %8.3f %8.3f %8.3f %9.3f\n", 
+                                indentedName, 
+                                min(block->intervalCount_, 99999),
+                                avg, 
+                                max, 
+                                frame, 
+                                all);
+            }
+            else
+            {
+                float avg = (block->frameCount_ ? block->frameTime_ / block->frameCount_ : 0.0f) / 1000.0f;
+                float max = block->frameMaxTime_ / 1000.0f;
+                float all = block->frameTime_ / 1000.0f;
+
+                float totalAvg = (block->totalCount_ ? block->totalTime_ / block->totalCount_ : 0.0f) / 1000.0f;
+                float totalMax = block->totalMaxTime_ / 1000.0f;
+                float totalAll = block->totalTime_ / 1000.0f;
+
+                fprintf( fp, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f\n", 
+                            indentedName, 
+                            min(block->frameCount_, 99999),
+                            avg, 
+                            max, 
+                            all, 
+                            min(block->totalCount_, 99999), 
+                            totalAvg, 
+                            totalMax, 
+                            totalAll);
+            }
+        }
+
+        ++depth;
+    }
+
+    for (uint32_t i=0; i<block->numChildren_; ++i)
+    {
+        dump_block_to_file(fp, block->children_[i], depth, maxDepth, showUnused, showTotal);
     }
 }
 

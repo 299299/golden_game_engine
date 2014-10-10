@@ -78,7 +78,7 @@ struct PhysicsWorld
     int get_layer(const StringId& name) const;
     void create_plane(float size);
 
-    void sync_actors(struct Actor* actors, uint32_t num);
+    void sync_rigidbody_actors(struct Actor* actors, uint32_t num);
 
 private:
     void kickin_raycast_jobs();

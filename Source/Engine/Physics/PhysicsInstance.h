@@ -36,6 +36,7 @@ ENGINE_NATIVE_ALIGN struct PhysicsInstance
     uint8_t                     m_systemType;
     bool                        m_dirty;
     bool                        m_inWorld;
+    char                        m_padding[4];
 
     void init(const void* resource);
     void destroy();

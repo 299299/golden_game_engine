@@ -285,7 +285,7 @@ void ActorWorld::step( float dt )
 
 void ActorWorld::post_step( float dt )
 {
-    g_physicsWorld.sync_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
+    g_physicsWorld.sync_rigidbody_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
 }
 
 void ActorWorld::draw()

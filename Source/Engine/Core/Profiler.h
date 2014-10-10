@@ -153,10 +153,27 @@ public:
     
     ProfilerBlock* alloc_block(const char* name);
 
-    void dump(bool showUnused = false, bool showTotal = false, unsigned maxDepth = -1) const;
+    void dump(bool showUnused = false, 
+              bool showTotal = false, 
+              int maxDepth = -1) const;
 
+    void dump_to_file(const char* fileName, 
+                      bool showUnused = false, 
+                      bool showTotal = false, 
+                      int maxDepth = -1) const;
 private:
-    void dump_block(ProfilerBlock* block, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal) const;
+    void dump_block(ProfilerBlock* block, 
+                    int depth, 
+                    int maxDepth, 
+                    bool showUnused, 
+                    bool showTotal) const;
+
+    void dump_block_to_file(struct FILE* fp,
+                            ProfilerBlock* block, 
+                            int depth, 
+                            int maxDepth, 
+                            bool showUnused, 
+                            bool showTotal) const;
 
     /// Current profiling block.
     ProfilerBlock* current_;

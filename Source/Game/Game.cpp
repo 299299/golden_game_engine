@@ -162,7 +162,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
     g_engine.run();
     quitWebServerTool();
+
+    //------------------------------------------------------------
     g_engine.quit();
+    //------------------------------------------------------------
+    g_profiler.dump_to_file("game_profile.txt", true, true);
 	return 0;
 }
 
