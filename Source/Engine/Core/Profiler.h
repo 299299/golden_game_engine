@@ -105,9 +105,6 @@ struct ProfilerBlock
     long long totalMaxTime_;
     /// Total accumulated calls.
     unsigned totalCount_;
-
-    /// start time for Begin blcok
-    long long startTime_;
 };
 
 
@@ -155,23 +152,23 @@ public:
 
     void dump(bool showUnused = false, 
               bool showTotal = false, 
-              int maxDepth = -1) const;
+              unsigned maxDepth = -1) const;
 
     void dump_to_file(const char* fileName, 
                       bool showUnused = false, 
                       bool showTotal = false, 
-                      int maxDepth = -1) const;
+                      unsigned maxDepth = -1) const;
 private:
     void dump_block(ProfilerBlock* block, 
-                    int depth, 
-                    int maxDepth, 
+                    unsigned depth, 
+                    unsigned maxDepth, 
                     bool showUnused, 
                     bool showTotal) const;
 
     void dump_block_to_file(void* fp,
                             ProfilerBlock* block, 
-                            int depth, 
-                            int maxDepth, 
+                            unsigned depth, 
+                            unsigned maxDepth, 
                             bool showUnused, 
                             bool showTotal) const;
 

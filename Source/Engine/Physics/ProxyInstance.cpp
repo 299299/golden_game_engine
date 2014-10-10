@@ -136,8 +136,7 @@ void ProxyInstance::setEnabled(bool bEnable)
 
 void ProxyInstance::destroy()
 {
-    if(!m_proxy)
-        return;
+    if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     hkpWorld* world = phantom->getWorld();
     if(world) {
@@ -151,11 +150,9 @@ void ProxyInstance::destroy()
 
 void ProxyInstance::addToSimulation()
 {
-    if(!m_proxy)
-        return;
+    if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
-    if(phantom->getWorld())
-        return;
+    if(phantom->getWorld()) return;
     hkpWorld* world = g_physicsWorld.world();
     PHYSICS_LOCKWRITE(world);
     world->addPhantom(phantom);
@@ -163,12 +160,10 @@ void ProxyInstance::addToSimulation()
 
 void ProxyInstance::removeFromSimulation()
 {
-    if(!m_proxy)
-        return;
+    if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     hkpWorld* world = phantom->getWorld();
-    if(!world)
-        return;
+    if(!world) return;
     PHYSICS_LOCKWRITE(world);
     world->removePhantom(phantom);
 }
@@ -230,7 +225,6 @@ void ProxyInstance::decouplingRenderWithPhysics( float timeStep,
     hkVector4 expectedPosition; 
     expectedPosition.setAddMul4(desiredPosition, desiredVelocity, timeStep);
 
-    
     desiredPosition.addMul4(verticalDisplacement, UP);
     desiredPosition.add4(horizontalDisplacement);
 

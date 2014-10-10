@@ -56,11 +56,11 @@ Profiler::Profiler() :
     current_(0),
     root_(0),
     intervalFrames_(0),
-    totalFrames_(0)
+    totalFrames_(0),
+    numBlocks_(0)
 {
-    numBlocks_ = 0;
     root_ = alloc_block("Root");
-    current_ = root_
+    current_ = root_;
 }
 
 Profiler::~Profiler()
@@ -104,7 +104,7 @@ ProfilerBlock* Profiler::alloc_block( const char* name )
     return newBlock;
 }
 
-void Profiler::dump( bool showUnused, bool showTotal, int maxDepth ) const
+void Profiler::dump( bool showUnused, bool showTotal, unsigned maxDepth ) const
 {
     const uint8_t color = 0x1f;
     if (!showTotal)
@@ -119,7 +119,7 @@ void Profiler::dump( bool showUnused, bool showTotal, int maxDepth ) const
     dump_block(root_, 0, maxDepth, showUnused, showTotal);
 }
 
-void Profiler::dump_to_file(const char* fileName, bool showUnused, bool showTotal, int maxDepth ) const
+void Profiler::dump_to_file(const char* fileName, bool showUnused, bool showTotal, unsigned maxDepth ) const
 {
     FILE* fp = fopen(fileName, "w");
     if(!fp) return;
@@ -137,8 +137,8 @@ void Profiler::dump_to_file(const char* fileName, bool showUnused, bool showTota
 }
 
 void Profiler::dump_block(  ProfilerBlock* block, 
-                            int depth, 
-                            int maxDepth, 
+                            unsigned depth, 
+                            unsigned maxDepth, 
                             bool showUnused, 
                             bool showTotal ) const
 {
@@ -210,8 +210,8 @@ void Profiler::dump_block(  ProfilerBlock* block,
 
 void Profiler::dump_block_to_file(  void* fp_, 
                                     ProfilerBlock* block, 
-                                    int depth, 
-                                    int maxDepth, 
+                                    unsigned depth, 
+                                    unsigned maxDepth, 
                                     bool showUnused, 
                                     bool showTotal ) const
 {
