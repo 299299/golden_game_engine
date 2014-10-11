@@ -18,6 +18,7 @@ struct  hkpWorldRayCastCommand;
 struct  hkpWorldRayCastOutput;
 struct  hkpCollisionQueryJobHeader;
 class   hkSemaphore;
+struct  Actor;
 
 struct CollisionEvent
 {
@@ -78,7 +79,8 @@ struct PhysicsWorld
     int get_layer(const StringId& name) const;
     void create_plane(float size);
 
-    void sync_rigidbody_actors(struct Actor* actors, uint32_t num);
+    void sync_rigidbody_actors(Actor* actors, uint32_t num);
+    void update_proxy_actors(float timeStep, Actor* actors, uint32_t num);
 
 private:
     void kickin_raycast_jobs();

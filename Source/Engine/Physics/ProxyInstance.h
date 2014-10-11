@@ -47,23 +47,16 @@ ENGINE_NATIVE_ALIGN struct ProxyInstance
         gravity.set(g[0], g[1], g[2]);
     }
 
-    void applyPhysics(float timeStep, 
-                      hkVector4& horizontalDisplacement,
-                      hkVector4& desiredVelocity);
-    void decouplingRenderWithPhysics(float timeStep,
-                                     const float verticalDisplacment,
-                                     const hkVector4& horizontalDisplacement,
-                                     const hkVector4& desiredVelocity, 
-                                     hkQsTransform& transformInOut);
-    void avoidLevitation(float timeStep,
-                         const bool* footInAir,
-                         const hkQsTransform& transform,
-                         hkVector4& desiredVelocity);
-
     const hkVector4& getLinearVelocity() const;
     const hkVector4& getPosition() const;
     void setLinearVelocity(const hkVector4& vel);
     void setTransform(const hkTransform& t);
+    void update(float timeStep);
+
+    hkVector4                       m_renderTranslation;
+    hkVector4                       m_targetVelocity;
+    hkVector4                       m_horizontalDisplacement;
+    float                           m_verticalDisplacement;
 
     const ProxyResource*            m_resource;
     hkpCharacterProxy*              m_proxy;

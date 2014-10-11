@@ -448,6 +448,19 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
     }
 }
 
+void PhysicsWorld::update_proxy_actors(float timeStep, Actor* actors, uint32_t num)
+{
+    check_status();
+    for (uint32_t i=0; i<num; ++i)
+    {
+        Actor& actor = actors[i];
+        ProxyInstance* proxy = (ProxyInstance*)actor.get_component(kComponentProxy);
+        if(!proxy) continue;
+        proxy->update(timeStep);
+        //to do update render 
+    }
+}
+
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------

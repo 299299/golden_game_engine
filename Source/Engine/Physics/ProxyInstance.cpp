@@ -17,6 +17,20 @@
 #include <Common/Base/Types/Physics/hkStepInfo.h>
 //=============================================================================================
 
+//--------------------------------------------------------------------------
+void* load_resource_proxy( const char* data, uint32_t size)
+{
+    ProxyResource* proxy = (ProxyResource*)data;
+    proxy->createShape();
+    return proxy;
+}
+
+void destroy_resource_proxy( void * resource )
+{
+    ProxyResource* proxy = (ProxyResource*)resource;
+    proxy->destroyShape();
+}
+//--------------------------------------------------------------------------
 
 static hkVector4 UP(0,1,0);
 struct AnimCharacterListener : public hkReferencedObject, public hkpCharacterProxyListener
@@ -99,10 +113,17 @@ void ProxyResource::destroyShape()
 //======================================================  
 void ProxyInstance::init(const void* resource)
 {
+    m_horizontalDisplacement.setZero4();
+    m_verticalDisplacement = 0;
+    m_targetVelocity.setZero4();
+    m_renderTranslation.setZero4();
+
     m_resource = (const ProxyResource*)resource;
     hkpWorld* world = g_physicsWorld.world();
     int layerId = g_physicsWorld.get_layer(m_resource->m_layerName);
-    hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape, hkTransform::getIdentity(), hkpGroupFilter::calcFilterInfo(layerId,0));
+    hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape, 
+                                                         hkTransform::getIdentity(), 
+                                                         hkpGroupFilter::calcFilterInfo(layerId,0));
     hkpCharacterProxyCinfo cpci;
     cpci.m_staticFriction = 0.0f;
     cpci.m_dynamicFriction = 1.0f;
@@ -139,7 +160,8 @@ void ProxyInstance::destroy()
     if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     hkpWorld* world = phantom->getWorld();
-    if(world) {
+    if(world) 
+    {
         world->markForWrite();
         world->removePhantom(phantom);
     }
@@ -166,140 +188,6 @@ void ProxyInstance::removeFromSimulation()
     if(!world) return;
     PHYSICS_LOCKWRITE(world);
     world->removePhantom(phantom);
-}
-
-void ProxyInstance::applyPhysics(float timeStep,
-                                 hkVector4& horizontalDisplacement,
-                                 hkVector4& desiredVelocity)
-{
-    const ProxyResource* res = m_resource;
-    hkVector4 gravity; getGravity(gravity);
-
-    // Add horizontal displacement (try to make the proxy catch up)
-    const hkReal catchUpGain = (m_listener->m_onMovingSurface) ? 0 : res->m_horizontalGain;
-    desiredVelocity.addMul4(1.0f/timeStep * catchUpGain , horizontalDisplacement);
-
-    // Feed output from state machine into character proxy
-    m_proxy->setLinearVelocity(desiredVelocity);
-
-    // Next expected position
-    hkVector4 expectedPosition; 
-    expectedPosition.setAddMul4(m_proxy->getPosition(), desiredVelocity, timeStep);
-
-    hkStepInfo si;
-    si.m_deltaTime = timeStep;
-    si.m_invDeltaTime = 1.0f / timeStep;
-
-    m_proxy->integrate( si, gravity);
-
-    // Update the horizontal displacement
-    const hkVector4& finalPosition = m_proxy->getPosition();
-    hkVector4 horizontalFinalPosition; 
-    horizontalFinalPosition.setAddMul4(finalPosition, UP, -finalPosition.dot4(UP));
-    hkVector4 horizontalExpectedPosition; 
-    horizontalExpectedPosition.setAddMul4(expectedPosition, UP, -expectedPosition.dot4(UP));
-    horizontalDisplacement.setSub4(horizontalExpectedPosition, horizontalFinalPosition);
-
-    {
-        // Clamp the error
-        const hkReal maxHorizontalDisplacement = res->m_maxHorizontalSeparation;
-        const hkReal maxHorizontalDisplacementSqr = maxHorizontalDisplacement * maxHorizontalDisplacement;
-        const hkReal errorSqr = horizontalDisplacement.lengthSquared3();
-        if (errorSqr>maxHorizontalDisplacementSqr)
-        {
-            horizontalDisplacement.mul4(hkMath::sqrt(maxHorizontalDisplacementSqr/errorSqr));
-        }
-    }
-}
-
-void ProxyInstance::decouplingRenderWithPhysics( float timeStep,
-                                                 const float verticalDisplacement,
-                                                 const hkVector4& horizontalDisplacement,
-                                                 const hkVector4& desiredVelocity, 
-                                                 hkQsTransform& transformInOut)
-{
-    const ProxyResource* res = m_resource;
-    hkVector4 desiredPosition = m_proxy->getPosition();
-
-    // Next expected position
-    hkVector4 expectedPosition; 
-    expectedPosition.setAddMul4(desiredPosition, desiredVelocity, timeStep);
-
-    desiredPosition.addMul4(verticalDisplacement, UP);
-    desiredPosition.add4(horizontalDisplacement);
-
-    const hkVector4& currentPosition = transformInOut.getTranslation();
-
-    // Vertical : do gain and clamp
-    hkReal newVerticalPosition;
-    {
-        const hkReal desiredVerticalPosition = desiredPosition.dot3(UP);
-        const hkReal currentVerticalPosition = currentPosition.dot3(UP);
-        const hkReal diff = desiredVerticalPosition - currentVerticalPosition;
-
-        newVerticalPosition = currentVerticalPosition + diff * res->m_verticalGain;
-
-        // Clamp the vertical separation
-        {
-            const hkReal resultDiff = newVerticalPosition - desiredVerticalPosition;
-            // The maximum we allow the items to separate
-            const hkReal maxSeparation = res->m_maxVerticalSeparation;
-
-            if ( resultDiff > maxSeparation )
-            {
-                newVerticalPosition = desiredVerticalPosition + maxSeparation;
-            }
-
-            if ( resultDiff < -maxSeparation )
-            {
-                newVerticalPosition = desiredVerticalPosition - maxSeparation;
-            }
-        }
-    }
-
-    // Horizontal : no need to do gain or clamp (is done somewhere else)
-    hkVector4 newHorizontalPosition; 
-    newHorizontalPosition.setAddMul4(desiredPosition, UP, -desiredPosition.dot3(UP));
-    transformInOut.m_translation.setAddMul4(newHorizontalPosition, UP, newVerticalPosition);
-}
-
-
-void ProxyInstance::avoidLevitation(float timeStep,
-                                    const bool* footInAir,
-                                    const hkQsTransform& transform,
-                                    hkVector4& desiredVelocity)
-{
-    /* 
-        Avoid levitation: if the feet are on air, push the character down. 
-        Optionally, push it sideways if only one is on air
-        Only do this when footIK is enabled, 
-        otherwise the character proxy will slide down slopes (including sloped planes
-        from contact with stairs)
-    */
-    hkVector4 gravity; getGravity(gravity);
-    //@TODO avoid hard code.
-    // Two legs stateInput air : push down
-    if (footInAir[0] && footInAir[1])
-    {
-        desiredVelocity.addMul4( timeStep * 10.0f, gravity );
-    }
-    else if(m_resource->m_pushIfFootInAir)
-    {
-        hkVector4 leftWS; 
-        leftWS.setRotatedDir(transform.getRotation(), hkVector4(1.0f, 0, 0.3f));
-        // One leg stateInput air : push sideways
-        if (footInAir[1])
-        {
-            desiredVelocity.addMul4( timeStep * 10.0f, gravity );
-            desiredVelocity.addMul4( -timeStep * 50.0f, leftWS );
-        }
-        // One leg stateInput air : push sideways
-        if (footInAir[1])
-        {
-            desiredVelocity.addMul4( timeStep * 10.0f, gravity );
-            desiredVelocity.addMul4( timeStep * 50.0f, leftWS );
-        }
-    }
 }
 
 bool ProxyInstance::checkSupport()
@@ -336,15 +224,83 @@ bool ProxyInstance::isInWorld() const
     return m_proxy->m_shapePhantom->getWorld() != 0;
 }
 
-void* load_resource_proxy( const char* data, uint32_t size)
+void ProxyInstance::update(float timeStep)
 {
-    ProxyResource* proxy = (ProxyResource*)data;
-    proxy->createShape();
-    return proxy;
+    const ProxyResource* res = m_resource;
+    hkVector4 gravity; getGravity(gravity);
+
+    hkVector4 desiredVelocity = m_targetVelocity;
+
+    // Add horizontal displacement (try to make the proxy catch up)
+    const hkReal catchUpGain = (m_listener->m_onMovingSurface) ? 0 : res->m_horizontalGain;
+    desiredVelocity.addMul4(1.0f/timeStep * catchUpGain , m_horizontalDisplacement);
+
+    // Feed output from state machine into character proxy
+    m_proxy->setLinearVelocity(desiredVelocity);
+
+    // Next expected position
+    hkVector4 expectedPosition; 
+    expectedPosition.setAddMul4(m_proxy->getPosition(), desiredVelocity, timeStep);
+
+    hkStepInfo si;
+    si.m_deltaTime = timeStep;
+    si.m_invDeltaTime = 1.0f / timeStep;
+
+    //@TODO ?
+    //MOVE IT BATCH OR MULTITHREAD
+    m_proxy->integrate( si, gravity);
+
+    // Update the horizontal displacement
+    const hkVector4& finalPosition = m_proxy->getPosition();
+    hkVector4 horizontalFinalPosition; 
+    horizontalFinalPosition.setAddMul4(finalPosition, UP, -finalPosition.dot4(UP));
+    hkVector4 horizontalExpectedPosition; 
+    horizontalExpectedPosition.setAddMul4(expectedPosition, UP, -expectedPosition.dot4(UP));
+    m_horizontalDisplacement.setSub4(horizontalExpectedPosition, horizontalFinalPosition);
+
+    {
+        // Clamp the error
+        const hkReal maxHorizontalDisplacement = res->m_maxHorizontalSeparation;
+        const hkReal maxHorizontalDisplacementSqr = maxHorizontalDisplacement * maxHorizontalDisplacement;
+        const hkReal errorSqr = m_horizontalDisplacement.lengthSquared3();
+        if (errorSqr>maxHorizontalDisplacementSqr)
+        {
+            m_horizontalDisplacement.mul4(hkMath::sqrt(maxHorizontalDisplacementSqr/errorSqr));
+        }
+    }
+
+    hkVector4 desiredPosition = m_proxy->getPosition();
+
+    // Next expected position
+    hkVector4 expectedPosition; 
+    expectedPosition.setAddMul4(desiredPosition, desiredVelocity, timeStep);
+
+    desiredPosition.addMul4(m_verticalDisplacement, UP);
+    desiredPosition.add4(m_horizontalDisplacement);
+
+    // Vertical : do gain and clamp
+    hkReal newVerticalPosition;
+    {
+        const hkReal desiredVerticalPosition = desiredPosition.dot3(UP);
+        const hkReal currentVerticalPosition = m_renderTranslation.dot3(UP);
+        const hkReal diff = desiredVerticalPosition - currentVerticalPosition;
+
+        newVerticalPosition = currentVerticalPosition + diff * res->m_verticalGain;
+
+        // Clamp the vertical separation
+        {
+            const hkReal resultDiff = newVerticalPosition - desiredVerticalPosition;
+            // The maximum we allow the items to separate
+            const hkReal maxSeparation = res->m_maxVerticalSeparation;
+
+            if ( resultDiff > maxSeparation ) newVerticalPosition = desiredVerticalPosition + maxSeparation;
+            else if ( resultDiff < -maxSeparation ) newVerticalPosition = desiredVerticalPosition - maxSeparation;
+        }
+    }
+
+    // Horizontal : no need to do gain or clamp (is done somewhere else)
+    hkVector4 newHorizontalPosition; 
+    newHorizontalPosition.setAddMul4(desiredPosition, UP, -desiredPosition.dot3(UP));
+    m_renderTranslation.setAddMul4(newHorizontalPosition, UP, newVerticalPosition);
 }
 
-void destroy_resource_proxy( void * resource )
-{
-    ProxyResource* proxy = (ProxyResource*)resource;
-    proxy->destroyShape();
-}
