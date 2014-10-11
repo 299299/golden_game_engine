@@ -31,6 +31,7 @@ void StaticModelConverter::processNode( hkxNode* node )
 {
     std::vector<hkxNode*> meshNodes;
     findNodesRec(node, &hkxMeshClass, meshNodes);
+    
 #if 0
     for(size_t i=0; i<meshNodes.size(); ++i)
     {
@@ -55,12 +56,15 @@ void StaticModelConverter::processNode( hkxNode* node )
         mc->m_type = m_type;
         mc->setName(m_name);
         std::vector<hkxMesh*> meshes;
+        hkxNode* first_node = 0;
         for(size_t i=0; i< meshNodes.size(); ++i)
         {
             hkxNode* node = meshNodes[i];
             hkVariant va = node->m_object;
             meshes.push_back((hkxMesh*)va.m_object);
+            if(!first_node) first_node = node;
         }
+        mc->m_node = first_node;
         mc->processMeshes(meshes);
         m_components.push_back(mc);
     }
@@ -89,13 +93,16 @@ void StaticModelConverter::processNode( hkxNode* node )
     {
         ModelConverter* mc = new ModelConverter(this);
         std::vector<hkxMesh*> meshes;
+        hkxNode* first_node = 0;
         for(size_t i=0; i<skinNodes.size(); ++i)
         {
             hkxNode* node = skinNodes[i];
             hkVariant va = node->m_object;
             hkxSkinBinding* skin = (hkxSkinBinding*)va.m_object;
             meshes.push_back(skin->m_mesh);
+            if(!first_node) first_node = node;
         }
+        mc->m_node = first_node;
         mc->setName(m_name);
         mc->processMeshes(meshes);
         m_components.push_back(mc);
@@ -109,6 +116,7 @@ void StaticModelConverter::processNode( hkxNode* node )
         hkxNode* node = lightNodes[i];
         hkVariant va = node->m_object;
         LightConverter* lc = new LightConverter(this);
+        lc->m_node = node;
 
         char buf[128];
         if(i == 0) sprintf_s(buf, "%s", m_name.c_str());
@@ -122,6 +130,7 @@ void StaticModelConverter::processNode( hkxNode* node )
     if(m_config->m_physics)
     {
         PhysicsConverter* physics = new PhysicsConverter(this);
+        physics->m_node = node;
         physics->setName(m_name);
         physics->process((void*)m_config->m_physics);
         m_components.push_back(physics);

@@ -25,6 +25,8 @@ public:
     void setName(const std::string& name) { m_name = name; };
     void setClass(const std::string& cls) { m_class = cls; };
 
+    hkxNode* findNode(const char* name);
+
     Actor_Config*                           m_config;
     std::vector<ComponentConverter*>        m_components;
     std::string                             m_name;

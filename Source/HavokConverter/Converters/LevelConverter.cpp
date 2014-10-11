@@ -155,20 +155,7 @@ jsonxx::Object LevelConverter::serializeToJson() const
         hkxNode* node = m_sceneNodes[i];
         jsonxx::Object actor;
         json_transform(actor, node, m_scene);
-
-        const hkxAttributeGroup* attrGrp = node->findAttributeGroupByName("engineAttributes");
-        for (int i=0; i<attrGrp->m_attributes.getSize(); ++i)
-        {
-            const hkxAttribute& attrib = attrGrp->m_attributes[i];
-            std::string attrName(attrib.m_name.cString());
-            hkVariant variant(attrib.m_value);
-            if(variant.m_class == &hkxSparselyAnimatedStringClass)
-            {
-                hkxSparselyAnimatedString* hString = (hkxSparselyAnimatedString*)variant.m_object;
-                actor << attrName << std::string(hString->m_strings[0].cString());
-            }
-            // OTHER Attribute TODO
-        }
+        fill_object_attributes(actor, node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
         actorList << actor;
     }
 

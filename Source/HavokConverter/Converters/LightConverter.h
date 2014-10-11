@@ -15,12 +15,8 @@ public:
 
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
-
-private:
-    void process(hkxLight* light);
     
 private:
-    std::string                 m_name;
     hkxLight*                   m_light;
     LightResource               m_resource;
 };

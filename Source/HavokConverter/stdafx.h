@@ -10,6 +10,7 @@
 #define     PROXY_NAME          ("Proxy_")
 #define     LEVEL_NAME          ("Level")
 #define     HAVOK_ERROR         ("havok_convert_error.txt")
+#define     ENGINE_ATTRIBUTES   ("engine_attributes")
 
 enum HCExitCode
 {

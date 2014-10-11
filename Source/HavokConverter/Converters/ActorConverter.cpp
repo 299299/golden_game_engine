@@ -69,3 +69,9 @@ std::string ActorConverter::getResourceName() const
 {
     return m_config->m_rootPath + m_name;
 }
+
+
+hkxNode* ActorConverter::findNode(const char* name)
+{
+    return m_config->m_scene->findNodeByName(name);
+}

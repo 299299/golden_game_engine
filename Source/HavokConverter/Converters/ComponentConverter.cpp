@@ -4,6 +4,7 @@
 
 ComponentConverter::ComponentConverter(ActorConverter* ownner)
 :m_ownner(ownner)
+,m_node(0)
 {
 
 }

@@ -14,11 +14,7 @@ LightConverter::~LightConverter()
 
 void LightConverter::process(void* pData, int hint)
 {
-    process((hkxLight*)pData);
-}
-
-void LightConverter::process(hkxLight* light)
-{
+    hkxLight* light = (hkxLight*)pData;
     m_light = light;
 }
 
@@ -53,6 +49,8 @@ jsonxx::Object LightConverter::serializeToJson() const
     lightObject << "falloff" << m_light->m_range;
     lightObject << "name" << getResourceName();
     lightObject << "type" << getTypeName();
+
+    fill_object_attributes(lightObject, m_node->findAttributeGroup(ENGINE_ATTRIBUTES));
 
     return lightObject;
 }

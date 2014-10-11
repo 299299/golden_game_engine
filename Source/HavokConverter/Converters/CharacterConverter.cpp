@@ -2,6 +2,7 @@
 #include "HC_Utils.h"
 #include "ModelConverter.h"
 #include "AnimRigConverter.h"
+#include "ProxyConverter.h"
 
 CharacterConverter::CharacterConverter()
     :m_ac(0)
@@ -35,9 +36,18 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     mc->process((void*)m_skin, 1);
     m_components.push_back(mc);
     AnimRigConverter* anic = new AnimRigConverter(this);
+    anic->m_node = findNode(AnimRig::get_name());
     anic->setName(m_name);
     anic->process((void*)m_skin);
     m_components.push_back(anic);
+
+    hkxNode* proxy_node = findNode(ProxyInstance::get_name())
+    if(proxy_node)
+    {
+        ProxyConverter* proxy = new ProxyConverter(this);
+        proxy->process(proxy_node, 0);
+        m_components.push_back(proxy);
+    }
 }
 
 void CharacterConverter::collectRigSkinData(hkaSkeleton* rig)

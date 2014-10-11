@@ -195,6 +195,9 @@ ModelConverter::serializeToJson() const
         flagsObject << "no_shadow";
         modelObject << "flags" << flagsObject;
     }
+
+    fill_object_attributes(modelObject, m_node->findAttributeGroup(ENGINE_ATTRIBUTES));
+    
     return modelObject;
 }
 

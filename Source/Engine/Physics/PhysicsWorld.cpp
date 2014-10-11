@@ -221,8 +221,7 @@ void PhysicsWorld::destroy_world()
 {
     check_status();
 
-    if(!m_world)
-        return;
+    if(!m_world) return;
     m_world->markForWrite();
     g_threadMgr.vdb_remove_world(m_world);
     SAFE_DELETE(m_world);
@@ -250,9 +249,7 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
                 if (mgr->m_contactConstraintData.getNumContactPoints() > 0)
                 {
                     contactingBodies[retNum ++] = otherBody;
-
-                    if(retNum >= maxLen)
-                        return retNum;
+                    if(retNum >= maxLen) return retNum;
                 }
             }
         }

@@ -13,68 +13,29 @@ PROXY_GROUP = 'Proxy'
 
 
 def getMatrix(node):
-    '''
-    Gets the world matrix of an object based on name.
-    '''
-    # Selection list object and MObject for our matrix
     selection = OpenMaya.MSelectionList()
     matrixObject = OpenMaya.MObject()
-
-    # Adding object
     selection.add(node)
-
-    # New api is nice since it will just return an MObject instead of taking
-    # two arguments.
     MObjectA = selection.getDependNode(0)
-
-    # Dependency node so we can get the worldMatrix attribute
     fnThisNode = OpenMaya.MFnDependencyNode(MObjectA)
-
-    # Get it's world matrix plug
     worldMatrixAttr = fnThisNode.attribute("worldMatrix")
-
-    # Getting mPlug by plugging in our MObject and attribute
     matrixPlug = OpenMaya.MPlug(MObjectA, worldMatrixAttr)
     matrixPlug = matrixPlug.elementByLogicalIndex(0)
-
-    # Get matrix plug as MObject so we can get it's data.
     matrixObject = matrixPlug.asMObject()
-
-    # Finally get the data
     worldMatrixData = OpenMaya.MFnMatrixData(matrixObject)
     worldMatrix = worldMatrixData.matrix()
-
     return worldMatrix
 
 
 def decompMatrix(node, matrix):
-    '''
-    Decomposes a MMatrix in new api. Returns an list of translation,rotation,
-    scale in world space.
-    '''
-    # Rotate order of object
     rotOrder = cmds.getAttr('%s.rotateOrder' % node)
-
-    # Puts matrix into transformation matrix
     mTransformMtx = OpenMaya.MTransformationMatrix(matrix)
-
-    # Translation Values
     trans = mTransformMtx.translation(OpenMaya.MSpace.kWorld)
-
-    # Euler rotation value in radians
     eulerRot = mTransformMtx.rotation()
-
-    # Reorder rotation order based on ctrl.
     eulerRot.reorderIt(rotOrder)
-
-    # Find degrees
     angles = [math.degrees(angle)
               for angle in (eulerRot.x, eulerRot.y, eulerRot.z)]
-
-    # Find world scale of our object.
     scale = mTransformMtx.scale(OpenMaya.MSpace.kWorld)
-
-    # Return Values
     return [trans.x, trans.y, trans.z], angles, scale
 
 
@@ -308,18 +269,14 @@ class NagaMayaUtil(object):
         print('havok export folder = ' + hkxFolder)
         group = cmds.group(em=1, name=PROXY_GROUP)
         cmds.addAttr(sn='ht', ln='hkType', dt='string')
-        cmds.setAttr(group + '.hkType', 'engineAttributes', type='string')
-        cmds.addAttr(sn='pn', ln='packageName', dt='string')
-        cmds.setAttr(group + '.packageName', packageName, type='string')
+        cmds.setAttr(group + '.hkType', 'engine_attributes', type='string')
+        cmds.addAttr(sn='pn', ln='package_name', dt='string')
+        cmds.setAttr(group + '.package_name', packageName, type='string')
 
         nodeList = cmds.ls(type='assemblyDefinition')
-        #islock = 0
 
         for ad_node in nodeList:
             mesh_node = cmds.listRelatives(ad_node, c=1, f=1)[0]
-            #cmds.setAttr(mesh_node + '.translate', lock=islock)
-            #cmds.setAttr(mesh_node + '.rotate', lock=islock)
-            #cmds.setAttr(mesh_node + '.scale', lock=islock)
             print('ad node = ' + ad_node)
             print('mesh node = ' + mesh_node)
             proxyNodeName = PROXY_PREFIX + ad_node
@@ -332,15 +289,15 @@ class NagaMayaUtil(object):
                 'transform', n=proxyNodeName, p=group)
             cmds.addAttr(sn='ht', ln='hkType', dt='string')
             cmds.setAttr(
-                nodeName + '.hkType', 'engineAttributes', type='string')
+                nodeName + '.hkType', 'engine_attributes', type='string')
             cmds.addAttr(sn='tp', ln='type', dt='string')
             resourceName = packageName + '/actor/' + entityType
             cmds.setAttr(
                 nodeName + '.type', resourceName, type='string')
             cmds.addAttr(sn='na', ln='name', dt='string')
             cmds.setAttr(nodeName + '.name', ad_node, type='string')
-            cmds.addAttr(sn='lk', ln='linkNode', dt='string')
-            cmds.setAttr(nodeName + '.linkNode', ad_node, type='string')
+            cmds.addAttr(sn='lk', ln='link_node', dt='string')
+            cmds.setAttr(nodeName + '.link_node', ad_node, type='string')
             mat = getMatrix(mesh_node)
             matDecomp = decompMatrix(mesh_node, mat)
             translate = matDecomp[0]
@@ -432,10 +389,10 @@ class NagaMayaUtil(object):
         return retList
 
     def getRigList(self):
-        return osGetFileList(self.pipelinePath, '.bones')
+        return osGetFileList(self.pipelinePath + 'bones', '.bones')
 
     def getHkoList(self):
-        return osGetFileList(self.pipelinePath + 'havok_hko', '.hko')
+        return osGetFileList(self.pipelinePath + 'hko', '.hko')
 
     #
     #
@@ -529,11 +486,3 @@ def batch_export(folder, package):
     std.initialize(name='python')
     f = NagaMayaUtil()
     f.batchExport(folder, package)
-
-
-def test_level(fileName):
-    import maya.standalone as std
-    std.initialize(name='python')
-    f = NagaMayaUtil()
-    cmds.file(fileName, force=True, open=True)
-    f.addLevelProxy()

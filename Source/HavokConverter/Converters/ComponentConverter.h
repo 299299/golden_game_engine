@@ -2,7 +2,9 @@
 #include "stdafx.h"
 #include "CommonUtils.h"
 
+class hkxNode;
 class ActorConverter;
+
 class ComponentConverter : public hkReferencedObject
 {
 public:
@@ -30,4 +32,5 @@ public:
 
     std::string             m_name;
     ActorConverter*         m_ownner;
+    hkxNode*                m_node;
 };

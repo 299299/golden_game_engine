@@ -104,3 +104,66 @@ Actor_Config* createConfig( const std::string& input, const std::string& outFold
     config->m_rootPath = path;
     return config;
 }
+
+
+void fill_object_attributes(jsonxx::Object& object, const hkxAttributeGroup* group)
+{
+    if(!group) return;
+    //TODO Animated Attributes
+    for (int i=0; i<group->m_attributes.getSize(); ++i)
+    {
+        const hkxAttribute& attrib = group->m_attributes[i];
+        std::string attrName(attrib.m_name.cString());
+        hkVariant variant(attrib.m_value);
+        if(variant.m_class == &hkxSparselyAnimatedStringClass)
+        {
+            hkxSparselyAnimatedString* hString = (hkxSparselyAnimatedString*)variant.m_object;
+            object << attrName << std::string(hString->m_strings[0].cString());
+        }
+        else if(variant.m_class == &hkxAnimatedFloatClass)
+        {
+            hkxAnimatedFloat* hFloat = (hkxAnimatedFloat*)variant.m_object;
+            object << attrName << hFloat->m_floats[0];
+        }
+        else if(variant.m_class == &hkxAnimatedVectorClass)
+        {
+            hkxAnimatedVector* hVector = (hkxAnimatedVector*)variant.m_object;
+            jsonxx::Array vectorArray;
+            for(int i=0; i<hVector->m_vectors.getSize(); ++i)
+            {
+                vectorArray << hVector->m_vectors[i];
+            }
+            object << attrName << vectorArray;
+        }
+        else if(variant.m_class == &hkxSparselyAnimatedBoolClass)
+        {
+            hkxSparselyAnimatedBool* hBool = (hkxSparselyAnimatedBool*)variant.m_object;
+            object << attrName << (bool)hBool->m_bools[0];
+        }
+        else if(variant.m_class == &hkxSparselyAnimatedIntClass)
+        {
+            hkxSparselyAnimatedInt* hInt = (hkxSparselyAnimatedInt*)variant.m_object;
+            object << attrName << (int)hInt->m_ints[0];
+        }
+        else if(variant.m_class == &hkxAnimatedQuaternionClass)
+        {
+            hkxAnimatedQuaternion* hQuat = (hkxAnimatedQuaternion*)variant.m_object;
+            jsonxx::Array vectorArray;
+            for(int i=0; i<hQuat->m_quaternions.getSize(); ++i)
+            {
+                vectorArray << hQuat->m_quaternions[i];
+            }
+            object << attrName << vectorArray;
+        }
+        else if(variant.m_class == &hkxAnimatedMatrixClass)
+        {
+            hkxAnimatedMatrix* hMatrix = (hkxAnimatedMatrix*)variant.m_object;
+            jsonxx::Array vectorArray;
+            for(int i=0; i<hMatrix->m_matrices.getSize(); ++i)
+            {
+                vectorArray << hMatrix->m_matrices[i];
+            }
+            object << attrName << vectorArray;
+        }
+    }
+}
