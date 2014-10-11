@@ -33,8 +33,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox_Package = new System.Windows.Forms.ComboBox();
             this.button_startExport = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox_Type = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // button_folder
@@ -74,38 +72,13 @@
             // 
             // button_startExport
             // 
-            this.button_startExport.Location = new System.Drawing.Point(12, 124);
+            this.button_startExport.Location = new System.Drawing.Point(15, 91);
             this.button_startExport.Name = "button_startExport";
-            this.button_startExport.Size = new System.Drawing.Size(398, 48);
+            this.button_startExport.Size = new System.Drawing.Size(405, 80);
             this.button_startExport.TabIndex = 4;
             this.button_startExport.Text = "START";
             this.button_startExport.UseVisualStyleBackColor = true;
             this.button_startExport.Click += new System.EventHandler(this.button_startExport_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 84);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(77, 12);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "exprot type:";
-            // 
-            // comboBox_Type
-            // 
-            this.comboBox_Type.FormattingEnabled = true;
-            this.comboBox_Type.Items.AddRange(new object[] {
-            "simple scene",
-            "skin",
-            "animation default",
-            "animation RM",
-            "animation RM --rot",
-            "animation ADDITIVE"});
-            this.comboBox_Type.Location = new System.Drawing.Point(128, 84);
-            this.comboBox_Type.Name = "comboBox_Type";
-            this.comboBox_Type.Size = new System.Drawing.Size(162, 20);
-            this.comboBox_Type.TabIndex = 6;
-            this.comboBox_Type.Text = "simple scene";
             // 
             // MayaExportForm
             // 
@@ -113,8 +86,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(432, 183);
-            this.Controls.Add(this.comboBox_Type);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.button_startExport);
             this.Controls.Add(this.comboBox_Package);
             this.Controls.Add(this.label1);
@@ -134,7 +105,5 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBox_Package;
         private System.Windows.Forms.Button button_startExport;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox_Type;
     }
 }

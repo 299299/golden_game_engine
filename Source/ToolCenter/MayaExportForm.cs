@@ -20,6 +20,16 @@ namespace ToolCenter
                 comboBox_Package.Items.Add(folderName);
             }
             comboBox_Package.SelectedIndex = 0;
+
+            /*
+            string[] files = Directory.GetFiles(Utils.getPipelineDir() + "\\hko\\", "*.hko", SearchOption.TopDirectoryOnly);
+            foreach (string file in files)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                comboBox_Type.Items.Add(file);
+            }
+            comboBox_Type.SelectedIndex = 0;
+             */
         }
 
         private void button_folder_Click(object sender, EventArgs e)
@@ -52,7 +62,7 @@ namespace ToolCenter
 
             string mayaPy = Utils.getMayaDir() + "bin\\mayapy.exe";
             string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string args = Utils.getPipelieDir() + "MayaBatchExport.py ";
+            string args = Utils.getPipelineDir() + "MayaBatchExport.py ";
             args += folder;
             args += " ";
             args += package;

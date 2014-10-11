@@ -7,8 +7,8 @@ class ProxyConverter   : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
-    LightConverter(ActorConverter* ownner);
-    ~LightConverter();
+    ProxyConverter(ActorConverter* ownner);
+    ~ProxyConverter();
 
     virtual std::string getTypeName() const { return ProxyResource::get_name(); };
     virtual std::string getFormatExt() const { return ProxyResource::get_name(); };

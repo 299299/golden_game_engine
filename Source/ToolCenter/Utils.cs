@@ -20,7 +20,7 @@ namespace ToolCenter
             return getNagaDir() + "Application\\";
         }
 
-        static public string getPipelieDir()
+        static public string getPipelineDir()
         {
             return getNagaDir() + "Pipeline\\";
         }

@@ -270,11 +270,6 @@ void ProxyInstance::update(float timeStep)
     }
 
     hkVector4 desiredPosition = m_proxy->getPosition();
-
-    // Next expected position
-    hkVector4 expectedPosition; 
-    expectedPosition.setAddMul4(desiredPosition, desiredVelocity, timeStep);
-
     desiredPosition.addMul4(m_verticalDisplacement, UP);
     desiredPosition.add4(m_horizontalDisplacement);
 

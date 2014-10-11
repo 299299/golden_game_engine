@@ -102,7 +102,7 @@ def fixAssemblyRepPath():
             strlen = len(data)
             data = data[pos: strlen]
             print(data)
-            cmds.setAttr(dataAttrib, data)
+            cmds.setAttr(dataAttrib, data, type='string')
 
 
 def getNoneCameraNode():
@@ -206,7 +206,6 @@ def create_proxy_node():
         return
     proxy_node = cmds.group(em=1, name=proxy_node_name)
     cmds.addAttr(ln='hkType', dt='string')
-    cmds.setAttr(proxy_node + '.hkType', 'engine_attributes')
     cmds.addAttr(ln='gravity', dt='float3')
     cmds.addAttr(ln='radius', dt='float')
     cmds.addAttr(ln='stand_height', dt='float')
@@ -220,6 +219,7 @@ def create_proxy_node():
     cmds.addAttr(ln='collision_layer', dt='string')
     #
     # set default values.
+    cmds.setAttr(proxy_node + '.hkType', 'engine_attributes', type='string')
     cmds.setAttr(proxy_node + '.gravity', 0, -9.8, 0, type='float3')
     cmds.setAttr(proxy_node + '.radius', 0.5)
     cmds.setAttr(proxy_node + '.stand_height', 2.0)
@@ -230,7 +230,8 @@ def create_proxy_node():
     cmds.setAttr(proxy_node + '.max_vertical_separation', 5.0)
     cmds.setAttr(proxy_node + '.max_horizontal_separation', 0.15)
     cmds.setAttr(proxy_node + '.offset', 1.0)
-    cmds.setAttr(proxy_node + '.collision_layer', 'character_proxy')
+    cmds.setAttr(
+        proxy_node + '.collision_layer', 'character_proxy', type='string')
 
 
 class NagaMayaUtil(object):
@@ -302,9 +303,9 @@ class NagaMayaUtil(object):
         print('havok export folder = ' + hkxFolder)
         group = cmds.group(em=1, name=PROXY_GROUP)
         cmds.addAttr(ln='hkType', dt='string')
-        cmds.setAttr(group + '.hkType', 'engine_attributes')
+        cmds.setAttr(group + '.hkType', 'engine_attributes', type='string')
         cmds.addAttr(ln='package_name', dt='string')
-        cmds.setAttr(group + '.package_name', packageName)
+        cmds.setAttr(group + '.package_name', packageName, type='string')
 
         nodeList = cmds.ls(type='assemblyDefinition')
 
@@ -325,10 +326,11 @@ class NagaMayaUtil(object):
             cmds.addAttr(ln='name', dt='string')
             cmds.addAttr(ln='link_node', dt='string')
             ###################################################################
-            cmds.setAttr(nodeName + '.hkType', 'engine_attributes')
-            cmds.setAttr(nodeName + '.name', ad_node)
-            cmds.setAttr(nodeName + '.type', resourceName)
-            cmds.setAttr(nodeName + '.link_node', ad_node)
+            cmds.setAttr(
+                nodeName + '.hkType', 'engine_attributes', type='string')
+            cmds.setAttr(nodeName + '.name', ad_node, type='string')
+            cmds.setAttr(nodeName + '.type', resourceName, type='string')
+            cmds.setAttr(nodeName + '.link_node', ad_node, type='string')
             ###################################################################
             mat = getMatrix(mesh_node)
             matDecomp = decompMatrix(mesh_node, mat)
@@ -378,7 +380,7 @@ class NagaMayaUtil(object):
             sceneDir = getSceneDirectory()
             print("scene dir = " + sceneDir)
             tmpRigFile = sceneDir + "\\output_rig.txt"
-            rigFile = self.pipelinePath + rig
+            rigFile = self.pipelinePath + 'bones/' + rig
             print('rig file = ' + rigFile)
             shutil.copyfile(rigFile, tmpRigFile)
 
@@ -467,6 +469,7 @@ class NagaMayaUtil(object):
         timeDiff = time.clock() - time1
         print('%d file exported, time cost = %s seconds.' %
               (numBatchExport, str(timeDiff)))
+        return timeDiff
 
     def readMayaDatabase(self, fileName):
         if not os.path.exists(fileName):

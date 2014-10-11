@@ -107,6 +107,7 @@
     <ClInclude Include="Converters\MeshConverter.h" />
     <ClInclude Include="Converters\ModelConverter.h" />
     <ClInclude Include="Converters\PhysicsConverter.h" />
+    <ClInclude Include="Converters\ProxyConverter.h" />
     <ClInclude Include="Converters\SamplerConverter.h" />
     <ClInclude Include="Converters\StaticModelConverter.h" />
     <ClInclude Include="SharedInc.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Converters\MeshConverter.cpp" />
     <ClCompile Include="Converters\ModelConverter.cpp" />
     <ClCompile Include="Converters\PhysicsConverter.cpp" />
+    <ClCompile Include="Converters\ProxyConverter.cpp" />
     <ClCompile Include="Converters\SamplerConverter.cpp" />
     <ClCompile Include="Converters\StaticModelConverter.cpp" />
     <ClCompile Include="main.cpp" />

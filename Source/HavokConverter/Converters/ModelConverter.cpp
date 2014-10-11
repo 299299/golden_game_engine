@@ -196,7 +196,7 @@ ModelConverter::serializeToJson() const
         modelObject << "flags" << flagsObject;
     }
 
-    fill_object_attributes(modelObject, m_node->findAttributeGroup(ENGINE_ATTRIBUTES));
+    if(m_node) fill_object_attributes(modelObject, m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
     
     return modelObject;
 }

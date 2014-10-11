@@ -32,6 +32,7 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     collectRigSkinData(ac->m_skeletons[0]);
     ModelConverter* mc = new ModelConverter(this);
     mc->m_type = kModelSkinning;
+    mc->m_node = findNode(ModelResource::get_name());
     mc->setName(m_name);
     mc->process((void*)m_skin, 1);
     m_components.push_back(mc);
@@ -41,7 +42,7 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     anic->process((void*)m_skin);
     m_components.push_back(anic);
 
-    hkxNode* proxy_node = findNode(ProxyInstance::get_name())
+    hkxNode* proxy_node = findNode(ProxyResource::get_name());
     if(proxy_node)
     {
         ProxyConverter* proxy = new ProxyConverter(this);

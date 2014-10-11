@@ -58,12 +58,12 @@ namespace ToolCenter
 
         private void button_toolcopy_Click(object sender, EventArgs e)
         {
-            Utils.Run(Utils.getPipelieDir(), "pipeline_copy.bat");
+            Utils.Run(Utils.getPipelineDir(), "pipeline_copy.bat");
         }
 
         private void button_buildms_Click(object sender, EventArgs e)
         {
-            Utils.run_application(Utils.getPipelieDir(), "project_build.bat", "", "Engine Source Build");
+            Utils.run_application(Utils.getPipelineDir(), "project_build.bat", "", "Engine Source Build");
         }
 
         private void button_hash_Click(object sender, EventArgs e)
@@ -117,7 +117,7 @@ namespace ToolCenter
             Utils.DeleteFile("data_compiler_database.txt");
             Utils.DeleteFile("havok_convert_database");
             Utils.DeleteFolder(Utils.getApplicationDir() + "Keyboard");
-            Utils.DeleteFolder(Utils.getPipelieDir() + "Keyboard");
+            Utils.DeleteFolder(Utils.getPipelineDir() + "Keyboard");
         }
 
         private void button_fullBuild_Click(object sender, EventArgs e)
