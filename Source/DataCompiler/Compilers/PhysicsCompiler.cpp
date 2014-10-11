@@ -43,7 +43,6 @@ bool ProxyCompiler::readJSON(const JsonValue& root)
     proxy.m_horizontalGain = JSON_GetFloat(root.GetValue("horizontal_gain"), 0.8f);
     proxy.m_maxVerticalSeparation = JSON_GetFloat(root.GetValue("max_vertical_separation"), 5.0f);
     proxy.m_maxHorizontalSeparation = JSON_GetFloat(root.GetValue("max_horizontal_separation"), 0.15f);
-    proxy.m_pushIfFootInAir = JSON_GetBool(root.GetValue("push_foot_in_air"));
     proxy.m_offset = JSON_GetFloat(root.GetValue("offset"), proxy.m_standHeight/2);
     proxy.m_layerName = JSON_GetStringId(root.GetValue("collision_layer"), StringId("character_proxy"));
 

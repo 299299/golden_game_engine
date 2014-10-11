@@ -102,7 +102,7 @@ def fixAssemblyRepPath():
             strlen = len(data)
             data = data[pos: strlen]
             print(data)
-            cmds.setAttr(dataAttrib, data, type='string')
+            cmds.setAttr(dataAttrib, data)
 
 
 def getNoneCameraNode():
@@ -189,15 +189,48 @@ def createTriggerNode():
         for trigger in triggers:
             enNames += trigger
             enNames += ':'
-        cmds.addAttr(sn='tr', ln='hk_trigger_', at='enum', en=enNames)
+        cmds.addAttr(ln='hk_trigger_', at='enum', en=enNames)
 
     BEAT_GROUP = 'beats'
     beat_group = findNodeNameEqual(BEAT_GROUP)
     if(beat_group == ''):
         beat_group = cmds.group(em=1, name=BEAT_GROUP)
         cmds.addAttr(
-            sn='be', ln='hk_beat_', at='enum',
-            en='left_foot_down:right_foot_down')
+            ln='hk_beat_', at='enum', en='left_foot_down:right_foot_down')
+
+
+def create_proxy_node():
+    proxy_node_name = 'proxy'
+    proxy_node = findNodeNameEqual(proxy_node_name)
+    if(proxy_node != ''):
+        return
+    proxy_node = cmds.group(em=1, name=proxy_node_name)
+    cmds.addAttr(ln='hkType', dt='string')
+    cmds.setAttr(proxy_node + '.hkType', 'engine_attributes')
+    cmds.addAttr(ln='gravity', dt='float3')
+    cmds.addAttr(ln='radius', dt='float')
+    cmds.addAttr(ln='stand_height', dt='float')
+    cmds.addAttr(ln='friction', dt='float')
+    cmds.addAttr(ln='strength', dt='float')
+    cmds.addAttr(ln='vertical_gain', dt='float')
+    cmds.addAttr(ln='horizontal_gain', dt='float')
+    cmds.addAttr(ln='max_vertical_separation', dt='float')
+    cmds.addAttr(ln='max_horizontal_separation', dt='float')
+    cmds.addAttr(ln='offset', dt='float')
+    cmds.addAttr(ln='collision_layer', dt='string')
+    #
+    # set default values.
+    cmds.setAttr(proxy_node + '.gravity', 0, -9.8, 0, type='float3')
+    cmds.setAttr(proxy_node + '.radius', 0.5)
+    cmds.setAttr(proxy_node + '.stand_height', 2.0)
+    cmds.setAttr(proxy_node + '.friction', 0.9)
+    cmds.setAttr(proxy_node + '.strength', 1.0)
+    cmds.setAttr(proxy_node + '.vertical_gain', 0.2)
+    cmds.setAttr(proxy_node + '.horizontal_gain', 0.8)
+    cmds.setAttr(proxy_node + '.max_vertical_separation', 5.0)
+    cmds.setAttr(proxy_node + '.max_horizontal_separation', 0.15)
+    cmds.setAttr(proxy_node + '.offset', 1.0)
+    cmds.setAttr(proxy_node + '.collision_layer', 'character_proxy')
 
 
 class NagaMayaUtil(object):
@@ -268,10 +301,10 @@ class NagaMayaUtil(object):
         hkxFolder = self.getHkxFolder(packageName)
         print('havok export folder = ' + hkxFolder)
         group = cmds.group(em=1, name=PROXY_GROUP)
-        cmds.addAttr(sn='ht', ln='hkType', dt='string')
-        cmds.setAttr(group + '.hkType', 'engine_attributes', type='string')
-        cmds.addAttr(sn='pn', ln='package_name', dt='string')
-        cmds.setAttr(group + '.package_name', packageName, type='string')
+        cmds.addAttr(ln='hkType', dt='string')
+        cmds.setAttr(group + '.hkType', 'engine_attributes')
+        cmds.addAttr(ln='package_name', dt='string')
+        cmds.setAttr(group + '.package_name', packageName)
 
         nodeList = cmds.ls(type='assemblyDefinition')
 
@@ -285,19 +318,18 @@ class NagaMayaUtil(object):
             if(not os.path.exists(havokFileName)):
                 cmds.warning('havok file not exist -->' + havokFileName)
                 continue
-            nodeName = cmds.createNode(
-                'transform', n=proxyNodeName, p=group)
-            cmds.addAttr(sn='ht', ln='hkType', dt='string')
-            cmds.setAttr(
-                nodeName + '.hkType', 'engine_attributes', type='string')
-            cmds.addAttr(sn='tp', ln='type', dt='string')
+            nodeName = cmds.createNode('transform', n=proxyNodeName, p=group)
             resourceName = packageName + '/actor/' + entityType
-            cmds.setAttr(
-                nodeName + '.type', resourceName, type='string')
-            cmds.addAttr(sn='na', ln='name', dt='string')
-            cmds.setAttr(nodeName + '.name', ad_node, type='string')
-            cmds.addAttr(sn='lk', ln='link_node', dt='string')
-            cmds.setAttr(nodeName + '.link_node', ad_node, type='string')
+            cmds.addAttr(ln='hkType', dt='string')
+            cmds.addAttr(ln='type', dt='string')
+            cmds.addAttr(ln='name', dt='string')
+            cmds.addAttr(ln='link_node', dt='string')
+            ###################################################################
+            cmds.setAttr(nodeName + '.hkType', 'engine_attributes')
+            cmds.setAttr(nodeName + '.name', ad_node)
+            cmds.setAttr(nodeName + '.type', resourceName)
+            cmds.setAttr(nodeName + '.link_node', ad_node)
+            ###################################################################
             mat = getMatrix(mesh_node)
             matDecomp = decompMatrix(mesh_node, mat)
             translate = matDecomp[0]

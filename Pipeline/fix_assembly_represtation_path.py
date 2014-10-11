@@ -10,4 +10,4 @@ for node in nodeList:
         strlen = len(data)
         data = data[pos: strlen]
         print(data)
-        cmds.setAttr(dataAttrib, data, type='string')
+        cmds.setAttr(dataAttrib, data)
