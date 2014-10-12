@@ -48,7 +48,13 @@ bool ActorCompiler::readJSON(const JsonValue& root)
         int index = find_component_type(StringId(type.c_str()));
         if(index < 0)
         {
-            addError("error component type --> %s", type.c_str());
+            addError("actor[%s] error component type --> %s", m_input.c_str(), type.c_str());
+            continue;
+        }
+
+        if(name.empty())
+        {
+            addError("actor[%s] error component name is null.", m_input.c_str());
             continue;
         }
 

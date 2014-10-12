@@ -3,13 +3,13 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Text;
+using System.Runtime.InteropServices;
 
 namespace ToolCenter
 {
     class Utils
     {
-        static Dictionary<string,string> m_toolSetting;
-
         static public string getNagaDir()
         {
             return getParentDir(Directory.GetCurrentDirectory());
@@ -129,48 +129,21 @@ namespace ToolCenter
             return file.ReadToEnd();
         }
 
-        static public void LoadSetting(string settingFile)
-        {
-            m_toolSetting = new Dictionary<string, string>();
-            System.IO.StreamReader file;
-            try
-            {
-                file = new System.IO.StreamReader(settingFile);
-            }
-            catch (System.IO.FileNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-                return;
-            }
-            string line;
-            while ((line = file.ReadLine()) != null)
-            {
-                string[] keyValue = line.Split('=');
-                m_toolSetting.Add(keyValue[0], keyValue[1]);
-            }
-            file.Close();
-        }
-
-        static public void SaveSetting(string settingFile)
-        {
-            System.IO.StreamWriter file = new System.IO.StreamWriter(settingFile);
-            foreach(KeyValuePair<string, string> entry in m_toolSetting)
-            {
-                file.WriteLine(entry.Key + "=" + entry.Value);
-            }
-            file.Close();
-        }
-
         static public string GetSetting(string key)
         {
-            if (!m_toolSetting.ContainsKey(key))
-                return "";
-            return m_toolSetting[key];
+            StringBuilder MyString = new StringBuilder(256);
+            GetProfileString("NAGA_TOOL_CENTER", key, "", MyString, 256);
+            return MyString.ToString();
         }
 
         static public void SetSetting(string key, string value)
         {
-            m_toolSetting[key] = value;
+            WriteProfileString("NAGA_TOOL_CENTER", key, value);
         }
+
+        [DllImport("kernel32")]
+        public static extern bool GetProfileString(string lpApplicationName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, int nSize);
+        [DllImport("kernel32")]
+        public static extern bool WriteProfileString(string lpApplicationName, string lpKeyName, string lpString);
     }
 }

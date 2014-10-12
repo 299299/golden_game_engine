@@ -97,7 +97,8 @@ class NagaPipeline(object):
         cmds.frameLayout(l="Util", cll=1)
         cmds.button('Open Selection AR', c=self.onOpenARClicked)
         cmds.button('Back To Last Level', c=self.onBackLevelClicked)
-        cmds.button('Add Trigger Node', c=self.onAddTriggerClicked)
+        cmds.button('Add Animation Trigger Node', c=self.onAddTriggerClicked)
+        cmds.button('Add Proxy Node', c=self.onAddProxyClicked)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -135,6 +136,9 @@ class NagaPipeline(object):
 
     def onAddTriggerClicked(self, *arg):
         NAGA.createTriggerNode()
+
+    def onAddProxyClicked(self, *arg):
+        NAGA.createProxyNode()
 
     #
     # UTIL FUNCTIONS
@@ -184,7 +188,7 @@ class NagaPipeline(object):
                       rigName=rigName)
 
         if not self.webSock.connected:
-            self.lunchEngine(packageName, debug=0)
+            self.lunchEngine(packageName, debug=1)
             time.sleep(0.2)
         else:
             self.reloadCompileResult()

@@ -445,6 +445,25 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
     }
 }
 
+void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
+{
+    check_status();
+    float pos[3];
+    hkQsTransform t;
+    t.setIdentity();
+    for (uint32_t i=0; i<num; ++i)
+    {
+        Actor& actor = actors[i];
+        ProxyInstance* proxy = (ProxyInstance*)actor.get_component(kComponentProxy);
+        //ModelInstance* model = (ModelInstance*)actor.get_component(kComponentModel);
+        if(!proxy) continue;
+        transform_vec3(pos, proxy->m_renderTranslation);
+        pos[1] += proxy->m_resource->m_offset;
+        transform_vec3(t.m_translation, pos);
+        actor.transform_renders(t);
+    }
+}
+
 void PhysicsWorld::update_proxy_actors(float timeStep, Actor* actors, uint32_t num)
 {
     check_status();
@@ -454,9 +473,10 @@ void PhysicsWorld::update_proxy_actors(float timeStep, Actor* actors, uint32_t n
         ProxyInstance* proxy = (ProxyInstance*)actor.get_component(kComponentProxy);
         if(!proxy) continue;
         proxy->update(timeStep);
-        //to do update render 
     }
 }
+
+
 
 //-----------------------------------------------------------------
 //

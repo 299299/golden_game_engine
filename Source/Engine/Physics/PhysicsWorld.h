@@ -80,6 +80,7 @@ struct PhysicsWorld
     void create_plane(float size);
 
     void sync_rigidbody_actors(Actor* actors, uint32_t num);
+    void sync_proxy_actors(Actor* actors, uint32_t num);
     void update_proxy_actors(float timeStep, Actor* actors, uint32_t num);
 
 private:

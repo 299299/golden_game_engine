@@ -199,37 +199,50 @@ def createTriggerNode():
             ln='hk_beat_', at='enum', en='left_foot_down:right_foot_down')
 
 
-def create_proxy_node():
+def createProxyNode():
     proxy_node_name = 'proxy'
     proxy_node = findNodeNameEqual(proxy_node_name)
     if(proxy_node != ''):
         return
     proxy_node = cmds.group(em=1, name=proxy_node_name)
-    cmds.addAttr(ln='hkType', dt='string')
-    cmds.addAttr(ln='gravity', dt='float3')
-    cmds.addAttr(ln='radius', dt='float')
-    cmds.addAttr(ln='stand_height', dt='float')
-    cmds.addAttr(ln='friction', dt='float')
-    cmds.addAttr(ln='strength', dt='float')
-    cmds.addAttr(ln='vertical_gain', dt='float')
-    cmds.addAttr(ln='horizontal_gain', dt='float')
-    cmds.addAttr(ln='max_vertical_separation', dt='float')
-    cmds.addAttr(ln='max_horizontal_separation', dt='float')
-    cmds.addAttr(ln='offset', dt='float')
-    cmds.addAttr(ln='collision_layer', dt='string')
-    #
-    # set default values.
+    print('add proxy node attributes')
+    cmds.addAttr(proxy_node, ln='hkType', dt='string')
     cmds.setAttr(proxy_node + '.hkType', 'engine_attributes', type='string')
-    cmds.setAttr(proxy_node + '.gravity', 0, -9.8, 0, type='float3')
+    #
+    cmds.addAttr(proxy_node, ln='gravity', at='float3')
+    cmds.addAttr(proxy_node, at='float', ln='gravityX', parent='gravity')
+    cmds.addAttr(proxy_node, at='float', ln='gravityY', parent='gravity')
+    cmds.addAttr(proxy_node, at='float', ln='gravityZ', parent='gravity')
+    cmds.setAttr(proxy_node + '.gravityY', -9.8)
+    #
+    cmds.addAttr(proxy_node, ln='radius')
     cmds.setAttr(proxy_node + '.radius', 0.5)
+    #
+    cmds.addAttr(proxy_node, ln='stand_height')
     cmds.setAttr(proxy_node + '.stand_height', 2.0)
+    #
+    cmds.addAttr(proxy_node, ln='friction')
     cmds.setAttr(proxy_node + '.friction', 0.9)
+    #
+    cmds.addAttr(proxy_node, ln='strength')
     cmds.setAttr(proxy_node + '.strength', 1.0)
+    #
+    cmds.addAttr(proxy_node, ln='vertical_gain')
     cmds.setAttr(proxy_node + '.vertical_gain', 0.2)
+    #
+    cmds.addAttr(proxy_node, ln='horizontal_gain')
     cmds.setAttr(proxy_node + '.horizontal_gain', 0.8)
+    #
+    cmds.addAttr(proxy_node, ln='max_vertical_separation')
     cmds.setAttr(proxy_node + '.max_vertical_separation', 5.0)
+    #
+    cmds.addAttr(proxy_node, ln='max_horizontal_separation')
     cmds.setAttr(proxy_node + '.max_horizontal_separation', 0.15)
+    #
+    cmds.addAttr(proxy_node, ln='offset')
     cmds.setAttr(proxy_node + '.offset', 1.0)
+    #
+    cmds.addAttr(proxy_node, ln='collision_layer', dt='string')
     cmds.setAttr(
         proxy_node + '.collision_layer', 'character_proxy', type='string')
 

@@ -46,6 +46,7 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     if(proxy_node)
     {
         ProxyConverter* proxy = new ProxyConverter(this);
+        proxy->setName(m_name);
         proxy->process(proxy_node, 0);
         m_components.push_back(proxy);
     }

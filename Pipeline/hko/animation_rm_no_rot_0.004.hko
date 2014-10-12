@@ -56,7 +56,7 @@
 	</hkobject>
 	<hkobject name="Create Animations" class="hctCreateAnimationsOptions">
 		<hkparam name="moveToOriginX">true</hkparam>
-		<hkparam name="moveToOriginY">false</hkparam>
+		<hkparam name="moveToOriginY">true</hkparam>
 		<hkparam name="moveToOriginZ">true</hkparam>
 		<hkparam name="animationStartNodes">This member is no longer in use.</hkparam>
 		<hkparam name="subAnimation">false</hkparam>

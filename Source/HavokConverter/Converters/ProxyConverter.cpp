@@ -21,6 +21,9 @@ void ProxyConverter::process(void* pData, int hint)
 jsonxx::Object ProxyConverter::serializeToJson() const
 {
     jsonxx::Object object;
+    object << "type" << getTypeName();
+    object << "packaged" << true;
+    object << "name" << getResourceName();
     fill_object_attributes(object, m_attributes);
     return object;
 }

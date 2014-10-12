@@ -17,7 +17,6 @@ public:
     virtual jsonxx::Object serializeToJson() const;
     
 private:
-    std::string                     m_name;
     hkxNode*                        m_node;
     const hkxAttributeGroup*        m_attributes;
 };

@@ -13,6 +13,11 @@
 #define HK_EXCLUDE_FEATURE_SerializeDeprecatedPre700
 #define HK_EXCLUDE_FEATURE_RegisterVersionPatches 
 #define HK_EXCLUDE_LIBRARY_hkGeometryUtilities
+#define HK_EXCLUDE_FEATURE_hkndAssetProcessing
+#define HK_EXCLUDE_FEATURE_hkndDebrisFracture_execute
+#define HK_EXCLUDE_FEATURE_hkndFxDebrisFracture_execute
+#define HK_EXCLUDE_LIBRARY_hkCompat
+#define HK_EXCLUDE_LIBRARY_hkSceneData
 
 // Register Havok classes.
 #include <Common/Base/KeyCode.h>
@@ -27,7 +32,7 @@
 
 //start of havok link config
 #ifdef _DEBUG
-#define HAVOK_LIB_PATH "C:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\debug\\"
+#define HAVOK_LIB_PATH "C:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\dev\\"
 #else
 #define HAVOK_LIB_PATH "C:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\release\\"
 #endif

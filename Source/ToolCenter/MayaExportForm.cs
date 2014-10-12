@@ -43,7 +43,6 @@ namespace ToolCenter
                 return;
             textBox_Folder.Text = dlg.SelectedPath;
             Utils.SetSetting("maya_folder", dlg.SelectedPath);
-            Utils.SaveSetting("tool_center.ini");
         }
 
         private void button_startExport_Click(object sender, EventArgs e)
