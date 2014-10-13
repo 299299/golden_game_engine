@@ -318,7 +318,7 @@ void reload_actor_resource(void* oldResource, void* newResource)
             {
                 hkQsTransform t = actor.m_transform;
                 actor.destroy();
-                actor.init(newActor, t);
+                actor.init(newActor, t, actor.m_id);
             }
         }
     }

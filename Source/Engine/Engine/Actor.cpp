@@ -63,6 +63,7 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId
     m_resource = resource;
     m_transform.setIdentity();
     m_values = 0;
+    m_id = id;
 
     for (uint32_t i=0; i<kComponentTypeNum; ++i)
     {
@@ -227,7 +228,7 @@ ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     id.m_class = classId;
     Actor actor;
     //memset(&actor, 0x00, sizeof(Actor));
-    uint32_t actorId = id_array::create(g_actorBuckets[classId], actor);
+    Id actorId = id_array::create(g_actorBuckets[classId], actor);
     id.set_id(actorId);
     id_array::get(g_actorBuckets[classId], actorId).init(actorResource, t, actorId);
     return id;

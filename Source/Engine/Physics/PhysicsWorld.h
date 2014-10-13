@@ -22,7 +22,7 @@ struct  Actor;
 
 struct CollisionEvent
 {
-    PhysicsInstance*            m_objects[2];
+    ActorId32                   m_objects[2];
     float                       m_normal[3];
     float                       m_position[3];
     float                       m_velocity;
