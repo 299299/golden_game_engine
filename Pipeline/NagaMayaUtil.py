@@ -341,8 +341,8 @@ class NagaMayaUtil(object):
             addStringAttr(nodeName, 'name', ad_node)
             addStringAttr(nodeName, 'type', resourceName)
             addStringAttr(nodeName, 'line_node', ad_node)
-            #syncWorldMatrix(mesh_node, nodeName)
             cmds.copyAttr(mesh_node, nodeName, ic=0, oc=0, v=1)
+            syncWorldMatrix(mesh_node, nodeName)
             proxyNodeNum += 1
         # cmds.delete(PROXY_GROUP)
         return proxyNodeNum, packageName

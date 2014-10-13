@@ -447,13 +447,12 @@ void PhysicsWorld::update_character_proxies(float timeStep)
     check_status();
     uint32_t num = id_array::size(m_proxies);
     ProxyInstance* proxies = id_array::begin(m_proxies);
+    PHYSICS_LOCK(m_world);
     for (uint32_t i=0; i<num; ++i)
     {
         proxies[i].update(timeStep);
     }
 }
-
-
 
 //-----------------------------------------------------------------
 //

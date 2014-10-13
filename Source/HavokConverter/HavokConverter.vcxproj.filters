@@ -65,7 +65,7 @@
     <ClInclude Include="Converters\AnimationConverter.h">
       <Filter>converters</Filter>
     </ClInclude>
-    <ClInclude Include="Converters\ProxyConverter.h">
+    <ClInclude Include="Converters\ComponentNodeConverter.h">
       <Filter>converters</Filter>
     </ClInclude>
   </ItemGroup>
@@ -126,7 +126,7 @@
     <ClCompile Include="Converters\AnimationConverter.cpp">
       <Filter>converters</Filter>
     </ClCompile>
-    <ClCompile Include="Converters\ProxyConverter.cpp">
+    <ClCompile Include="Converters\ComponentNodeConverter.cpp">
       <Filter>converters</Filter>
     </ClCompile>
   </ItemGroup>

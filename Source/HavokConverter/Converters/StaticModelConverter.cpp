@@ -25,6 +25,7 @@ void StaticModelConverter::process(hkxScene* scene)
 {
     m_scene = scene;
     processNode(m_scene->m_rootNode);
+    processComponentNodes();
 }
 
 void StaticModelConverter::processNode( hkxNode* node )

@@ -1,24 +1,24 @@
-#include "ProxyConverter.h"
+#include "ComponentNodeConverter.h"
 #include "HC_Utils.h"
 
-ProxyConverter::ProxyConverter(ActorConverter* ownner)
+ComponentNodeConverter::ComponentNodeConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 {
     
 }
 
-ProxyConverter::~ProxyConverter()
+ComponentNodeConverter::~ComponentNodeConverter()
 {
 
 }
 
-void ProxyConverter::process(void* pData, int hint)
+void ComponentNodeConverter::process(void* pData, int hint)
 {
     m_node = (hkxNode*)pData;
     m_attributes = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
 }
 
-jsonxx::Object ProxyConverter::serializeToJson() const
+jsonxx::Object ComponentNodeConverter::serializeToJson() const
 {
     jsonxx::Object object;
     object << "type" << getTypeName();

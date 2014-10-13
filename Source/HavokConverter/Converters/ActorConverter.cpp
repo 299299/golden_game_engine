@@ -1,6 +1,10 @@
 #include "ActorConverter.h"
 #include "ComponentConverter.h"
 #include "HC_Utils.h"
+#include "ComponentNodeConverter.h"
+#include "ProxyInstance.h"
+#include "Script.h"
+#include <bx/bx.h>
 
 ActorConverter::ActorConverter()
 :m_config(NULL)
@@ -74,4 +78,23 @@ std::string ActorConverter::getResourceName() const
 hkxNode* ActorConverter::findNode(const char* name)
 {
     return m_config->m_scene->findNodeByName(name);
+}
+
+void ActorConverter::processComponentNodes()
+{
+    static const char* s_componet_node_names[] =
+    {
+        ProxyResource::get_name(),
+        ScriptResource::get_name(),
+    };
+
+    for (int i=0; i<BX_COUNTOF(s_componet_node_names); ++i)
+    {
+        hkxNode* p_node = findNode(s_componet_node_names[i]);
+        if(!p_node) continue;
+        ComponentNodeConverter* node = new ComponentNodeConverter(this);
+        node->setName(m_name);
+        node->process(p_node, 0);
+        m_components.push_back(node);
+    }
 }

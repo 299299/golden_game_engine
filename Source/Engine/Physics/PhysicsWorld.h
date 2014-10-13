@@ -8,7 +8,6 @@ class   hkpShape;
 class   hkpGroupFilter;
 class   hkpPhysicsData;
 class   hkpRigidBody;
-class   PhysicsPostSimlator;
 struct  PhysicsInstance;
 struct  PhysicsResource;
 struct  ProxyInstance;
