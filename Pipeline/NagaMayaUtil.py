@@ -39,6 +39,18 @@ def decompMatrix(node, matrix):
     return [trans.x, trans.y, trans.z], angles, scale
 
 
+def syncWorldMatrix(in_node, out_node):
+    mat = getMatrix(in_node)
+    matDecomp = decompMatrix(in_node, mat)
+    translate = matDecomp[0]
+    rotate = matDecomp[1]
+    scale = matDecomp[2]
+    cmds.setAttr(out_node + '.translate',
+                 translate[0], translate[1], translate[2])
+    cmds.setAttr(out_node + '.rotate', rotate[0], rotate[1], rotate[2])
+    cmds.setAttr(out_node + '.scale', scale[0], scale[1], scale[2])
+
+
 def lunchApplication(name, folder, args, wait=False):
     print('lunch name = ' + name + ', folder = ' + folder)
     path = folder + name
@@ -84,11 +96,6 @@ def osGetFileList(directory, ext):
 def isLevel(name):
     return name.startswith('Level')
     # return len(findNodeNamePrefix('Proxy')) > 0
-
-
-def getEntityResourceName(packageName):
-    entityName = getSceneName()
-    return packageName + '/actor/' + entityName
 
 
 def fixAssemblyRepPath():
@@ -179,24 +186,34 @@ def addBackSlash(str):
     return str
 
 
-def createTriggerNode():
-    triggers = ['attack', 'dust']
-    TRIGGER_GROUP = 'triggers'
-    trigger_group = findNodeNameEqual(TRIGGER_GROUP)
-    if(trigger_group == ''):
-        trigger_group = cmds.group(em=1, name=TRIGGER_GROUP)
-        enNames = ''
-        for trigger in triggers:
-            enNames += trigger
-            enNames += ':'
-        cmds.addAttr(ln='hk_trigger_', at='enum', en=enNames)
+def addFloatAttr(node_name, attr_name, float_value=None):
+    cmds.addAttr(node_name, ln=attr_name)
+    if(float_value):
+        cmds.setAttr(node_name + '.' + attr_name, float_value)
 
-    BEAT_GROUP = 'beats'
-    beat_group = findNodeNameEqual(BEAT_GROUP)
-    if(beat_group == ''):
-        beat_group = cmds.group(em=1, name=BEAT_GROUP)
-        cmds.addAttr(
-            ln='hk_beat_', at='enum', en='left_foot_down:right_foot_down')
+
+def addStringAttr(node_name, attr_name, string_value=None):
+    cmds.addAttr(node_name, ln=attr_name, dt='string')
+    if(string_value):
+        cmds.setAttr(node_name + '.' + attr_name, string_value, type='string')
+
+
+def addFloat3Attr(node_name, attr_name, float3_values=None):
+    cmds.addAttr(node_name, ln=attr_name, at='float3')
+    cmds.addAttr(node_name, at='float', ln=attr_name + 'X', parent=attr_name)
+    cmds.addAttr(node_name, at='float', ln=attr_name + 'Y', parent=attr_name)
+    cmds.addAttr(node_name, at='float', ln=attr_name + 'Z', parent=attr_name)
+    if(float3_values):
+        cmds.setAttr(node_name + '.' + attr_name, float3_values[0],
+                     float3_values[1], float3_values[2], type='float3')
+
+
+def addEnumAttr(node_name, attr_name, enum_values):
+    enum_names = ''
+    for enum_name in enum_values:
+        enum_names += enum_name
+        enum_names += ':'
+    cmds.addAttr(node_name, ln=attr_name, at='enum', en=enum_names)
 
 
 def createProxyNode():
@@ -205,46 +222,33 @@ def createProxyNode():
     if(proxy_node != ''):
         return
     proxy_node = cmds.group(em=1, name=proxy_node_name)
-    print('add proxy node attributes')
-    cmds.addAttr(proxy_node, ln='hkType', dt='string')
-    cmds.setAttr(proxy_node + '.hkType', 'engine_attributes', type='string')
-    #
-    cmds.addAttr(proxy_node, ln='gravity', at='float3')
-    cmds.addAttr(proxy_node, at='float', ln='gravityX', parent='gravity')
-    cmds.addAttr(proxy_node, at='float', ln='gravityY', parent='gravity')
-    cmds.addAttr(proxy_node, at='float', ln='gravityZ', parent='gravity')
-    cmds.setAttr(proxy_node + '.gravityY', -9.8)
-    #
-    cmds.addAttr(proxy_node, ln='radius')
-    cmds.setAttr(proxy_node + '.radius', 0.5)
-    #
-    cmds.addAttr(proxy_node, ln='stand_height')
-    cmds.setAttr(proxy_node + '.stand_height', 2.0)
-    #
-    cmds.addAttr(proxy_node, ln='friction')
-    cmds.setAttr(proxy_node + '.friction', 0.9)
-    #
-    cmds.addAttr(proxy_node, ln='strength')
-    cmds.setAttr(proxy_node + '.strength', 1.0)
-    #
-    cmds.addAttr(proxy_node, ln='vertical_gain')
-    cmds.setAttr(proxy_node + '.vertical_gain', 0.2)
-    #
-    cmds.addAttr(proxy_node, ln='horizontal_gain')
-    cmds.setAttr(proxy_node + '.horizontal_gain', 0.8)
-    #
-    cmds.addAttr(proxy_node, ln='max_vertical_separation')
-    cmds.setAttr(proxy_node + '.max_vertical_separation', 5.0)
-    #
-    cmds.addAttr(proxy_node, ln='max_horizontal_separation')
-    cmds.setAttr(proxy_node + '.max_horizontal_separation', 0.15)
-    #
-    cmds.addAttr(proxy_node, ln='offset')
-    cmds.setAttr(proxy_node + '.offset', 1.0)
-    #
-    cmds.addAttr(proxy_node, ln='collision_layer', dt='string')
-    cmds.setAttr(
-        proxy_node + '.collision_layer', 'character_proxy', type='string')
+    addStringAttr(proxy_node, 'hkType', 'engine_attributes')
+    addFloat3Attr(proxy_node, 'gravity', [0, -9.8, 0])
+    addFloatAttr(proxy_node, 'radius', 0.5)
+    addFloatAttr(proxy_node, 'stand_height', 2.0)
+    addFloatAttr(proxy_node, 'friction', 0.9)
+    addFloatAttr(proxy_node, 'strength', 1.0)
+    addFloatAttr(proxy_node, 'vertical_gain', 0.2)
+    addFloatAttr(proxy_node, 'horizontal_gain', 0.8)
+    addFloatAttr(proxy_node, 'max_vertical_separation', 5.0)
+    addFloatAttr(proxy_node, 'max_horizontal_separation', 0.15)
+    addFloatAttr(proxy_node, 'offset', 1.0)
+    addStringAttr(proxy_node, 'collision_layer', 'character_proxy')
+
+
+def createTriggerNode():
+    triggers = ['attack', 'dust']
+    TRIGGER_GROUP = 'triggers'
+    trigger_group = findNodeNameEqual(TRIGGER_GROUP)
+    if(trigger_group == ''):
+        addEnumAttr(trigger_group, 'hk_trigger_', triggers)
+
+    BEAT_GROUP = 'beats'
+    beat_group = findNodeNameEqual(BEAT_GROUP)
+    if(beat_group == ''):
+        beat_group = cmds.group(em=1, name=BEAT_GROUP)
+        addEnumAttr(
+            beat_group, 'hk_beat_', ['left_foot_down', 'right_foot_down'])
 
 
 class NagaMayaUtil(object):
@@ -315,10 +319,8 @@ class NagaMayaUtil(object):
         hkxFolder = self.getHkxFolder(packageName)
         print('havok export folder = ' + hkxFolder)
         group = cmds.group(em=1, name=PROXY_GROUP)
-        cmds.addAttr(ln='hkType', dt='string')
-        cmds.setAttr(group + '.hkType', 'engine_attributes', type='string')
-        cmds.addAttr(ln='package_name', dt='string')
-        cmds.setAttr(group + '.package_name', packageName, type='string')
+        addStringAttr(group, 'hkType', 'engine_attributes')
+        addStringAttr(group, 'package_name', packageName)
 
         nodeList = cmds.ls(type='assemblyDefinition')
 
@@ -334,26 +336,13 @@ class NagaMayaUtil(object):
                 continue
             nodeName = cmds.createNode('transform', n=proxyNodeName, p=group)
             resourceName = packageName + '/actor/' + entityType
-            cmds.addAttr(ln='hkType', dt='string')
-            cmds.addAttr(ln='type', dt='string')
-            cmds.addAttr(ln='name', dt='string')
-            cmds.addAttr(ln='link_node', dt='string')
-            ###################################################################
-            cmds.setAttr(
-                nodeName + '.hkType', 'engine_attributes', type='string')
-            cmds.setAttr(nodeName + '.name', ad_node, type='string')
-            cmds.setAttr(nodeName + '.type', resourceName, type='string')
-            cmds.setAttr(nodeName + '.link_node', ad_node, type='string')
-            ###################################################################
-            mat = getMatrix(mesh_node)
-            matDecomp = decompMatrix(mesh_node, mat)
-            translate = matDecomp[0]
-            rotate = matDecomp[1]
-            scale = matDecomp[2]
-            cmds.setAttr(nodeName + '.translate',
-                         translate[0], translate[1], translate[2])
-            cmds.setAttr(nodeName + '.rotate', rotate[0], rotate[1], rotate[2])
-            cmds.setAttr(nodeName + '.scale', scale[0], scale[1], scale[2])
+            # add custom attributes for serialize
+            addStringAttr(nodeName, 'hkType', 'engine_attributes')
+            addStringAttr(nodeName, 'name', ad_node)
+            addStringAttr(nodeName, 'type', resourceName)
+            addStringAttr(nodeName, 'line_node', ad_node)
+            #syncWorldMatrix(mesh_node, nodeName)
+            cmds.copyAttr(mesh_node, nodeName, ic=0, oc=0, v=1)
             proxyNodeNum += 1
         # cmds.delete(PROXY_GROUP)
         return proxyNodeNum, packageName
