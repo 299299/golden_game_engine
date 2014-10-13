@@ -59,4 +59,5 @@ ENGINE_NATIVE_ALIGN struct ProxyInstance
     const ProxyResource*            m_resource;
     hkpCharacterProxy*              m_proxy;
     AnimCharacterListener*          m_listener;
+    ActorId32                       m_actor;
 };

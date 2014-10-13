@@ -20,23 +20,28 @@ ENGINE_NATIVE_ALIGN struct PhysicsResource
 
 enum PhysicsSystemType
 {
-    kSystemRBOnly,
+    kSystemRigidBody,
     kSystemRagdoll,
     kSystemTrigger,
     kSystemComplex,
     kPhysicsSystemNUM
 };
 
-#define MAX_PHYSICS_SYSTEM_NUM      (6)
+
 ENGINE_NATIVE_ALIGN struct PhysicsInstance
 {
-    void*                       m_data[MAX_PHYSICS_SYSTEM_NUM];
+    union
+    {
+        hkpRigidBody*               m_rigidBody;
+        hkpPhysicsSystem*           m_system;
+    };
+
     const PhysicsResource*      m_resource;
+    ActorId32                   m_actor;
     uint8_t                     m_numData;
     uint8_t                     m_systemType;
     bool                        m_dirty;
     bool                        m_inWorld;
-    char                        m_padding[4];
 
     void init(const void* resource);
     void destroy();

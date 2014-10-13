@@ -72,8 +72,8 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
         if(!objectA || !objectB) return;
         
         CollisionEvent evt;
-        evt.m_objects[0] = objectA;
-        evt.m_objects[1] = objectB;
+        evt.m_objects[0] = objectA->m_actor;
+        evt.m_objects[1] = objectB->m_actor;
         transform_vec3(evt.m_position, event.m_contactPoint->getPosition());
         transform_vec3(evt.m_normal, event.m_contactPoint->getNormal());
         evt.m_velocity = event.getSeparatingVelocity();
@@ -287,22 +287,10 @@ void PhysicsWorld::add_to_world(PhysicsInstance* instance)
 
     switch(instance->m_systemType)
     {
-    case kSystemRBOnly:
-        {
-            for(int i=0; i<instance->m_numData; ++i)
-            {
-                m_world->addEntity((hkpRigidBody*)instance->m_data[i]);
-            }
-        }
-        break;
+    case kSystemRigidBody: m_world->addEntity(instance->m_rigidBody); break;
     case kSystemRagdoll:
     case kSystemComplex:
-        {
-            for(int i=0; i<instance->m_numData; ++i)
-            {
-                m_world->addPhysicsSystem((hkpPhysicsSystem*)instance->m_data[i]);
-            }
-        }
+        m_world->addPhysicsSystem(instance->m_system);
         break;
     default:
         break;
@@ -318,22 +306,10 @@ void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
     PHYSICS_LOCKWRITE(m_world);
     switch(instance->m_systemType)
     {
-    case kSystemRBOnly:
-        {
-            for(int i=0; i<instance->m_numData; ++i)
-            {
-                m_world->removeEntity((hkpRigidBody*)instance->m_data[i]);
-            }
-        }
-        break;
+    case kSystemRigidBody: m_world->removeEntity(instance->m_rigidBody); break;
     case kSystemRagdoll:
     case kSystemComplex:
-        {
-            for(int i=0; i<instance->m_numData; ++i)
-            {
-                m_world->removePhysicsSystem((hkpPhysicsSystem*)instance->m_data[i]);
-            }
-        }
+        m_world->removePhysicsSystem(instance->m_system);
         break;
     default:
         break;
@@ -343,8 +319,7 @@ void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
 void PhysicsWorld::add_collision_event(uint64_t key, const CollisionEvent& evt)
 {
     PROFILE(Physics_addCollisionEvent);
-    if(g_collisionEvtMap.find(key) != g_collisionEvtMap.end())
-        return;
+    if(g_collisionEvtMap.find(key) != g_collisionEvtMap.end()) return;
     CollisionEvent* newEvt = FRAME_ALLOC(CollisionEvent, 1);
     *newEvt = evt;
     m_collisionEvents[m_numCollisionEvents++] = newEvt;
@@ -430,6 +405,7 @@ int PhysicsWorld::get_layer(const StringId& name) const
 
 void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 {
+    PROFILE(sync_rigidbody_actors);
     check_status();
     hkQsTransform t;
     hkTransform t1;
@@ -447,6 +423,7 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 
 void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
 {
+    PROFILE(sync_proxy_actors);
     check_status();
     float pos[3];
     hkQsTransform t;
@@ -464,15 +441,15 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
     }
 }
 
-void PhysicsWorld::update_proxy_actors(float timeStep, Actor* actors, uint32_t num)
+void PhysicsWorld::update_character_proxies(float timeStep)
 {
+    PROFILE(update_character_proxies);
     check_status();
+    uint32_t num = id_array::get_size(m_proxies);
+    ProxyInstance* proxies = id_array::begin(m_proxies);
     for (uint32_t i=0; i<num; ++i)
     {
-        Actor& actor = actors[i];
-        ProxyInstance* proxy = (ProxyInstance*)actor.get_component(kComponentProxy);
-        if(!proxy) continue;
-        proxy->update(timeStep);
+        proxies[i].update(timeStep);
     }
 }
 
@@ -481,12 +458,13 @@ void PhysicsWorld::update_proxy_actors(float timeStep, Actor* actors, uint32_t n
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_physics_object(const void* resource)
+Id create_physics_object(const void* resource, ActorId32 id)
 {
     check_status();
     PhysicsInstance inst;
     memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
+    inst.m_actor = id;
     return id_array::create(m_objects, inst);
 }
 
@@ -516,12 +494,13 @@ void* get_physics_objects()
     return id_array::begin(m_objects);
 }
 
-Id create_physics_proxy(const void* resource)
+Id create_physics_proxy(const void* resource, ActorId32 id)
 {
     check_status();
     ProxyInstance inst;
     memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
+    inst.m_actor = id;
     return id_array::create(m_proxies, inst);
 }
 

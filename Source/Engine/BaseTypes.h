@@ -42,6 +42,7 @@
 
 typedef uint32_t StringId32;
 typedef uint64_t StringId64;
+typedef uint32_t ActorId32;
 
 #define INVALID_ID 65535
 

@@ -81,7 +81,7 @@ struct PhysicsWorld
 
     void sync_rigidbody_actors(Actor* actors, uint32_t num);
     void sync_proxy_actors(Actor* actors, uint32_t num);
-    void update_proxy_actors(float timeStep, Actor* actors, uint32_t num);
+    void update_character_proxies(float timeStep);
 
 private:
     void kickin_raycast_jobs();
@@ -95,7 +95,6 @@ public:
     hkSemaphore*                            m_raycastSem;
     uint32_t                                m_numCollisionEvents;
     uint32_t                                m_numRaycasts;
-    //======================================================================
     PhysicsConfig*                          m_config;
 };
 

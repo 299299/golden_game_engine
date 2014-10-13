@@ -25,7 +25,7 @@ void PhysicsConverter::process(void* pData, int hint)
 void PhysicsConverter::process(hkpPhysicsData* data)
 {
     m_physics = data;
-    m_type = kSystemRBOnly;
+    m_type = kSystemRigidBody;
     for(int i=0; i<m_physics->getPhysicsSystems().getSize(); ++i)
     {
         hkpPhysicsSystem* system = m_physics->getPhysicsSystems()[i];

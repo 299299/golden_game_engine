@@ -208,7 +208,7 @@ void AnimationSystem::update_fsms(float dt)
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_anim_fsm( const void* resource )
+Id create_anim_fsm( const void* resource, ActorId32 )
 {
     AnimFSMInstance inst;
     memset(&inst, 0x00, sizeof(inst));
@@ -240,7 +240,7 @@ void* get_anim_fsms()
     return id_array::begin(m_fsms);
 }
 
-Id create_anim_rig( const void* resource )
+Id create_anim_rig( const void* resource, ActorId32 )
 {
     check_status();
     AnimRigInstance inst;

@@ -137,7 +137,7 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_render_light(const void* res)
+Id create_render_light(const void* res, ActorId32)
 {
     LightInstance inst;
     memset(&inst, 0x00, sizeof(inst));

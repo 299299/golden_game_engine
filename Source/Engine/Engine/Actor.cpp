@@ -56,9 +56,9 @@ void Actor::teleport_transform( const hkQsTransform& t )
     transform_renders(t);
 }
 
-void Actor::init( const ActorResource* resource, const hkQsTransform& t)
+void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId32 id)
 {
-    extern Id create_componet(uint32_t type, const void* resource);
+    extern Id create_componet(uint32_t, const void*, ActorId32);
 
     m_resource = resource;
     m_transform.setIdentity();
@@ -67,7 +67,7 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t)
     for (uint32_t i=0; i<kComponentTypeNum; ++i)
     {
         const void* res = resource->m_resources[i];
-        if(res) m_components[i] = create_componet(i, res);
+        if(res) m_components[i] = create_componet(i, res, id);
     }
 
     const Fact& fact = m_resource->m_fact;
@@ -227,8 +227,9 @@ ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     id.m_class = classId;
     Actor actor;
     //memset(&actor, 0x00, sizeof(Actor));
-    actor.init(actorResource, t);
-    id.set_id(g_actorBuckets[classId].create(actor));
+    uint32_t actorId = id_array::create(g_actorBuckets[classId], actor);
+    id.set_id(actorId);
+    id_array::get(g_actorBuckets[classId], actorId).init(actorResource, t, actorId);
     return id;
 }
 
@@ -276,6 +277,7 @@ void ActorWorld::frame_start(float dt)
 void ActorWorld::pre_step( float dt )
 {
     g_animMgr.update_local_clocks(dt);
+    g_physicsWorld.update_character_proxies(dt);
 }
 
 void ActorWorld::step( float dt )

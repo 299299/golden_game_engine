@@ -147,7 +147,7 @@ const char* g_modelFlagNames[] =
 
 const char*   physics_type_names[] = 
 {
-    "rigidbody_only", 
+    "rigidbody", 
     "ragdoll", 
     "trigger", 
     "complex", 
@@ -285,43 +285,43 @@ int get_resource_order(const StringId& type)
     return -1;
 }
 //-----------------------------------------------------------------
-extern Id       create_render_model(const void*);
+extern Id       create_render_model(const void*, ActorId32);
 extern void     destroy_render_model(Id);
 extern void*    get_render_model(Id);
 extern uint32_t num_render_models();
 extern void*    get_render_models();
 //-----------------------------------------------------------------
-extern Id       create_render_light(const void*);
+extern Id       create_render_light(const void*, ActorId32);
 extern void     destroy_render_light(Id);
 extern void*    get_render_light(Id);
 extern uint32_t num_render_lights();
 extern void*    get_render_lights();
 //-----------------------------------------------------------------
-extern Id       create_anim_rig(const void*);
+extern Id       create_anim_rig(const void*, ActorId32);
 extern void     destroy_anim_rig(Id);
 extern void*    get_anim_rig(Id);
 extern uint32_t num_anim_rigs();
 extern void*    get_anim_rigs();
 //-----------------------------------------------------------------
-extern Id       create_anim_fsm(const void*);
+extern Id       create_anim_fsm(const void*, ActorId32);
 extern void     destroy_anim_fsm(Id);
 extern void*    get_anim_fsm(Id);
 extern uint32_t num_anim_fsms();
 extern void*    get_anim_fsms();
 //-----------------------------------------------------------------
-extern Id       create_physics_object(const void*);
+extern Id       create_physics_object(const void*, ActorId32);
 extern void     destroy_physics_object(Id);
 extern void*    get_physics_object(Id);
 extern uint32_t num_physics_objects();
 extern void*    get_physics_objects();
 //-----------------------------------------------------------------
-extern Id       create_physics_proxy(const void*);
+extern Id       create_physics_proxy(const void*, ActorId32);
 extern void     destroy_physics_proxy(Id);
 extern void*    get_physics_proxy(Id);
 extern uint32_t num_physics_proxies();
 extern void*    get_physics_proxies();
 //-----------------------------------------------------------------
-extern Id       create_script_object(const void*);
+extern Id       create_script_object(const void*, ActorId32);
 extern void     destroy_script_object(Id);
 extern void*    get_script_object(Id);
 extern uint32_t num_script_objects();
@@ -329,7 +329,7 @@ extern void*    get_script_objects();
 //-----------------------------------------------------------------
 struct ComponentFactory
 {
-    Id          (*create)(const void*);
+    Id          (*create)(const void*, ActorId32 id);
     void        (*destroy)(Id);
     void*       (*get)(Id);
     uint32_t    (*get_num)();
@@ -348,9 +348,9 @@ static ComponentFactory g_componentFactories[] =
 StringId g_componentTypes[kComponentTypeNum];
 const char* g_componentTypeNames[kComponentTypeNum];
 
-Id create_componet(uint32_t type, const void* resource)
+Id create_componet(uint32_t type, const void* resource, ActorId32 id)
 {
-    return g_componentFactories[type].create(resource);
+    return g_componentFactories[type].create(resource, id);
 }
 void destroy_component(uint32_t type, Id id)
 {

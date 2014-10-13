@@ -240,7 +240,7 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_render_model(const void* modelResource)
+Id create_render_model(const void* modelResource, ActorId32)
 {
     ModelInstance inst;
     memset(&inst, 0x00, sizeof(inst));

@@ -22,7 +22,7 @@ ENGINE_NATIVE_ALIGN struct Actor
     const ActorResource*        m_resource;
     char*                       m_values;
 
-    void    init(const ActorResource* resource, const hkQsTransform& t);
+    void    init(const ActorResource* resource, const hkQsTransform& t, ActorId32 id);
     void    destroy();
     void    teleport_transform(const hkQsTransform& t);
     void    transform_renders(const hkQsTransform& t);

@@ -14,49 +14,23 @@
 
 void PhysicsInstance::init(const void* resource)
 {
-    hkpRigidBody* tmp_rbs[20];
-
     m_resource = (const PhysicsResource*)resource;
     m_inWorld = false;
-
     const hkpPhysicsData* phyData = m_resource->m_data;
     m_systemType = m_resource->m_systemType;
     switch(m_systemType)
     {
-    case kSystemRBOnly:
+    case kSystemRigidBody:
         {
-            int numOfRbs = 0;
-            for(int i=0; i < phyData->getPhysicsSystems().getSize(); ++i)
-            {
-                const hkpPhysicsSystem* sys = phyData->getPhysicsSystems()[i];
-                for(int j=0; j<sys->getRigidBodies().getSize(); ++j)
-                    tmp_rbs[numOfRbs++] = sys->getRigidBodies()[j];
-            }
-
-            m_numData = numOfRbs;
-            ENGINE_ASSERT(m_numData <= MAX_PHYSICS_SYSTEM_NUM, "physics num overflow = %d", m_numData);
-            for(int i=0; i<m_numData; ++i)
-            {
-                hkpRigidBody* rb = tmp_rbs[i]->clone();
-                rb->setUserData((hkUlong)this);
-                m_data[i] = rb;
-            }
+            m_rigidBody = phyData->getPhysicsSystems()[0]->getRigidBodies()[0]->clone();
+            m_rigidBody->setUserData((hkUlong)this);
             break;
         }
-    case kSystemTrigger:
-        //@TODO:
-        break;
+    case kSystemTrigger: break;
     case kSystemRagdoll:
-    case kSystemComplex:
-        {
-            m_numData = phyData->getPhysicsSystems().getSize();
-            ENGINE_ASSERT(m_numData <= MAX_PHYSICS_SYSTEM_NUM, "physics num overflow = %d", m_numData);
-            for(int i=0; i < m_numData; ++i)
-            {
-                m_data[i] = phyData->getPhysicsSystems()[i]->clone(hkpPhysicsSystem::CLONE_DEFAULT);
-            }
-            break;    
-        }
+    case kSystemComplex: 
+        m_system = phyData->getPhysicsSystems()[0]->clone(); break;
+    default: break;
     }
     add_to_simulation();
 }
@@ -65,15 +39,9 @@ void PhysicsInstance::set_transform(const hkTransform& t)
 {
     PHYSICS_LOCKWRITE(g_physicsWorld.world());
     switch(m_systemType)
-    {
-    case kSystemRBOnly:
-        {
-            ((hkpRigidBody*)m_data[0])->setTransform(t);
-        }
-        break;
-
-    default:
-        break;
+    { 
+    case kSystemRigidBody: m_rigidBody->setTransform(t); break;
+    default: break;
     }
 }
     
@@ -82,29 +50,11 @@ void PhysicsInstance::destroy()
     remove_from_simulation();
     switch(m_systemType)
     {
-    case kSystemRBOnly:
-        {
-            for(int i=0; i < m_numData; ++i)
-            {
-                hkpRigidBody* rb = (hkpRigidBody*)m_data[i];
-                SAFE_REMOVEREF(rb);
-                m_data[i] = 0;
-            }
-        }
-        break;
-    case kSystemTrigger:
-        break;
+    case kSystemRigidBody: SAFE_REMOVEREF(m_rigidBody); break;
+    case kSystemTrigger: break;
     case kSystemComplex:
-    case kSystemRagdoll:
-        {
-            for(int i=0; i < m_numData; ++i)
-            {
-                hkpPhysicsSystem* sys = (hkpPhysicsSystem*)m_data[i];
-                SAFE_REMOVEREF(sys);
-                m_data[i] = 0;
-            }
-        }
-        break;
+    case kSystemRagdoll: 
+        SAFE_REMOVEREF(m_system); break;
     default:
         break;
     }
@@ -135,14 +85,8 @@ void PhysicsInstance::fetch_transform(int index, hkTransform& outT)
 {
     switch(m_systemType)
     {
-    case kSystemRBOnly:
-        {
-            ((hkpRigidBody*)m_data[index])->approxCurrentTransform(outT);
-        }
-        break;
-
-    default:
-        break;
+    case kSystemRigidBody: m_rigidBody->approxCurrentTransform(outT); break;
+    default: break;
     }
 }
 
