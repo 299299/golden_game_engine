@@ -119,8 +119,8 @@ int _tmain(int argc, _TCHAR* argv[])
     if(script) 
     {
         LOGI("run script ----> %s", script);
-        extern Id create_script_object(const void*);
-        create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)));
+        extern Id create_script_object(const void*, ActorId32);
+        create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)), INVALID_U32);
     }
 
     ActorId id;

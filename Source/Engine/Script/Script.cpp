@@ -208,7 +208,7 @@ void ScriptSystem::full_garbge_collect()
 }
 
 //-----------------------------------------------------------------------
-Id create_script_object(const void* resource)
+Id create_script_object(const void* resource, ActorId32)
 {
     if(!resource) 
     {

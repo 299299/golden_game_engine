@@ -228,9 +228,9 @@ ActorId ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     id.m_class = classId;
     Actor actor;
     //memset(&actor, 0x00, sizeof(Actor));
-    Id actorId = id_array::create(g_actorBuckets[classId], actor);
+    Id actorId = g_actorBuckets[classId].create(actor);
     id.set_id(actorId);
-    id_array::get(g_actorBuckets[classId], actorId).init(actorResource, t, actorId);
+    g_actorBuckets[classId].get(actorId).init(actorResource, t, id.pack());
     return id;
 }
 
