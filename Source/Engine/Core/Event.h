@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseTypes.h"
-
+#include "StringId.h"
 
 struct CollisionEvent
 {
@@ -10,9 +10,9 @@ struct CollisionEvent
     float                       m_velocity;
 };
 
-
 struct AnimationEvent
 {
     ActorId32                   m_who;
     StringId                    m_name;
+    char                        m_padding[8];
 };

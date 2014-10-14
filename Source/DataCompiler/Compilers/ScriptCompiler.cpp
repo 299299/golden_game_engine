@@ -65,5 +65,5 @@ bool ScriptCompiler::readJSON(const JsonValue& root)
     }
 
     LOGI("processing script_file %s", script_file.c_str());
-    return process(script_file, m_ouput);
+    return process(script_file, m_output);
 }

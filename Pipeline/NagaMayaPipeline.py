@@ -90,16 +90,19 @@ class NagaPipeline(object):
             cmds.menuItem(label=packageName)
 
         cmds.setParent('..')
-        cmds.setParent('..')
-        cmds.setParent('..')
-        cmds.setParent('..')
 
         cmds.frameLayout(l="Util", cll=1)
+        cmds.rowLayout(nc=2)
         cmds.button('Open Selection AR', c=self.onOpenARClicked)
         cmds.button('Back To Last Level', c=self.onBackLevelClicked)
+        cmds.setParent('..')
+        cmds.rowLayout(nc=2)
         cmds.button('Add Animation Trigger Node', c=self.onAddTriggerClicked)
         cmds.button('Add Proxy Node', c=self.onAddProxyClicked)
         cmds.setParent('..')
+        cmds.rowLayout(nc=2)
+        cmds.button('Add Script', c=self.onAddScriptClicked)
+        cmds.button('Add AnimFSM Node', c=self.onAddAnimFSMClicked)
         cmds.setParent('..')
         cmds.setParent('..')
 
@@ -139,6 +142,12 @@ class NagaPipeline(object):
 
     def onAddProxyClicked(self, *arg):
         NAGA.createProxyNode()
+
+    def onAddScriptClicked(self, *arg):
+        NAGA.createScriptNode()
+
+    def onAddAnimFSMClicked(self, *arg):
+        NAGA.createAnimFSMNode()
 
     #
     # UTIL FUNCTIONS

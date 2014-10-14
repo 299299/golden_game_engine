@@ -58,12 +58,13 @@ static void set_status(int newStatus)
 void AnimationSystem::init()
 {
     m_status = 0;
+    m_events = COMMON_ALLOC(AnimationEvent, MAX_ANIM_EVENTS);
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 }
 
 void AnimationSystem::quit()
 {
-    
+    COMMON_DEALLOC(m_events);
 }
 
 void AnimationSystem::frame_start()

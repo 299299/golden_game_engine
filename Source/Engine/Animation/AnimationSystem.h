@@ -29,8 +29,6 @@ struct AnimationSystem
     void    update_local_clocks(float dt);
     void    update_fsms(float dt);
 
-    AnimationEvent* alloc_event();
-
     uint32_t                m_numAnimEvts;
     AnimationEvent*         m_events;
 };

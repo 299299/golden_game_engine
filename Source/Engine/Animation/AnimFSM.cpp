@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "MemorySystem.h"
 #include "Gui.h"
+#include "Event.h"
 //========================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>
@@ -606,7 +607,7 @@ uint32_t AnimFSMInstance::collect_triggers(float dt, AnimationEvent* events)
     {
         uint32_t num = m_layers[i].collect_triggers(dt, events);
         ret += num;
-        outTriggers += num;
+        events += num;
     }
     return ret;
 }

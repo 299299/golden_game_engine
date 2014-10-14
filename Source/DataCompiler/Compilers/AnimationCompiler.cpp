@@ -39,7 +39,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     if(triggersValue.IsValid())
     {
         triggerNum = triggersValue.GetElementsCount();
-        trigger_data.reverse(triggerNum);
+        trigger_data.reserve(triggerNum);
         for (uint32_t i = 0; i < triggerNum; ++i)
         {
             AnimTriggerData data;
@@ -57,7 +57,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     if(beatsValue.IsValid())
     {
         beatNum = beatsValue.GetElementsCount();
-        beat_data.reverse(beatNum);
+        beat_data.reserve(beatNum);
         for (uint32_t i = 0; i < triggerNum; ++i)
         {
             AnimTriggerData data;

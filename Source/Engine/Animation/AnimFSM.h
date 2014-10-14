@@ -118,7 +118,7 @@ ENGINE_NATIVE_ALIGN struct AnimFSM
 
 struct RtState
 {
-    uint32_t                    m_timeInState;
+    float                       m_timeInState;
     hk_anim_ctrl**              m_ctrls;
     float*                      m_weights;
     const State*                m_state;

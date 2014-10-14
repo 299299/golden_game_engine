@@ -85,6 +85,25 @@ AnimFSMCompiler::~AnimFSMCompiler()
 bool AnimFSMCompiler::readJSON(const JsonValue& root)
 {
     __super::readJSON(root);
+    if(m_mode == 0) return readJSON_UnPacked(root);
+    else return readJSON_Packed(root);
+}
+
+bool AnimFSMCompiler::readJSON_Packed( const JsonValue& root )
+{
+    std::string fileName = JSON_GetString(root.GetValue("fsm_file"));
+    if(fileName.empty())
+    {
+        addError("readJSON_Packed failed");
+        return false;
+    }
+    JsonParser parser;
+    if(!parse_json(fileName, parser)) return false;
+    return readJSON_UnPacked(parser.GetRoot());
+}
+
+bool AnimFSMCompiler::readJSON_UnPacked( const JsonValue& root )
+{
     uint32_t totalNumState = 0, totalNumTransition = 0, totalNumAnimation = 0;
     std::vector<CompilerLayer> layers;
     JsonValue layersValue = root.GetValue("layers");
@@ -95,7 +114,7 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
         layers.push_back(CompilerLayer());
         CompilerLayer& layer = layers.back();
         layer.m_numAnimations = 0;
-        
+
         for(uint32_t j=0; j<statesValue.GetElementsCount(); ++j)
         {
             JsonValue stateValue = statesValue[j];
@@ -107,7 +126,7 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
             pState->m_looped = JSON_GetBool(stateValue.GetValue("looped"), true); //default looped.
             pState->m_flags = JSON_GetFlags(stateValue.GetValue("flags"), state_flag_names);
             ++totalNumState;
-            
+
             //collection animations
             JsonValue animationsValue = stateValue.GetValue("animations");
             for(uint32_t k=0; k<animationsValue.GetElementsCount(); ++k)
@@ -116,7 +135,7 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
                 ++totalNumAnimation;
             }
             layer.m_numAnimations += state.m_animations.size();
-            
+
             //collection transitions
             JsonValue transitionsValue = stateValue.GetValue("transitions");
             for(uint32_t k=0; k<transitionsValue.GetElementsCount(); ++k)
@@ -135,19 +154,19 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
             }    
         }
     }
-       
+
     uint32_t memSize = sizeof(AnimFSM) + totalNumState * sizeof(State) + totalNumAnimation * (sizeof(void*) + sizeof(StringId)) + totalNumTransition * sizeof(Transition);
     LOGI("TOTAL STATES = %d, ANIMATION = %d, TRANSITION = %d, MEMSIZE=%d", totalNumState, totalNumAnimation, totalNumTransition, memSize);
 
     MemoryBuffer mem(memSize);
     char* head = mem.m_buf;
     char* p = mem.m_buf;
-    
+
     AnimFSM* fsm = (AnimFSM*)head;
     fsm->m_numLayers = layers.size();
     fsm->m_numStates = totalNumState;
     fsm->m_numAnimations = totalNumAnimation;
-    
+
     p += sizeof(AnimFSM);
     for(uint32_t i=0; i<fsm->m_numLayers; ++i)
     {
@@ -155,22 +174,22 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
         CompilerLayer& in_layer = layers[i];
         layer.m_numStates = in_layer.m_states.size();
         layer.m_numAnimations = in_layer.m_numAnimations;
-        
+
         layer.m_states = (State*)p;
         layer.m_stateOffset = (uint32_t)(p - head);
         p += layer.m_numStates * sizeof(State);
-        
+
         for(uint32_t j=0; j<layer.m_numStates; ++j)
         {
             State& state = layer.m_states[j];
             CompilerState& in_state = in_layer.m_states[j];
             memcpy(&state, in_state.m_state, sizeof(State));
-            
+
             state.m_numTransitions = in_state.m_transitions.size();
             state.m_transitions = (Transition*)mem.m_buf;
             state.m_transitionOffset = (uint32_t)(mem.m_buf - head);
             p += state.m_numTransitions * sizeof(Transition);
-            
+
             for(uint32_t k=0; k<state.m_numTransitions; ++k)
             {
                 Transition& t = state.m_transitions[k];
@@ -178,16 +197,16 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
                 memcpy(&t, in_t, sizeof(Transition));
                 t.m_destStateIndex = in_layer.findStateIndex(in_state.m_transitionTargetNames[k]);
             }
-            
+
             state.m_numAnimations = in_state.m_animations.size();
             state.m_animations = (Animation**)mem.m_buf;
             state.m_animationOffset = (uint32_t)(mem.m_buf - head);
             p += state.m_numAnimations * sizeof(void*);
-            
+
             state.m_animNames = (StringId*)mem.m_buf;
             state.m_animNameOffset = (uint32_t)(mem.m_buf - head);
             p += state.m_numAnimations * sizeof(StringId);
-            
+
             for(uint32_t k=0; k<state.m_numAnimations; ++k)
             {
                 const std::string& animName = in_state.m_animations[k];
@@ -196,7 +215,7 @@ bool AnimFSMCompiler::readJSON(const JsonValue& root)
             }
         }
     }    
-    
+
     ENGINE_ASSERT(mem.m_buf == head + memSize, "offset error");
     return write_file(m_output, head, memSize);
 }

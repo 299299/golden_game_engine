@@ -192,8 +192,8 @@ def addFloatAttr(node_name, attr_name, float_value=None):
         cmds.setAttr(node_name + '.' + attr_name, float_value)
 
 
-def addStringAttr(node_name, attr_name, string_value=None):
-    cmds.addAttr(node_name, ln=attr_name, dt='string')
+def addStringAttr(node_name, attr_name, string_value=None, hidden=False):
+    cmds.addAttr(node_name, ln=attr_name, dt='string', h=hidden)
     if(string_value):
         cmds.setAttr(node_name + '.' + attr_name, string_value, type='string')
 
@@ -221,7 +221,7 @@ def createEngineNode(node_name):
     if(node != ''):
         return None
     node = cmds.group(em=1, name=node_name)
-    addStringAttr(node, 'hkType', 'engine_attributes')
+    addStringAttr(node, 'hkType', 'engine_attributes', True)
     return node
 
 
@@ -247,6 +247,13 @@ def createScriptNode():
     if(script_node is None):
         return
     addStringAttr(script_node, 'script_file', '')
+
+
+def createAnimFSMNode():
+    fsm_node = createEngineNode('anim_fsm')
+    if(fsm_node is None):
+        return
+    addStringAttr(fsm_node, 'fsm_file', '')
 
 
 def createTriggerNode():
@@ -349,7 +356,7 @@ class NagaMayaUtil(object):
             nodeName = cmds.createNode('transform', n=proxyNodeName, p=group)
             resourceName = packageName + '/actor/' + entityType
             # add custom attributes for serialize
-            addStringAttr(nodeName, 'hkType', 'engine_attributes')
+            addStringAttr(nodeName, 'hkType', 'engine_attributes', True)
             addStringAttr(nodeName, 'name', ad_node)
             addStringAttr(nodeName, 'type', resourceName)
             addStringAttr(nodeName, 'line_node', ad_node)

@@ -12,4 +12,8 @@ public:
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const JsonValue& root);
     virtual bool checkInLevel() const { return false; };
+
+private:
+    bool readJSON_Packed(const JsonValue& root);
+    bool readJSON_UnPacked(const JsonValue& root);
 };
