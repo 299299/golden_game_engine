@@ -8,4 +8,5 @@ public:
     virtual std::string getFormatExt() const { return ScriptResource::get_name(); };
     virtual bool process(const std::string& input, const std::string& output);
     virtual bool checkProcessing() { return true; };
+    virtual bool readJSON(const JsonValue& root);
 };

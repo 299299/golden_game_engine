@@ -29,11 +29,22 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
         return false;
     }
 
+    std::string script_name = getFileName(input);
+    script_name = "create_" + script_name;
+    //check if this function name is exist or not.
+    gmFunctionObject* rootFunction = vm->BindLibToFunction(stream);
+    vm->ExecuteFunction(rootFunction, 0, true);
+    gmFunctionObject* func = vm->GetGlobals()->Get(vm, script_name.c_str()).GetFunctionObjectSafe();
+    if(!func)
+    {
+        addError("Script %s function name %s not found!", input.c_str(), script_name.c_str());
+        return false;
+    }
+
     uint32_t memSize = sizeof(ScriptResource) + stream.GetSize();
     MemoryBuffer mem(memSize);
     ScriptResource* script = (ScriptResource*)mem.m_buf;
-    std::string script_name = getFileName(input);
-    script_name = "create_" + script_name;
+
     uint32_t name_len = script_name.length();
     ENGINE_ASSERT(name_len < SCRIPT_FUNCTION_MAX_LEN, "script function name %s overflow", script_name.c_str());
     strncpy(script->m_funcName, script_name.c_str(), name_len);
@@ -42,3 +53,17 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     return write_file(output, mem.m_buf, memSize);
 }
 
+bool ScriptCompiler::readJSON(const JsonValue& root)
+{
+    __super::readJSON(root);
+    
+    std::string script_file = JSON_GetString(root.GetValue("script_file"));
+    if(script_file.empty())
+    {
+        LOGE("script ---> pack error.");
+        return false;
+    }
+
+    LOGI("processing script_file %s", script_file.c_str());
+    return process(script_file, m_ouput);
+}

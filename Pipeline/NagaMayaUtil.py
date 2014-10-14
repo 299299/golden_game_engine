@@ -216,13 +216,19 @@ def addEnumAttr(node_name, attr_name, enum_values):
     cmds.addAttr(node_name, ln=attr_name, at='enum', en=enum_names)
 
 
+def createEngineNode(node_name):
+    node = findNodeNameEqual(node_name)
+    if(node != ''):
+        return None
+    node = cmds.group(em=1, name=node_name)
+    addStringAttr(node, 'hkType', 'engine_attributes')
+    return node
+
+
 def createProxyNode():
-    proxy_node_name = 'proxy'
-    proxy_node = findNodeNameEqual(proxy_node_name)
-    if(proxy_node != ''):
+    proxy_node = createEngineNode('proxy')
+    if(proxy_node is None):
         return
-    proxy_node = cmds.group(em=1, name=proxy_node_name)
-    addStringAttr(proxy_node, 'hkType', 'engine_attributes')
     addFloat3Attr(proxy_node, 'gravity', [0, -9.8, 0])
     addFloatAttr(proxy_node, 'radius', 0.5)
     addFloatAttr(proxy_node, 'stand_height', 2.0)
@@ -234,6 +240,13 @@ def createProxyNode():
     addFloatAttr(proxy_node, 'max_horizontal_separation', 0.15)
     addFloatAttr(proxy_node, 'offset', 1.0)
     addStringAttr(proxy_node, 'collision_layer', 'character_proxy')
+
+
+def createScriptNode():
+    script_node = createEngineNode('script')
+    if(script_node is None):
+        return
+    addStringAttr(script_node, 'script_file', '')
 
 
 def createTriggerNode():
@@ -318,8 +331,7 @@ class NagaMayaUtil(object):
         packageName = os.path.basename(packageFolderName)
         hkxFolder = self.getHkxFolder(packageName)
         print('havok export folder = ' + hkxFolder)
-        group = cmds.group(em=1, name=PROXY_GROUP)
-        addStringAttr(group, 'hkType', 'engine_attributes')
+        group = createEngineNode(PROXY_GROUP)
         addStringAttr(group, 'package_name', packageName)
 
         nodeList = cmds.ls(type='assemblyDefinition')
