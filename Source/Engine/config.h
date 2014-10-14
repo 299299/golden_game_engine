@@ -30,3 +30,5 @@
 #define RESOURCE_MAP_NUM        16384
 
 #define MAX_SCRIPT_KEY          256
+
+#define MAX_ANIM_EVENTS         1024

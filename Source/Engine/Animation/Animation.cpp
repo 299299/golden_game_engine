@@ -5,6 +5,8 @@
 #include "DebugDraw.h"
 #include "MathDefs.h"
 #include "Utils.h"
+#include "Profiler.h"
+#include "Event.h"
 //==========================================================================================
 #include <Animation/Animation/Animation/hkaAnimation.h>
 #include <Animation/Animation/Animation/Mirrored/hkaMirroredSkeleton.h>
@@ -95,26 +97,19 @@ float Animation::get_length() const
     return m_animation->m_duration;
 }
 
-uint8_t Animation::collect_triggers( float curTime, float dt, AnimationTrigger* outTriggers ) const
+uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* events ) const
 {
-    uint8_t retNum = 0;
-    uint8_t startIndex = INVALID_U8;
-    for(uint8_t i=0; i<m_numTriggers; ++i)
+    uint32_t retNum = 0;
+    uint32_t startIndex = -1;
+    for(uint32_t i=0; i<m_numTriggers; ++i)
     {
-        const AnimationTrigger& trigger  = m_triggers[i];
+        AnimationTrigger trigger  = m_triggers[i];
         float tTime = trigger.m_time;
         if(tTime > curTime && tTime + dt < curTime)
         {
-            ++retNum;
-            if(startIndex == INVALID_U8)
-                startIndex = i;
+            events[retNum++].m_name = trigger.m_name;
         }
     }
-
-    if(startIndex == INVALID_U8)
-        return 0;
-
-    memcpy(outTriggers, &m_triggers[startIndex], retNum * sizeof(AnimationTrigger));
     return retNum;
 }
 
@@ -179,40 +174,35 @@ void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int
 
     HK_DISPLAY_MODEL_SPACE_POSE( skeleton->m_bones.getSize(), 
                                  skeleton->m_parentIndices.begin(), 
-                                 pose.getSyncedPoseModelSpace().begin(), worldFromModel, color );
+                                 pose.getSyncedPoseModelSpace().begin(), 
+                                 worldFromModel, 
+                                 color );
 
+    if (!showLabels) return;
 
-    if (showLabels)
+    hkDebugDisplay& d = hkDebugDisplay::getInstance();
+    const hkInt16* parents = skeleton->m_parentIndices.begin();
+    const hkQsTransform* bones = pose.getSyncedPoseModelSpace().begin();
+    for (int i=0; i<skeleton->m_bones.getSize(); i++)
     {
-        hkDebugDisplay& d = hkDebugDisplay::getInstance();
-        const hkInt16* parents = skeleton->m_parentIndices.begin();
-        const hkQsTransform* bones = pose.getSyncedPoseModelSpace().begin();
-        for (int i=0; i<skeleton->m_bones.getSize(); i++)
-        {
-            hkVector4 p1, p2;
-            p1 = bones[i].getTranslation();
-            if (parents[i] == -1)
-            {
-                p2 = p1;
-            }
-            else
-            {
-                p2 = bones[parents[i]].getTranslation();
-            }
+        hkVector4 p1, p2;
+        p1 = bones[i].getTranslation();
+        if (parents[i] == -1) p2 = p1;
+        else p2 = bones[parents[i]].getTranslation();
 
-            hkVector4 bonemid;
-            bonemid = p1; bonemid.setAdd4(bonemid, p2); bonemid.setMul4(0.5f, bonemid);
-            bonemid.setTransformedPos(worldFromModel, bonemid);
+        hkVector4 bonemid;
+        bonemid = p1; bonemid.setAdd4(bonemid, p2); bonemid.setMul4(0.5f, bonemid);
+        bonemid.setTransformedPos(worldFromModel, bonemid);
 
-            hkStringBuf s;
-            s.printf("%d", i);
-            d.display3dText(s.cString(), bonemid, color, 0, 0);
-        }
+        hkStringBuf s;
+        s.printf("%d", i);
+        d.display3dText(s.cString(), bonemid, color, 0, 0);
     }
 }
 
 void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
 {
+    PROFILE(Animation_DrawPose);
     const hkaSkeleton* skeleton = pose.getSkeleton();
     const hkArray<hkInt16>& parentIndices = skeleton->m_parentIndices;
     const hkArray<hkQsTransform>& poseMS = pose.getSyncedPoseModelSpace();

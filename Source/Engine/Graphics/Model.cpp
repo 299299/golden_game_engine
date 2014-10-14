@@ -67,9 +67,10 @@ void ModelInstance::update()
 	REMOVE_BITS(m_flag, kNodeTransformDirty);
 }
 
-void ModelInstance::alloc_skinning_mat()
+float* ModelInstance::alloc_skinning_mat()
 {
     m_skinMatrix = FRAME_ALLOC(float, m_resource->m_mesh->m_numJoints * 16);
+    return m_skinMatrix;
 }
 
 bool ModelInstance::check_intersection( const float* rayOrig, 

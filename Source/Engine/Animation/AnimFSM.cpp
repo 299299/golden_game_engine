@@ -140,15 +140,18 @@ void RtState::init(const State* state)
 {
     m_state = state;
     m_numAnimations = m_state->m_numAnimations;
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         m_ctrls[i] = m_state->create_anim_ctrl(i);
     }
+    m_duration = m_state->m_looped ? -1 : m_state->m_animations[0]->get_length();
 }
 
 void RtState::destroy()
 {
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         SAFE_REMOVEREF(m_ctrls[i]);
     }
@@ -156,8 +159,9 @@ void RtState::destroy()
 
 void RtState::get_rootmotion(float dt, hkQsTransform& motionOut)
 {
+    uint32_t numAnimations = m_numAnimations;
     hkQsTransform tmpMotion;
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         hk_anim_ctrl* ac = m_ctrls[i];
         if(!ac->hasExtractedMotion()) continue;
@@ -166,26 +170,33 @@ void RtState::get_rootmotion(float dt, hkQsTransform& motionOut)
     }
 }
 
-uint32_t RtState::collect_triggers(float dt, AnimationTrigger* outTriggers)
+uint32_t RtState::collect_triggers(float dt, AnimationEvent* events)
 {
+    uint32_t numAnimations = m_numAnimations;
     uint32_t ret = 0;
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         const Animation* animation = m_state->m_animations[i];
         hk_anim_ctrl* ac = m_ctrls[i];
         if(ac->getWeight() < TRIGGER_WEIGHT_THRESHOLD)
             continue;
         float localTime = ac->getLocalTime();
-        uint32_t num = animation->collect_triggers(localTime, dt, outTriggers);
-        outTriggers += num;
+        uint32_t num = animation->collect_triggers(localTime, dt, events);
         ret += num;
+    }
+
+    if(is_finished())
+    {
+        events[ret].m_name = StringId("ANIM_FINISHED");
+        ret += 1;
     }
     return ret;
 }
 
 void RtState::add(hk_anim_skel* skeleton, float fLocalTime, float fSpeed)
 {
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         hk_anim_ctrl* ac = m_ctrls[i];
         ac->easeIn(0.0f);
@@ -199,7 +210,8 @@ void RtState::add(hk_anim_skel* skeleton, float fLocalTime, float fSpeed)
 
 void RtState::remove(hk_anim_skel* skeleton)
 {
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         skeleton->removeAnimationControl(m_ctrls[i]);
     }
@@ -207,7 +219,8 @@ void RtState::remove(hk_anim_skel* skeleton)
 
 void RtState::set_weight(float fBaseWeight)
 {
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         m_ctrls[i]->setMasterWeight(fBaseWeight * m_weights[i]);
     }
@@ -215,7 +228,8 @@ void RtState::set_weight(float fBaseWeight)
 
 void RtState::set_playbackspeed(float fSpeed)
 {
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         m_ctrls[i]->setPlaybackSpeed(fSpeed);
     }
@@ -223,10 +237,17 @@ void RtState::set_playbackspeed(float fSpeed)
 
 void RtState::set_localtime(float fLocalTime)
 {
-    for(uint32_t i=0; i<m_numAnimations; ++i)
+    uint32_t numAnimations = m_numAnimations;
+    for(uint32_t i=0; i<numAnimations; ++i)
     {
         m_ctrls[i]->setLocalTime(fLocalTime);
     }
+}
+
+bool RtState::is_finished() const
+{
+    if(m_duration < 0) return false;
+    return m_timeInState >= m_duration;
 }
 
 void RtLayer::init(const AnimFSMLayer* resource)
@@ -288,9 +309,10 @@ void RtLayer::change_status(uint8_t newStatus)
             easeOutCtrl->easeOut(easeTime);
             
             nextState->add(m_skeleton, m_transition.m_nextTime);
-            if(t->m_mode == kTransitionFrozen ||
-               t->m_mode == kTransitionFrozenSync)
+            if(t->m_mode == kTransitionFrozen || t->m_mode == kTransitionFrozenSync)
                 lastState->set_playbackspeed(0.0f);
+
+            nextState->m_timeInState = 0.0f;
         }
         break;
     case kStateWaitForAlgin:
@@ -314,6 +336,8 @@ void RtLayer::udpate(float dt)
                 m_curState->set_weight(m_weight);
                 m_dirty = false;
             }
+
+            m_curState->m_timeInState += dt;
         }
         break;
     case kStateTransitioning:
@@ -421,14 +445,8 @@ void RtLayer::get_rootmotion(float dt, hkQsTransform& motionOut)
 {
     switch(m_status)
     {
-    case kStateTransitioning:
-        {
-            get_transition_rootmotion(dt, motionOut);
-        }
-        break;
-    default:
-        m_skeleton->getDeltaReferenceFrame(dt, motionOut);
-        break;
+    case kStateTransitioning: get_transition_rootmotion(dt, motionOut); break;
+    default: m_skeleton->getDeltaReferenceFrame(dt, motionOut); break;
     }
 }
 
@@ -496,10 +514,10 @@ void RtLayer::get_transition_rootmotion(float dt, hkQsTransform& motionOut)
 }
 
 
-uint32_t RtLayer::collect_triggers(float dt, AnimationTrigger* outTriggers)
+uint32_t RtLayer::collect_triggers(float dt, AnimationEvent* events)
 {
     if(!m_curState) return 0;
-    return m_curState->collect_triggers(dt, outTriggers);
+    return m_curState->collect_triggers(dt, events);
 }
 
 void RtLayer::send_event(const StringId& evtName)
@@ -528,7 +546,6 @@ bool RtLayer::is_in_state(const StringId& stateName) const
 {
     return m_curState->m_state->m_name == stateName;
 }
-
 
 void AnimFSMInstance::init(const void* resource)
 {
@@ -582,12 +599,12 @@ void AnimFSMInstance::update(float dt)
     }
 }
 
-uint32_t AnimFSMInstance::collect_triggers(float dt, AnimationTrigger* outTriggers)
+uint32_t AnimFSMInstance::collect_triggers(float dt, AnimationEvent* events)
 {
     uint32_t ret = 0;
     for(uint32_t i=0; i<m_resource->m_numLayers; ++i)
     {
-        uint32_t num = m_layers[i].collect_triggers(dt, outTriggers);
+        uint32_t num = m_layers[i].collect_triggers(dt, events);
         ret += num;
         outTriggers += num;
     }

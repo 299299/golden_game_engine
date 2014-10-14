@@ -9,6 +9,7 @@ typedef hkaAnimatedSkeleton hk_anim_skel;
 
 struct Animation;
 struct AnimationTrigger;
+struct AnimationEvent;
 
 //==========================================================================================
 //  RESOURCE
@@ -117,21 +118,24 @@ ENGINE_NATIVE_ALIGN struct AnimFSM
 
 struct RtState
 {
+    uint32_t                    m_timeInState;
     hk_anim_ctrl**              m_ctrls;
     float*                      m_weights;
     const State*                m_state;
     uint32_t                    m_numAnimations;
+    float                       m_duration;
     
     void init(const State* state);
     void destroy();
     void get_rootmotion(float dt, hkQsTransform& motionOut);
-    uint32_t collect_triggers(float dt, AnimationTrigger* outTriggers);
+    uint32_t collect_triggers(float dt, AnimationEvent* events);
     
     void add(hk_anim_skel* skeleton, float fLocalTime = 0.0f, float fSpeed = 1.0f);
     void remove(hk_anim_skel* skeleton);
     void set_weight(float fBaseWeight);
     void set_playbackspeed(float fSpeed);
     void set_localtime(float fLocalTime);
+    bool is_finished() const;
 };
 
 struct RtTransition
@@ -170,7 +174,7 @@ struct RtLayer
     
     void do_transition(const Transition* t);
     void get_rootmotion(float dt, hkQsTransform& motionOut);
-    uint32_t collect_triggers(float dt, AnimationTrigger* outTriggers);
+    uint32_t collect_triggers(float dt, AnimationEvent* events);
     
 private:
     void change_status(uint8_t newStatus);
@@ -182,11 +186,12 @@ struct AnimFSMInstance
     RtLayer                     m_layers[MAX_ANIM_FSM_LAYER_NUM];
     const AnimFSM*              m_resource;
     char*                       m_blob;
+    ActorId32                   m_actor;
     
     void init(const void* resource);
     void destroy();
     void update(float dt);
-    uint32_t collect_triggers(float dt, AnimationTrigger* outTriggers);
+    uint32_t collect_triggers(float dt, AnimationEvent* events);
     void send_event(const StringId& evtName, int index = -1);
 };
 

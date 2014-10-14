@@ -12,6 +12,7 @@
 #include "id_array.h"
 #include "config.h"
 #include "EngineAssert.h"
+#include "Event.h"
 //===========================================
 //          COMPONENTS
 #include "PhysicsInstance.h"

@@ -7,6 +7,7 @@
 #include "DebugDraw.h"
 #include "id_array.h"
 #include "config.h"
+#include "Event.h"
 //=======================================================================================
 // RESOURCES
 #include "Resource.h"
@@ -144,11 +145,10 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         const hkaSkeleton* skeleton = pose->getSkeleton();
 
         int num_of_pose = poseMS.getSize();
-        model->alloc_skinning_mat();
 
         {
             PROFILE(Animation_SkinMatrix);
-            float* matrix = model->m_skinMatrix;
+            float* matrix = model->alloc_skinning_mat();
             hkQsTransform tempT1, tempT2;
             for (int i=0; i < num_of_pose; ++i)
             {
@@ -175,7 +175,6 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         
 
 #ifndef _RETIAL
-        PROFILE(Animation_DrawPose);
         draw_pose(*pose, t, RGBA(125,125,255,255));
 #endif
     }
@@ -199,19 +198,27 @@ void AnimationSystem::update_fsms(float dt)
     if(!numFSMs) return;
     PROFILE(Animation_UpdateFSM);
     AnimFSMInstance* fsms = id_array::begin(m_fsms);
+    AnimationEvent* evt = m_events;
+
     for(uint32_t i=0; i<numFSMs;++i)
     {
-        fsms[i].update(dt);
+        AnimFSMInstance& fsm = fsms[i];
+        uint32_t numEvt = fsm.collect_triggers(dt, evt);
+        evt += numEvt;
+        m_numAnimEvts += numEvt;
+        fsm.update(dt);
     }
 }
+
 
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_anim_fsm( const void* resource, ActorId32 )
+Id create_anim_fsm( const void* resource, ActorId32 actor)
 {
     AnimFSMInstance inst;
     memset(&inst, 0x00, sizeof(inst));
+    inst.m_actor = actor;
     inst.init(resource);
     return id_array::create(m_fsms, inst);
 }
@@ -244,7 +251,6 @@ Id create_anim_rig( const void* resource, ActorId32 )
 {
     check_status();
     AnimRigInstance inst;
-    memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
     return id_array::create(m_rigs, inst);
 }

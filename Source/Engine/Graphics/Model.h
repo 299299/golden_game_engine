@@ -41,7 +41,7 @@ struct ModelInstance
     void submit_shadow();
 
     void update();
-    void alloc_skinning_mat();
+    float* alloc_skinning_mat();
     bool check_intersection( const float* rayOrig, 
                             const float* rayDir, 
                             float* intsPos,
