@@ -132,9 +132,7 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
         attachment << "transform" << matrixArray;
     }
     obj << "attachments" << attachments;
-
-    if(m_node) fill_object_attributes(obj, m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
-
+    fillAttributes(obj);
     return obj;
 }
 

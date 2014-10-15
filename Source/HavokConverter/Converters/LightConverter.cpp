@@ -50,7 +50,7 @@ jsonxx::Object LightConverter::serializeToJson() const
     lightObject << "name" << getResourceName();
     lightObject << "type" << getTypeName();
 
-    fill_object_attributes(lightObject, m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
+    fillAttributes(lightObject);
 
     return lightObject;
 }

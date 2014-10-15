@@ -68,4 +68,5 @@ struct AnimRigInstance
     void destroy();
     void update_local_clock(float dt);
     void test_animation(const char* animFile);
+    bool is_playing_animation() const;
 };

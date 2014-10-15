@@ -118,12 +118,10 @@ ENGINE_NATIVE_ALIGN struct AnimFSM
 
 struct RtState
 {
-    float                       m_timeInState;
     hk_anim_ctrl**              m_ctrls;
     float*                      m_weights;
     const State*                m_state;
     uint32_t                    m_numAnimations;
-    float                       m_duration;
     
     void init(const State* state);
     void destroy();
@@ -135,7 +133,6 @@ struct RtState
     void set_weight(float fBaseWeight);
     void set_playbackspeed(float fSpeed);
     void set_localtime(float fLocalTime);
-    bool is_finished() const;
 };
 
 struct RtTransition

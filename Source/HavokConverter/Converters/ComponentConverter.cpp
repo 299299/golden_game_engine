@@ -42,3 +42,9 @@ bool ComponentConverter::isExistInCommonPackage() const
     pathName += combieFileName();
     return isFileExist(pathName);
 }
+
+void ComponentConverter::fillAttributes(jasonxx::Object& object)
+{
+    if(!m_node) return;
+    fill_object_attributes(modelObject, m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
+}

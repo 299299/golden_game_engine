@@ -74,6 +74,18 @@ void AnimRigInstance::test_animation( const char* animFile )
     ac->removeReference();
 }
 
+bool AnimRigInstance::is_playing_animation() const
+{   
+    int numControls = m_skeleton->getNumAnimationControls();
+    for(int i=0; i<numControls; ++i)
+    {
+        hkaDefaultAnimationControl* ac = (hkaDefaultAnimationControl*)m_skeleton->getAnimationControl(i);
+        float speed = ac->getPlaybackSpeed();
+        if(speed > 0.0f) return true;
+    }
+    return false;
+}
+
 void* load_resource_anim_rig(const char* data, uint32_t size)
 {
     AnimRig* rig = (AnimRig*)data;

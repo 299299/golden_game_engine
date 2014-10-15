@@ -29,8 +29,9 @@ public:
 
     virtual void writeOutput();
     virtual bool isExistInCommonPackage() const;
+    virtual void fillAttributes(jasonxx::Object& object);
 
-    std::string             m_name;
-    ActorConverter*         m_ownner;
-    hkxNode*                m_node;
+    std::string                 m_name;
+    ActorConverter*             m_ownner;
+    hkxNode*                    m_node;
 };

@@ -146,7 +146,6 @@ void RtState::init(const State* state)
     {
         m_ctrls[i] = m_state->create_anim_ctrl(i);
     }
-    m_duration = m_state->m_looped ? -1 : m_state->m_animations[0]->get_length();
 }
 
 void RtState::destroy()
@@ -184,12 +183,6 @@ uint32_t RtState::collect_triggers(float dt, AnimationEvent* events)
         float localTime = ac->getLocalTime();
         uint32_t num = animation->collect_triggers(localTime, dt, events);
         ret += num;
-    }
-
-    if(is_finished())
-    {
-        events[ret].m_name = StringId("ANIM_FINISHED");
-        ret += 1;
     }
     return ret;
 }
@@ -243,12 +236,6 @@ void RtState::set_localtime(float fLocalTime)
     {
         m_ctrls[i]->setLocalTime(fLocalTime);
     }
-}
-
-bool RtState::is_finished() const
-{
-    if(m_duration < 0) return false;
-    return m_timeInState >= m_duration;
 }
 
 void RtLayer::init(const AnimFSMLayer* resource)
@@ -312,8 +299,6 @@ void RtLayer::change_status(uint8_t newStatus)
             nextState->add(m_skeleton, m_transition.m_nextTime);
             if(t->m_mode == kTransitionFrozen || t->m_mode == kTransitionFrozenSync)
                 lastState->set_playbackspeed(0.0f);
-
-            nextState->m_timeInState = 0.0f;
         }
         break;
     case kStateWaitForAlgin:
@@ -337,8 +322,6 @@ void RtLayer::udpate(float dt)
                 m_curState->set_weight(m_weight);
                 m_dirty = false;
             }
-
-            m_curState->m_timeInState += dt;
         }
         break;
     case kStateTransitioning:
