@@ -49,6 +49,7 @@ BOOL checkSingleProcess()
     else return TRUE;
 }
 
+ActorId g_actor;
 int _tmain(int argc, _TCHAR* argv[])
 {
 #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
@@ -71,6 +72,15 @@ int _tmain(int argc, _TCHAR* argv[])
     cfg.m_windowWidth = 1280;
     cfg.m_windowHeight = 720;
     cfg.m_fixedFPS = 60;
+    extern void game_pre_step(float);
+    extern void game_step(float);
+    extern void game_post_step(float);
+    extern void game_render(float);
+    cfg.m_preStepHook = game_pre_step;
+    cfg.m_stepHook = game_step;
+    cfg.m_postStepHook = game_post_step;
+    cfg.m_renderHook = game_render;
+
     bx::CommandLine cmdline(argc, argv);
     
     const char* name = cmdline.findOption('w');
@@ -123,11 +133,10 @@ int _tmain(int argc, _TCHAR* argv[])
         create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)), INVALID_U32);
     }
 
-    ActorId id;
     if(actor_name) 
     {
         printf("loading actor %s \n", actor_name);
-        id = g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
+        g_actor = g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
     }
     if(level_name)
     {
@@ -139,15 +148,15 @@ int _tmain(int argc, _TCHAR* argv[])
     const char* anim_name = cmdline.findOption("animation");
     if(anim_name && actor_name)
     {
-        Actor* actor = g_actorWorld.get_actor(id);
+        Actor* actor = g_actorWorld.get_actor(g_actor);
         if(actor)
         {
             LOGI("loading animation %s to actor %s", anim_name, actor_name);
             extern void* get_anim_rig(Id);
-            AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(id.get_id());
+            AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(g_actor.get_id());
             if(rig)
             {
-               rig->test_animation(anim_name);
+               rig->play_simple_animation(StringId(anim_name), false);
             }
         }
     }

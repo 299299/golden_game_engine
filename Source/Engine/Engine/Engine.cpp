@@ -97,6 +97,7 @@ void Engine::frame(float timeStep)
         {
             PROFILE(Game_PreStep);
             m_state = kFramePreStepping;
+            if(m_cfg.m_preStepHook) m_cfg.m_preStepHook(timeStep);
             g_actorWorld.pre_step(timeStep);
             g_script.pre_step(timeStep);
         }
@@ -109,6 +110,7 @@ void Engine::frame(float timeStep)
             m_state = kFrameUpdating;
             g_actorWorld.step(timeStep);
             g_script.step(timeStep);
+            if(m_cfg.m_stepHook) m_cfg.m_stepHook(timeStep);
             //------------------------------------
             g_threadMgr.wait();
             g_physicsWorld.tick_finished_jobs();
@@ -119,6 +121,7 @@ void Engine::frame(float timeStep)
             m_state = kFramePostStepping;
             g_actorWorld.post_step(timeStep);
             g_script.post_step(timeStep);
+            if(m_cfg.m_postStepHook) m_cfg.m_postStepHook(timeStep);
         }
     }
 
@@ -132,6 +135,7 @@ void Engine::frame(float timeStep)
     {
         PROFILE(Game_Render);
         m_state = kFrameRendering;
+        if(m_cfg.m_renderHook) m_cfg.m_renderHook(timeStep);
         g_actorWorld.draw();
     }
 }

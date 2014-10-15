@@ -29,7 +29,7 @@ public:
 
     virtual void writeOutput();
     virtual bool isExistInCommonPackage() const;
-    virtual void fillAttributes(jasonxx::Object& object);
+    virtual void fillAttributes(jsonxx::Object& object) const;
 
     std::string                 m_name;
     ActorConverter*             m_ownner;

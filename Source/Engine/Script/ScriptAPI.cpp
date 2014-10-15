@@ -14,6 +14,8 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Script.h"
+#include "AnimRig.h"
+#include "AnimFSM.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -985,6 +987,44 @@ static int GM_CDECL level_unload(gmThread* a_thread)
     level->unload();
     return GM_OK;
 }
+static int GM_CDECL actor_play_simple_animation(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(anim_name, 1);
+    GM_CHECK_INT_PARAM(looped, 2);
+    ActorId id;
+    id.set(actor_id);
+    Actor* actor = g_actorWorld.get_actor(id);
+    if(!actor) return GM_OK;
+    extern void* get_anim_rig(Id);
+    AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
+    if(!rig) return GM_OK;
+    rig->play_simple_animation(StringId(anim_name), looped);
+    return GM_OK;
+}
+static int GM_CDECL actor_is_playing_animation(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    ActorId id;
+    id.set(actor_id);
+    Actor* actor = g_actorWorld.get_actor(id);
+    if(!actor)
+    {
+        a_thread->PushInt(0);
+        return GM_OK;
+    }
+    extern void* get_anim_rig(Id);
+    AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
+    if(!rig) 
+    {
+        a_thread->PushInt(0);
+        return GM_OK;
+    }
+    a_thread->PushInt(rig->is_playing_animation() ? 1 : 0);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
@@ -1192,6 +1232,8 @@ void register_script_api(gmMachine* machine)
         {"actor_set_string", actor_set_string},
         {"load_level", level_load},
         {"unload_level", level_unload},
+        {"actor_play_simple_animation", actor_play_simple_animation},
+        {"actor_is_playing_animation", actor_is_playing_animation},
     };
     static gmVariableEntry s_world_values[] =
     {

@@ -64,16 +64,6 @@ void AnimRigInstance::init( const void* resource )
     m_pose->syncAll();
 }
 
-void AnimRigInstance::test_animation( const char* animFile )
-{
-    Animation* anim = FIND_RESOURCE(Animation, StringId(animFile));
-    if(!anim) return;
-    hkaDefaultAnimationControl* ac = new hkaDefaultAnimationControl(anim->m_binding);
-    m_skeleton->setReferencePoseWeightThreshold(0.0f);
-    m_skeleton->addAnimationControl(ac);
-    ac->removeReference();
-}
-
 bool AnimRigInstance::is_playing_animation() const
 {   
     int numControls = m_skeleton->getNumAnimationControls();
@@ -84,6 +74,17 @@ bool AnimRigInstance::is_playing_animation() const
         if(speed > 0.0f) return true;
     }
     return false;
+}
+
+void AnimRigInstance::play_simple_animation( const StringId& anim_name, bool bLoop )
+{
+    Animation* anim = FIND_RESOURCE(Animation, anim_name);
+    if(!anim) return;
+    int maxCycles = bLoop ? -1 : 1;
+    hkaDefaultAnimationControl* ac = new hkaDefaultAnimationControl(anim->m_binding, true, maxCycles);
+    m_skeleton->setReferencePoseWeightThreshold(0.0f);
+    m_skeleton->addAnimationControl(ac);
+    ac->removeReference();
 }
 
 void* load_resource_anim_rig(const char* data, uint32_t size)
