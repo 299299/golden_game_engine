@@ -176,7 +176,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         
 
 #ifndef _RETIAL
-        draw_pose(*pose, t, RGBA(125,125,255,255));
+        draw_pose(*pose, t, RGBCOLOR(125,125,255), true);
 #endif
     }
 }

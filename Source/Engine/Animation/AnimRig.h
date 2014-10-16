@@ -33,6 +33,7 @@ enum HumanBodypart
 struct BoneAttachment
 {
     float               m_transform[16];
+    float               m_worldPose[16];
     StringId            m_name;
     int                 m_boneIndex;
 };
@@ -43,6 +44,7 @@ ENGINE_NATIVE_ALIGN struct AnimRig
 
     int  find_joint_index(const StringId& jointName);
     void create_mirrored_skeleton();
+    void update_attachments(const float* world_pose);
 
     int                             m_humanJointIndices[kBodyPartMax];
     hkaSkeleton*                    m_skeleton;

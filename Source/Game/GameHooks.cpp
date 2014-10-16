@@ -3,6 +3,7 @@
 
 void game_pre_step(float dt)
 {
+#if 0
     extern ActorId g_actor;
     Actor* actor = g_actorWorld.get_actor(g_actor);
     if(actor)
@@ -18,6 +19,7 @@ void game_pre_step(float dt)
             }
         }
     }
+#endif
 }
 
 void game_step(float dt)

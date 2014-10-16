@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "Animation.h"
 #include "Utils.h"
+#include <bx/fpumath.h>
 //=======================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
 #include <Animation/Animation/hkaAnimationContainer.h>
@@ -42,6 +43,16 @@ void AnimRig::create_mirrored_skeleton()
     // Mirror this character about the X axis
     hkQuaternion v_mir( -1.0f, 0.0f, 0.0f, 0.0f );
     m_mirroredSkeleton->setAllBoneInvariantsFromReferencePose( v_mir, 0.0f );
+}
+
+void AnimRig::update_attachments( const float* world_pose )
+{
+    for (int i=0; i<m_attachNum; ++i)
+    {
+        BoneAttachment& attach = m_attachments[i];
+        const float* in_pose = world_pose + 16 * attach.m_boneIndex;
+        bx::mtxMul(attach.m_worldPose, in_pose, attach.m_transform);
+    }
 }
 
 void AnimRigInstance::destroy()

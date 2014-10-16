@@ -226,6 +226,11 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
             transform_vec3(end, poseT);
         }
         g_debugDrawMgr.add_line(start, end, color, false);
+
+        if(showLabels)
+        {
+            g_debugDrawMgr.add_text_3d(start, skeleton->m_bones[i].m_name.cString(), RGBCOLOR(70,125,200));
+        }
     }
 }
 
