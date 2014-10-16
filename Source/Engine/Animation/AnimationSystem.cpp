@@ -159,6 +159,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
                 transform_matrix(matrix, tempT2);
                 matrix += 16;
             }
+            rig->update_attachments(model->m_skinMatrix);
         }
         
 
@@ -177,6 +178,19 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
 #ifndef _RETIAL
         draw_pose(*pose, t, RGBCOLOR(125,125,255), true);
+        uint32_t num_attach = rig->m_resource->m_attachNum;
+        const BoneAttachment* attachments = rig->m_resource->m_attachments;
+        const float* world_poses = rig->m_attachmentTransforms;
+        for (int i=0; i<num_attach; ++i)
+        {
+            const BoneAttachment& attchment = attachments[i];
+            const float* world_pose = world_poses + 16 * i;
+            hkQsTransform t;
+            transform_matrix(t, world_pose);
+            g_debugDrawMgr.add_axis(t);
+            float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
+            g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
+        }
 #endif
     }
 }

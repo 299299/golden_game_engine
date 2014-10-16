@@ -33,7 +33,6 @@ enum HumanBodypart
 struct BoneAttachment
 {
     float               m_transform[16];
-    float               m_worldPose[16];
     StringId            m_name;
     int                 m_boneIndex;
 };
@@ -60,15 +59,17 @@ ENGINE_NATIVE_ALIGN struct AnimRig
     bool                            m_mirrored;
 };
 
-struct AnimRigInstance
+ENGINE_NATIVE_ALIGN struct AnimRigInstance
 {
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
+    float*                          m_attachmentTransforms;
 
     void init(const void* resource);
     void destroy();
     void update_local_clock(float dt);
     void play_simple_animation(const StringId& anim_name, bool bLoop);
     bool is_playing_animation() const;
+    void update_attachments(const float* world_pose);
 };

@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "Animation.h"
 #include "Utils.h"
+#include "MemorySystem.h"
 #include <bx/fpumath.h>
 //=======================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
@@ -43,16 +44,6 @@ void AnimRig::create_mirrored_skeleton()
     // Mirror this character about the X axis
     hkQuaternion v_mir( -1.0f, 0.0f, 0.0f, 0.0f );
     m_mirroredSkeleton->setAllBoneInvariantsFromReferencePose( v_mir, 0.0f );
-}
-
-void AnimRig::update_attachments( const float* world_pose )
-{
-    for (int i=0; i<m_attachNum; ++i)
-    {
-        BoneAttachment& attach = m_attachments[i];
-        const float* in_pose = world_pose + 16 * attach.m_boneIndex;
-        bx::mtxMul(attach.m_worldPose, in_pose, attach.m_transform);
-    }
 }
 
 void AnimRigInstance::destroy()
@@ -96,6 +87,19 @@ void AnimRigInstance::play_simple_animation( const StringId& anim_name, bool bLo
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
     m_skeleton->addAnimationControl(ac);
     ac->removeReference();
+}
+
+void AnimRigInstance::update_attachments( const float* world_pose )
+{
+    uint32_t num = m_resource->m_attachNum;
+    const BoneAttachment* attachments = m_resource->m_attachments;
+    m_attachmentTransforms = FRAME_ALLOC(float, num*16);
+    for (uint32_t i=0; i<num; ++i)
+    {
+        const BoneAttachment& attach = attachments[i];
+        int tIndex = 16 * attach.m_boneIndex;
+        bx::mtxMul(m_attachmentTransforms + tIndex, world_pose + tIndex, attach.m_transform);
+    }
 }
 
 void* load_resource_anim_rig(const char* data, uint32_t size)
