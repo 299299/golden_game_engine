@@ -65,7 +65,6 @@ enum ComponentType
     kComponentPhysics,
     kComponentProxy,
     kComponentAnimRig,
-    kComponentAnimFSM,
     kComponentScript,
     //kComponentIk,
     

@@ -102,7 +102,6 @@ class NagaPipeline(object):
         cmds.setParent('..')
         cmds.rowLayout(nc=2)
         cmds.button('Add Script', c=self.onAddScriptClicked)
-        cmds.button('Add AnimFSM Node', c=self.onAddAnimFSMClicked)
         cmds.setParent('..')
         cmds.setParent('..')
 
@@ -145,9 +144,6 @@ class NagaPipeline(object):
 
     def onAddScriptClicked(self, *arg):
         NAGA.createScriptNode()
-
-    def onAddAnimFSMClicked(self, *arg):
-        NAGA.createAnimFSMNode()
 
     #
     # UTIL FUNCTIONS

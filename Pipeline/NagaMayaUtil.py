@@ -248,18 +248,11 @@ def createScriptNode():
     addStringAttr(script_node, 'script_file', '')
 
 
-def createAnimFSMNode():
-    fsm_node = createEngineNode('anim_fsm')
-    if(fsm_node is None):
-        return
-    addStringAttr(fsm_node, 'fsm_file', '')
-
-
 def createTriggerNode():
     triggers = ['attack', 'dust']
     trigger_group = findNodeOrCreate('triggers')
     if(trigger_group):
-        addEnumAttr(trigger_group, 'hk_trigger_', triggers)d
+        addEnumAttr(trigger_group, 'hk_trigger_', triggers)
     beat_group = findNodeOrCreate('beats')
     if(beat_group):
         addEnumAttr(beat_group, 'hk_beat_',

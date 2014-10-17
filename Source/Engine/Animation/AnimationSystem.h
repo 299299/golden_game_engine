@@ -10,8 +10,6 @@ class hkaAnimation;
 class hkaMirroredAnimation;
 class hkaAnimationBinding;
 
-struct AnimFSM;
-struct AnimFSMInstance;
 struct AnimRig;
 struct AnimRigInstance;
 struct Actor;

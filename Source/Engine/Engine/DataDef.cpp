@@ -164,7 +164,6 @@ const char*   physics_type_names[] =
 #include "Light.h"
 #include "Animation.h"
 #include "AnimRig.h"
-#include "AnimFSM.h"
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
 #include "PhysicsWorld.h"
@@ -205,9 +204,6 @@ extern void  lookup_resource_animation(void *);
 //-----------------------------------------------------------------
 extern void* load_resource_anim_rig(const char*, uint32_t);
 extern void  destroy_resource_anim_rig(void *);
-//-----------------------------------------------------------------
-extern void* load_resource_anim_fsm(const char*, uint32_t);
-extern void  lookup_resource_anim_fsm(void*);
 //-----------------------------------------------------------------
 extern void* load_resource_material(const char*, uint32_t);
 extern void  lookup_resource_material(void*);
@@ -252,7 +248,6 @@ static ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, ShaderProgram::get_name()},
     {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, Animation::get_name()},
     {load_resource_anim_rig, destroy_resource_anim_rig, 0, 0, 0, AnimRig::get_name()},
-    {load_resource_anim_fsm, 0, lookup_resource_anim_fsm, 0, 0, AnimFSM::get_name()},
     {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::get_name()},
     {0, 0, 0, 0, 0, LightResource::get_name()},
     {load_resource_model, 0, lookup_resource_model, 0, 0, ModelResource::get_name()},
@@ -303,12 +298,6 @@ extern void*    get_anim_rig(Id);
 extern uint32_t num_anim_rigs();
 extern void*    get_anim_rigs();
 //-----------------------------------------------------------------
-extern Id       create_anim_fsm(const void*, ActorId32);
-extern void     destroy_anim_fsm(Id);
-extern void*    get_anim_fsm(Id);
-extern uint32_t num_anim_fsms();
-extern void*    get_anim_fsms();
-//-----------------------------------------------------------------
 extern Id       create_physics_object(const void*, ActorId32);
 extern void     destroy_physics_object(Id);
 extern void*    get_physics_object(Id);
@@ -342,7 +331,6 @@ static ComponentFactory g_componentFactories[] =
     create_physics_object, destroy_physics_object, get_physics_object, num_physics_objects, get_physics_objects,
     create_physics_proxy, destroy_physics_proxy, get_physics_proxy, num_physics_proxies, get_physics_proxies,
     create_anim_rig, destroy_anim_rig, get_anim_rig, num_anim_rigs, get_anim_rigs,
-    create_anim_fsm, destroy_anim_fsm, get_anim_fsm, num_anim_fsms, get_anim_fsms,
     create_script_object, destroy_script_object, get_script_object, num_script_objects, get_script_objects,
 };
 StringId g_componentTypes[kComponentTypeNum];
@@ -384,9 +372,6 @@ void init_component_names()
 
     g_componentTypeNames[kComponentAnimRig] = AnimRig::get_name();
     g_componentTypes[kComponentAnimRig] = AnimRig::get_type();
-
-    g_componentTypeNames[kComponentAnimFSM] = AnimFSM::get_name();
-    g_componentTypes[kComponentAnimFSM] = AnimFSM::get_type();
 
     g_componentTypeNames[kComponentScript] = ScriptResource::get_name();
     g_componentTypes[kComponentScript] = ScriptResource::get_type();

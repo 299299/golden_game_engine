@@ -4,7 +4,6 @@
 #include "ComponentNodeConverter.h"
 #include "ProxyInstance.h"
 #include "Script.h"
-#include "AnimFSM.h"
 #include <bx/bx.h>
 
 ActorConverter::ActorConverter()
@@ -87,7 +86,6 @@ void ActorConverter::processComponentNodes()
     {
         ProxyResource::get_name(),
         ScriptResource::get_name(),
-        AnimFSM::get_name(),
     };
 
     for (int i=0; i<BX_COUNTOF(s_componet_node_names); ++i)

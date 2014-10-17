@@ -17,7 +17,6 @@
 #include "CopyCompiler.h"
 #include "ModelCompiler.h"
 #include "ShadingEnviromentCompiler.h"
-#include "AnimFSMCompiler.h"
 #include "LevelCompiler.h"
 #include "ScriptCompiler.h"
 #include <bx/tinystl/allocator.h>
@@ -76,7 +75,6 @@ static const char* g_resourceTypeNames[] =
     ModelResource::get_name(),
     Shader::get_name(),
     ShadingEnviroment::get_name(),
-    AnimFSM::get_name(),
     SHADER_INCLUDE_EXT,
     "dds",
     ScriptResource::get_name(),
@@ -103,7 +101,6 @@ static __create_compiler__ g_funtions[] =
     create_compiler<ModelCompiler>,
     create_compiler<ShaderCompiler>,
     create_compiler<ShadingEnviromentCompiler>,
-    create_compiler<AnimFSMCompiler>,
     create_compiler<ShaderIncludeCompiler>,
     create_compiler<DDSCompiler>,
     create_compiler<ScriptCompiler>,

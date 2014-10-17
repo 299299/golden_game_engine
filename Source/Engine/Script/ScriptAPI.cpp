@@ -15,7 +15,6 @@
 #include "Camera.h"
 #include "Script.h"
 #include "AnimRig.h"
-#include "AnimFSM.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>

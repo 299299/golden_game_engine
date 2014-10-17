@@ -18,7 +18,6 @@
 #include "IK.h"
 #include "Ragdoll.h"
 #include "AnimRig.h"
-#include "AnimFSM.h"
 //=======================================================================================
 //=======================================================================================
 #include <Common/Base/Container/Array/hkArray.h>
@@ -207,61 +206,10 @@ void AnimationSystem::update_local_clocks(float dt)
     }
 }
 
-void AnimationSystem::update_fsms(float dt)
-{
-    uint32_t numFSMs = id_array::size(m_fsms);
-    if(!numFSMs) return;
-    PROFILE(Animation_UpdateFSM);
-    AnimFSMInstance* fsms = id_array::begin(m_fsms);
-    AnimationEvent* evt = m_events;
-
-    for(uint32_t i=0; i<numFSMs;++i)
-    {
-        AnimFSMInstance& fsm = fsms[i];
-        uint32_t numEvt = fsm.collect_triggers(dt, evt);
-        evt += numEvt;
-        m_numAnimEvts += numEvt;
-        fsm.update(dt);
-    }
-}
-
 
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_anim_fsm( const void* resource, ActorId32 actor)
-{
-    AnimFSMInstance inst;
-    memset(&inst, 0x00, sizeof(inst));
-    inst.m_actor = actor;
-    inst.init(resource);
-    return id_array::create(m_fsms, inst);
-}
-
-void destroy_anim_fsm( Id id )
-{
-    if(!id_array::has(m_fsms, id)) return;
-    AnimFSMInstance& inst = id_array::get(m_fsms, id);
-    inst.destroy();
-    id_array::destroy(m_fsms, id);
-}
-
-void* get_anim_fsm( Id id )
-{
-    if(!id_array::has(m_fsms, id)) return 0;
-    return &id_array::get(m_fsms, id);
-}
-
-uint32_t num_anim_fsms()
-{
-    return id_array::size(m_fsms);
-}
-
-void* get_anim_fsms()
-{
-    return id_array::begin(m_fsms);
-}
-
 Id create_anim_rig( const void* resource, ActorId32 )
 {
     check_status();

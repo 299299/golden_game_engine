@@ -3,7 +3,6 @@
 #include "DebugDraw.h"
 #include "ShadingEnviroment.h"
 #include "Gui.h"
-#include "AnimFSM.h"
 #include "Light.h"
 #include "Resource.h"
 #include <imgui/imgui.h>

@@ -19,7 +19,6 @@
 #include "Ragdoll.h"
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
-#include "AnimFSM.h"
 #include "Level.h"
 #include "Actor.h"
 #include "Script.h"
@@ -103,29 +102,6 @@ void reload_animation_resource(void* oldResource, void* newResource)
 {
     Animation* oldAnimation = (Animation*)oldResource;
     Animation* newAnimation = (Animation*)newResource;
-
-    uint32_t numOfFSM = g_resourceMgr.find_resources_type_of(AnimFSM::get_type(), result, resourceMax);
-    LOGD("total num of anim fsm resources = %d", numOfFSM);
-    //holy shit, deep loop!
-    for (uint32_t i=0; i<numOfFSM; ++i)
-    {
-        AnimFSM* fsm = (AnimFSM*)result[i]->m_ptr;
-        for (uint32_t j=0; j<fsm->m_numLayers; ++j)
-        {
-            AnimFSMLayer& layer = fsm->m_layers[j];
-            for(uint32_t k=0; k<layer.m_numStates; ++k)
-            {
-                State& state = layer.m_states[k];
-                for (uint32_t m=0; m<state.m_numAnimations; ++m)
-                {
-                    if(state.m_animations[m] == oldAnimation)
-                        state.m_animations[m] = newAnimation;
-                }
-            }
-        }
-        //just tell anim fsm to reload.
-        reload_component_resource<AnimFSM, AnimFSMInstance>(fsm, fsm);
-    }
 
     uint32_t numOfAnimations = g_resourceMgr.find_resources_type_of(Animation::get_type(), result, resourceMax);
     LOGD("total num of animation resources = %d", numOfAnimations);
@@ -372,7 +348,6 @@ void resource_hot_reload_init()
     register_component_resource_reload_callback_<FootResource, FootInstance>();
     register_component_resource_reload_callback_<PhysicsResource, PhysicsInstance>();
     register_component_resource_reload_callback_<ProxyResource, ProxyInstance>();
-    register_component_resource_reload_callback_<AnimFSM, AnimFSMInstance>();
 }
 
 
