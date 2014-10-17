@@ -59,6 +59,7 @@ void AnimRigInstance::update_local_clock(float dt)
 
 void AnimRigInstance::init( const void* resource )
 {
+    m_attachmentTransforms = 0;
     m_resource = (const AnimRig*)resource;
     m_skeleton = new hkaAnimatedSkeleton(m_resource->m_skeleton);
     m_pose = new hkaPose(m_skeleton->getSkeleton());

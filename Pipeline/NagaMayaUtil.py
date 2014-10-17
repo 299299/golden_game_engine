@@ -95,7 +95,6 @@ def osGetFileList(directory, ext):
 
 def isLevel(name):
     return name.startswith('Level')
-    # return len(findNodeNamePrefix('Proxy')) > 0
 
 
 def fixAssemblyRepPath():
@@ -157,21 +156,19 @@ def openAD_Reference():
     cmds.file(refFile, open=True)
 
 
-def findNodeNamePrefix(prefix):
-    nodeList = cmds.ls(type='transform')
-    retList = []
-    for node in nodeList:
-        if(node.startswith(prefix)):
-            retList.append(node)
-    return retList
+def findNode(name, type='transform'):
+    nodeList = cmds.ls(name, type=type)
+    if(len(nodeList) > 0):
+        return nodeList[0]
+    return None
 
 
-def findNodeNameEqual(name):
-    nodeList = cmds.ls(type='transform')
-    for node in nodeList:
-        if(node == name):
-            return node
-    return ''
+def findNodeOrCreate(name):
+    node = findNode(name)
+    if(node):
+        return None
+    node = cmds.group(em=1, name=name)
+    return node
 
 
 def getMayaScriptPath():
@@ -216,12 +213,14 @@ def addEnumAttr(node_name, attr_name, enum_values):
     cmds.addAttr(node_name, ln=attr_name, at='enum', en=enum_names)
 
 
-def createEngineNode(node_name):
-    node = findNodeNameEqual(node_name)
-    if(node != ''):
-        return None
-    node = cmds.group(em=1, name=node_name)
-    addStringAttr(node, 'hkType', 'engine_attributes', True)
+def createEngineNode(node_name, deleteOld=False):
+    node = findNodeOrCreate(node_name)
+    if(node):
+        addStringAttr(node, 'hkType', 'engine_attributes', True)
+    else:
+        cmds.delete(node_name)
+        node = findNodeOrCreate(node_name)
+        addStringAttr(node, 'hkType', 'engine_attributes', True)
     return node
 
 
@@ -258,17 +257,13 @@ def createAnimFSMNode():
 
 def createTriggerNode():
     triggers = ['attack', 'dust']
-    TRIGGER_GROUP = 'triggers'
-    trigger_group = findNodeNameEqual(TRIGGER_GROUP)
-    if(trigger_group == ''):
-        addEnumAttr(trigger_group, 'hk_trigger_', triggers)
-
-    BEAT_GROUP = 'beats'
-    beat_group = findNodeNameEqual(BEAT_GROUP)
-    if(beat_group == ''):
-        beat_group = cmds.group(em=1, name=BEAT_GROUP)
-        addEnumAttr(
-            beat_group, 'hk_beat_', ['left_foot_down', 'right_foot_down'])
+    trigger_group = findNodeOrCreate('triggers')
+    if(trigger_group):
+        addEnumAttr(trigger_group, 'hk_trigger_', triggers)d
+    beat_group = findNodeOrCreate('beats')
+    if(beat_group):
+        addEnumAttr(beat_group, 'hk_beat_',
+                    ['left_foot_down', 'right_foot_down'])
 
 
 class NagaMayaUtil(object):
@@ -331,14 +326,10 @@ class NagaMayaUtil(object):
             return -1
         proxyNodeNum = 0
         packageName = ''
-        group = findNodeNameEqual(PROXY_GROUP)
-        if(group != ''):
-            cmds.delete(PROXY_GROUP)
-        group = PROXY_GROUP
         packageName = os.path.basename(packageFolderName)
         hkxFolder = self.getHkxFolder(packageName)
         print('havok export folder = ' + hkxFolder)
-        group = createEngineNode(PROXY_GROUP)
+        group = createEngineNode(PROXY_GROUP, True)
         addStringAttr(group, 'package_name', packageName)
 
         nodeList = cmds.ls(type='assemblyDefinition')
