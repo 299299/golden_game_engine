@@ -144,7 +144,6 @@
     <ClCompile Include="..\ThirdParty\stb_image\stb_image.h" />
     <ClCompile Include="Animation\Animation.cpp" />
     <ClCompile Include="Animation\AnimationSystem.cpp" />
-    <ClCompile Include="Animation\AnimFSM.cpp" />
     <ClCompile Include="Animation\AnimRaycast.cpp" />
     <ClCompile Include="Animation\AnimRig.cpp" />
     <ClCompile Include="Animation\IK.cpp" />
@@ -317,7 +316,6 @@
     <ClInclude Include="..\ThirdParty\stb_truetype\stb_truetype.h" />
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Animation\AnimationSystem.h" />
-    <ClInclude Include="Animation\AnimFSM.h" />
     <ClInclude Include="Animation\AnimRaycast.h" />
     <ClInclude Include="Animation\AnimRig.h" />
     <ClInclude Include="Animation\IK.h" />

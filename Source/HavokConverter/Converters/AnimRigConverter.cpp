@@ -117,6 +117,7 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
 
     jsonxx::Array attachments;
     float m[16];
+    LOGI("attachment num = %d", m_skin->m_attachments.size());
     for(unsigned i=0; i<m_skin->m_attachments.size(); ++i)
     {
         const hkaBoneAttachment* ba = m_skin->m_attachments[i];
@@ -130,6 +131,7 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
             matrixArray << m[i];
         }
         attachment << "transform" << matrixArray;
+        attachments << attachment;
     }
     obj << "attachments" << attachments;
     fillAttributes(obj);

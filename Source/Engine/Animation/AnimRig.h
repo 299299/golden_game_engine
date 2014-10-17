@@ -32,7 +32,7 @@ enum HumanBodypart
 
 struct BoneAttachment
 {
-    float               m_transform[16];
+    float               m_boneFromAttachment[16];
     StringId            m_name;
     int                 m_boneIndex;
 };
@@ -71,5 +71,5 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void update_local_clock(float dt);
     void play_simple_animation(const StringId& anim_name, bool bLoop);
     bool is_playing_animation() const;
-    void update_attachments(const float* world_pose);
+    void update_attachments(const float* worldFromModel);
 };

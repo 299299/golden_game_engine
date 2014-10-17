@@ -82,13 +82,14 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     }
     offset += jointNum*sizeof(StringId);
     rig->m_attachments = (BoneAttachment*)offset;
+    rig->m_attachNum = attachmentNum;
     for (uint32_t i = 0; i < attachmentNum; ++i)
     {
         JsonValue attachmentValue = attachmentsValue[i];
         BoneAttachment& ba = rig->m_attachments[i];
         ba.m_name = JSON_GetStringId(attachmentValue.GetValue("name"));
         ba.m_boneIndex = JSON_GetInt(attachmentValue.GetValue("bone"));
-        JSON_GetFloats(attachmentValue.GetValue("transform"), ba.m_transform, 16);
+        JSON_GetFloats(attachmentValue.GetValue("transform"), ba.m_boneFromAttachment, 16);
     }
     
     return write_file(m_output, mem.m_buf, memSize);

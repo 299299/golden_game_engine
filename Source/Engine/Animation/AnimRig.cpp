@@ -4,6 +4,7 @@
 #include "Animation.h"
 #include "Utils.h"
 #include "MemorySystem.h"
+#include "MathDefs.h"
 #include <bx/fpumath.h>
 //=======================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
@@ -90,16 +91,21 @@ void AnimRigInstance::play_simple_animation( const StringId& anim_name, bool bLo
     ac->removeReference();
 }
 
-void AnimRigInstance::update_attachments( const float* world_pose )
+void AnimRigInstance::update_attachments( const float* worldFromModel )
 {
     uint32_t num = m_resource->m_attachNum;
     const BoneAttachment* attachments = m_resource->m_attachments;
     m_attachmentTransforms = FRAME_ALLOC(float, num*16);
+    const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
+    hkMatrix4 worldPose; transform_matrix(worldPose, worldFromModel);
     for (uint32_t i=0; i<num; ++i)
     {
-        const BoneAttachment& attach = attachments[i];
-        int tIndex = 16 * attach.m_boneIndex;
-        bx::mtxMul(m_attachmentTransforms + tIndex, world_pose + tIndex, attach.m_transform);
+        const BoneAttachment& ba = attachments[i];
+        hkMatrix4 worldFromBone; worldFromBone.set( poseInWorld [ ba.m_boneIndex ] );
+        hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_boneFromAttachment);
+        hkMatrix4 worldFromAttachment; worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
+        hkMatrix4 finalAttachment; finalAttachment.setMul(worldFromAttachment, worldPose);
+        transform_matrix(m_attachmentTransforms+i*16, finalAttachment);
     }
 }
 

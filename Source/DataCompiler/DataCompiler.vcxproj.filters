@@ -29,9 +29,6 @@
     <ClInclude Include="Compilers\AnimationCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
-    <ClInclude Include="Compilers\AnimFSMCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
     <ClInclude Include="Compilers\AnimRigCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
@@ -96,9 +93,6 @@
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="Compilers\AnimationCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
-    <ClCompile Include="Compilers\AnimFSMCompiler.cpp">
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="Compilers\AnimRigCompiler.cpp">

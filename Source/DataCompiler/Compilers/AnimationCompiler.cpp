@@ -48,7 +48,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
             trigger_data.push_back(data);
         }
 
-        hkSort(&trigger_data[0], trigger_data.size(), compare_anim_trigger_less);
+        if(!trigger_data.empty()) hkSort(&trigger_data[0], trigger_data.size(), compare_anim_trigger_less);
     }
     
     std::vector<AnimTriggerData> beat_data;
@@ -58,7 +58,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
     {
         beatNum = beatsValue.GetElementsCount();
         beat_data.reserve(beatNum);
-        for (uint32_t i = 0; i < triggerNum; ++i)
+        for (uint32_t i = 0; i < beatNum; ++i)
         {
             AnimTriggerData data;
             data.m_name = JSON_GetString(beatsValue[i].GetValue("name"));
@@ -66,7 +66,7 @@ bool AnimationCompiler::readJSON(const JsonValue& root)
             beat_data.push_back(data);
         }
 
-        hkSort(&beat_data[0], beat_data.size(), compare_anim_trigger_less);
+        if(!beat_data.empty()) hkSort(&beat_data[0], beat_data.size(), compare_anim_trigger_less);
     }
 
     std::string havokFile = JSON_GetString(root.GetValue("havok_file"));

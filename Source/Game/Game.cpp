@@ -120,7 +120,7 @@ int _tmain(int argc, _TCHAR* argv[])
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
 
-    extern void register_game_api(struct gmMachine*);
+    extern void register_game_api(class gmMachine*);
     register_game_api(g_script.m_vm);
 
     g_resourceMgr.load_package_and_wait("data/core.package");

@@ -38,7 +38,6 @@
 //=======================================================================================
 
 AnimationSystem g_animMgr;
-static IdArray<MAX_ANIM_FSM, AnimFSMInstance>      m_fsms;
 static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
 static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
@@ -180,7 +179,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         uint32_t num_attach = rig->m_resource->m_attachNum;
         const BoneAttachment* attachments = rig->m_resource->m_attachments;
         const float* world_poses = rig->m_attachmentTransforms;
-        for (int i=0; i<num_attach; ++i)
+        for (uint32_t i=0; i<num_attach; ++i)
         {
             const BoneAttachment& attchment = attachments[i];
             const float* world_pose = world_poses + 16 * i;

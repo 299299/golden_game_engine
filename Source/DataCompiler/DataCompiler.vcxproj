@@ -105,7 +105,6 @@
     <ClInclude Include="..\Shared\CommonUtils.h" />
     <ClInclude Include="Compilers\ActorCompiler.h" />
     <ClInclude Include="Compilers\AnimationCompiler.h" />
-    <ClInclude Include="Compilers\AnimFSMCompiler.h" />
     <ClInclude Include="Compilers\AnimRigCompiler.h" />
     <ClInclude Include="Compilers\BaseCompiler.h" />
     <ClInclude Include="Compilers\CopyCompiler.h" />
@@ -131,7 +130,6 @@
     <ClCompile Include="..\Shared\CommonUtils.cpp" />
     <ClCompile Include="Compilers\ActorCompiler.cpp" />
     <ClCompile Include="Compilers\AnimationCompiler.cpp" />
-    <ClCompile Include="Compilers\AnimFSMCompiler.cpp" />
     <ClCompile Include="Compilers\AnimRigCompiler.cpp" />
     <ClCompile Include="Compilers\BaseCompiler.cpp" />
     <ClCompile Include="Compilers\CopyCompiler.cpp" />

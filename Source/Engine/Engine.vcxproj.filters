@@ -183,9 +183,6 @@
     <ClCompile Include="Core\Utils.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Animation\AnimFSM.cpp">
-      <Filter>Animation</Filter>
-    </ClCompile>
     <ClCompile Include="Network\gamedevwebtools.cpp">
       <Filter>Network</Filter>
     </ClCompile>
@@ -693,9 +690,6 @@
     </ClInclude>
     <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h">
       <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation\AnimFSM.h">
-      <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="Network\gamedevwebtools.h">
       <Filter>Network</Filter>
