@@ -988,10 +988,11 @@ static int GM_CDECL level_unload(gmThread* a_thread)
 }
 static int GM_CDECL actor_play_simple_animation(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_NUM_PARAMS(4);
     GM_CHECK_INT_PARAM(actor_id, 0);
     GM_CHECK_INT_PARAM(anim_name, 1);
     GM_CHECK_INT_PARAM(looped, 2);
+	GM_CHECK_FLOAT_OR_INT_PARAM(ease_time, 3);
     ActorId id;
     id.set(actor_id);
     Actor* actor = g_actorWorld.get_actor(id);
@@ -999,7 +1000,7 @@ static int GM_CDECL actor_play_simple_animation(gmThread* a_thread)
     extern void* get_anim_rig(Id);
     AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
     if(!rig) return GM_OK;
-    rig->play_simple_animation(StringId(anim_name), looped);
+    rig->play_animation(StringId(anim_name), looped, ease_time);
     return GM_OK;
 }
 static int GM_CDECL actor_is_playing_animation(gmThread* a_thread)

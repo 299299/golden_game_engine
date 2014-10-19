@@ -53,8 +53,8 @@ ENGINE_NATIVE_ALIGN struct Animation
     float get_length() const;
     bool mirrored() const { return m_mirroredFrom;};
     
-    const AnimationBeat* find_beat(uint32_t type) const;
-    const AnimationBeat* find_next_closest_beat(float time, bool bLoop) const;
+    float find_beat(uint32_t type) const;
+    float find_next_closest_beat(float time, bool bLoop) const;
     uint32_t collect_triggers(float curTime, float dt, AnimationEvent* events) const;
     void create_mirrored_animation(const Animation* orginalAnim);
 
@@ -73,8 +73,6 @@ ENGINE_NATIVE_ALIGN struct Animation
     uint8_t                         m_numTriggers;
     uint8_t                         m_numBeats;
     char                            m_padding[2];
-
-    void dump();
 };
 
 //======================================================================

@@ -47,44 +47,35 @@ void Animation::create_mirrored_animation(const Animation* orginalAnim)
     m_animation = anim;
 }
 
-const AnimationBeat* Animation::find_beat(uint32_t type) const
+float Animation::find_beat(uint32_t type) const
 {
     for (uint32_t i = 0; i < m_numBeats; ++i)
     {
         if(m_beats[i].m_type == type)
-            return &m_beats[i];
+            return m_beats[i].m_time;
     }
-    return 0;
+    return -1;
 }
 
-const AnimationBeat* Animation::find_next_closest_beat(float time, bool bLoop) const
+float Animation::find_next_closest_beat(float time, bool bLoop) const
 {
-    if(!m_numBeats || time >= get_length())
-        return 0;
+    if(!m_numBeats || time >= get_length()) return -1;
 
-    if(!bLoop)
-    {
-        for(uint32_t i = 0; i < m_numBeats; ++i)
-        {
-            const AnimationBeat& b = m_beats[i];
-            if(b.m_time >= time)
-                return &b;
-        }
-        return 0;
-    }
-    else
-    {
-        uint32_t i = 0;
-        for(; i < m_numBeats; ++i)
-        {
-            const AnimationBeat& b = m_beats[i];
-            if(b.m_time >= time)
-                break;
-        }
-        if(i >= m_numBeats)
-            i = 0;
-        return m_beats;
-    }
+	float retTime = -1;
+	for(uint32_t i = 0; i < m_numBeats; ++i)
+	{
+		float curTime = m_beats[i].m_time;
+		const AnimationBeat& b = m_beats[i];
+		if(curTime >= time)
+		{
+			retTime = curTime;
+			break;
+		}
+	}
+	
+	if(!bLoop) return -1;
+	if(retTime < 0) retTime = m_beats[0].m_time;
+	return retTime;
 }
 
 int Animation::get_frames() const
@@ -111,25 +102,6 @@ uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* e
         }
     }
     return retNum;
-}
-
-void Animation::dump()
-{
-    LOGI("dump animation ------------------>");
-    LOGI("mirrorered=%s, rig=%s, numTriggers=%d, numBeats=%d", 
-         stringid_lookup(m_mirroredFrom), stringid_lookup(m_rigName),  m_numTriggers, m_numBeats);
-    for(uint32_t i=0; i<m_numTriggers; ++i)
-    {
-        const AnimationTrigger& t = m_triggers[i];
-        LOGI("trigger name=%s, time=%f", stringid_lookup(t.m_name), t.m_time);
-    }
-
-    extern const char* g_beatTypeNames[];
-    for(uint32_t i=0; i<m_numBeats; ++i)
-    {
-        const AnimationBeat& b = m_beats[i];
-        LOGI("beat type=%s, time=%f", g_beatTypeNames[b.m_type], b.m_time);
-    }
 }
 
 void* load_resource_animation( const char* data, uint32_t size)

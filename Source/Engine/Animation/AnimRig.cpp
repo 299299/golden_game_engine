@@ -18,6 +18,55 @@
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
 //=======================================================================================
 
+struct hk_anim_ctrl : public hkaDefaultAnimationControl
+{
+	HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_ANIM_CONTROL);
+	hk_anim_ctrl(Animation* anim, bool bLoop)
+	:hkaDefaultAnimationControl(anim->m_binding, false, bLoop?-1:1)
+	,m_animation(anim)
+	{
+
+	}
+	Animation*				m_animation;
+
+	void ease_in(float time, int type)
+	{
+		switch(type)
+		{
+		case kEaseCurveLinear:setEaseInCurve(0, 0.33f, 0.66f, 1);break;
+		case kEaseCurveFast:setEaseInCurve(0, 0, 0, 1);break;
+		case kEaseCurveSmooth:
+		default:
+			setEaseInCurve(0, 0, 1, 1);break;
+		}
+		easeIn(time);
+	}
+
+	void ease_out(float time, int type)
+	{
+		switch(type)
+		{
+		case kEaseCurveLinear:setEaseInCurve(1, 0.66f, 0.33f, 0);break;
+		case kEaseCurveFast:setEaseInCurve(1, 1, 0, 0);break;
+		case kEaseCurveSmooth:
+		default:
+			setEaseInCurve(1, 1, 0, 0);break;
+		}
+		easeOut(time);
+	}
+
+	void set_weight(float fWeight)
+	{
+		setMasterWeight(fWeight);
+	}
+
+	float get_peroid() const
+	{
+		return m_binding->m_animation->m_duration;
+	}
+};
+
+
 int AnimRig::find_joint_index(const StringId& jointName)
 {
     for(int i=0; i<m_jointNum; ++i)
@@ -55,6 +104,12 @@ void AnimRigInstance::destroy()
 
 void AnimRigInstance::update_local_clock(float dt)
 {
+	for (int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
+	{
+		hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
+		if(ac->getEaseStatus() == hkaDefaultAnimationControl::EASED_OUT)
+			m_skeleton->removeAnimationControl(ac);
+	}
     m_skeleton->stepDeltaTime(dt);
 }
 
@@ -80,15 +135,16 @@ bool AnimRigInstance::is_playing_animation() const
     return false;
 }
 
-void AnimRigInstance::play_simple_animation( const StringId& anim_name, bool bLoop )
+void AnimRigInstance::play_animation( const StringId& anim_name, bool bLoop, float fTime )
 {
     Animation* anim = FIND_RESOURCE(Animation, anim_name);
     if(!anim) return;
     int maxCycles = bLoop ? -1 : 1;
-    hkaDefaultAnimationControl* ac = new hkaDefaultAnimationControl(anim->m_binding, true, maxCycles);
+	hk_anim_ctrl* ac = new hk_anim_ctrl(anim, bLoop);
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
     m_skeleton->addAnimationControl(ac);
     ac->removeReference();
+	ac->ease_in(fTime, kEaseCurveSmooth);
 }
 
 void AnimRigInstance::update_attachments( const float* worldFromModel )

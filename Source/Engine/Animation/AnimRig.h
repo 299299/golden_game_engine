@@ -7,6 +7,7 @@ class hkaMirroredSkeleton;
 class hkaPose;
 class hkaAnimatedSkeleton;
 struct AnimationTrigger;
+class hkaDefaultAnimationControl;
 
 enum HumanBodypart
 {
@@ -28,6 +29,13 @@ enum HumanBodypart
     kBodyLeg_R,
     kBodyFoot_R,
     kBodyPartMax
+};
+
+enum EaseCurveType
+{
+	kEaseCurveSmooth,
+	kEaseCurveLinear,
+	kEaseCurveFast
 };
 
 struct BoneAttachment
@@ -69,7 +77,7 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void init(const void* resource);
     void destroy();
     void update_local_clock(float dt);
-    void play_simple_animation(const StringId& anim_name, bool bLoop);
+    void play_animation(const StringId& anim_name, bool bLoop, float fTime);
     bool is_playing_animation() const;
     void update_attachments(const float* worldFromModel);
 };
