@@ -41,7 +41,7 @@
 #	endif // BX_PLATFORM_ANDROID
 #endif // BX_PLATFORM_
 
-#if BX_COMPILER_MSVC
+#if BX_COMPILER_MSVC_COMPATIBLE
 #	include <direct.h> // _getcwd
 #else
 #	include <unistd.h> // getcwd
@@ -54,8 +54,8 @@ namespace bx
 #if BX_PLATFORM_WINDOWS || BX_PLATFORM_XBOX360
 		::Sleep(_ms);
 #elif BX_PLATFORM_WINRT
-        BX_UNUSED(_ms);
-        debugOutput("sleep is not implemented"); debugBreak();
+		BX_UNUSED(_ms);
+		debugOutput("sleep is not implemented"); debugBreak();
 #else
 		timespec req = {(time_t)_ms/1000, (long)((_ms%1000)*1000000)};
 		timespec rem = {0, 0};
@@ -70,7 +70,7 @@ namespace bx
 #elif BX_PLATFORM_XBOX360
 		::Sleep(0);
 #elif BX_PLATFORM_WINRT
-        debugOutput("yield is not implemented"); debugBreak();
+		debugOutput("yield is not implemented"); debugBreak();
 #else
 		::sched_yield();
 #endif // BX_PLATFORM_
@@ -134,7 +134,7 @@ namespace bx
 #if BX_PLATFORM_WINDOWS
 		::SetEnvironmentVariableA(_name, _value);
 #elif BX_PLATFORM_WINRT
-        BX_UNUSED(_name, _value);
+		BX_UNUSED(_name, _value);
 #else
 		::setenv(_name, _value, 1);
 #endif // BX_PLATFORM_
@@ -145,7 +145,7 @@ namespace bx
 #if BX_PLATFORM_WINDOWS
 		::SetEnvironmentVariableA(_name, NULL);
 #elif BX_PLATFORM_WINRT
-        BX_UNUSED(_name);
+		BX_UNUSED(_name);
 #else
 		::unsetenv(_name);
 #endif // BX_PLATFORM_
@@ -154,8 +154,8 @@ namespace bx
 	inline int chdir(const char* _path)
 	{
 #if BX_PLATFORM_WINRT
-        BX_UNUSED(_path);
-#elif BX_COMPILER_MSVC
+		BX_UNUSED(_path);
+#elif BX_COMPILER_MSVC_COMPATIBLE
 		return ::_chdir(_path);
 #else
 		return ::chdir(_path);
@@ -165,8 +165,8 @@ namespace bx
 	inline char* pwd(char* _buffer, uint32_t _size)
 	{
 #if BX_PLATFORM_WINRT
-        BX_UNUSED(_buffer, _size);
-#elif BX_COMPILER_MSVC
+		BX_UNUSED(_buffer, _size);
+#elif BX_COMPILER_MSVC_COMPATIBLE
 		return ::_getcwd(_buffer, (int)_size);
 #else
 		return ::getcwd(_buffer, _size);

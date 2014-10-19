@@ -10,7 +10,7 @@ namespace ToolCenter
         public Form1()
         {
             string ret = Environment.GetEnvironmentVariable("NAGA_DIR");
-            if (ret == "")
+            if (ret == null)
             {
                 string nagaDir = Directory.GetCurrentDirectory();
                 int index = nagaDir.LastIndexOf('\\');
