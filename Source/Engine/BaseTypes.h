@@ -79,4 +79,5 @@ struct Id
 };
 
 
-
+#define SIZE_MB(size)  1024*1024*size
+#define SIZE_KB(size)  1024*size

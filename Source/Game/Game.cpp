@@ -159,7 +159,7 @@ int _tmain(int argc, _TCHAR* argv[])
             AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(g_actor.get_id());
             if(rig)
             {
-               rig->test_animation(StringId(anim_name), true, 10.0f);
+               rig->test_animation(anim_name);
             }
         }
     }

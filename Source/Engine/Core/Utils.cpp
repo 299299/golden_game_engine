@@ -46,6 +46,40 @@ void unload_havok_inplace(void* data, uint32_t size)
     hkNativePackfileUtils::unloadInPlace(data, size);
 }
 
+void accurate_sleep(uint32_t milliSeconds)
+{
+	static LARGE_INTEGER s_freq = {0,0};
+	if (s_freq.QuadPart == 0)
+		QueryPerformanceFrequency(&s_freq);
+	LARGE_INTEGER from,now;
+	QueryPerformanceCounter(&from);
+	int ticks_to_wait = (int)s_freq.QuadPart / (1000/milliSeconds);
+	bool done = false;
+	int ticks_passed;
+	int ticks_left;
+	do
+	{
+		QueryPerformanceCounter(&now);
+		ticks_passed = (int)((__int64)now.QuadPart - (__int64)from.QuadPart);
+		ticks_left = ticks_to_wait - ticks_passed;
+
+		if (now.QuadPart < from.QuadPart)    // time wrap
+			done = true;
+		if (ticks_passed >= ticks_to_wait)
+			done = true;
+
+		if (!done)
+		{
+			if (ticks_left > (int)s_freq.QuadPart*2/1000)
+				Sleep(1);
+			else                        
+				for (int i=0; i<10; i++) 
+					Sleep(0); 
+		}
+	}
+	while (!done);            
+}
+
 IniReader::IniReader( const char* fileName )
 {
     memset(this, 0x00 ,sizeof(IniReader));
@@ -227,7 +261,6 @@ void CommandMachine::addCommand( const Command& command )
     }
     else
     {
-        m_eventQueue.insertAt(idx, gCmd);
         for (int i = m_numCommands; i > idx; --i)
         {
            m_eventQueue[i] = m_eventQueue[i-1];
@@ -271,18 +304,13 @@ void CommandMachine::update( float timestep )
         m_currentTime = hkMath::max2(m_currentTime, cmd.m_time);
     }
     m_currentTime = endTime;
+	if(idx == 0) return;
 
     int num_cmd_left = m_numCommands - idx;
     for (int i = 0; i < num_cmd_left; ++i)
     {
         m_eventQueue[i] = m_eventQueue[idx+i];
     }
-}
-
-
-void CommandMachine::addCommandCallback(_command_callback_ cb)
-{
-    m_commandCallbacks[m_numCommandCallbacks++] = cb;
 }
 
 // Walk to jump with Sync.

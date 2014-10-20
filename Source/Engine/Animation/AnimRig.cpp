@@ -39,18 +39,27 @@ void  destroy_resource_anim_rig(void * resource)
     unload_havok_inplace(p, rig->m_havokDataSize);
 }
 
+enum AnimationCommand
+{
+	kAnimCmdEaseIn = 0,
+	kAnimCmdEaseOut,
+	kAnimCmdSetWeight,
+	kAnimCmdSetSpeed,
+	kAnimCmdSetTime,
+	kAnimCmdMax
+};
 
 struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
     Animation*              m_animation;
     StringId                m_name;
-    int                     m_motionType;
-    int                     m_layer;
+    uint8_t					m_motionType;
+    uint8_t                 m_layer;
     bool                    m_enabled;
 
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_ANIM_CONTROL);
-    hk_anim_ctrl(Animation* anim, bool bLoop)
-    :hkaDefaultAnimationControl(anim->m_binding, false, bLoop?-1:1)
+    hk_anim_ctrl(Animation* anim)
+    :hkaDefaultAnimationControl(anim->m_binding, false)
     ,m_animation(anim)
     ,m_enabled(false)
     ,m_motionType(kMotionDefault)
@@ -83,6 +92,9 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 
     void ease_in(float time, int type)
     {
+		setOverflowCount(0);
+		setUnderflowCount(0);
+		setLocalTime(0.0f);
         switch(type)
         {
         case kEaseCurveLinear:setEaseInCurve(0, 0.33f, 0.66f, 1);break;
@@ -105,15 +117,11 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
         easeOut(time);
     }
 
-    void set_weight(float fWeight)
-    {
-        setMasterWeight(fWeight);
-    }
-
-    float get_peroid() const
-    {
-        return m_binding->m_animation->m_duration;
-    }
+    void set_weight(float fWeight){ setMasterWeight(fWeight); }
+	float get_weight() const { return getMasterWeight(); };
+    float get_peroid() const {return m_binding->m_animation->m_duration; }
+	void set_loop(bool bLooped) { m_maxCycles = bLooped ? -1 : 1; }
+	bool is_loop() const { return m_maxCycles < 0;} 
 };
 
 struct hk_anim_ctrl_params
@@ -207,6 +215,26 @@ void AnimRigInstance::update(float dt)
     }
 }
 
+
+void AnimRigInstance::update_attachments( const float* worldFromModel )
+{
+	uint32_t num = m_resource->m_attachNum;
+	const BoneAttachment* attachments = m_resource->m_attachments;
+	m_attachmentTransforms = FRAME_ALLOC(float, num*16);
+	const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
+	hkMatrix4 worldPose; transform_matrix(worldPose, worldFromModel);
+	for (uint32_t i=0; i<num; ++i)
+	{
+		const BoneAttachment& ba = attachments[i];
+		hkMatrix4 worldFromBone; worldFromBone.set( poseInWorld [ ba.m_boneIndex ] );
+		hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_boneFromAttachment);
+		hkMatrix4 worldFromAttachment; worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
+		hkMatrix4 finalAttachment; finalAttachment.setMul(worldFromAttachment, worldPose);
+		transform_matrix(m_attachmentTransforms+i*16, finalAttachment);
+	}
+}
+
+
 void AnimRigInstance::init( const void* resource )
 {
     m_attachmentTransforms = 0;
@@ -216,11 +244,11 @@ void AnimRigInstance::init( const void* resource )
     m_pose->setToReferencePose();
     m_pose->syncAll();
     m_animMachine.m_context = this;
-    m_animMachine.m_commandCallbacks[0] = ease_in_animation_command;
-    m_animMachine.m_commandCallbacks[1] = ease_out_animation_command;
-    m_animMachine.m_commandCallbacks[2] = set_weight_animation_command;
-    m_animMachine.m_commandCallbacks[3] = set_speed_animation_command;
-    m_animMachine.m_commandCallbacks[4] = set_time_animation_command;
+    m_animMachine.m_commandCallbacks[kAnimCmdEaseIn] = ease_in_animation_command;
+    m_animMachine.m_commandCallbacks[kAnimCmdEaseOut] = ease_out_animation_command;
+    m_animMachine.m_commandCallbacks[kAnimCmdSetWeight] = set_weight_animation_command;
+    m_animMachine.m_commandCallbacks[kAnimCmdSetSpeed] = set_speed_animation_command;
+    m_animMachine.m_commandCallbacks[kAnimCmdSetTime] = set_time_animation_command;
 }
 
 bool AnimRigInstance::is_playing_animation() const
@@ -235,70 +263,120 @@ bool AnimRigInstance::is_playing_animation() const
     return false;
 }
 
-void AnimRigInstance::easein_animation(const StringId& name, float blend_time, float time, int type)
-{
-    int index = find_control(name);
-    if(index < 0) return;
-    Command cmd;
-    cmd.m_time = time;
-    cmd.m_command = 0;
-    hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
-    params->m_float = blend_time;
-    params->m_int = type;
-    params->m_control = index;
-    m_animMachine.addCommand(cmd);
-}
-
-void AnimRigInstance::easeout_animation(const StringId& name, float blend_time, float time, int type)
-{
-    int index = find_control(name);
-    if(index < 0) return;
-    Command cmd;
-    cmd.m_time = time;
-    cmd.m_command = 1;
-    hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
-    params->m_float = blend_time;
-    params->m_int = type;
-    params->m_control = index;
-    m_animMachine.addCommand(cmd);
-}
-
-void AnimRigInstance::update_attachments( const float* worldFromModel )
-{
-    uint32_t num = m_resource->m_attachNum;
-    const BoneAttachment* attachments = m_resource->m_attachments;
-    m_attachmentTransforms = FRAME_ALLOC(float, num*16);
-    const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
-    hkMatrix4 worldPose; transform_matrix(worldPose, worldFromModel);
-    for (uint32_t i=0; i<num; ++i)
-    {
-        const BoneAttachment& ba = attachments[i];
-        hkMatrix4 worldFromBone; worldFromBone.set( poseInWorld [ ba.m_boneIndex ] );
-        hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_boneFromAttachment);
-        hkMatrix4 worldFromAttachment; worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
-        hkMatrix4 finalAttachment; finalAttachment.setMul(worldFromAttachment, worldPose);
-        transform_matrix(m_attachmentTransforms+i*16, finalAttachment);
-    }
-}
-
-int AnimRigInstance::find_control(const StringId& name) const
-{
-    for (int i = 0; i < m_numControls; ++i)
-    {
-        hk_anim_ctrl* ac = m_controls + i;
-        if(ac->m_name == name) return i; 
-    }
-    return -1;
-}
-
 void AnimRigInstance::test_animation(const char* name)
 {
     Animation* anim = FIND_RESOURCE(Animation, StringId(name));
     if(!anim) return;
-    hk_anim_ctrl* ac = new hk_anim_ctrl(anim, true);
+    hk_anim_ctrl* ac = new hk_anim_ctrl(anim);
     ac->easeIn(0.0f);
     m_skeleton->addAnimationControl(ac);
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
-    m_skeleton->addAnimationControl(ac);
-    ac->removeReference();
+	ac->set_loop(true);
+	ac->removeReference();
 }
+
+hk_anim_ctrl* AnimRigInstance::get_control( int index ) const
+{
+	return m_controls[index];
+}
+
+int AnimRigInstance::find_control(const StringId& name) const
+{
+	for (uint32_t i = 0; i < m_numControls; ++i)
+	{
+		hk_anim_ctrl* ac = m_controls[i];
+		if(ac->m_name == name) return i; 
+	}
+	return -1;
+}
+
+void AnimRigInstance::easeout_layers( int layer, float time, int type)
+{
+	for (int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
+	{
+		hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
+		int ctrl_layer = (int)ac->m_layer;
+		if(ctrl_layer != layer) continue;
+		ac->ease_out(time, type);
+	}
+}
+
+void AnimRigInstance::easein_animation(int index, float blend_time, float when, int type)
+{
+	Command cmd;
+	cmd.m_time = when;
+	cmd.m_command = kAnimCmdEaseIn;
+	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
+	params->m_float = blend_time;
+	params->m_int = type;
+	params->m_control = index;
+	m_animMachine.addCommand(cmd);
+}
+
+void AnimRigInstance::easeout_animation(int index, float blend_time, float when, int type)
+{
+	Command cmd;
+	cmd.m_time = when;
+	cmd.m_command = kAnimCmdEaseOut;
+	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
+	params->m_float = blend_time;
+	params->m_int = type;
+	params->m_control = index;
+	m_animMachine.addCommand(cmd);
+}
+
+
+void AnimRigInstance::set_animation_weight( int index, float weight, float when )
+{
+	Command cmd;
+	cmd.m_time = when;
+	cmd.m_command = kAnimCmdSetWeight;
+	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
+	params->m_float = weight;
+	params->m_control = index;
+	m_animMachine.addCommand(cmd);
+}
+
+void AnimRigInstance::set_animation_speed( int index, float speed, float when )
+{
+	Command cmd;
+	cmd.m_time = when;
+	cmd.m_command = kAnimCmdSetSpeed;
+	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
+	params->m_float = speed;
+	params->m_control = index;
+	m_animMachine.addCommand(cmd);
+}
+
+void AnimRigInstance::set_animation_time( int index, float local_time, float when )
+{
+	Command cmd;
+	cmd.m_time = when;
+	cmd.m_command = kAnimCmdSetTime;
+	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
+	params->m_float = local_time;
+	params->m_control = index;
+	m_animMachine.addCommand(cmd);
+}
+
+float AnimRigInstance::get_animation_weight( int index ) const
+{
+	return m_controls[index]->get_weight();
+}
+
+float AnimRigInstance::get_animation_speed( int index ) const
+{
+	return m_controls[index]->getPlaybackSpeed();
+}
+
+float AnimRigInstance::get_animation_time( int index ) const
+{
+	return m_controls[index]->getLocalTime();
+}
+
+float AnimRigInstance::get_animation_period( int index ) const
+{
+	return m_controls[index]->get_peroid();
+}
+
+

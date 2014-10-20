@@ -175,7 +175,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         
 
 #ifndef _RETIAL
-        draw_pose(*pose, t, RGBCOLOR(125,125,255), true);
+        draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
         uint32_t num_attach = rig->m_resource->m_attachNum;
         const BoneAttachment* attachments = rig->m_resource->m_attachments;
         const float* world_poses = rig->m_attachmentTransforms;

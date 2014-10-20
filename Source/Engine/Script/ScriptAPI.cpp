@@ -1000,7 +1000,7 @@ static int GM_CDECL actor_play_simple_animation(gmThread* a_thread)
     extern void* get_anim_rig(Id);
     AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
     if(!rig) return GM_OK;
-    rig->play_animation(StringId(anim_name), looped, ease_time);
+    //rig->test_animation(anim_name);
     return GM_OK;
 }
 static int GM_CDECL actor_is_playing_animation(gmThread* a_thread)

@@ -85,7 +85,7 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
     float*                          m_attachmentTransforms;
-    hk_anim_ctrl*                   m_controls;
+    hk_anim_ctrl**                  m_controls;
     uint32_t                        m_numControls;
 
     void init(const void* resource);
@@ -93,9 +93,20 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void update(float dt);
     bool is_playing_animation() const;
     void update_attachments(const float* worldFromModel);
-    hk_anim_ctrl* get_control(int index) const { return m_controls + index; };
+    hk_anim_ctrl* get_control(int index) const;
     int find_control(const StringId& name) const;
-    void easein_animation(const StringId& name, float blend_time, float time = 0.0f, int type = kEaseCurveSmooth);
-    void easeout_animation(const StringId& name, float blend_time, float time = 0.0f, int type = kEaseCurveSmooth);
     void test_animation(const char* name);
+	//----------------------------------------------------------------------
+	// ANIMATION API
+	void easein_animation(int index, float blend_time, float when = 0.0f, int type = kEaseCurveSmooth);
+	void easeout_animation(int index, float blend_time, float when = 0.0f, int type = kEaseCurveSmooth);
+	void easeout_layers(int layer, float time, int type = kEaseCurveSmooth);
+	void set_animation_weight(int index, float weight, float when = 0.0f);
+	void set_animation_speed(int index, float speed, float when = 0.0f);
+	void set_animation_time(int index, float local_time, float when = 0.0f);
+	float get_animation_weight(int index) const;
+	float get_animation_speed(int index) const;
+	float get_animation_time(int index) const;
+	float get_animation_period(int index) const;
+	//----------------------------------------------------------------------
 }; 

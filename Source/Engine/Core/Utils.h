@@ -8,6 +8,7 @@ int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
 void unload_havok_inplace(void* data, uint32_t size);
 void msg_box(const char* text, const char* title);
+void accurate_sleep(uint32_t milliSeconds);
 
 #define INI_MAX_KEY_VALUE   (128)
 struct IniReader
@@ -99,7 +100,7 @@ struct CommandMachine
     Command                 m_eventQueue[MAX_COMMAND_NUM];
     _command_callback_      m_commandCallbacks[MAX_COMMAND_CALLBACK_NUM];
     float                   m_currentTime;
-    uint32_t                m_numCommandCallbacks;
-    uint32_t                m_numCommands;
+    int						m_numCommands;
     void*                   m_context;
 };
+

@@ -13,6 +13,7 @@
 #include "Actor.h"
 #include "WebServerTool.h"
 #include "Camera.h"
+#include "Utils.h"
 //=================================================================
 #include "Log.h"
 #include "DataDef.h"
@@ -144,13 +145,13 @@ void Engine::apply_framelimit(double timeMS)
 {
     PROFILE(FrameLimit);
     if(timeMS < 1.0) return;
-    ::Sleep((DWORD)timeMS);
+    accurate_sleep((DWORD)timeMS);
 }
 
 void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
-    g_memoryMgr.init(1024*1024*4, 1024*1024*2, true, m_cfg.m_checkMemory);
+    g_memoryMgr.init(SIZE_MB(4), SIZE_MB(2), true, m_cfg.m_checkMemory);
     g_threadMgr.init(true);
     g_resourceMgr.init();
 }
