@@ -69,3 +69,37 @@ struct Fact
     bool set_key(char* values, const StringId& k, const StringId& v) const;
     bool set_key(char* values, const StringId& k, const float* v) const;
 };
+
+
+struct Command
+{
+    float           m_time;
+    int             m_command;
+    char            m_params[12];
+}; //-->16 byte.
+
+typedef void (*_command_callback_)(const Command& cmd, void* context);
+
+#define MAX_COMMAND_CALLBACK_NUM        16
+#define MAX_COMMAND_NUM                 64
+
+struct CommandMachine
+{
+    /// Adds a command to the queue
+    void addCommand( const Command& command );
+    /// Advance machine to the given time.
+    void update( float timestep );
+    /// Flush all commands from the queue
+    void flushQueue();
+    /// Access the internal clock
+    float getCurrentTime() const;
+    /// Reset the internal clock
+    void resetTime(float newTime = 0.0f);
+    
+    Command                 m_eventQueue[MAX_COMMAND_NUM];
+    _command_callback_      m_commandCallbacks[MAX_COMMAND_CALLBACK_NUM];
+    float                   m_currentTime;
+    uint32_t                m_numCommandCallbacks;
+    uint32_t                m_numCommands;
+    void*                   m_context;
+};

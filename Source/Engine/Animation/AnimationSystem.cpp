@@ -193,7 +193,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
     }
 }
 
-void AnimationSystem::update_local_clocks(float dt)
+void AnimationSystem::update_animations(float dt)
 {
     uint32_t numRigs = id_array::size(m_rigs);
     if(!numRigs) return;
@@ -201,7 +201,7 @@ void AnimationSystem::update_local_clocks(float dt)
     AnimRigInstance* rigs = id_array::begin(m_rigs);
     for(uint32_t i=0; i<numRigs;++i)
     {
-        rigs[i].update_local_clock(dt);
+        rigs[i].update(dt);
     }
 }
 

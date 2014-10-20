@@ -276,7 +276,7 @@ void ActorWorld::frame_start(float dt)
 
 void ActorWorld::pre_step( float dt )
 {
-    g_animMgr.update_local_clocks(dt);
+    g_animMgr.update_animations(dt);
     g_physicsWorld.update_character_proxies(dt);
 }
 

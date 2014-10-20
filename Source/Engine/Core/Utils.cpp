@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <io.h>
 #include "Prerequisites.h"
+#include "EngineAssert.h"
 //================================================================
 #include <Common/Base/System/Io/Reader/hkStreamReader.h>
 #include <Common/Base/System/Io/IStream/hkIStream.h>
@@ -204,3 +205,114 @@ bool Fact::set_key(char* values, const StringId& k, const float* v) const
     memcpy(values + key.m_offset, v, sizeof(float) * 4);
     return true;
 }
+
+
+void CommandMachine::addCommand( const Command& command )
+{
+    ENGINE_ASSERT(m_numCommands < MAX_COMMAND_NUM - 1, "Command Machine overflow.");
+
+    // Set the global time for the command
+    Command gCmd = command;
+    gCmd.m_time += getCurrentTime();
+
+    int idx = 0;
+    while( (idx < m_numCommands) && (gCmd.m_time >= m_eventQueue[idx].m_time) )
+    {
+        idx++;
+    }
+
+    if (idx == m_numCommands)
+    {
+        m_eventQueue[m_numCommands++] = gCmd;
+    }
+    else
+    {
+        m_eventQueue.insertAt(idx, gCmd);
+        for (int i = m_numCommands; i > idx; --i)
+        {
+           m_eventQueue[i] = m_eventQueue[i-1];
+        }
+        m_eventQueue[idx] = gCmd;
+        ++m_numCommands;
+    }
+}
+
+void CommandMachine::flushQueue()
+{
+    m_numCommands = 0;
+}
+
+float CommandMachine::getCurrentTime() const
+{
+    return m_currentTime;
+}
+
+void CommandMachine::resetTime(float newTime)
+{
+    float diffTime = newTime - m_currentTime;
+    for (int i=0; i< m_numCommands; ++i)
+    {
+        m_eventQueue[i].m_time += diffTime;
+    }
+    m_currentTime = newTime;
+}
+
+void CommandMachine::update( float timestep )
+{
+    const float endTime = m_currentTime + timestep;
+    int idx = 0;
+    for (; idx < m_numCommands; ++idx)
+    {
+        Command cmd = m_eventQueue[idx];
+        float cmdTime = cmd.m_time;
+        if(cmdTime > endTime) break;
+        _command_callback_ cb = m_commandCallbacks[cmd.m_command];
+        cb(cmd, m_context);
+        m_currentTime = hkMath::max2(m_currentTime, cmd.m_time);
+    }
+    m_currentTime = endTime;
+
+    int num_cmd_left = m_numCommands - idx;
+    for (int i = 0; i < num_cmd_left; ++i)
+    {
+        m_eventQueue[i] = m_eventQueue[idx+i];
+    }
+}
+
+
+void CommandMachine::addCommandCallback(_command_callback_ cb)
+{
+    m_commandCallbacks[m_numCommandCallbacks++] = cb;
+}
+
+// Walk to jump with Sync.
+
+// hkReal timeLeft = m_walkControl->getPeriod() - m_walkControl->getLocalTime();
+// HK_ANIM_EVENT( NOW,              EASE_OUT,               WALK_CONTROL, timeLeft );
+// HK_ANIM_EVENT( NOW,              SET_LOCAL_TIME,         JUMP_CONTROL, 0.0f );
+// HK_ANIM_EVENT( NOW,              SET_PLAYBACK_SPEED,     JUMP_CONTROL, 0.0f );
+// HK_ANIM_EVENT( NOW,              EASE_IN,                JUMP_CONTROL, timeLeft );
+// HK_ANIM_EVENT( NOW,              CHANGE_STATE,           WALK_TO_JUMP );
+// HK_ANIM_EVENT( NOW + timeLeft,   SET_PLAYBACK_SPEED,     JUMP_CONTROL, 1.0f );
+// HK_ANIM_EVENT( NOW + timeLeft,   CHANGE_STATE,           JUMP );
+
+// Straight transition
+
+// HK_ANIM_EVENT( NOW,      EASE_OUT,     WALK_CONTROL, 0.1f )
+// HK_ANIM_EVENT( NOW,      EASE_IN,      FALL_CONTROL, 0.1f )
+// HK_ANIM_EVENT( NOW+0.1f, CHANGE_STATE, FALLING )
+
+// Flushing command pipe
+
+// HK_ANIM_EVENT( NOW, FLUSH );
+
+// Wait for annotation event before going to idle
+
+// hkReal eventTime = m_walkControl->getAnimation->getAnnotations()[0].m_time - m_walkControl->getLocalTime();
+// hkReal loopedEventTime = (eventTime < 0.0f) ? eventTime + m_walkControl->getPeriod() : eventTime;
+// HK_ANIM_EVENT(NOW, CHANGE_STATE, WAITING);
+// HK_ANIM_EVENT(NOW + loopedEventTime, CHANGE_STATE, IDLE);
+
+// Overlay a wave anim for 2 secs
+// HK_ANIM_EVENT(NOW, EASE_IN, WAVE_CONTROL, 0.1f);
+// HK_ANIM_EVENT(NOW+2, EASE_OUT, WAVE_CONTROL, 0.1f);

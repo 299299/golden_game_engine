@@ -1,13 +1,16 @@
 #pragma once
 #include "StringId.h"
 #include "Prerequisites.h"
+#include "Utils.h"
 
-class hkaSkeleton;
-class hkaMirroredSkeleton;
-class hkaPose;
-class hkaAnimatedSkeleton;
-struct AnimationTrigger;
-class hkaDefaultAnimationControl;
+class   hkaSkeleton;
+class   hkaMirroredSkeleton;
+class   hkaPose;
+class   hkaAnimatedSkeleton;
+struct  AnimationTrigger;
+class   hkaDefaultAnimationControl;
+struct  Animation;
+struct  hk_anim_ctrl;
 
 enum HumanBodypart
 {
@@ -36,6 +39,14 @@ enum EaseCurveType
 	kEaseCurveSmooth,
 	kEaseCurveLinear,
 	kEaseCurveFast
+};
+
+enum MotionType
+{
+    kMotionDefault,
+    kMotionIgnoreRotation,
+    kMotionIgnoreTranslation,
+    kMotionIgnoreAll
 };
 
 struct BoneAttachment
@@ -69,15 +80,22 @@ ENGINE_NATIVE_ALIGN struct AnimRig
 
 ENGINE_NATIVE_ALIGN struct AnimRigInstance
 {
+    CommandMachine                  m_animMachine;
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
     float*                          m_attachmentTransforms;
+    hk_anim_ctrl*                   m_controls;
+    uint32_t                        m_numControls;
 
     void init(const void* resource);
     void destroy();
-    void update_local_clock(float dt);
-    void play_animation(const StringId& anim_name, bool bLoop, float fTime);
+    void update(float dt);
     bool is_playing_animation() const;
     void update_attachments(const float* worldFromModel);
-};
+    hk_anim_ctrl* get_control(int index) const { return m_controls + index; };
+    int find_control(const StringId& name) const;
+    void easein_animation(const StringId& name, float blend_time, float time = 0.0f, int type = kEaseCurveSmooth);
+    void easeout_animation(const StringId& name, float blend_time, float time = 0.0f, int type = kEaseCurveSmooth);
+    void test_animation(const char* name);
+}; 
