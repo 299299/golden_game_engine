@@ -4,6 +4,7 @@
 #include <io.h>
 #include "Prerequisites.h"
 #include "EngineAssert.h"
+#include "MemorySystem.h"
 //================================================================
 #include <Common/Base/System/Io/Reader/hkStreamReader.h>
 #include <Common/Base/System/Io/IStream/hkIStream.h>
@@ -241,6 +242,18 @@ bool Fact::set_key(char* values, const StringId& k, const float* v) const
 }
 
 
+void CommandMachine::init(int max_commands, int max_callbacks)
+{
+    char* p_this = (char*)this;
+    m_commandCallbacks = (_command_callback_)(p_this + sizeof(CommandMachine));
+    m_commands = (Command*)(p_this + sizeof(CommandMachine) + max_callbacks * sizeof(void*));
+}
+
+uint32_t CommandMachine::caculate_memory(int max_commands, int max_callbacks)
+{
+    return sizeof(CommandMachine) + max_callbacks * sizeof(void*) + max_commands * sizeof(Command);
+}
+
 void CommandMachine::addCommand( const Command& command )
 {
     ENGINE_ASSERT(m_numCommands < MAX_COMMAND_NUM - 1, "Command Machine overflow.");
@@ -250,22 +263,22 @@ void CommandMachine::addCommand( const Command& command )
     gCmd.m_time += getCurrentTime();
 
     int idx = 0;
-    while( (idx < m_numCommands) && (gCmd.m_time >= m_eventQueue[idx].m_time) )
+    while( (idx < m_numCommands) && (gCmd.m_time >= m_commands[idx].m_time) )
     {
         idx++;
     }
 
     if (idx == m_numCommands)
     {
-        m_eventQueue[m_numCommands++] = gCmd;
+        m_commands[m_numCommands++] = gCmd;
     }
     else
     {
         for (int i = m_numCommands; i > idx; --i)
         {
-           m_eventQueue[i] = m_eventQueue[i-1];
+           m_commands[i] = m_commands[i-1];
         }
-        m_eventQueue[idx] = gCmd;
+        m_commands[idx] = gCmd;
         ++m_numCommands;
     }
 }
@@ -285,7 +298,7 @@ void CommandMachine::resetTime(float newTime)
     float diffTime = newTime - m_currentTime;
     for (int i=0; i< m_numCommands; ++i)
     {
-        m_eventQueue[i].m_time += diffTime;
+        m_commands[i].m_time += diffTime;
     }
     m_currentTime = newTime;
 }
@@ -296,7 +309,7 @@ void CommandMachine::update( float timestep )
     int idx = 0;
     for (; idx < m_numCommands; ++idx)
     {
-        Command cmd = m_eventQueue[idx];
+        Command cmd = m_commands[idx];
         float cmdTime = cmd.m_time;
         if(cmdTime > endTime) break;
         _command_callback_ cb = m_commandCallbacks[cmd.m_command];
@@ -309,7 +322,7 @@ void CommandMachine::update( float timestep )
     int num_cmd_left = m_numCommands - idx;
     for (int i = 0; i < num_cmd_left; ++i)
     {
-        m_eventQueue[i] = m_eventQueue[idx+i];
+        m_commands[i] = m_commands[idx+i];
     }
 }
 

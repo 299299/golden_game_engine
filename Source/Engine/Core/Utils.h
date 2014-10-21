@@ -3,6 +3,7 @@
 #include "StringId.h"
 
 class hkRootLevelContainer;
+class 
 
 int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
@@ -75,8 +76,8 @@ struct Fact
 struct Command
 {
     float           m_time;
-    int             m_command;
-    char            m_params[12];
+    uint8_t         m_command;
+    char            m_params[11];
 }; //-->16 byte.
 
 typedef void (*_command_callback_)(const Command& cmd, void* context);
@@ -86,6 +87,9 @@ typedef void (*_command_callback_)(const Command& cmd, void* context);
 
 struct CommandMachine
 {
+    void init(int max_commands, int max_callbacks);
+    static uint32_t caculate_memory(int max_commands, int max_callbacks);
+    
     /// Adds a command to the queue
     void addCommand( const Command& command );
     /// Advance machine to the given time.
@@ -97,10 +101,11 @@ struct CommandMachine
     /// Reset the internal clock
     void resetTime(float newTime = 0.0f);
     
-    Command                 m_eventQueue[MAX_COMMAND_NUM];
-    _command_callback_      m_commandCallbacks[MAX_COMMAND_CALLBACK_NUM];
+    Command*                m_commands;
+    _command_callback_*     m_commandCallbacks;
     float                   m_currentTime;
     int						m_numCommands;
     void*                   m_context;
 };
+
 

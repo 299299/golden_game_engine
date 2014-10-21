@@ -4,6 +4,7 @@
 #include "Animation.h"
 #include "MemorySystem.h"
 #include "MathDefs.h"
+#include "Uitls.h"
 #include <bx/fpumath.h>
 //=======================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
@@ -17,27 +18,6 @@
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
 //=======================================================================================
 
-void* load_resource_anim_rig(const char* data, uint32_t size)
-{
-    AnimRig* rig = (AnimRig*)data;
-    const char* offset = data;
-    offset += sizeof(AnimRig);
-    rig->m_jointNames = (StringId*)(offset);
-    offset += sizeof(StringId) * rig->m_jointNum;
-    rig->m_attachments = (BoneAttachment*)offset;
-    offset = data + rig->m_havokDataOffset;
-    rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
-    if(rig->m_mirrored) rig->create_mirrored_skeleton();
-    return rig;
-}
-
-void  destroy_resource_anim_rig(void * resource)
-{
-    AnimRig* rig = (AnimRig*)resource;
-    char* p = (char*)resource + rig->m_havokDataOffset;
-    SAFE_REMOVEREF(rig->m_mirroredSkeleton);
-    unload_havok_inplace(p, rig->m_havokDataSize);
-}
 
 enum AnimationCommand
 {
@@ -167,6 +147,32 @@ static void set_weight_animation_command(const Command& cmd, void* context)
     control->setMasterWeight(params->m_float);
 }
 
+//------------------------------------------------------------------------------------------------
+//          RESOURCE
+//------------------------------------------------------------------------------------------------
+
+void* load_resource_anim_rig(const char* data, uint32_t size)
+{
+    AnimRig* rig = (AnimRig*)data;
+    const char* offset = data;
+    offset += sizeof(AnimRig);
+    rig->m_jointNames = (StringId*)(offset);
+    offset += sizeof(StringId) * rig->m_jointNum;
+    rig->m_attachments = (BoneAttachment*)offset;
+    offset = data + rig->m_havokDataOffset;
+    rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
+    if(rig->m_mirrored) rig->create_mirrored_skeleton();
+    return rig;
+}
+
+void  destroy_resource_anim_rig(void * resource)
+{
+    AnimRig* rig = (AnimRig*)resource;
+    char* p = (char*)resource + rig->m_havokDataOffset;
+    SAFE_REMOVEREF(rig->m_mirroredSkeleton);
+    unload_havok_inplace(p, rig->m_havokDataSize);
+}
+
 int AnimRig::find_joint_index(const StringId& jointName)
 {
     for(int i=0; i<m_jointNum; ++i)
@@ -194,6 +200,27 @@ void AnimRig::create_mirrored_skeleton()
     m_mirroredSkeleton->setAllBoneInvariantsFromReferencePose( v_mir, 0.0f );
 }
 
+//------------------------------------------------------------------------------------------------
+//          INSTANCE
+//------------------------------------------------------------------------------------------------
+
+void AnimRigInstance::init( const void* resource )
+{
+    m_attachmentTransforms = 0;
+    m_resource = (const AnimRig*)resource;
+    m_skeleton = new hkaAnimatedSkeleton(m_resource->m_skeleton);
+    m_pose = new hkaPose(m_skeleton->getSkeleton());
+    m_pose->setToReferencePose();
+    m_pose->syncAll();
+    //m_animMachine = CommandMachine::create_command_machine(32);
+    m_animMachine->m_context = this;
+    m_animMachine->m_commandCallbacks[kAnimCmdEaseIn] = ease_in_animation_command;
+    m_animMachine->m_commandCallbacks[kAnimCmdEaseOut] = ease_out_animation_command;
+    m_animMachine->m_commandCallbacks[kAnimCmdSetWeight] = set_weight_animation_command;
+    m_animMachine->m_commandCallbacks[kAnimCmdSetSpeed] = set_speed_animation_command;
+    m_animMachine->m_commandCallbacks[kAnimCmdSetTime] = set_time_animation_command;
+}
+
 void AnimRigInstance::destroy()
 {
     SAFE_DELETE(m_pose);
@@ -203,7 +230,7 @@ void AnimRigInstance::destroy()
 void AnimRigInstance::update(float dt)
 {
     m_skeleton->stepDeltaTime(dt);
-    m_animMachine.update(dt);
+    m_animMachine->update(dt);
     for (int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
@@ -234,22 +261,6 @@ void AnimRigInstance::update_attachments( const float* worldFromModel )
 	}
 }
 
-
-void AnimRigInstance::init( const void* resource )
-{
-    m_attachmentTransforms = 0;
-    m_resource = (const AnimRig*)resource;
-    m_skeleton = new hkaAnimatedSkeleton(m_resource->m_skeleton);
-    m_pose = new hkaPose(m_skeleton->getSkeleton());
-    m_pose->setToReferencePose();
-    m_pose->syncAll();
-    m_animMachine.m_context = this;
-    m_animMachine.m_commandCallbacks[kAnimCmdEaseIn] = ease_in_animation_command;
-    m_animMachine.m_commandCallbacks[kAnimCmdEaseOut] = ease_out_animation_command;
-    m_animMachine.m_commandCallbacks[kAnimCmdSetWeight] = set_weight_animation_command;
-    m_animMachine.m_commandCallbacks[kAnimCmdSetSpeed] = set_speed_animation_command;
-    m_animMachine.m_commandCallbacks[kAnimCmdSetTime] = set_time_animation_command;
-}
 
 bool AnimRigInstance::is_playing_animation() const
 {   
@@ -310,7 +321,7 @@ void AnimRigInstance::easein_animation(int index, float blend_time, float when, 
 	params->m_float = blend_time;
 	params->m_int = type;
 	params->m_control = index;
-	m_animMachine.addCommand(cmd);
+	m_animMachine->addCommand(cmd);
 }
 
 void AnimRigInstance::easeout_animation(int index, float blend_time, float when, int type)
@@ -322,7 +333,7 @@ void AnimRigInstance::easeout_animation(int index, float blend_time, float when,
 	params->m_float = blend_time;
 	params->m_int = type;
 	params->m_control = index;
-	m_animMachine.addCommand(cmd);
+	m_animMachine->addCommand(cmd);
 }
 
 
@@ -334,7 +345,7 @@ void AnimRigInstance::set_animation_weight( int index, float weight, float when 
 	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
 	params->m_float = weight;
 	params->m_control = index;
-	m_animMachine.addCommand(cmd);
+	m_animMachine->addCommand(cmd);
 }
 
 void AnimRigInstance::set_animation_speed( int index, float speed, float when )
@@ -345,7 +356,7 @@ void AnimRigInstance::set_animation_speed( int index, float speed, float when )
 	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
 	params->m_float = speed;
 	params->m_control = index;
-	m_animMachine.addCommand(cmd);
+	m_animMachine->addCommand(cmd);
 }
 
 void AnimRigInstance::set_animation_time( int index, float local_time, float when )
@@ -356,7 +367,7 @@ void AnimRigInstance::set_animation_time( int index, float local_time, float whe
 	hk_anim_ctrl_params* params = (hk_anim_ctrl_params*)cmd.m_params;
 	params->m_float = local_time;
 	params->m_control = index;
-	m_animMachine.addCommand(cmd);
+	m_animMachine->addCommand(cmd);
 }
 
 float AnimRigInstance::get_animation_weight( int index ) const

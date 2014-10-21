@@ -1,7 +1,6 @@
 #pragma once
 #include "StringId.h"
 #include "Prerequisites.h"
-#include "Utils.h"
 
 class   hkaSkeleton;
 class   hkaMirroredSkeleton;
@@ -11,6 +10,7 @@ struct  AnimationTrigger;
 class   hkaDefaultAnimationControl;
 struct  Animation;
 struct  hk_anim_ctrl;
+struct  CommandMachine;
 
 enum HumanBodypart
 {
@@ -80,7 +80,7 @@ ENGINE_NATIVE_ALIGN struct AnimRig
 
 ENGINE_NATIVE_ALIGN struct AnimRigInstance
 {
-    CommandMachine                  m_animMachine;
+    CommandMachine*                 m_animMachine;
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
