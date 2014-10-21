@@ -87,6 +87,7 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     float*                          m_attachmentTransforms;
     hk_anim_ctrl**                  m_controls;
     uint32_t                        m_numControls;
+	char*							m_blob;
 
     void init(const void* resource);
     void destroy();

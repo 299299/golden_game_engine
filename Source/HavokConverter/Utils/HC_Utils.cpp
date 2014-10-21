@@ -81,7 +81,7 @@ Actor_Config* createConfig( const std::string& input, const std::string& outFold
     std::string entityName = getFileName(hkxFileName);
     std::string outputFolder = outFolder;//std::string("intermediate/") + package + "/";
     bool bLevel = str_begin_with(entityName, "Level");
-    if(!bLevel) outputFolder += "actor/";
+    if(!bLevel) outputFolder += g_config.m_outputDir;
     std::string outputFile;
     if(bLevel) outputFile = outputFolder + entityName + "." + Level::get_name();
     else outputFile = outputFolder + entityName + "."+ ActorResource::get_name();

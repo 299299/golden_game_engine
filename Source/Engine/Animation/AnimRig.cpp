@@ -4,7 +4,7 @@
 #include "Animation.h"
 #include "MemorySystem.h"
 #include "MathDefs.h"
-#include "Uitls.h"
+#include "Utils.h"
 #include <bx/fpumath.h>
 //=======================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
@@ -208,11 +208,20 @@ void AnimRigInstance::init( const void* resource )
 {
     m_attachmentTransforms = 0;
     m_resource = (const AnimRig*)resource;
-    m_skeleton = new hkaAnimatedSkeleton(m_resource->m_skeleton);
-    m_pose = new hkaPose(m_skeleton->getSkeleton());
+	const hkaSkeleton* skeleton = m_resource->m_skeleton;
+	uint32_t mem_size = sizeof(hkaSkeleton) + sizeof(hkaPose) + CommandMachine::caculate_memory(32, kAnimCmdMax);
+	m_blob = COMMON_ALLOC(char, mem_size);
+	memset(m_blob, 0x00, mem_size);
+	char* offset = m_blob;
+	//uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(m_resource->m_skeleton);
+	m_skeleton = new(offset) hkaAnimatedSkeleton(skeleton);
+	offset += sizeof(hkaAnimatedSkeleton);
+    m_pose = new(offset) hkaPose(skeleton);
     m_pose->setToReferencePose();
     m_pose->syncAll();
-    //m_animMachine = CommandMachine::create_command_machine(32);
+	offset += sizeof(hkaPose);
+	m_animMachine = (CommandMachine*)offset;
+	m_animMachine->init(32, kAnimCmdMax);
     m_animMachine->m_context = this;
     m_animMachine->m_commandCallbacks[kAnimCmdEaseIn] = ease_in_animation_command;
     m_animMachine->m_commandCallbacks[kAnimCmdEaseOut] = ease_out_animation_command;
@@ -223,14 +232,15 @@ void AnimRigInstance::init( const void* resource )
 
 void AnimRigInstance::destroy()
 {
-    SAFE_DELETE(m_pose);
-    SAFE_REMOVEREF(m_skeleton);
+	m_pose->~hkaPose();
+	m_skeleton->~hkaAnimatedSkeleton();
+	COMMON_DEALLOC(m_blob);
 }
 
 void AnimRigInstance::update(float dt)
 {
     m_skeleton->stepDeltaTime(dt);
-    m_animMachine->update(dt);
+	m_animMachine->update(dt);
     for (int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);

@@ -43,7 +43,7 @@ void        runProcess(const std::string& process, const std::string& workingDir
 void        findFiles(const std::string& folder, const std::string& ext, bool bRecursive, std::vector<std::string>& outFiles);
 uint32_t    read_file(const std::string& fileName, char** outBuf); //malloc need to free manually
 void        delete_file_buffer(char* ptr);
-bool        write_file(const std::string& fileName, void* buf, uint32_t bufSize);
+bool        write_file(const std::string& fileName, const void* buf, uint32_t bufSize);
 void        findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders);
 uint64_t    get_file_size(const std::string& fileName);
 std::string remove_top_folder(const std::string& fileName);
@@ -58,7 +58,6 @@ int         find_char(const char* data, uint32_t size, char c);
 void        msgBox(const char* text, const char* title);
 std::string get_last_string(const std::string& input, char c, int count);
 bool        str_begin_with(const std::string& str1, const std::string& str2);
-bool        is_common_package(const std::string& pack_name);
 
 typedef tinystl::unordered_map<uint32_t, uint64_t> ResourceFileMap;
 struct ResourceFileDataBase

@@ -11,5 +11,6 @@ std::string get_package_name(const std::string& input);
 std::string get_resource_name(const std::string& input);
 void        addChildCompiler(class BaseCompiler* compiler);
 void        saveCompileResult(const std::string& fileName);
+bool        is_common_package(const std::string& pack_name);
 
 extern ResourceFileDataBase             g_database;

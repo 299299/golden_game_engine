@@ -420,12 +420,7 @@ class NagaMayaUtil(object):
                 'DataCompiler.exe', self.appPath, args, True)
 
     def getPackageList(self):
-        folderList = os.listdir(self.intermediatePath)
-        retList = []
-        for folder in folderList:
-            if folder != 'core':
-                retList.append(folder)
-        return retList
+        return os.listdir(self.intermediatePath)
 
     def getRigList(self):
         return osGetFileList(self.pipelinePath + 'bones', '.bones')

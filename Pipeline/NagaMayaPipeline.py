@@ -118,7 +118,7 @@ class NagaPipeline(object):
         cmds.showWindow(UI_NAME)
 
     def onPreviewButtonClicked(self, *arg):
-        self.preview(NAGA.getSceneName())
+        self.preview('preview')
 
     def isSelectOnly(self):
         return cmds.checkBox(self.selectCheck, q=1, v=1)

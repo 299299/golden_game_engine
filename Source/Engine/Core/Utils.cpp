@@ -245,8 +245,9 @@ bool Fact::set_key(char* values, const StringId& k, const float* v) const
 void CommandMachine::init(int max_commands, int max_callbacks)
 {
     char* p_this = (char*)this;
-    m_commandCallbacks = (_command_callback_)(p_this + sizeof(CommandMachine));
+    m_commandCallbacks = (_command_callback_*)(p_this + sizeof(CommandMachine));
     m_commands = (Command*)(p_this + sizeof(CommandMachine) + max_callbacks * sizeof(void*));
+	m_maxCommands = max_commands;
 }
 
 uint32_t CommandMachine::caculate_memory(int max_commands, int max_callbacks)
@@ -256,7 +257,7 @@ uint32_t CommandMachine::caculate_memory(int max_commands, int max_callbacks)
 
 void CommandMachine::addCommand( const Command& command )
 {
-    ENGINE_ASSERT(m_numCommands < MAX_COMMAND_NUM - 1, "Command Machine overflow.");
+    ENGINE_ASSERT(m_numCommands < m_maxCommands - 1, "Command Machine overflow.");
 
     // Set the global time for the command
     Command gCmd = command;

@@ -28,10 +28,12 @@ struct HAVOK_Config
     ,m_packUV(false)
     ,m_slient(false)
     ,m_batchMode(false)
+	,m_outputDir("actor/")
     {
     }
     
     std::string                 m_inputDir;
+	std::string					m_outputDir;
     int                         m_numThreads;
     int                         m_exitCode;
     bool                        m_packNormal;

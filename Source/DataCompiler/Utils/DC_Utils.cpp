@@ -258,3 +258,9 @@ void texconv_compress( const std::string& src, const std::string& folder, const 
     std::string args = srcFile + " -ft DDS " + " -f " + fmt + " -o " + dstDir;
     shell_exec(TEXCONV_PATH, args);
 }
+
+bool is_common_package( const std::string& pack_name )
+{
+	//return pack_name == "core" || pack_name == "preview" || pack_name == "boot";
+	return !str_begin_with(pack_name, "world");
+}

@@ -3,7 +3,6 @@
 #include "StringId.h"
 
 class hkRootLevelContainer;
-class 
 
 int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
@@ -82,9 +81,6 @@ struct Command
 
 typedef void (*_command_callback_)(const Command& cmd, void* context);
 
-#define MAX_COMMAND_CALLBACK_NUM        16
-#define MAX_COMMAND_NUM                 64
-
 struct CommandMachine
 {
     void init(int max_commands, int max_callbacks);
@@ -105,6 +101,7 @@ struct CommandMachine
     _command_callback_*     m_commandCallbacks;
     float                   m_currentTime;
     int						m_numCommands;
+	int						m_maxCommands;
     void*                   m_context;
 };
 

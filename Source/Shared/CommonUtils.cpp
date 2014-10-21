@@ -33,7 +33,7 @@ void showErrorMessage(const char* title, const char* error_file, bool bSlient)
         ss << g_errorMsg[i] << "\n";
     }
     std::string error_msg = ss.str();
-    write_file(error_file, (void*)error_msg.c_str(), error_msg.length());
+    write_file(error_file, error_msg.c_str(), error_msg.length());
     if(bSlient) return;
     msgBox(error_msg.c_str(), title);
 }
@@ -320,7 +320,7 @@ uint32_t read_file(const std::string& fileName, char** outBuf)
     return fileSize;
 }
 
-bool write_file(const std::string& fileName, void* buf, uint32_t bufSize)
+bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
 {
     //PROFILE(write_file);
     HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -490,10 +490,7 @@ void fixPathSlash( std::string& inout )
     string_replace(inout, "\\", "/");
 }
 
-bool is_common_package( const std::string& pack_name )
-{
-    return pack_name == "core" || pack_name == "preview" || pack_name == "boot";
-}
+
 
 
 

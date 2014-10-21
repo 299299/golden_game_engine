@@ -209,7 +209,9 @@ int main(int argc, char* argv[])
 
     g_config.m_packNormal = cmdline.hasArg("packnormal");
     g_config.m_packUV = cmdline.hasArg("packuv");
-    g_config.m_slient = cmdline.hasArg("slient");
+    g_config.m_slient = cmdline.hasArg("slient"); 
+	const char* outputDir = cmdline.findOption('o');
+	if(outputDir) g_config.m_outputDir = outputDir;
 
     const char* threadChar = cmdline.findOption('t');
     if(threadChar) g_config.m_numThreads = atoi(threadChar);

@@ -94,6 +94,7 @@ void ActorConverter::processComponentNodes()
         if(!p_node) continue;
         ComponentNodeConverter* node = new ComponentNodeConverter(this);
         node->setName(m_name);
+		node->m_typeName = s_componet_node_names[i];
         node->process(p_node, 0);
         m_components.push_back(node);
     }

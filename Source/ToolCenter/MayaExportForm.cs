@@ -15,7 +15,7 @@ namespace ToolCenter
             foreach (string path in folders)
             {
                 string folderName = Path.GetFileNameWithoutExtension(path);
-                if(folderName == "core" || folderName == "preview")
+                if (folderName.IndexOf("world") == -1)
                     continue;
                 comboBox_Package.Items.Add(folderName);
             }
