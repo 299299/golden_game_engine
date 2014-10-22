@@ -116,7 +116,7 @@ void ProxyInstance::init(const void* resource)
     m_horizontalDisplacement.setZero4();
     m_verticalDisplacement = 0;
     m_targetVelocity.setZero4();
-    m_renderTranslation.setZero4();
+    m_transform.setIdentity();
 
     m_resource = (const ProxyResource*)resource;
     hkpWorld* world = g_physicsWorld.world();
@@ -277,7 +277,7 @@ void ProxyInstance::update(float timeStep)
     hkReal newVerticalPosition;
     {
         const hkReal desiredVerticalPosition = desiredPosition.dot3(UP);
-        const hkReal currentVerticalPosition = m_renderTranslation.dot3(UP);
+        const hkReal currentVerticalPosition = m_transform.m_translation.dot3(UP);
         const hkReal diff = desiredVerticalPosition - currentVerticalPosition;
 
         newVerticalPosition = currentVerticalPosition + diff * res->m_verticalGain;
@@ -296,6 +296,6 @@ void ProxyInstance::update(float timeStep)
     // Horizontal : no need to do gain or clamp (is done somewhere else)
     hkVector4 newHorizontalPosition; 
     newHorizontalPosition.setAddMul4(desiredPosition, UP, -desiredPosition.dot3(UP));
-    m_renderTranslation.setAddMul4(newHorizontalPosition, UP, newVerticalPosition);
+    m_transform.m_translation.setAddMul4(newHorizontalPosition, UP, newVerticalPosition);
 }
 

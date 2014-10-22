@@ -51,7 +51,7 @@ ENGINE_NATIVE_ALIGN struct ProxyInstance
     void setTransform(const hkTransform& t);
     void update(float timeStep);
 
-    hkVector4                       m_renderTranslation;
+    hkQsTransform                   m_transform;
     hkVector4                       m_targetVelocity;
     hkVector4                       m_horizontalDisplacement;
     float                           m_verticalDisplacement;

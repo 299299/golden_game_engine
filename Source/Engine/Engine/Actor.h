@@ -93,7 +93,6 @@ struct ActorWorld
 
 private:
     void        clear_actors(Actor* actors, uint32_t num);
-
 };
 
 extern ActorWorld g_actorWorld;

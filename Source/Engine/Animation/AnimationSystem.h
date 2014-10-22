@@ -24,6 +24,8 @@ struct AnimationSystem
     void    kick_in_jobs();
     void    tick_finished_jobs();
     void    skin_actors(Actor* actors, uint32_t num);
+	void	apply_animation_rootmotion(Actor* actors, uint32_t num, float dt);
+
     void    update_animations(float dt);
 
     uint32_t                m_numAnimEvts;

@@ -18,6 +18,7 @@
 #include "IK.h"
 #include "Ragdoll.h"
 #include "AnimRig.h"
+#include "ProxyInstance.h"
 //=======================================================================================
 //=======================================================================================
 #include <Common/Base/Container/Array/hkArray.h>
@@ -157,7 +158,6 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
                 transform_matrix(matrix, tempT2);
                 matrix += 16;
             }
-            rig->update_attachments(model->m_skinMatrix);
         }
         
 
@@ -171,6 +171,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             transform_vec3(bbox.m_max, aabb.m_max);
             transform_matrix(model->m_transform, t);
             REMOVE_BITS(model->m_flag, kNodeTransformDirty);
+			rig->update_attachments(t);
         }
         
 
@@ -203,6 +204,34 @@ void AnimationSystem::update_animations(float dt)
     {
         rigs[i].update(dt);
     }
+}
+
+void AnimationSystem::apply_animation_rootmotion( Actor* actors, uint32_t num, float dt )
+{
+	PROFILE(Animation_ApplyRootmotion);
+	extern void* get_anim_rig(Id);
+	extern void* get_physics_proxy(Id);
+	hkQsTransform t;
+	for (uint32_t i=0; i<num; ++i)
+	{
+		Actor& actor = actors[i];
+		Id rigId = actor.m_components[kComponentAnimRig];
+		Id proxyId = actor.m_components[kComponentProxy];
+		AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
+		ProxyInstance* proxy = (ProxyInstance*)get_physics_proxy(proxyId);
+		if(!proxy||!rig) continue;
+		if(!rig->m_applyRootmotion) continue;
+		rig->get_rootmotion(dt, t);
+
+		hkQsTransform& transform = proxy->m_transform;
+		transform.m_rotation.mul(t.m_rotation);
+
+		hkVector4 desiredMotionWorld;
+		hkQuaternion currentOrient;
+		desiredMotionWorld.setRotatedDir( transform.m_rotation, t.m_translation );
+		// Divide motion by time
+		proxy->m_targetVelocity.setMul4 (1.0f / dt, desiredMotionWorld );
+	}
 }
 
 

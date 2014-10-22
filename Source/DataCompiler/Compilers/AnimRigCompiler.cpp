@@ -29,8 +29,11 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     JsonValue attachmentsValue = root.GetValue("attachments");
     uint32_t attachmentNum = 0;
     if(attachmentsValue.IsValid()) attachmentNum = attachmentsValue.GetElementsCount();
+	JsonValue animationsValue = root.GetValue("animations");
+	uint32_t animationsNum = 0;
+	if(animationsValue.IsValid()) animationsNum = animationsValue.GetElementsCount();
 
-    uint32_t memSize = sizeof(AnimRig) + jointNum*sizeof(StringId) + attachmentNum*sizeof(BoneAttachment);
+    uint32_t memSize = sizeof(AnimRig) + jointNum*sizeof(StringId) + attachmentNum*sizeof(BoneAttachment)+ animationsNum*sizeof(StringId);
     memSize = HK_NEXT_MULTIPLE_OF(16, memSize);
     uint32_t havokOffset = memSize;
 
@@ -57,6 +60,8 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
     rig->m_havokDataSize = havokFileSize;
     rig->m_jointNum = JSON_GetInt(root.GetValue("joint_num"));
     rig->m_mirrored = JSON_GetBool(root.GetValue("mirrored"));
+	rig->m_numAnimations = animationsNum;
+
     offset += sizeof(AnimRig);
     rig->m_jointNames = (StringId*)(offset);
     for(uint32_t i=0; i<jointNum; ++i)

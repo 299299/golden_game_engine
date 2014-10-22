@@ -203,6 +203,7 @@ extern void  destroy_resource_animation(void *);
 extern void  lookup_resource_animation(void *);
 //-----------------------------------------------------------------
 extern void* load_resource_anim_rig(const char*, uint32_t);
+extern void  lookup_resource_anim_rig(void*);
 extern void  destroy_resource_anim_rig(void *);
 //-----------------------------------------------------------------
 extern void* load_resource_material(const char*, uint32_t);
@@ -247,7 +248,7 @@ static ResourceFactory g_resourceFactories[] =
     {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, Shader::get_name()},
     {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, ShaderProgram::get_name()},
     {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, Animation::get_name()},
-    {load_resource_anim_rig, destroy_resource_anim_rig, 0, 0, 0, AnimRig::get_name()},
+    {load_resource_anim_rig, destroy_resource_anim_rig, lookup_resource_anim_rig, 0, 0, AnimRig::get_name()},
     {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::get_name()},
     {0, 0, 0, 0, 0, LightResource::get_name()},
     {load_resource_model, 0, lookup_resource_model, 0, 0, ModelResource::get_name()},

@@ -435,7 +435,7 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
         ProxyInstance* proxy = (ProxyInstance*)actor.get_component(kComponentProxy);
         //ModelInstance* model = (ModelInstance*)actor.get_component(kComponentModel);
         if(!proxy) continue;
-        transform_vec3(pos, proxy->m_renderTranslation);
+        transform_vec3(pos, proxy->m_transform.m_translation);
         pos[1] += proxy->m_resource->m_offset;
         transform_vec3(t.m_translation, pos);
         actor.transform_renders(t);

@@ -164,7 +164,14 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
     if(rig->m_mirrored) rig->create_mirrored_skeleton();
     return rig;
 }
-
+void  lookup_resource_anim_rig(void * resource)
+{
+	AnimRig* rig = (AnimRig*)resource;
+	for (uint32_t i=0; i<rig->m_numAnimations; ++i)
+	{
+		rig->m_animations[i] = FIND_RESOURCE(Animation, rig->m_animNames[i]);
+	}
+}
 void  destroy_resource_anim_rig(void * resource)
 {
     AnimRig* rig = (AnimRig*)resource;
@@ -173,7 +180,7 @@ void  destroy_resource_anim_rig(void * resource)
     unload_havok_inplace(p, rig->m_havokDataSize);
 }
 
-int AnimRig::find_joint_index(const StringId& jointName)
+int AnimRig::find_joint_index(const StringId& jointName) const
 {
     for(int i=0; i<m_jointNum; ++i)
     {
@@ -200,6 +207,17 @@ void AnimRig::create_mirrored_skeleton()
     m_mirroredSkeleton->setAllBoneInvariantsFromReferencePose( v_mir, 0.0f );
 }
 
+int AnimRig::find_animation_index( const StringId& name ) const
+{
+	int num = m_numAnimations;
+	StringId* names = m_animNames;
+	for (int i=0; i<num; ++i)
+	{
+		if(names[i] == name) return i;
+	}
+	return -1;
+}
+
 //------------------------------------------------------------------------------------------------
 //          INSTANCE
 //------------------------------------------------------------------------------------------------
@@ -207,9 +225,12 @@ void AnimRig::create_mirrored_skeleton()
 void AnimRigInstance::init( const void* resource )
 {
     m_attachmentTransforms = 0;
+	m_applyRootmotion = true;
     m_resource = (const AnimRig*)resource;
 	const hkaSkeleton* skeleton = m_resource->m_skeleton;
-	uint32_t mem_size = sizeof(hkaSkeleton) + sizeof(hkaPose) + CommandMachine::caculate_memory(32, kAnimCmdMax);
+	uint32_t ctrl_size = sizeof(hk_anim_ctrl);
+	ctrl_size *= m_resource->m_numAnimations;
+	uint32_t mem_size = sizeof(hkaSkeleton) + sizeof(hkaPose) + ctrl_size + CommandMachine::caculate_memory(32, kAnimCmdMax);
 	m_blob = COMMON_ALLOC(char, mem_size);
 	memset(m_blob, 0x00, mem_size);
 	char* offset = m_blob;
@@ -220,6 +241,12 @@ void AnimRigInstance::init( const void* resource )
     m_pose->setToReferencePose();
     m_pose->syncAll();
 	offset += sizeof(hkaPose);
+	m_numControls = m_resource->m_numAnimations;
+	for (uint32_t i=0; i<m_numControls; ++i)
+	{
+		m_controls[i] = new (offset) hk_anim_ctrl(m_resource->m_animations[i]);
+		offset += sizeof(hk_anim_ctrl);
+	}
 	m_animMachine = (CommandMachine*)offset;
 	m_animMachine->init(32, kAnimCmdMax);
     m_animMachine->m_context = this;
@@ -232,8 +259,12 @@ void AnimRigInstance::init( const void* resource )
 
 void AnimRigInstance::destroy()
 {
-	m_pose->~hkaPose();
-	m_skeleton->~hkaAnimatedSkeleton();
+	for (uint32_t i=0; i<m_numControls; ++i)
+	{
+		SAFE_DESTRUCTOR(m_controls[i], hk_anim_ctrl);
+	}
+	SAFE_DESTRUCTOR(m_pose, hkaPose);
+	SAFE_DESTRUCTOR(m_skeleton, hkaAnimatedSkeleton);
 	COMMON_DEALLOC(m_blob);
 }
 
@@ -253,21 +284,21 @@ void AnimRigInstance::update(float dt)
 }
 
 
-void AnimRigInstance::update_attachments( const float* worldFromModel )
+void AnimRigInstance::update_attachments( const hkQsTransform& worldFromModel )
 {
 	uint32_t num = m_resource->m_attachNum;
 	const BoneAttachment* attachments = m_resource->m_attachments;
 	m_attachmentTransforms = FRAME_ALLOC(float, num*16);
 	const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
-	hkMatrix4 worldPose; transform_matrix(worldPose, worldFromModel);
 	for (uint32_t i=0; i<num; ++i)
 	{
 		const BoneAttachment& ba = attachments[i];
-		hkMatrix4 worldFromBone; worldFromBone.set( poseInWorld [ ba.m_boneIndex ] );
+		hkQsTransform boneWS;
+		boneWS.setMul(worldFromModel, poseInWorld[ba.m_boneIndex]);
+		hkMatrix4 worldFromBone; worldFromBone.set(boneWS);
 		hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_boneFromAttachment);
 		hkMatrix4 worldFromAttachment; worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
-		hkMatrix4 finalAttachment; finalAttachment.setMul(worldFromAttachment, worldPose);
-		transform_matrix(m_attachmentTransforms+i*16, finalAttachment);
+		transform_matrix(m_attachmentTransforms + i*16, worldFromAttachment);
 	}
 }
 
@@ -294,6 +325,7 @@ void AnimRigInstance::test_animation(const char* name)
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
 	ac->set_loop(true);
 	ac->removeReference();
+	m_applyRootmotion = false;
 }
 
 hk_anim_ctrl* AnimRigInstance::get_control( int index ) const
@@ -322,7 +354,7 @@ void AnimRigInstance::easeout_layers( int layer, float time, int type)
 	}
 }
 
-void AnimRigInstance::easein_animation(int index, float blend_time, float when, int type)
+void AnimRigInstance::easein_animation(int index, float blend_time, bool bloop, float when, int type)
 {
 	Command cmd;
 	cmd.m_time = when;
@@ -398,6 +430,16 @@ float AnimRigInstance::get_animation_time( int index ) const
 float AnimRigInstance::get_animation_period( int index ) const
 {
 	return m_controls[index]->get_peroid();
+}
+
+void AnimRigInstance::get_rootmotion(float dt, hkQsTransform& t ) const
+{
+	m_skeleton->getDeltaReferenceFrame(dt, t);
+}
+
+void AnimRigInstance::get_rootmotion( int index, float dt, hkQsTransform& t ) const
+{
+	m_controls[index]->getExtractedMotionDeltaReferenceFrame(dt, t);
 }
 
 
