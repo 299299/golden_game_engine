@@ -139,12 +139,13 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         const Mesh* mesh = model->m_resource->m_mesh;
         if(!mesh->m_numJoints) continue;
 
+        const hkQsTransform& t = actor.m_transform;
         const Matrix* invMats = model->m_resource->m_mesh->m_jointMatrix;
         const hkArray<hkQsTransform>& poseMS = pose->getSyncedPoseModelSpace();
         const hkArray<hkQsTransform>& poseLS = pose->getSyncedPoseLocalSpace();
-        const hkaSkeleton* skeleton = pose->getSkeleton();
 
         int num_of_pose = poseMS.getSize();
+        rig->update_attachments(t);
 
         {
             PROFILE(Animation_SkinMatrix);
@@ -160,19 +161,18 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             }
         }
         
-
-        const hkQsTransform& t = actor.m_transform;
+#if 0
         {
             PROFILE(Animation_UpdateAABB);
             hkAabb aabb;
-            hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), skeleton->m_parentIndices.begin(), t, aabb);
+            hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), pose->getSkeleton()->m_parentIndices.begin(), t, aabb);
             Aabb& bbox = model->m_aabb;
             transform_vec3(bbox.m_min, aabb.m_min);
             transform_vec3(bbox.m_max, aabb.m_max);
             transform_matrix(model->m_transform, t);
             REMOVE_BITS(model->m_flag, kNodeTransformDirty);
-			rig->update_attachments(t);
         }
+#endif
         
 
 #ifndef _RETIAL

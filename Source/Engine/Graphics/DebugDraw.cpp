@@ -16,6 +16,20 @@
 //#define  NO_DEPTH_LINE_RENDER_STATE (BGFX_STATE_RGB_WRITE | BGFX_STATE_PT_LINES | BGFX_STATE_DEPTH_WRITE | BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_CULL_CCW)
 #define  NO_DEPTH_LINE_RENDER_STATE (BGFX_STATE_RGB_WRITE | BGFX_STATE_PT_LINES | BGFX_STATE_CULL_CCW)
 
+struct DebugLine
+{
+    float           m_start[3];
+    float           m_end[3];
+    uint32_t        m_color;
+};
+
+struct DebugText
+{
+    float           m_screenPos[2];
+    uint32_t        m_color;
+    char*           m_text;
+};
+
 struct PosColorVertex
 {
     float m_pos[3];
@@ -113,11 +127,10 @@ void DebugDrawManager::add_line( const float* start, const float* end, uint32_t 
     uint32_t& numLines = m_numLines[index];
     if(numLines >= (MAX_DEBUG_LINES - 1))
     {
-        LOGE("depth lines num overflow!");
+        LOGE("%s lines num overflow!", bDepth ? "depth" : "non-depth");
         return;
     }
-    DebugLine* line = m_lines[index] + numLines;
-    ++numLines;
+    DebugLine* line = m_lines[index] + numLines++;
     bx::vec3Move(line->m_start, start);
     bx::vec3Move(line->m_end, end);
     line->m_color = color;

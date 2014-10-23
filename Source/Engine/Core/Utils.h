@@ -100,8 +100,8 @@ struct CommandMachine
     Command*                m_commands;
     _command_callback_*     m_commandCallbacks;
     float                   m_currentTime;
-    int						m_numCommands;
-	int						m_maxCommands;
+    int                     m_numCommands;
+    int                     m_maxCommands;
     void*                   m_context;
 };
 

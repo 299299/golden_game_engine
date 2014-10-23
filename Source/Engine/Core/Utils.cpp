@@ -49,36 +49,36 @@ void unload_havok_inplace(void* data, uint32_t size)
 
 void accurate_sleep(uint32_t milliSeconds)
 {
-	static LARGE_INTEGER s_freq = {0,0};
-	if (s_freq.QuadPart == 0)
-		QueryPerformanceFrequency(&s_freq);
-	LARGE_INTEGER from,now;
-	QueryPerformanceCounter(&from);
-	int ticks_to_wait = (int)s_freq.QuadPart / (1000/milliSeconds);
-	bool done = false;
-	int ticks_passed;
-	int ticks_left;
-	do
-	{
-		QueryPerformanceCounter(&now);
-		ticks_passed = (int)((__int64)now.QuadPart - (__int64)from.QuadPart);
-		ticks_left = ticks_to_wait - ticks_passed;
+    static LARGE_INTEGER s_freq = {0,0};
+    if (s_freq.QuadPart == 0)
+        QueryPerformanceFrequency(&s_freq);
+    LARGE_INTEGER from,now;
+    QueryPerformanceCounter(&from);
+    int ticks_to_wait = (int)s_freq.QuadPart / (1000/milliSeconds);
+    bool done = false;
+    int ticks_passed;
+    int ticks_left;
+    do
+    {
+        QueryPerformanceCounter(&now);
+        ticks_passed = (int)((__int64)now.QuadPart - (__int64)from.QuadPart);
+        ticks_left = ticks_to_wait - ticks_passed;
 
-		if (now.QuadPart < from.QuadPart)    // time wrap
-			done = true;
-		if (ticks_passed >= ticks_to_wait)
-			done = true;
+        if (now.QuadPart < from.QuadPart)    // time wrap
+            done = true;
+        if (ticks_passed >= ticks_to_wait)
+            done = true;
 
-		if (!done)
-		{
-			if (ticks_left > (int)s_freq.QuadPart*2/1000)
-				Sleep(1);
-			else                        
-				for (int i=0; i<10; i++) 
-					Sleep(0); 
-		}
-	}
-	while (!done);            
+        if (!done)
+        {
+            if (ticks_left > (int)s_freq.QuadPart*2/1000)
+                Sleep(1);
+            else                        
+                for (int i=0; i<10; i++) 
+                    Sleep(0); 
+        }
+    }
+    while (!done);            
 }
 
 IniReader::IniReader( const char* fileName )
@@ -247,7 +247,7 @@ void CommandMachine::init(int max_commands, int max_callbacks)
     char* p_this = (char*)this;
     m_commandCallbacks = (_command_callback_*)(p_this + sizeof(CommandMachine));
     m_commands = (Command*)(p_this + sizeof(CommandMachine) + max_callbacks * sizeof(void*));
-	m_maxCommands = max_commands;
+    m_maxCommands = max_commands;
 }
 
 uint32_t CommandMachine::caculate_memory(int max_commands, int max_callbacks)
@@ -318,7 +318,7 @@ void CommandMachine::update( float timestep )
         m_currentTime = hkMath::max2(m_currentTime, cmd.m_time);
     }
     m_currentTime = endTime;
-	if(idx == 0) return;
+    if(idx == 0) return;
 
     int num_cmd_left = m_numCommands - idx;
     for (int i = 0; i < num_cmd_left; ++i)

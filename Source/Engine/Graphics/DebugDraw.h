@@ -3,20 +3,8 @@
 #include <bgfx/bgfx.h>
 
 struct Frustum;
-
-struct DebugLine
-{
-    float           m_start[3];
-    float           m_end[3];
-    uint32_t        m_color;
-};
-
-struct DebugText
-{
-    float           m_screenPos[2];
-    uint32_t        m_color;
-    char*           m_text;
-};
+struct DebugLine;
+struct DebugText;
 
 struct DebugDrawManager
 {
