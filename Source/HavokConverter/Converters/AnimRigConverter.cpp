@@ -150,3 +150,23 @@ int AnimRigConverter::findBodyPart( const std::string& boneName, const char** ar
     }
     return -1;
 }
+
+void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
+{
+	if(!m_node) return;
+	const hkxAttributeGroup* group = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
+	if(!group) return;
+	fill_object_attributes(object, group);
+	const char* anim_set_file = 0;
+	hkResult result = group->getStringValue("anim_set_file", true, anim_set_file);
+	if(result != HK_SUCCESS) return;
+	FileReader reader(anim_set_file);
+	if (!reader.m_size) return;
+	jsonxx::Value obj;
+	if(!obj.parse(reader.m_buf)) 
+	{
+		addError("anim-set %s json parse error.", anim_set_file);
+		return;
+	}
+	object<<"animation-set"<<obj;
+}

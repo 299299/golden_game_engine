@@ -1001,16 +1001,16 @@ static int GM_CDECL actor_get_joint_index(gmThread* a_thread)
     GM_CHECK_INT_PARAM(actor_id, 0);
     GM_CHECK_INT_PARAM(joint_name, 1);
     SCRIPT_GET_ANIM_RIG();
-    a_thread->PushInt(rig->m_resource->find_joint_index(joint_name));
+    a_thread->PushInt(rig->m_resource->find_joint_index(StringId(joint_name)));
     return GM_OK;
 }
 static int GM_CDECL actor_get_animation_index(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(actor_id, 0);
-    GM_CHECK_STRING_PARAM(anim_name, 1);
+    GM_CHECK_INT_PARAM(anim_name, 1);
     SCRIPT_GET_ANIM_RIG();
-    a_thread->PushInt(rig->m_resource->find_animation_index(anim_name));
+    a_thread->PushInt(rig->m_resource->find_animation_index(StringId(anim_name)));
     return GM_OK;
 }
 static int GM_CDECL actor_ease_in_animation(gmThread* a_thread)

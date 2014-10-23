@@ -224,7 +224,7 @@ def createEngineNode(node_name, deleteOld=False):
     return node
 
 
-def createProxyNode():
+def createProxyNode(args):
     proxy_node = createEngineNode('proxy')
     if(proxy_node is None):
         return
@@ -241,21 +241,21 @@ def createProxyNode():
     addStringAttr(proxy_node, 'collision_layer', 'character_proxy')
 
 
-def createScriptNode():
+def createScriptNode(args):
     script_node = createEngineNode('script')
     if(script_node is None):
         return
     addStringAttr(script_node, 'script_file', '')
 
 
-def createAnimRigNode():
-    anim_rig_node = createEngineNode('anim_rig')
+def createAnimRigNode(args):
+    anim_rig_node = createEngineNode('rig')
     if(anim_rig_node is None):
         return
     addStringAttr(anim_rig_node, 'anim_set_file', '')
 
 
-def createTriggerNode():
+def createTriggerNode(args):
     triggers = ['attack', 'dust']
     trigger_group = findNodeOrCreate('triggers')
     if(trigger_group):
@@ -422,6 +422,8 @@ class NagaMayaUtil(object):
             arg0 = '-i'
             arg1 = convertOutputDir
             args = [arg0, arg1]
+            if(bDebug):
+                args.append('--debug')
             print('DataCompiler ' + str(args))
             lunchApplication(
                 'DataCompiler.exe', self.appPath, args, True)

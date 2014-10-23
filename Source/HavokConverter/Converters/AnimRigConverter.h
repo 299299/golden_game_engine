@@ -20,7 +20,7 @@ public:
 private:
     void process(RigSkinData* skin);
     int findBodyPart(const std::string& boneName, const char** arrayBones);
-
+	virtual void fillAttributes(jsonxx::Object& object) const;
 private:
     RigSkinData*                         m_skin;
     std::string                          m_rigFileName;

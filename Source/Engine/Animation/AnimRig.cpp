@@ -111,7 +111,7 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 static void ease_in_animation_command(const Command& cmd, void* context)
 {
     AnimRigInstance* inst = (AnimRigInstance*)(context);
-    char* offset = cmds.m_params;
+    char* offset = (char*)cmd.m_params;
     float f_time = *(float*)(offset);
     uint8_t i_control = *(uint8_t*)(offset + sizeof(float));
     uint8_t i_type = *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t));
@@ -124,7 +124,7 @@ static void ease_in_animation_command(const Command& cmd, void* context)
 static void ease_out_animation_command(const Command& cmd, void* context)
 {
     AnimRigInstance* inst = (AnimRigInstance*)(context);
-    char* offset = cmds.m_params;
+    char* offset = (char*)cmd.m_params;
     float f_time = *(float*)(offset);
     uint8_t i_control = *(uint8_t*)(offset + sizeof(float));
     uint8_t i_type = *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t));
@@ -134,7 +134,7 @@ static void ease_out_animation_command(const Command& cmd, void* context)
 static void set_time_animation_command(const Command& cmd, void* context)
 {
     AnimRigInstance* inst = (AnimRigInstance*)(context);
-    char* offset = cmds.m_params;
+    char* offset = (char*)cmd.m_params;
     float f_time = *(float*)(offset);
     uint8_t i_control = *(uint8_t*)(offset + sizeof(float));
     hk_anim_ctrl* control = inst->get_control(i_control);
@@ -143,7 +143,7 @@ static void set_time_animation_command(const Command& cmd, void* context)
 static void set_speed_animation_command(const Command& cmd, void* context)
 {
     AnimRigInstance* inst = (AnimRigInstance*)(context);
-    char* offset = cmds.m_params;
+    char* offset = (char*)cmd.m_params;
     float f_speed = *(float*)(offset);
     uint8_t i_control = *(uint8_t*)(offset + sizeof(float));
     hk_anim_ctrl* control = inst->get_control(i_control);
@@ -152,7 +152,7 @@ static void set_speed_animation_command(const Command& cmd, void* context)
 static void set_weight_animation_command(const Command& cmd, void* context)
 {
     AnimRigInstance* inst = (AnimRigInstance*)(context);
-    char* offset = cmds.m_params;
+    char* offset = (char*)cmd.m_params;
     float f_weight = *(float*)(offset);
     uint8_t i_control = *(uint8_t*)(offset + sizeof(float));
     hk_anim_ctrl* control = inst->get_control(i_control);
@@ -160,7 +160,7 @@ static void set_weight_animation_command(const Command& cmd, void* context)
 }
 static void ease_out_layers_animation_command(const Command& cmd, void* context)
 {
-    char* offset = cmds.m_params;
+    char* offset = (char*)cmd.m_params;
     float f_time = *(float*)(offset);
     uint8_t i_layer = *(uint8_t*)(offset + sizeof(float)); 
     uint8_t i_type = *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t));
@@ -186,8 +186,15 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
     AnimRig* rig = (AnimRig*)data;
     const char* offset = data;
     offset += sizeof(AnimRig);
+	//joint names
     rig->m_jointNames = (StringId*)(offset);
     offset += sizeof(StringId) * rig->m_jointNum;
+	//animations
+	rig->m_animNames = (StringId*)offset;
+	offset += sizeof(StringId) * rig->m_numAnimations;
+	rig->m_animations = (Animation**)offset;
+	offset += sizeof(StringId) * rig->m_numAnimations;
+	//bone attachments
     rig->m_attachments = (BoneAttachment*)offset;
     offset = data + rig->m_havokDataOffset;
     rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
@@ -440,7 +447,7 @@ void AnimRigInstance::set_animation_speed( int index, float speed, float when )
     cmd.m_time = when;
     cmd.m_command = kAnimCmdSetSpeed;
     char* offset = cmd.m_params;
-    *(float*)(offset) = weight;
+    *(float*)(offset) = speed;
     *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
     m_animMachine->addCommand(cmd);
 }
@@ -451,7 +458,7 @@ void AnimRigInstance::set_animation_time( int index, float local_time, float whe
     cmd.m_time = when;
     cmd.m_command = kAnimCmdSetTime;
     char* offset = cmd.m_params;
-    *(float*)(offset) = weight;
+    *(float*)(offset) = local_time;
     *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
     m_animMachine->addCommand(cmd);
 }

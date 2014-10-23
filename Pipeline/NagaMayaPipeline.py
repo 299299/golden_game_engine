@@ -12,7 +12,7 @@ import os
 PREVIEW_PACK = 'preview'
 GAME_APP = 'Game_Debug'
 UI_NAME = 'Naga_UI'
-
+DEBUG = True
 
 class NagaPipeline(object):
     NagaObject = None
@@ -92,16 +92,17 @@ class NagaPipeline(object):
         cmds.setParent('..')
 
         cmds.frameLayout(l="Util", cll=1)
-        cmds.rowLayout(nc=2)
+        #cmds.rowLayout(nc=2)
         cmds.button('Open Selection AR', c=self.onOpenARClicked)
         cmds.button('Back To Last Level', c=self.onBackLevelClicked)
+        cmds.button('Add Anim-Trigger', c=NAGA.createTriggerNode)
+        cmds.button('Add Proxy', c=NAGA.createProxyNode)
+        cmds.button('Add Script', c=NAGA.createScriptNode)
+        cmds.button('Add Anim Rig', c=NAGA.createAnimRigNode)
         cmds.setParent('..')
-        cmds.rowLayout(nc=2)
-        cmds.button('Add Animation Trigger Node', c=self.onAddTriggerClicked)
-        cmds.button('Add Proxy Node', c=self.onAddProxyClicked)
         cmds.setParent('..')
-        cmds.rowLayout(nc=2)
-        cmds.button('Add Script', c=self.onAddScriptClicked)
+        cmds.setParent('..')
+        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
 
@@ -136,15 +137,6 @@ class NagaPipeline(object):
     def onExportButtonClicked(self, *arg):
         self.export(NAGA.getSceneName())
 
-    def onAddTriggerClicked(self, *arg):
-        NAGA.createTriggerNode()
-
-    def onAddProxyClicked(self, *arg):
-        NAGA.createProxyNode()
-
-    def onAddScriptClicked(self, *arg):
-        NAGA.createScriptNode()
-
     #
     # UTIL FUNCTIONS
     #
@@ -157,7 +149,7 @@ class NagaPipeline(object):
         # step2 : convert the hkx to intermediate data
         # using havok converter
         # step3: lunch data-compiler to convert intermediate to finally package
-        self.naga.convertHkx(exportName, packageName, bDebug=False)
+        self.naga.convertHkx(exportName, packageName, bDebug=DEBUG)
 
     def reloadCompileResult(self):
         if not self.webSock.connected:
@@ -193,7 +185,7 @@ class NagaPipeline(object):
                       rigName=rigName)
 
         if not self.webSock.connected:
-            self.lunchEngine(packageName, debug=1)
+            self.lunchEngine(packageName, debug=DEBUG)
             time.sleep(0.2)
         else:
             self.reloadCompileResult()

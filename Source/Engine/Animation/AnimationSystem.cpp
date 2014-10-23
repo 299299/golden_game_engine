@@ -161,7 +161,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             }
         }
         
-#if 0
+#if 1
         {
             PROFILE(Animation_UpdateAABB);
             hkAabb aabb;
