@@ -248,6 +248,13 @@ def createScriptNode():
     addStringAttr(script_node, 'script_file', '')
 
 
+def createAnimRigNode():
+    anim_rig_node = createEngineNode('anim_rig')
+    if(anim_rig_node is None):
+        return
+    addStringAttr(anim_rig_node, 'anim_set_file', '')
+
+
 def createTriggerNode():
     triggers = ['attack', 'dust']
     trigger_group = findNodeOrCreate('triggers')

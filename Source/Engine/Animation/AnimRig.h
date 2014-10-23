@@ -98,16 +98,15 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void init(const void* resource);
     void destroy();
     void update(float dt);
-    bool is_playing_animation() const;
     void update_attachments(const hkQsTransform& worldFromModel);
     hk_anim_ctrl* get_control(int index) const;
     int find_control(const StringId& name) const;
     void test_animation(const char* name);
     //----------------------------------------------------------------------
     // ANIMATION API
-    void easein_animation(int index, float blend_time, bool bloop, float when = 0.0f, int type = kEaseCurveSmooth);
+    void easein_animation(int index, float blend_time, bool bloop, int layer, float when = 0.0f, int type = kEaseCurveSmooth);
     void easeout_animation(int index, float blend_time, float when = 0.0f, int type = kEaseCurveSmooth);
-    void easeout_layers(int layer, float time, int type = kEaseCurveSmooth);
+    void easeout_layers(int layer, float blend_time, float when = 0.0f, int type = kEaseCurveSmooth);
     void set_animation_weight(int index, float weight, float when = 0.0f);
     void set_animation_speed(int index, float speed, float when = 0.0f);
     void set_animation_time(int index, float local_time, float when = 0.0f);
@@ -117,5 +116,7 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     float get_animation_period(int index) const;
     void  get_rootmotion(float dt, hkQsTransform& t) const;
     void  get_rootmotion(int index, float dt, hkQsTransform& t) const;
+    bool  is_playing_animation() const;
+    bool  is_playing_animation(int index) const;
     //----------------------------------------------------------------------
 }; 

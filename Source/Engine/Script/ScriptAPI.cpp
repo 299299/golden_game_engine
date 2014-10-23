@@ -986,43 +986,139 @@ static int GM_CDECL level_unload(gmThread* a_thread)
     level->unload();
     return GM_OK;
 }
-static int GM_CDECL actor_play_simple_animation(gmThread* a_thread)
+#define SCRIPT_GET_ANIM_RIG()\
+        ActorId id;\
+        id.set(actor_id);\
+        Actor* actor = g_actorWorld.get_actor(id);\
+        if(!actor) { a_thread->PushInt(-1); return GM_OK; }\
+        extern void* get_anim_rig(Id);\
+        AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);\
+        if(!rig) { a_thread->PushInt(-1); return GM_OK; }
+
+static int GM_CDECL actor_get_joint_index(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(joint_name, 1);
+    SCRIPT_GET_ANIM_RIG();
+    a_thread->PushInt(rig->m_resource->find_joint_index(joint_name));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_index(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_STRING_PARAM(anim_name, 1);
+    SCRIPT_GET_ANIM_RIG();
+    a_thread->PushInt(rig->m_resource->find_animation_index(anim_name));
+    return GM_OK;
+}
+static int GM_CDECL actor_ease_in_animation(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(4);
     GM_CHECK_INT_PARAM(actor_id, 0);
-    GM_CHECK_INT_PARAM(anim_name, 1);
-    GM_CHECK_INT_PARAM(looped, 2);
-	GM_CHECK_FLOAT_OR_INT_PARAM(ease_time, 3);
-    ActorId id;
-    id.set(actor_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
-    extern void* get_anim_rig(Id);
-    AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
-    if(!rig) return GM_OK;
-    //rig->test_animation(anim_name);
+    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_FLOAT_PARAM(blend_time, 2);
+    GM_CHECK_INT_PARAM(looped, 3);
+    GM_INT_PARAM(layer, 4, 0);
+    GM_FLOAT_PARAM(when, 5, 0.0f);
+    GM_INT_PARAM(type, 6, kEaseCurveSmooth);
+    SCRIPT_GET_ANIM_RIG();
+    rig->easein_animation(index, blend_time, looped, layer, when, type);
+    return GM_OK;
+}
+static int GM_CDECL actor_ease_out_animation(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_FLOAT_PARAM(blend_time, 2);
+    GM_FLOAT_PARAM(when, 3, 0.0f);
+    GM_INT_PARAM(type, 4, kEaseCurveSmooth);
+    SCRIPT_GET_ANIM_RIG();
+    rig->easeout_animation(index, blend_time, when, type);
     return GM_OK;
 }
 static int GM_CDECL actor_is_playing_animation(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(3);
+    GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(actor_id, 0);
-    ActorId id;
-    id.set(actor_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor)
-    {
-        a_thread->PushInt(0);
-        return GM_OK;
-    }
-    extern void* get_anim_rig(Id);
-    AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
-    if(!rig) 
-    {
-        a_thread->PushInt(0);
-        return GM_OK;
-    }
-    a_thread->PushInt(rig->is_playing_animation() ? 1 : 0);
+    GM_INT_PARAM(index, 1, -1);
+    SCRIPT_GET_ANIM_RIG();
+    if(index < 0) a_thread->PushInt(rig->is_playing_animation() ? 1 : 0);
+    else a_thread->PushInt(rig->is_playing_animation(index) ? 1 : 0);
+    return GM_OK;
+}
+static int GM_CDECL actor_easeout_layers(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_FLOAT_PARAM(blend_time, 2);
+    GM_FLOAT_PARAM(when, 3, 0.0f);
+    GM_INT_PARAM(type, 4, kEaseCurveSmooth);
+    SCRIPT_GET_ANIM_RIG();
+    rig->easeout_layers(index, blend_time, type);
+    return GM_OK;
+}
+static int GM_CDECL actor_set_animation_weight(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_FLOAT_PARAM(weight, 2);
+    GM_FLOAT_PARAM(when, 2, 0.0f);
+    SCRIPT_GET_ANIM_RIG();
+    rig->set_animation_weight(index, weight, when);
+    return GM_OK;
+}
+static int GM_CDECL actor_set_animation_speed(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_FLOAT_PARAM(speed, 2);
+    GM_FLOAT_PARAM(when, 2, 0.0f);
+    SCRIPT_GET_ANIM_RIG();
+    rig->set_animation_speed(index, speed, when);
+    return GM_OK;
+}
+static int GM_CDECL actor_set_animation_time(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_FLOAT_PARAM(time, 2);
+    GM_FLOAT_PARAM(when, 2, 0.0f);
+    SCRIPT_GET_ANIM_RIG();
+    rig->set_animation_time(index, time, when);
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_weight(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    SCRIPT_GET_ANIM_RIG();
+    a_thread->PushFloat(rig->get_animation_weight(index));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_speed(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    SCRIPT_GET_ANIM_RIG();
+    a_thread->PushFloat(rig->get_animation_speed(index));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_time(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_INT_PARAM(index, 1);
+    SCRIPT_GET_ANIM_RIG();
+    a_thread->PushFloat(rig->get_animation_time(index));
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -1232,8 +1328,18 @@ void register_script_api(gmMachine* machine)
         {"actor_set_string", actor_set_string},
         {"load_level", level_load},
         {"unload_level", level_unload},
-        {"actor_play_simple_animation", actor_play_simple_animation},
+        {"actor_get_joint_index", actor_get_joint_index},
+        {"actor_get_animation_index", actor_get_animation_index},
+        {"actor_ease_in_animation", actor_ease_in_animation},
+        {"actor_ease_out_animation", actor_ease_out_animation},
         {"actor_is_playing_animation", actor_is_playing_animation},
+        {"actor_easeout_layers", actor_easeout_layers},
+        {"actor_set_animation_weight", actor_set_animation_weight},
+        {"actor_set_animation_speed", actor_set_animation_speed},
+        {"actor_set_animation_time", actor_set_animation_time},
+        {"actor_get_animation_weight", actor_get_animation_weight},
+        {"actor_get_animation_speed", actor_get_animation_speed},
+        {"actor_get_animation_time", actor_get_animation_time},
     };
     static gmVariableEntry s_world_values[] =
     {

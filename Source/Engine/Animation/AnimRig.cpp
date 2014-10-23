@@ -26,6 +26,7 @@ enum AnimationCommand
     kAnimCmdSetWeight,
     kAnimCmdSetSpeed,
     kAnimCmdSetTime,
+    kAnimCmdEaseOutLayers,
     kAnimCmdMax
 };
 
@@ -33,9 +34,11 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
     Animation*              m_animation;
     StringId                m_name;
+
     uint8_t                 m_motionType;
     uint8_t                 m_layer;
     bool                    m_enabled;
+    char                    m_padding[1];
 
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_ANIM_CONTROL);
     hk_anim_ctrl(Animation* anim)
@@ -112,8 +115,10 @@ static void ease_in_animation_command(const Command& cmd, void* context)
     float f_time = *(float*)(offset);
     uint8_t i_control = *(uint8_t*)(offset + sizeof(float));
     uint8_t i_type = *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t));
+    uint8_t i_layer = *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)*2);
     hk_anim_ctrl* control = inst->get_control(i_control);
     if(!control->m_enabled) inst->m_skeleton->addAnimationControl(control);
+    control->m_layer = i_layer;
     control->ease_in(f_time, i_type);
 }
 static void ease_out_animation_command(const Command& cmd, void* context)
@@ -153,7 +158,25 @@ static void set_weight_animation_command(const Command& cmd, void* context)
     hk_anim_ctrl* control = inst->get_control(i_control);
     control->setMasterWeight(f_weight);
 }
+static void ease_out_layers_animation_command(const Command& cmd, void* context)
+{
+    char* offset = cmds.m_params;
+    float f_time = *(float*)(offset);
+    uint8_t i_layer = *(uint8_t*)(offset + sizeof(float)); 
+    uint8_t i_type = *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t));
 
+    AnimRigInstance* inst = (AnimRigInstance*)(context);
+    hkaAnimatedSkeleton* skeleton = inst->m_skeleton;
+    int num = skeleton->getNumAnimationControls();
+    
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = (hk_anim_ctrl*)skeleton->getAnimationControl(i);
+        int ctrl_layer = (int)ac->m_layer;
+        if(ctrl_layer != (int)i_layer) continue;
+        ac->ease_out(f_time, i_type);
+    }
+}
 //------------------------------------------------------------------------------------------------
 //          RESOURCE
 //------------------------------------------------------------------------------------------------
@@ -235,9 +258,10 @@ void AnimRigInstance::init( const void* resource )
     m_applyRootmotion = true;
     m_resource = (const AnimRig*)resource;
     const hkaSkeleton* skeleton = m_resource->m_skeleton;
+    uint32_t numAnimations = m_resource->m_numAnimations;
     uint32_t ctrl_size = sizeof(hk_anim_ctrl);
-    ctrl_size *= m_resource->m_numAnimations;
-    uint32_t mem_size = sizeof(hkaSkeleton) + sizeof(hkaPose) + ctrl_size + CommandMachine::caculate_memory(32, kAnimCmdMax);
+    ctrl_size *= numAnimations;
+    uint32_t mem_size = sizeof(hkaSkeleton) + sizeof(hkaPose) + ctrl_size + sizeof(hk_anim_ctrl*) * numAnimations + CommandMachine::caculate_memory(32, kAnimCmdMax);
     m_blob = COMMON_ALLOC(char, mem_size);
     memset(m_blob, 0x00, mem_size);
     char* offset = m_blob;
@@ -248,7 +272,9 @@ void AnimRigInstance::init( const void* resource )
     m_pose->setToReferencePose();
     m_pose->syncAll();
     offset += sizeof(hkaPose);
-    m_numControls = m_resource->m_numAnimations;
+    m_numControls = numAnimations;
+    m_controls = (hk_anim_ctrl**)offset;
+    offset += sizeof(hk_anim_ctrl*) * numAnimations;
     for (uint32_t i=0; i<m_numControls; ++i)
     {
         m_controls[i] = new (offset) hk_anim_ctrl(m_resource->m_animations[i]);
@@ -262,6 +288,7 @@ void AnimRigInstance::init( const void* resource )
     m_animMachine->m_commandCallbacks[kAnimCmdSetWeight] = set_weight_animation_command;
     m_animMachine->m_commandCallbacks[kAnimCmdSetSpeed] = set_speed_animation_command;
     m_animMachine->m_commandCallbacks[kAnimCmdSetTime] = set_time_animation_command;
+    m_animMachine->m_commandCallbacks[kAnimCmdEaseOutLayers] = ease_out_layers_animation_command;
 }
 
 void AnimRigInstance::destroy()
@@ -312,13 +339,21 @@ void AnimRigInstance::update_attachments( const hkQsTransform& worldFromModel )
 
 bool AnimRigInstance::is_playing_animation() const
 {   
-    int numControls = m_skeleton->getNumAnimationControls();
-    for(int i=0; i<numControls; ++i)
+    int num = m_skeleton->getNumAnimationControls();
+    for(int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
         float speed = ac->getPlaybackSpeed();
         if(speed > 0.0f) return true;
     }
+    return false;
+}
+
+bool AnimRigInstance::is_playing_animation(int index) const
+{
+    hk_anim_ctrl* ac = get_control(index);
+    if(!ac->m_enabled) return false;
+    if(ac->getPlaybackSpeed() > 0.0f) return true;
     return false;
 }
 
@@ -350,26 +385,28 @@ int AnimRigInstance::find_control(const StringId& name) const
     return -1;
 }
 
-void AnimRigInstance::easeout_layers( int layer, float time, int type)
+void AnimRigInstance::easeout_layers( int layer, float blend_time, float when, int type)
 {
-    for (int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
-    {
-        hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
-        int ctrl_layer = (int)ac->m_layer;
-        if(ctrl_layer != layer) continue;
-        ac->ease_out(time, type);
-    }
+    Command cmd;
+    cmd.m_time = when;
+    cmd.m_command = kAnimCmdEaseOutLayers;
+    char* offset = cmd.m_params;
+    *(float*)(offset) = blend_time;
+    *(uint8_t*)(offset + sizeof(float)) = (uint8_t)layer;
+    *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)) = (uint8_t)type;
+    m_animMachine->addCommand(cmd);
 }
 
-void AnimRigInstance::easein_animation(int index, float blend_time, bool bloop, float when, int type)
+void AnimRigInstance::easein_animation(int index, float blend_time, bool bloop, int layer, float when, int type)
 {
     Command cmd;
     cmd.m_time = when;
     cmd.m_command = kAnimCmdEaseIn;
     char* offset = cmd.m_params;
     *(float*)(offset) = blend_time;
-    *(uint8_t*)(offset + sizeof(float)) = index;
-    *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)) = type;
+    *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
+    *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)) = (uint8_t)type;
+    *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)*2) = (uint8_t)layer;
     m_animMachine->addCommand(cmd);
 }
 
@@ -380,8 +417,8 @@ void AnimRigInstance::easeout_animation(int index, float blend_time, float when,
     cmd.m_command = kAnimCmdEaseOut;
     char* offset = cmd.m_params;
     *(float*)(offset) = blend_time;
-    *(uint8_t*)(offset + sizeof(float)) = index;
-    *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)) = type;
+    *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
+    *(uint8_t*)(offset + sizeof(float) + sizeof(uint8_t)) = (uint8_t)type;
     m_animMachine->addCommand(cmd);
 }
 
@@ -393,7 +430,7 @@ void AnimRigInstance::set_animation_weight( int index, float weight, float when 
     cmd.m_command = kAnimCmdSetWeight;
     char* offset = cmd.m_params;
     *(float*)(offset) = weight;
-    *(uint8_t*)(offset + sizeof(float)) = index;
+    *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
     m_animMachine->addCommand(cmd);
 }
 
@@ -404,7 +441,7 @@ void AnimRigInstance::set_animation_speed( int index, float speed, float when )
     cmd.m_command = kAnimCmdSetSpeed;
     char* offset = cmd.m_params;
     *(float*)(offset) = weight;
-    *(uint8_t*)(offset + sizeof(float)) = index;
+    *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
     m_animMachine->addCommand(cmd);
 }
 
@@ -415,7 +452,7 @@ void AnimRigInstance::set_animation_time( int index, float local_time, float whe
     cmd.m_command = kAnimCmdSetTime;
     char* offset = cmd.m_params;
     *(float*)(offset) = weight;
-    *(uint8_t*)(offset + sizeof(float)) = index;
+    *(uint8_t*)(offset + sizeof(float)) = (uint8_t)index;
     m_animMachine->addCommand(cmd);
 }
 
