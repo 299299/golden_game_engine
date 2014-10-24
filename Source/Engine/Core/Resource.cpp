@@ -115,7 +115,7 @@ void ResourcePackage::load_group(int index)
     __RESOURCE_LOAD loadFunc = group.m_factory->m_loadFunc;
 
     uint32_t num = group.m_numResources;
-    const ResourceInfo* resources = group.m_resources;
+    ResourceInfo* resources = group.m_resources;
 
     for (uint32_t i=0; i<num; ++i)
     {
@@ -197,7 +197,7 @@ void ResourcePackage::lookup_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
     uint32_t num = m_numGroups;
-    const ResourceGroup* groups = m_groups;
+    ResourceGroup* groups = m_groups;
 
     for(uint32_t i=0; i<num; ++i)
     {
@@ -206,15 +206,12 @@ void ResourcePackage::lookup_all_resources()
         if(!func_) continue;
 
         uint32_t num_res = group.m_numResources;
-        const ResourceInfo* resources = group.m_resources;
+        ResourceInfo* resources = group.m_resources;
 
         for(uint32_t j=0; j<num_res; ++j)
         {
-            ResourceInfo& info = resources[j];
-            if(info.m_ptr)
-                func_(info.m_ptr);
-            else
-                LOGE("resource lookup error, group id = %d!!!", i);
+            if(resources[j].m_ptr) func_(resources[j].m_ptr);
+            else LOGE("resource lookup error, group id = %d!!!", i);
         }
     }
 }

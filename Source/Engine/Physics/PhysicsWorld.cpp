@@ -208,7 +208,7 @@ void PhysicsWorld::post_simulation()
     {
         const hkArray<hkpEntity*>& activeEntities = activeIslands[i]->getEntities();
         int num_entity = activeEntities.getSize();
-        hkpEntity** head = activeEntities.begin();
+        const hkArray<hkpEntity*>::const_iterator head = activeEntities.begin();
 
         for(int j = 0; j < num_entity; ++j)
         {

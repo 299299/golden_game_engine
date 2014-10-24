@@ -31,7 +31,7 @@ void ShadingEnviroment::submit()
 void ShadingEnviroment::lookup()
 {
     uint32_t num = m_numColorgradingTextures;
-    Texture** head = m_colorGradingTextures;
+    Raw3DTexture** head = m_colorGradingTextures;
     StringId* names = m_colorgradingTextureNames;
     for (uint32_t i=0; i<num; ++i)
     {

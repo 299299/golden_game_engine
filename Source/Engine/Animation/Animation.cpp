@@ -186,7 +186,7 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
     const hkaSkeleton* skeleton = pose.getSkeleton();
     const hkInt16* parentIndices = skeleton->m_parentIndices.begin();
     const hkQsTransform* poseMS = pose.getSyncedPoseModelSpace().begin();
-    int num = poseMS.getSize();
+    int num = pose.getSyncedPoseModelSpace().getSize();
 
     float start[3], end[3];
     for (int i=0; i < num; ++i)

@@ -85,7 +85,7 @@ void AnimationSystem::kick_in_jobs()
         m_animJobs[i].build(instance.m_skeleton, instance.m_pose);
     }
     hkLocalArray<hkJob*> jobPointers( num );
-    jobPointers.resize( num );
+    jobPointers.setSize( num );
     for ( uint32_t i = 0; i < num; ++i )
     {
         jobPointers[i] = &m_animJobs[i];
@@ -142,8 +142,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         const hkQsTransform& t = actor.m_transform;
         const Matrix* invMats = model->m_resource->m_mesh->m_jointMatrix;
         const hkQsTransform* poseMS = pose->getSyncedPoseModelSpace().begin();
-
-        int num_of_pose = poseMS.getSize();
+        int num_of_pose = pose->getSyncedPoseModelSpace().getSize();
         rig->update_attachments(t);
 
         {
@@ -164,8 +163,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         {
             PROFILE(Animation_UpdateAABB);
             hkAabb aabb;
-            const hkQsTransform* poseLS = pose->getSyncedPoseLocalSpace().begin();
-            hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), 
+            hkaSkeletonUtils::calcAabb(num_of_pose, pose->getSyncedPoseLocalSpace().begin(), 
                                       pose->getSkeleton()->m_parentIndices.begin(), t, aabb);
             Aabb& bbox = model->m_aabb;
             transform_vec3(bbox.m_min, aabb.m_min);

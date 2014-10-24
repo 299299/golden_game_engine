@@ -94,7 +94,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
         hkaSkeletonUtils::getDescendants(*skeleton, startRight, bones);
 
         int num = bones.getSize();
-        const hkaBone* head = bones.begin();
+        const hkInt16* head = bones.begin();
 
         for(int i=0; i<num; ++i)
             m_lowerBodyBones[m_numLowerBodyBones++] = head[i];
