@@ -151,9 +151,9 @@ void DebugFPSCamera::update(float dt)
 
     float right[3] =
     {
-        sinf(m_horizontalAngle - (float)M_PI_2),
+        sinf(m_horizontalAngle - bx::piHalf),
         0,
-        cosf(m_horizontalAngle - (float)M_PI_2),
+        cosf(m_horizontalAngle - bx::piHalf),
     };
 
     //translate

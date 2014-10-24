@@ -382,8 +382,8 @@ void DebugDrawManager::add_locomotion_angle(const float* center, float angle, ui
     hkQsTransform t;
     transform_vec3(t.m_translation, center);
     t.m_rotation.setFromEulerAngles(0, 0, angle);
-    hkVector4 v0, v1, v2, v4;
-    hkVector4 t_v0, t_v1, t_v2, tv3;
+    hkVector4 v0, v1, v2, v3;
+    hkVector4 t_v0, t_v1, t_v2, t_v3;
     float s_v0[3], s_v1[3], s_v2[3], s_v3[3];
 
     v0.set(triangle_len, 0, 0);
@@ -402,7 +402,7 @@ void DebugDrawManager::add_locomotion_angle(const float* center, float angle, ui
 
     v0.set(-quad_width, 0, 0);
     v1.set(quad_width, 0, 0);
-    v2.set(width, 0, -quad_height);
+    v2.set(quad_width, 0, -quad_height);
     v3.set(-quad_width, 0, -quad_height);
 
     t_v0.setTransformedPos(t, v0);
@@ -417,5 +417,5 @@ void DebugDrawManager::add_locomotion_angle(const float* center, float angle, ui
     add_line(s_v0, s_v1, color, bDepth);
     add_line(s_v1, s_v2, color, bDepth);
     add_line(s_v2, s_v3, color, bDepth);
-    add_line(s_v3, s_v4, color, bDepth);
+    add_line(s_v3, s_v0, color, bDepth);
 }

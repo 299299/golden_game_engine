@@ -199,6 +199,12 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
     offset = data + rig->m_havokDataOffset;
     rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
     if(rig->m_mirrored) rig->create_mirrored_skeleton();
+#if 0
+	rig->m_skeleton->m_bones.pushBack(hkaBone());
+	rig->m_skeleton->m_bones.pushBack(hkaBone());
+	rig->m_skeleton->m_parentIndices.pushBack(0);
+	rig->m_skeleton->m_parentIndices.pushBack(0);
+#endif
     return rig;
 }
 void  lookup_resource_anim_rig(void * resource)
@@ -273,24 +279,31 @@ void AnimRigInstance::init( const void* resource )
     uint32_t numAnimations = m_resource->m_numAnimations;
     uint32_t ctrl_size = sizeof(hk_anim_ctrl);
     ctrl_size *= numAnimations;
-    uint32_t mem_size = sizeof(hkaSkeleton) + sizeof(hkaPose) + ctrl_size + sizeof(hk_anim_ctrl*) * numAnimations + CommandMachine::caculate_memory(32, kAnimCmdMax);
+	//uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(skeleton);
+	uint32_t pose_size = sizeof(hkaPose);
+	pose_size = HK_NEXT_MULTIPLE_OF(16, pose_size);
+    uint32_t mem_size = sizeof(hkaSkeleton) + pose_size + ctrl_size + sizeof(hk_anim_ctrl*) * numAnimations + \
+						CommandMachine::caculate_memory(32, kAnimCmdMax);
     m_blob = COMMON_ALLOC(char, mem_size);
     memset(m_blob, 0x00, mem_size);
     char* offset = m_blob;
-    //uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(m_resource->m_skeleton);
     m_skeleton = new(offset) hkaAnimatedSkeleton(skeleton);
     offset += sizeof(hkaAnimatedSkeleton);
     m_pose = new(offset) hkaPose(skeleton);
     m_pose->setToReferencePose();
     m_pose->syncAll();
-    offset += sizeof(hkaPose);
+    offset += pose_size;
     m_numControls = numAnimations;
+	char* ptr = offset;
+	int add_size = ptr - m_blob;
+	offset += sizeof(hk_anim_ctrl) * numAnimations;
     m_controls = (hk_anim_ctrl**)offset;
     offset += sizeof(hk_anim_ctrl*) * numAnimations;
+	Animation** anims = m_resource->m_animations;
     for (uint32_t i=0; i<numAnimations; ++i)
     {
-        m_controls[i] = new (offset) hk_anim_ctrl(m_resource->m_animations[i]);
-        offset += sizeof(hk_anim_ctrl);
+        m_controls[i] = new (ptr) hk_anim_ctrl(anims[i]);
+        ptr += sizeof(hk_anim_ctrl);
     }
     m_animMachine = (CommandMachine*)offset;
     m_animMachine->init(32, kAnimCmdMax);
