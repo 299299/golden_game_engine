@@ -202,7 +202,8 @@ void Profiler::dump_block(  ProfilerBlock* block,
         ++depth;
     }
 
-    for (uint32_t i=0; i<block->numChildren_; ++i)
+    uint32_t num = block->numChildren_;
+    for (uint32_t i=0; i<num; ++i)
     {
         dump_block(block->children_[i], depth, maxDepth, showUnused, showTotal);
     }
@@ -273,7 +274,8 @@ void Profiler::dump_block_to_file(  void* fp_,
         ++depth;
     }
 
-    for (uint32_t i=0; i<block->numChildren_; ++i)
+    uint32_t num = block->numChildren_;
+    for (uint32_t i=0; i<num; ++i)
     {
         dump_block_to_file(fp, block->children_[i], depth, maxDepth, showUnused, showTotal);
     }
@@ -281,13 +283,14 @@ void Profiler::dump_block_to_file(  void* fp_,
 
 ProfilerBlock* ProfilerBlock::get_child( const char* name )
 {
-    for (uint32_t i=0; i<numChildren_; ++i)
+    uint32_t num = numChildren_;
+    for (uint32_t i=0; i<num; ++i)
     {
         ProfilerBlock* child = children_[i];
         if(name == child->name_)
             return child;
     }
-    for (uint32_t i=0; i<numChildren_; ++i)
+    for (uint32_t i=0; i<num; ++i)
     {
         ProfilerBlock* child = children_[i];
         if(!strcmp(name, child->name_))

@@ -30,10 +30,13 @@ void ShadingEnviroment::submit()
 
 void ShadingEnviroment::lookup()
 {
-    for (uint32_t i=0; i<m_numColorgradingTextures; ++i)
+    uint32_t num = m_numColorgradingTextures;
+    Texture** head = m_colorGradingTextures;
+    StringId* names = m_colorgradingTextureNames;
+    for (uint32_t i=0; i<num; ++i)
     {
-        m_colorGradingTextures[i] = FIND_RESOURCE(Raw3DTexture, m_colorgradingTextureNames[i]);
-        ENGINE_ASSERT(m_colorGradingTextures[i], "can not find color-grading texture.");
+        head[i] = FIND_RESOURCE(Raw3DTexture, names[i]);
+        ENGINE_ASSERT(head[i], "can not find color-grading texture.");
     }
 }
 
@@ -44,6 +47,5 @@ bgfx::TextureHandle ShadingEnviroment::get_colorgrading_tex() const
 
 void lookup_resource_shading_enviroment( void* resource )
 {
-    ShadingEnviroment* enviroment = (ShadingEnviroment*)resource;
-    enviroment->lookup();
+    ((ShadingEnviroment*)resource)->lookup();
 }

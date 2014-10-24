@@ -119,9 +119,11 @@ IniReader::~IniReader()
 
 uint32_t IniReader::find_value( const char* key, char* bufOut ) const
 {
-    for (uint32_t i=0; i<m_numKeys;++i)
+    uint32_t num = m_numKeys;
+    const IniKeyValue* head = m_values;
+    for (uint32_t i=0; i<num;++i)
     {
-        const IniKeyValue& data = m_values[i];
+        const IniKeyValue& data = head[i];
         if(!strncmp(data.m_key, key, data.m_keyLen))
         {
             strncpy(bufOut, data.m_value, data.m_valueLen);
@@ -154,20 +156,25 @@ uint32_t Fact::value_type(const StringId& k) const
 
 bool Fact::has_key(const StringId& k) const
 {
-    for(uint32_t i=0; i<m_num_keys; ++i)
+    uint32_t num = m_num_keys;
+    Key* head = m_keys;
+    for(uint32_t i=0; i<num; ++i)
     {
-        if(m_keys[i].m_name == k) return true;
+        if(head[i].m_name == k) return true;
     }
     return false;
 }
 
 bool Fact::get_key(const StringId& k, Key& out_k) const
 {
-    for(uint32_t i=0; i<m_num_keys; ++i)
+    uint32_t num = m_num_keys;
+    Key* head = m_keys;
+    for(uint32_t i=0; i<num; ++i)
     {
-        if(m_keys[i].m_name == k)
+        if(head[i].m_name == k)
         {
-            out_k = m_keys[i]; return true;
+            out_k = head[i]; 
+            return true;
         }
     }
     return false;
@@ -264,7 +271,8 @@ void CommandMachine::addCommand( const Command& command )
     gCmd.m_time += getCurrentTime();
 
     int idx = 0;
-    while( (idx < m_numCommands) && (gCmd.m_time >= m_commands[idx].m_time) )
+    uint32_t num = m_numCommands;
+    while( (idx < num) && (gCmd.m_time >= m_commands[idx].m_time) )
     {
         idx++;
     }
@@ -297,9 +305,11 @@ float CommandMachine::getCurrentTime() const
 void CommandMachine::resetTime(float newTime)
 {
     float diffTime = newTime - m_currentTime;
-    for (int i=0; i< m_numCommands; ++i)
+    uint32_t num = m_numCommands;
+    Command* head = m_commands;
+    for (int i=0; i< num; ++i)
     {
-        m_commands[i].m_time += diffTime;
+        head[i].m_time += diffTime;
     }
     m_currentTime = newTime;
 }
@@ -308,9 +318,11 @@ void CommandMachine::update( float timestep )
 {
     const float endTime = m_currentTime + timestep;
     int idx = 0;
-    for (; idx < m_numCommands; ++idx)
+    uint32_t num = m_numCommands;
+    Command* head = m_commands;
+    for (; idx < num; ++idx)
     {
-        Command cmd = m_commands[idx];
+        const Command& cmd = head[idx];
         float cmdTime = cmd.m_time;
         if(cmdTime > endTime) break;
         _command_callback_ cb = m_commandCallbacks[cmd.m_command];
@@ -320,11 +332,12 @@ void CommandMachine::update( float timestep )
     m_currentTime = endTime;
     if(idx == 0) return;
 
-    int num_cmd_left = m_numCommands - idx;
+    int num_cmd_left = num - idx;
     for (int i = 0; i < num_cmd_left; ++i)
     {
-        m_commands[i] = m_commands[idx+i];
+        head[i] = head[idx+i];
     }
+    m_numCommands = num_cmd_left;
 }
 
 // Walk to jump with Sync.

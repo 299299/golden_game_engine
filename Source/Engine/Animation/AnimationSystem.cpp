@@ -73,26 +73,26 @@ void AnimationSystem::frame_start()
 
 void AnimationSystem::kick_in_jobs()
 {
-    uint32_t numSkeletons = id_array::size(m_rigs);
-    if(numSkeletons == 0) return;
+    uint32_t num = id_array::size(m_rigs);
+    if(num == 0) return;
     AnimRigInstance* rigs = id_array::begin(m_rigs);
 #ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
     set_status(kTickProcessing);
-    for (uint32_t i=0; i<numSkeletons;++i)
+    for (uint32_t i=0; i<num;++i)
     {
         AnimRigInstance& instance = rigs[i];
         m_animJobs[i].build(instance.m_skeleton, instance.m_pose);
     }
-    hkLocalArray<hkJob*> jobPointers( numSkeletons );
-    jobPointers.reserve( numSkeletons );
-    for ( uint32_t i = 0; i < numSkeletons; ++i )
+    hkLocalArray<hkJob*> jobPointers( num );
+    jobPointers.resize( num );
+    for ( uint32_t i = 0; i < num; ++i )
     {
-        jobPointers.pushBack(&( m_animJobs[i]));
+        jobPointers[i] = &m_animJobs[i];
     }
     g_threadMgr.get_jobqueue()->addJobBatch( jobPointers, hkJobQueue::JOB_HIGH_PRIORITY );
 #else
-    for (uint32_t i=0; i<numSkeletons;++i)
+    for (uint32_t i=0; i<num;++i)
     {
         AnimRigInstance& instance = rigs[i];
         hkaAnimatedSkeleton* skel = instance.m_skeleton;
@@ -107,10 +107,10 @@ void AnimationSystem::kick_in_jobs()
 void AnimationSystem::tick_finished_jobs()
 {
 #ifdef MT_ANIMATION
-    uint32_t numSkeletons = id_array::size(m_rigs);
-    if(!numSkeletons) return;
+    uint32_t num = id_array::size(m_rigs);
+    if(!num) return;
     PROFILE(AnimationFinishJobs);
-    for(uint32_t i=0; i<numSkeletons;++i)
+    for(uint32_t i=0; i<num; ++i)
     {
         m_animJobs[i].destroy();
     }
@@ -141,8 +141,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
         const hkQsTransform& t = actor.m_transform;
         const Matrix* invMats = model->m_resource->m_mesh->m_jointMatrix;
-        const hkArray<hkQsTransform>& poseMS = pose->getSyncedPoseModelSpace();
-        const hkArray<hkQsTransform>& poseLS = pose->getSyncedPoseLocalSpace();
+        const hkQsTransform* poseMS = pose->getSyncedPoseModelSpace().begin();
 
         int num_of_pose = poseMS.getSize();
         rig->update_attachments(t);
@@ -165,7 +164,9 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         {
             PROFILE(Animation_UpdateAABB);
             hkAabb aabb;
-            hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), pose->getSkeleton()->m_parentIndices.begin(), t, aabb);
+            const hkQsTransform* poseLS = pose->getSyncedPoseLocalSpace().begin();
+            hkaSkeletonUtils::calcAabb(num_of_pose, poseLS.begin(), 
+                                      pose->getSkeleton()->m_parentIndices.begin(), t, aabb);
             Aabb& bbox = model->m_aabb;
             transform_vec3(bbox.m_min, aabb.m_min);
             transform_vec3(bbox.m_max, aabb.m_max);
@@ -196,11 +197,11 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
 void AnimationSystem::update_animations(float dt)
 {
-    uint32_t numRigs = id_array::size(m_rigs);
-    if(!numRigs) return;
+    uint32_t num = id_array::size(m_rigs);
+    if(!num) return;
     PROFILE(Animation_UpdateLocalClock);
     AnimRigInstance* rigs = id_array::begin(m_rigs);
-    for(uint32_t i=0; i<numRigs;++i)
+    for(uint32_t i=0; i<num;++i)
     {
         rigs[i].update(dt);
     }

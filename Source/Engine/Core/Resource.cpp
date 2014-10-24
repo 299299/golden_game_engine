@@ -69,16 +69,17 @@ void ResourcePackage::load()
         m_allocator = new (m_allocator_buffer) LinearAllocator(p, m_memBudget);
     }
     
+    uint32_t num = m_numGroups;
     if(m_bundled)
     {
-        for (uint32_t i=0; i<m_numGroups; ++i)
+        for (uint32_t i=0; i<num; ++i)
         {
             load_group_bundled(i);
         }
     }
     else
     {
-        for (uint32_t i=0; i<m_numGroups; ++i)
+        for (uint32_t i=0; i<num; ++i)
         {
             load_group(i);
         }
@@ -113,7 +114,10 @@ void ResourcePackage::load_group(int index)
     char fileName[256];
     __RESOURCE_LOAD loadFunc = group.m_factory->m_loadFunc;
 
-    for (uint32_t i=0; i<group.m_numResources; ++i)
+    uint32_t num = group.m_numResources;
+    const ResourceInfo* resources = group.m_resources;
+
+    for (uint32_t i=0; i<num; ++i)
     {
         if(!is_running())
             return;
@@ -121,7 +125,7 @@ void ResourcePackage::load_group(int index)
         if(get_status() == kResourceRequestUnload)
             return;
 
-        ResourceInfo& info = group.m_resources[i];
+        ResourceInfo& info = resources[i];
         char* name = pThis + info.m_offset;
         memcpy(fileName, name, info.m_size);
         fileName[info.m_size] = '\0';
@@ -164,8 +168,9 @@ void ResourcePackage::load_group_bundled(int index)
     group.m_factory = fac;
     group.m_resources = (ResourceInfo*)(pThis + group.m_resourceInfoOffset);
     __RESOURCE_LOAD loadFunc = group.m_factory->m_loadFunc;
+    uint32_t num = group.m_numResources;
 
-    for (uint32_t i=0; i<group.m_numResources; ++i)
+    for (uint32_t i=0; i<num; ++i)
     {
         if(!is_running())
             return;
@@ -191,14 +196,21 @@ void ResourcePackage::flush(int maxNum)
 void ResourcePackage::lookup_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
-    for(uint32_t i=0; i<m_numGroups; ++i)
+    uint32_t num = m_numGroups;
+    const ResourceGroup* groups = m_groups;
+
+    for(uint32_t i=0; i<num; ++i)
     {
-        ResourceGroup& group = m_groups[i];
+        ResourceGroup& group = groups[i];
         __RESOURCE_LOOKUP func_ = group.m_factory->m_lookupFunc;
         if(!func_) continue;
-        for(uint32_t j=0; j<group.m_numResources; ++j)
+
+        uint32_t num_res = group.m_numResources;
+        const ResourceInfo* resources = group.m_resources;
+
+        for(uint32_t j=0; j<num_res; ++j)
         {
-            ResourceInfo& info = group.m_resources[j];
+            ResourceInfo& info = resources[j];
             if(info.m_ptr)
                 func_(info.m_ptr);
             else
@@ -215,10 +227,12 @@ void ResourcePackage::destroy_all_resources()
         ResourceGroup& group = m_groups[i];
         __RESOURCE_DESTROY func_ = group.m_factory->m_destroyFunc;
         if(!func_) continue;
-        for(uint32_t j=0; j<group.m_numResources; ++j)
+
+        uint32_t num = group.m_numResources;
+        ResourceInfo* resources = group.m_resources;
+        for(uint32_t j=0; j<num; ++j)
         {
-            ResourceInfo& info = group.m_resources[j];
-            func_(info.m_ptr);
+            func_(resources[j].m_ptr);
         }
     }
 }
@@ -245,9 +259,12 @@ void ResourcePackage::bringin_all_resources(int maxNum)
     }
     else
     {
-        for(uint32_t i=m_lastOnLineGroup; i<m_numGroups; ++i)
+        uint32_t num = m_numGroups;
+        ResourceGroup* groups = m_groups;
+
+        for(uint32_t i=m_lastOnLineGroup; i<num; ++i)
         {
-            ResourceGroup& group = m_groups[i];
+            ResourceGroup& group = groups[i];
             if(!group.m_factory->m_bringInFunc) continue;
             int numResources = group.m_numResources;
             int numNeedToBringIn = numResources - m_lastOnlineResource;
@@ -275,15 +292,19 @@ void ResourcePackage::bringin_all_resources(int maxNum)
 void ResourcePackage::bringout_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
-    for(uint32_t i=0; i<m_numGroups; ++i)
+    uint32_t num = m_numGroups;
+    ResourceGroup* groups = m_groups;
+    for(uint32_t i=0; i<num; ++i)
     {
-        ResourceGroup& group = m_groups[i];
+        ResourceGroup& group = groups[i];
         __RESOURCE_BRINGOUT func_ = group.m_factory->m_bringOutFunc;
         if(!func_) continue;
-        for(uint32_t j=0; j<group.m_numResources; ++j)
+
+        uint32_t res_num = group.m_numResources;
+        ResourceInfo* resources = group.m_resources;
+        for(uint32_t j=0; j<res_num; ++j)
         {
-            ResourceInfo& info = group.m_resources[j];
-            func_(info.m_ptr);
+            func_(resources[j].m_ptr);
         }
     }
 }
@@ -303,12 +324,18 @@ void ResourcePackage::set_status( int status )
 void ResourcePackage::remove_all_resources()
 {
     TimeAutoLog _log(__FUNCTION__);
-    for(uint32_t i=0; i<m_numGroups; ++i)
+    uint32_t num = m_numGroups;
+    ResourceGroup* groups = m_groups;
+    for(uint32_t i=0; i<num; ++i)
     {
-        ResourceGroup& group = m_groups[i];
-        for(uint32_t j=0; j<group.m_numResources; ++j)
+        ResourceGroup& group = groups[i];
+
+        uint32_t res_num = group.m_numResources;
+        ResourceInfo* resources = group.m_resources;
+
+        for(uint32_t j=0; j<res_num; ++j)
         {
-            g_resourceMgr.remove_resource(group.m_type, group.m_resources[j]);
+            g_resourceMgr.remove_resource(group.m_type, resources[j]);
         }
     }
 }
@@ -323,10 +350,12 @@ void ResourcePackage::unload()
 
 ResourceGroup* ResourcePackage::find_group( const StringId& type ) const
 {
-    for (uint32_t i=0; i<m_numGroups;++i)
+    uint32_t num = m_numGroups;
+    ResourceGroup* groups = m_groups;
+    for (uint32_t i=0; i<num;++i)
     {
-        if(m_groups[i].m_type == type)
-            return &m_groups[i];
+        if(groups[i].m_type == type)
+            return &groups[i];
     }
     return 0;
 }
@@ -335,10 +364,12 @@ ResourceInfo* ResourcePackage::find_resource( const StringId& type, const String
 {
     ResourceGroup* group = find_group(type);
     if(!group) return 0;
-    for (uint32_t i=0; i<group->m_numResources; ++i)
+    uint32_t num = group->m_numResources;
+    ResourceInfo* resources = group->m_resources;
+    for (uint32_t i=0; i<num; ++i)
     {
-        if(name == group->m_resources[i].m_name)
-            return &group->m_resources[i];
+        if(name == resources[i].m_name)
+            return &resources[i];
     }
     return 0;
 }
@@ -389,9 +420,11 @@ void ResourceManager::quit()
 ResourceFactory* ResourceManager::find_factory(const StringId& type)
 { 
     int index = -1;
-    for(uint32_t i=0; i<m_numFactories; ++i)
+    uint32_t num = m_numFactories;
+    StringId* types = m_types;
+    for(uint32_t i=0; i<num; ++i)
     {
-        if(type == m_types[i])
+        if(type == types[i])
         {
             index = i;
             break;
@@ -447,10 +480,12 @@ void* ResourceManager::io_work_loop( void* p )
 
 ResourcePackage* ResourceManager::find_package(const StringId& name)
 {
-    for(size_t i=0; i<m_numPackages; ++i)
+    uint32_t num = m_numPackages;
+    ResourcePackage** packages = m_packages;
+    for(size_t i=0; i<num; ++i)
     {
-        if(m_packages[i]->m_name == name)
-            return m_packages[i];
+        if(packages[i]->m_name == name)
+            return packages[i];
     }
     return  0;
 }
@@ -576,15 +611,20 @@ void ResourceManager::push_request( ResourceRequest* request )
 
 uint32_t  ResourceManager::find_resources_type_of(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen)
 {
+    uint32_t num = m_numPackages;
+    ResourcePackage** packages = m_packages;
     uint32_t retNum = 0;
-    for (uint32_t i = 0; i < m_numPackages; ++i)
+    for (uint32_t i = 0; i < num; ++i)
     {
-        ResourcePackage* package = m_packages[i];
+        ResourcePackage* package = packages[i];
         ResourceGroup* group = package->find_group(type);
         if(!group) continue;
-        for (uint32_t j=0; j<group->m_numResources; ++j)
+
+        uint32_t res_num = group->m_numResources;
+        ResourceInfo* resources = group->m_resources;
+        for (uint32_t j=0; j<res_num; ++j)
         {
-            resourceArray[retNum++] = &(group->m_resources[j]);
+            resourceArray[retNum++] = &(resources[j]);
         }
     }
     return retNum; 
@@ -592,15 +632,20 @@ uint32_t  ResourceManager::find_resources_type_of(const StringId& type, Resource
 
 ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const StringId& name )
 {
-    for (uint32_t i = 0; i < m_numPackages; ++i)
+    uint32_t num = m_numPackages;
+    ResourcePackage** packages = m_packages;
+    for (uint32_t i = 0; i < num; ++i)
     {
-        ResourcePackage* package = m_packages[i];
+        ResourcePackage* package = packages[i];
         ResourceGroup* group = package->find_group(type);
         if(!group) continue;
-        for (uint32_t j=0; j<group->m_numResources; ++j)
+
+        uint32_t res_num = group->m_numResources;
+        ResourceInfo* resources = group->m_resources;
+        for (uint32_t j=0; j<res_num; ++j)
         {
-            ResourceInfo* pInfo = &group->m_resources[j];
-            if(pInfo->m_name == name) return pInfo;
+            if(resources[j].m_name == name) 
+                return &resources[j];
         }
     }
     return 0;
@@ -624,10 +669,12 @@ void ResourceManager::load_package_and_wait(const char* packageName)
 void ResourceManager::offline_all_resources()
 {
     set_running(false);
-    for (uint32_t i=0; i<m_numPackages; ++i)
+    uint32_t num = m_numPackages;
+    ResourcePackage** packages = m_packages;
+    for (uint32_t i=0; i<num; ++i)
     {
-        m_packages[i]->remove_all_resources();
-        m_packages[i]->bringout_all_resources();
+        packages[i]->remove_all_resources();
+        packages[i]->bringout_all_resources();
     }
 }
 //==================================================================================

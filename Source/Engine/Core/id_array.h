@@ -224,9 +224,11 @@ struct DynamicIdArray
         m_freelist = INVALID_ID;
         m_next_id  = 0;
         m_size = 0;
-        for (uint32_t i = 0; i < m_capacity; i++)
+        uint32_t num = m_capacity;
+        Id* head = m_sparse;
+        for (uint32_t i = 0; i < num; i++)
         {
-            m_sparse[i].id = INVALID_ID;
+            head[i].id = INVALID_ID;
         }
     }
 

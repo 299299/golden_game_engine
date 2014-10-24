@@ -49,33 +49,37 @@ void Animation::create_mirrored_animation(const Animation* orginalAnim)
 
 float Animation::find_beat(uint32_t type) const
 {
-    for (uint32_t i = 0; i < m_numBeats; ++i)
+    uint32_t num = m_numBeats;
+    AnimationBeat* head = m_beats;
+    for (uint32_t i = 0; i < num; ++i)
     {
-        if(m_beats[i].m_type == type)
-            return m_beats[i].m_time;
+        if(head[i].m_type == type)
+            return head[i].m_time;
     }
     return -1;
 }
 
 float Animation::find_next_closest_beat(float time, bool bLoop) const
 {
-    if(!m_numBeats || time >= get_length()) return -1;
+    uint32_t num = m_numBeats;
+    AnimationBeat* head = m_beats;
 
-	float retTime = -1;
-	for(uint32_t i = 0; i < m_numBeats; ++i)
-	{
-		float curTime = m_beats[i].m_time;
-		const AnimationBeat& b = m_beats[i];
-		if(curTime >= time)
-		{
-			retTime = curTime;
-			break;
-		}
-	}
-	
-	if(!bLoop) return -1;
-	if(retTime < 0) retTime = m_beats[0].m_time;
-	return retTime;
+    if(!num || time >= get_length()) return -1;
+
+    float retTime = -1;
+    for(uint32_t i = 0; i < num; ++i)
+    {
+        float curTime = head[i].m_time;
+        if(curTime >= time)
+        {
+            retTime = curTime;
+            break;
+        }
+    }
+    
+    if(!bLoop) return -1;
+    if(retTime < 0) retTime = m_beats[0].m_time;
+    return retTime;
 }
 
 int Animation::get_frames() const
@@ -90,11 +94,13 @@ float Animation::get_length() const
 
 uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* events ) const
 {
+    uint32_t num = m_numTriggers;
+    AnimationTrigger* head = m_triggers;
     uint32_t retNum = 0;
     uint32_t startIndex = -1;
-    for(uint32_t i=0; i<m_numTriggers; ++i)
+    for(uint32_t i=0; i<num; ++i)
     {
-        AnimationTrigger trigger  = m_triggers[i];
+        const AnimationTrigger& trigger  = head[i];
         float tTime = trigger.m_time;
         if(tTime > curTime && tTime + dt < curTime)
         {
@@ -155,7 +161,9 @@ void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int
     hkDebugDisplay& d = hkDebugDisplay::getInstance();
     const hkInt16* parents = skeleton->m_parentIndices.begin();
     const hkQsTransform* bones = pose.getSyncedPoseModelSpace().begin();
-    for (int i=0; i<skeleton->m_bones.getSize(); i++)
+    int num = skeleton->m_bones.getSize();
+
+    for (int i=0; i<num; i++)
     {
         hkVector4 p1, p2;
         p1 = bones[i].getTranslation();
@@ -176,10 +184,12 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
 {
     PROFILE(Animation_DrawPose);
     const hkaSkeleton* skeleton = pose.getSkeleton();
-    const hkArray<hkInt16>& parentIndices = skeleton->m_parentIndices;
-    const hkArray<hkQsTransform>& poseMS = pose.getSyncedPoseModelSpace();
+    const hkInt16* parentIndices = skeleton->m_parentIndices.begin();
+    const hkQsTransform* poseMS = pose.getSyncedPoseModelSpace().begin();
+    int num = poseMS.getSize();
+
     float start[3], end[3];
-    for (int i=0; i < poseMS.getSize(); ++i)
+    for (int i=0; i < num; ++i)
     {
         hkInt16 parentIndex = parentIndices[i];
         if(parentIndex == -1)

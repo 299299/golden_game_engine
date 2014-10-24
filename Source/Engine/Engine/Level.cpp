@@ -18,9 +18,11 @@ void Level::load()
 {
     if(m_numLoadedObjects >= m_numObject) return;
     hkQsTransform t;
-    for (uint32_t i = 0; i < m_numObject; ++i)
+    uint32_t num = m_numObject;
+    LevelObject* head = m_objects;
+    for (uint32_t i = 0; i < num; ++i)
     {
-        LevelObject& object = m_objects[i];
+        LevelObject& object = head[i];
         transform_object(t, object.m_translation, object.m_rotation, object.m_scale);
         object.m_actorId = g_actorWorld.create_actor(m_resources[object.m_resourceIndex].m_resource, t);
     }
@@ -29,18 +31,22 @@ void Level::load()
 
 void Level::unload()
 {
-    for (uint32_t i=0; i<m_numObject; ++i)
+    uint32_t num = m_numObject;
+    LevelObject* head = m_objects;
+    for (uint32_t i=0; i<num; ++i)
     {
-        g_actorWorld.destroy_actor(m_objects[i].m_actorId);
+        g_actorWorld.destroy_actor(head[i].m_actorId);
     }
     m_numLoadedObjects = 0;
 }
 
 void Level::lookup()
 {
-    for (uint32_t i = 0; i < m_numResources; ++i)
+    uint32_t num = m_numResources;
+    LevelActorResource* head = m_resources;
+    for (uint32_t i = 0; i < num; ++i)
     {
-        m_resources[i].m_resource = FIND_RESOURCE(ActorResource, m_resources[i].m_name);
+        head[i].m_resource = FIND_RESOURCE(ActorResource, head[i].m_name);
     }
 }
 

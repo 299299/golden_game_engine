@@ -163,9 +163,11 @@ void PhysicsWorld::create_world(PhysicsConfig* config)
     pGroupFilter->disableCollisionsUsingBitfield(0xfffffffe, 0xfffffffe);
     if(m_config)
     {
-        for (uint32_t i=1;i<m_config->m_numFilterLayers;i++)
+        uint32_t num = m_config->m_numFilterLayers;
+        CollisionFilter* head = m_config->m_filters;
+        for (uint32_t i=1;i<num;++i)
         {
-            pGroupFilter->enableCollisionsUsingBitfield(1 << i, m_config->m_filters[i].m_mask);
+            pGroupFilter->enableCollisionsUsingBitfield(1 << i, head[i].m_mask);
         }
     }
     m_world->setCollisionFilter(pGroupFilter);
@@ -200,18 +202,21 @@ void PhysicsWorld::post_simulation()
     PROFILE(Physics_PostCallback);
     PHYSICS_LOCKREAD(m_world);
     const hkArray<hkpSimulationIsland*>& activeIslands = m_world->getActiveSimulationIslands();
-    for(int i = 0; i < activeIslands.getSize(); ++i)
+    int num = activeIslands.getSize();
+
+    for(int i = 0; i < num; ++i)
     {
         const hkArray<hkpEntity*>& activeEntities = activeIslands[i]->getEntities();
-        for(int j = 0; j < activeEntities.getSize(); ++j)
+        int num_entity = activeEntities.getSize();
+        hkpEntity** head = activeEntities.begin();
+
+        for(int j = 0; j < num_entity; ++j)
         {
-            hkpRigidBody* rigidBody = static_cast<hkpRigidBody*>(activeEntities[j]);
+            hkpRigidBody* rigidBody = static_cast<hkpRigidBody*>(head[j]);
             //fix object should not update renderer
-            if(rigidBody->isFixed())
-                continue;
+            if(rigidBody->isFixed()) continue;
             hkUlong user_data = rigidBody->getUserData();
-            if (!user_data)
-                continue;
+            if (!user_data) continue;
             PhysicsInstance* phy = (PhysicsInstance*)user_data;
             phy->post_simulation(rigidBody);
         }
@@ -234,10 +239,14 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
 
     PHYSICS_LOCKREAD(m_world);
     int retNum = 0;
-    const hkArray<hkpLinkedCollidable::CollisionEntry>& collisionEntries = body->getLinkedCollidable()->getCollisionEntriesNonDeterministic();
-    for(int i = 0; i < collisionEntries.getSize(); i++) 
+    const hkArray<hkpLinkedCollidable::CollisionEntry>& collisionEntries = \
+            body->getLinkedCollidable()->getCollisionEntriesNonDeterministic();
+    int num = collisionEntries.getSize();
+    const hkpLinkedCollidable::CollisionEntry* head = collisionEntries.begin();
+
+    for(int i = 0; i < num; i++) 
     { 
-        const hkpLinkedCollidable::CollisionEntry& entry = collisionEntries[i]; 
+        const hkpLinkedCollidable::CollisionEntry& entry = head[i]; 
         hkpRigidBody* otherBody = hkpGetRigidBody(entry.m_partner);
         if (otherBody != HK_NULL) 
         { 
@@ -245,8 +254,7 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
                 hkpContactMgr::TYPE_SIMPLE_CONSTRAINT_CONTACT_MGR)
             {
                 hkpSimpleConstraintContactMgr* mgr = 
-                    static_cast<hkpSimpleConstraintContactMgr*>(
-                    collisionEntries[i].m_agentEntry->m_contactMgr);
+                    static_cast<hkpSimpleConstraintContactMgr*>(entry.m_agentEntry->m_contactMgr);
                 if (mgr->m_contactConstraintData.getNumContactPoints() > 0)
                 {
                     contactingBodies[retNum ++] = otherBody;
@@ -349,15 +357,17 @@ RaycastJob* PhysicsWorld::get_raycast_job( int handle ) const
 
 void PhysicsWorld::kickin_raycast_jobs()
 {
-    if(!m_numRaycasts) return;
+    uint32_t num = m_numRaycasts;
+    if(!num) return;
 
-    hkpCollisionQueryJobHeader* jobHeader = FRAME_ALLOC(hkpCollisionQueryJobHeader, m_numRaycasts);
-    hkpWorldRayCastCommand* commands = FRAME_ALLOC(hkpWorldRayCastCommand, m_numRaycasts);
-    hkpWorldRayCastOutput* outputs = FRAME_ALLOC(hkpWorldRayCastOutput, m_numRaycasts);
+    hkpCollisionQueryJobHeader* jobHeader = FRAME_ALLOC(hkpCollisionQueryJobHeader, num);
+    hkpWorldRayCastCommand* commands = FRAME_ALLOC(hkpWorldRayCastCommand, num);
+    hkpWorldRayCastOutput* outputs = FRAME_ALLOC(hkpWorldRayCastOutput, num);
+    RaycastJob* head = m_raycasts;
 
-    for (uint32_t i = 0; i < m_numRaycasts; ++i)
+    for (uint32_t i = 0; i < num; ++i)
     {
-        RaycastJob& job = m_raycasts[i];
+        RaycastJob& job = head[i];
         hkpWorldRayCastCommand* command = commands + i;
         hkpWorldRayCastOutput* output = outputs + i;
         hkpWorldRayCastInput& rayInput = command->m_rayInput;
@@ -396,9 +406,11 @@ int PhysicsWorld::get_layer(const StringId& name) const
 {
     //if not found default filter is 0.
     if(!m_config) return 0;
-    for(uint32_t i=0; i<m_config->m_numFilterLayers; ++i)
+    uint32_t num = m_config->m_numFilterLayers;
+    const CollisionFilter* head = m_config->m_filters;
+    for(uint32_t i=0; i<num; ++i)
     {
-        if(m_config->m_filters[i].m_name == name)
+        if(head[i].m_name == name)
             return i;
     }
     return 0;

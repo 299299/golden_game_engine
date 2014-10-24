@@ -77,9 +77,12 @@ void DebugDrawManager::draw()
     draw(m_numLines[0], m_lines[0], true);
     draw(m_numLines[1], m_lines[1], false);
 
-    for (uint32_t i = 0; i < m_numTexts; ++i)
+    uint32_t num = m_numTexts;
+    const DebugText* head = m_texts;
+
+    for (uint32_t i = 0; i < num; ++i)
     {
-        const DebugText& text = m_texts[i];
+        const DebugText& text = head[i];
         imguiDrawText((int)text.m_screenPos[0], 
                       (int)text.m_screenPos[1], 
                       ImguiTextAlign::Center, 

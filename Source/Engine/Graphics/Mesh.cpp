@@ -10,9 +10,12 @@ void SubMesh::submit() const
 void Mesh::bringin()
 {
     char* pThis = (char*)this;
-    for(uint32_t i=0; i<m_numSubMeshes; ++i)
+    uint32_t num = m_numSubMeshes;
+    SubMesh* head = m_submeshes;
+
+    for(uint32_t i=0; i<num; ++i)
     {
-        SubMesh& subMesh = m_submeshes[i];
+        SubMesh& subMesh = head[i];
         const bgfx::Memory* vmem = bgfx::makeRef(pThis + subMesh.m_vertexOffset, subMesh.m_vertexSize);
         const bgfx::Memory* imem = bgfx::makeRef(pThis + subMesh.m_indexOffset, subMesh.m_indexSize);
         subMesh.m_vbh = bgfx::createVertexBuffer(vmem, m_decl);
@@ -22,9 +25,12 @@ void Mesh::bringin()
 
 void Mesh::bringout()
 {
-    for(uint32_t i=0; i<m_numSubMeshes; ++i)
+    uint32_t num = m_numSubMeshes;
+    SubMesh* head = m_submeshes;
+    
+    for(uint32_t i=0; i<num; ++i)
     {
-        SubMesh& subMesh = m_submeshes[i];
+        SubMesh& subMesh = head[i];
         if(bgfx::isValid(subMesh.m_vbh)) bgfx::destroyVertexBuffer(subMesh.m_vbh);
         subMesh.m_vbh.idx = bgfx::invalidHandle; 
         if(bgfx::isValid(subMesh.m_ibh)) bgfx::destroyIndexBuffer(subMesh.m_ibh);

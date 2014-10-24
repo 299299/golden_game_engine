@@ -11,20 +11,25 @@ void Material::lookup()
     m_shader = FIND_RESOURCE(ShaderProgram, m_shaderName);
     if(m_shadowShaderName) m_shadowShader = FIND_RESOURCE(ShaderProgram, m_shadowShaderName);
 
-    for (uint32_t i=0; i<m_numSamplers; ++i) 
+    uint32_t num = m_numSamplers;
+    MatSampler* head = m_samplers;
+
+    for (uint32_t i=0; i<num; ++i) 
     {
-        m_samplers[i].m_texture = FIND_RESOURCE(Texture, m_samplers[i].m_textureName);
+        head[i].m_texture = FIND_RESOURCE(Texture, head[i].m_textureName);
     }
 }
 
 void Material::bringin()
 {
-    for (uint32_t i=0; i<m_numSamplers; ++i)
+    uint32_t num = m_numSamplers;
+    MatSampler* head = m_samplers;
+
+    for (uint32_t i=0; i<num; ++i)
     {
-        MatSampler& sampler = m_samplers[i];
-        Texture* tex = sampler.m_texture;
+        Texture* tex = head[i].m_texture;
         if(!tex) continue;
-        tex->bringin(sampler.m_flags);
+        tex->bringin(head[i].m_flags);
     }
 }
 
@@ -41,8 +46,8 @@ void Material::submit() const
 {
     if(!m_shader) return;
     bgfx::setProgram(m_shader->m_handle);
-    uint32_t numSamplers = m_numSamplers;
-    for (uint32_t i=0; i<numSamplers; ++i)
+    uint32_t num = m_numSamplers;
+    for (uint32_t i=0; i<num; ++i)
     {
         const MatSampler& sampler = m_samplers[i];
         if(!sampler.m_texture) continue;

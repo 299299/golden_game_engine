@@ -204,9 +204,12 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
 void  lookup_resource_anim_rig(void * resource)
 {
     AnimRig* rig = (AnimRig*)resource;
-    for (uint32_t i=0; i<rig->m_numAnimations; ++i)
+    uint32_t num = rig->m_numAnimations;
+    Animation** head = rig->m_animations;
+    StringId* nameHead = rig->m_animNames;
+    for (uint32_t i=0; i<num; ++i)
     {
-        rig->m_animations[i] = FIND_RESOURCE(Animation, rig->m_animNames[i]);
+        head[i] = FIND_RESOURCE(Animation, nameHead[i]);
     }
 }
 void  destroy_resource_anim_rig(void * resource)
@@ -219,9 +222,11 @@ void  destroy_resource_anim_rig(void * resource)
 
 int AnimRig::find_joint_index(const StringId& jointName) const
 {
-    for(int i=0; i<m_jointNum; ++i)
+    int num = m_jointNum;
+    StringId* head = m_jointNames;
+    for(int i=0; i<num; ++i)
     {
-        if(m_jointNames[i] == jointName)
+        if(head[i] == jointName)
             return i;
     }
     return -1;
@@ -282,7 +287,7 @@ void AnimRigInstance::init( const void* resource )
     m_numControls = numAnimations;
     m_controls = (hk_anim_ctrl**)offset;
     offset += sizeof(hk_anim_ctrl*) * numAnimations;
-    for (uint32_t i=0; i<m_numControls; ++i)
+    for (uint32_t i=0; i<numAnimations; ++i)
     {
         m_controls[i] = new (offset) hk_anim_ctrl(m_resource->m_animations[i]);
         offset += sizeof(hk_anim_ctrl);
@@ -300,7 +305,8 @@ void AnimRigInstance::init( const void* resource )
 
 void AnimRigInstance::destroy()
 {
-    for (uint32_t i=0; i<m_numControls; ++i)
+    uint32_t num = m_numControls;
+    for (uint32_t i=0; i<num; ++i)
     {
         SAFE_DESTRUCTOR(m_controls[i], hk_anim_ctrl);
     }
@@ -384,9 +390,11 @@ hk_anim_ctrl* AnimRigInstance::get_control( int index ) const
 
 int AnimRigInstance::find_control(const StringId& name) const
 {
-    for (uint32_t i = 0; i < m_numControls; ++i)
+    uint32_t num = m_numControls;
+    hk_anim_ctrl** head = m_controls;
+    for (uint32_t i = 0; i < num; ++i)
     {
-        hk_anim_ctrl* ac = m_controls[i];
+        hk_anim_ctrl* ac = head[i];
         if(ac->m_name == name) return i; 
     }
     return -1;

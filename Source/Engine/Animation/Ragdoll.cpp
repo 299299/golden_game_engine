@@ -30,9 +30,11 @@
 
 static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneName)
 {
-    for(int i=0;i<skeleton->m_bones.getSize();++i)
+    int num = skeleton->m_bones.getSize();
+    const hkaBone* head = skeleton->m_bones.begin();
+    for(int i=0;i<num;++i)
     {
-        const hkaBone& bone = skeleton->m_bones[i];
+        const hkaBone& bone = head[i];
         if(boneName == StringId(bone.m_name.cString()))
             return i;
     }
@@ -40,7 +42,8 @@ static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneNam
 }
 bool bone_in_array(hkInt16 boneId, const hkInt16* bones, uint8_t num)
 {
-    for(uint8_t i=0; i<num; ++i)
+    uint32_t n = (uint32_t)num;
+    for(uint32_t i=0; i<n; ++i)
     {
         if(bones[i] == boneId)
             return true;
@@ -89,8 +92,12 @@ void RagdollResource::load(hkRootLevelContainer* container)
         m_lowerBodyBones[m_numLowerBodyBones++] = startRight;
         hkLocalArray<hkInt16> bones(100);
         hkaSkeletonUtils::getDescendants(*skeleton, startRight, bones);
-        for(int i=0; i<bones.getSize(); ++i)
-            m_lowerBodyBones[m_numLowerBodyBones++] = bones[i];
+
+        int num = bones.getSize();
+        const hkaBone* head = bones.begin();
+
+        for(int i=0; i<num; ++i)
+            m_lowerBodyBones[m_numLowerBodyBones++] = head[i];
 
         // Left leg
         const hkInt16 startLeft = find_bone_index(skeleton, m_leftLeg);

@@ -55,7 +55,8 @@ struct AnimCharacterListener : public hkReferencedObject, public hkpCharacterPro
         hkSimplexSolverInput& input )
     {
         // We go through the manifold and add velocity to the character proxy as required.
-        for (int i=0; i < manifold.getSize(); i++)
+        int num = manifold.getSize();
+        for (int i=0; i < num; i++)
         {
             hkSurfaceConstraintInfo& surface = input.m_constraints[i];
 

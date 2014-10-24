@@ -210,7 +210,6 @@ extern void* load_resource_material(const char*, uint32_t);
 extern void  lookup_resource_material(void*);
 extern void  bringin_resource_material(void*);
 //-----------------------------------------------------------------
-extern void* load_resource_model(const char*, uint32_t);
 extern void  lookup_resource_model( void* );
 //-----------------------------------------------------------------
 extern void* load_resource_physics( const char*, uint32_t );
@@ -251,7 +250,7 @@ static ResourceFactory g_resourceFactories[] =
     {load_resource_anim_rig, destroy_resource_anim_rig, lookup_resource_anim_rig, 0, 0, AnimRig::get_name()},
     {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::get_name()},
     {0, 0, 0, 0, 0, LightResource::get_name()},
-    {load_resource_model, 0, lookup_resource_model, 0, 0, ModelResource::get_name()},
+    {0, 0, lookup_resource_model, 0, 0, ModelResource::get_name()},
     {0, 0, 0, 0, 0, PhysicsConfig::get_name()},
     {load_resource_physics, destroy_resource_physics, 0, 0, 0, PhysicsResource::get_name()},
     {load_resource_proxy, destroy_resource_proxy, 0, 0, 0, ProxyResource::get_name()},
@@ -266,14 +265,16 @@ static ResourceFactory g_resourceFactories[] =
 };
 void regster_resource_factories()
 {
-    for (uint32_t i = 0; i < BX_COUNTOF(g_resourceFactories); ++i)
+    uint32_t num = BX_COUNTOF(g_resourceFactories);
+    for (uint32_t i = 0; i < num; ++i)
     {
         g_resourceMgr.register_factory(g_resourceFactories[i]);
     }
 }
 int get_resource_order(const StringId& type)
 {
-    for (uint32_t i = 0; i < BX_COUNTOF(g_resourceFactories); ++i)
+    uint32_t num = BX_COUNTOF(g_resourceFactories);
+    for (uint32_t i = 0; i < num; ++i)
     {
         if(type == StringId(g_resourceFactories[i].m_name))
             return i;

@@ -99,7 +99,7 @@ bool AnimRigCompiler::readJSON(const JsonValue& root)
 	for (uint32_t i=0; i<animationsNum; ++i)
 	{
 		std::string animName = JSON_GetString(animationsValue[i]);
-		addDependency("animation-set-anim", animName);
+		addDependency("animation-set-anim", name_to_file_path(animName, Animation::get_name()));
 		rig->m_animNames[i] = StringId(animName.c_str());
 	}
 	offset += animationsNum * (sizeof(StringId)+sizeof(void*));

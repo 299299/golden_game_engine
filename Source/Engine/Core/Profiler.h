@@ -52,7 +52,8 @@ struct ProfilerBlock
         maxTime_ = 0;
         count_ = 0;
 
-        for (uint32_t i=0; i<numChildren_; ++i)
+        uint32_t num = numChildren_;
+        for (uint32_t i=0; i<num; ++i)
             children_[i]->end_frame();
     }
     
@@ -63,7 +64,8 @@ struct ProfilerBlock
         intervalMaxTime_ = 0;
         intervalCount_ = 0;
         
-        for (uint32_t i=0; i<numChildren_; ++i)
+        uint32_t num = numChildren_;
+        for (uint32_t i=0; i<num; ++i)
             children_[i]->begin_interval();
     }
     
