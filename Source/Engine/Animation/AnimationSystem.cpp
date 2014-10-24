@@ -189,6 +189,9 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
             g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
         }
+        float center_pos[3];
+        transform_vec3(center_pos, t.m_translation);
+        g_debugDrawMgr.add_locomotion_angle(center_pos, 0, RGBCOLOR(255,0,0), false);
 #endif
     }
 }

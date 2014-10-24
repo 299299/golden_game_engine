@@ -310,9 +310,24 @@ void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uin
 
 void DebugDrawManager::add_triangle( const float* v0, const float* v1, const float* v2, uint32_t color, bool bDepth)
 {
-    add_line(v0,v1,color, bDepth);
-    add_line(v1,v2,color, bDepth);
-    add_line(v2,v0,color, bDepth);
+    add_line(v0, v1, color, bDepth);
+    add_line(v1, v2, color, bDepth);
+    add_line(v2, v0, color, bDepth);
+}
+
+void DebugDrawManager::add_quad(const float* center, float width, float height, uint32_t color, bool bDepth)
+{
+    float x = center[0];
+    float y = center[1];
+    float z = center[2];
+    float v0[] = { x-width/2, y, z-height/2};
+    float v1[] = { x+width/2, y, z-height/2};
+    float v2[] = { x+width/2, y, z+height/2};
+    float v3[] = { x-width/2, y, z+height/2};
+    add_line(v0, v1, color, bDepth);
+    add_line(v1, v2, color, bDepth);
+    add_line(v2, v3, color, bDepth);
+    add_line(v3, v0, color, bDepth);
 }
 
 void DebugDrawManager::add_frustum( const Frustum& frustum, uint32_t color, bool bDepth)
@@ -358,4 +373,49 @@ void DebugDrawManager::add_grid( int gridsNum, float gridWidth, uint32_t color, 
     vec3_make( startPt, start, 0, -start );
     vec3_make( endPt, -start, 0, -start );
     add_line(startPt, endPt, color, bDepth);
+}
+
+void DebugDrawManager::add_locomotion_angle(const float* center, float angle, uint32_t color, bool bDepth)
+{
+    float triangle_len = 1.0f;
+    float quad_width = 1.0f, quad_height = 2.0f;
+    hkQsTransform t;
+    transform_vec3(t.m_translation, center);
+    t.m_rotation.setFromEulerAngles(0, 0, angle);
+    hkVector4 v0, v1, v2, v4;
+    hkVector4 t_v0, t_v1, t_v2, tv3;
+    float s_v0[3], s_v1[3], s_v2[3], s_v3[3];
+
+    v0.set(triangle_len, 0, 0);
+    v1.set(0, 0, triangle_len);
+    v2.set(-triangle_len, 0, 0);
+    
+    t_v0.setTransformedPos(t, v0);
+    t_v1.setTransformedPos(t, v1);
+    t_v2.setTransformedPos(t, v2);
+    
+    transform_vec3(s_v0, t_v0);
+    transform_vec3(s_v1, t_v1);
+    transform_vec3(s_v2, t_v2);
+    add_triangle(s_v0, s_v1, s_v2, color, bDepth);
+    
+
+    v0.set(-quad_width, 0, 0);
+    v1.set(quad_width, 0, 0);
+    v2.set(width, 0, -quad_height);
+    v3.set(-quad_width, 0, -quad_height);
+
+    t_v0.setTransformedPos(t, v0);
+    t_v1.setTransformedPos(t, v1);
+    t_v2.setTransformedPos(t, v2);
+    t_v3.setTransformedPos(t, v3);
+
+    transform_vec3(s_v0, t_v0);
+    transform_vec3(s_v1, t_v1);
+    transform_vec3(s_v2, t_v2);
+    transform_vec3(s_v3, t_v3);
+    add_line(s_v0, s_v1, color, bDepth);
+    add_line(s_v1, s_v2, color, bDepth);
+    add_line(s_v2, s_v3, color, bDepth);
+    add_line(s_v3, s_v4, color, bDepth);
 }
