@@ -42,7 +42,7 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_ANIM_CONTROL);
     hk_anim_ctrl(Animation* anim)
-    :hkaDefaultAnimationControl(anim->m_binding, false)
+    :hkaDefaultAnimationControl(anim ? anim->m_binding : 0, false)
     ,m_animation(anim)
     ,m_enabled(false)
     ,m_motionType(kMotionDefault)
@@ -295,7 +295,6 @@ void AnimRigInstance::init( const void* resource )
     offset += pose_size;
     m_numControls = numAnimations;
 	char* ptr = offset;
-	int add_size = ptr - m_blob;
 	offset += sizeof(hk_anim_ctrl) * numAnimations;
     m_controls = (hk_anim_ctrl**)offset;
     offset += sizeof(hk_anim_ctrl*) * numAnimations;

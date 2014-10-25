@@ -848,17 +848,14 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
     t.m_translation.set(pos_x, pos_y, pos_z);
     t.m_rotation.setFromEulerAngles(rot_x, rot_y, rot_z);
     t.m_scale.set(scale_x, scale_y, scale_z);
-    ActorId id = g_actorWorld.create_actor(StringId(type), t);
-    a_thread->PushInt(id.pack());
+    a_thread->PushInt(g_actorWorld.create_actor(StringId(type), t));
     return GM_OK;
 }
 static int GM_CDECL world_destroy_actor(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(packed_id, 0);
-    ActorId id;
-    id.set(packed_id);
-    g_actorWorld.destroy_actor(id);
+    g_actorWorld.destroy_actor((uint32_t)packed_id);
     return GM_OK;
 }
 static int GM_CDECL world_clear_actors(gmThread* a_thread)
@@ -873,17 +870,17 @@ static int GM_CDECL world_clear(gmThread* a_thread)
     g_actorWorld.clear();
     return GM_OK;
 }
+#define GET_ACTOR() Actor* actor = g_actorWorld.get_actor((uint32_t)packed_id);
+        
 static int GM_CDECL actor_has_key(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
+    GET_ACTOR();
     bool b_has = false;
     if(actor) b_has = actor->has_key(StringId(key_name));
-    a_thread->PushFloat(b_has);
+    a_thread->PushInt(b_has);
     return GM_OK;
 }
 static int GM_CDECL actor_get_float(gmThread* a_thread)
@@ -891,10 +888,7 @@ static int GM_CDECL actor_get_float(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
+    GET_ACTOR();
     float ret = 0;
     actor->get_key(StringId(key_name), ret);
     a_thread->PushFloat(ret);
@@ -905,10 +899,7 @@ static int GM_CDECL actor_get_string(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
+    GET_ACTOR();
     StringId ret;
     actor->get_key(StringId(key_name), ret);
     a_thread->PushInt(ret.value());
@@ -919,10 +910,7 @@ static int GM_CDECL actor_get_int(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
+    GET_ACTOR();
     int ret = 0;
     actor->get_key(StringId(key_name), ret);
     a_thread->PushInt(ret);
@@ -934,10 +922,7 @@ static int GM_CDECL actor_set_float(gmThread* a_thread)
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(key_value, 2);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
+    GET_ACTOR();
     a_thread->PushInt(actor->set_key(StringId(key_name), key_value));
     return GM_OK;
 }
@@ -947,10 +932,7 @@ static int GM_CDECL actor_set_string(gmThread* a_thread)
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
     GM_CHECK_INT_PARAM(key_value, 2);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
+    GET_ACTOR();
     a_thread->PushInt(actor->set_key(StringId(key_name), StringId(key_value)));
     return GM_OK;
 }
@@ -960,10 +942,7 @@ static int GM_CDECL actor_set_int(gmThread* a_thread)
     GM_CHECK_INT_PARAM(packed_id, 0);
     GM_CHECK_INT_PARAM(key_name, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(key_value, 2);
-    ActorId id;
-    id.set(packed_id);
-    Actor* actor = g_actorWorld.get_actor(id);
-    if(!actor) return GM_OK;
+    GET_ACTOR();
     a_thread->PushInt(actor->set_key(StringId(key_name), (int)key_value));
     return GM_OK;
 }
@@ -987,9 +966,7 @@ static int GM_CDECL level_unload(gmThread* a_thread)
     return GM_OK;
 }
 #define SCRIPT_GET_ANIM_RIG()\
-        ActorId id;\
-        id.set(actor_id);\
-        Actor* actor = g_actorWorld.get_actor(id);\
+        Actor* actor = g_actorWorld.get_actor((uint32_t)actor_id);\
         if(!actor) { a_thread->PushInt(-1); return GM_OK; }\
         extern void* get_anim_rig(Id);\
         AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);\

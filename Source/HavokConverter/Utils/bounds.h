@@ -6,23 +6,6 @@
 #ifndef BOUNDS_H_HEADER_GUARD
 #define BOUNDS_H_HEADER_GUARD
 
-struct Aabb
-{
-	float m_min[3];
-	float m_max[3];
-};
-
-struct Obb
-{
-	float m_mtx[16];
-};
-
-struct Sphere
-{
-	float m_center[3];
-	float m_radius;
-};
-
 /// Convert axis aligned bounding box to oriented bounding box.
 void aabbToObb(Obb& _obb, const Aabb& _aabb);
 

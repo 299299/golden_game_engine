@@ -49,7 +49,7 @@ BOOL checkSingleProcess()
     else return TRUE;
 }
 
-ActorId g_actor;
+ActorId32 g_actor;
 int _tmain(int argc, _TCHAR* argv[])
 {
 #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
@@ -156,7 +156,7 @@ int _tmain(int argc, _TCHAR* argv[])
         {
             LOGI("loading animation %s to actor %s", anim_name, actor_name);
             extern void* get_anim_rig(Id);
-            AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(g_actor.get_id());
+            AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
             if(rig)
             {
                rig->test_animation(anim_name);

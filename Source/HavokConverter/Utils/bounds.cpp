@@ -5,6 +5,7 @@
 
 #include <bx/rng.h>
 #include <bx/fpumath.h>
+#include "MathDefs.h"
 #include "bounds.h"
 
 void aabbToObb(Obb& _obb, const Aabb& _aabb)

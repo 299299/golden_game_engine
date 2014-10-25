@@ -201,10 +201,6 @@ void Graphics::init(void* hwnd, bool bFullScreen)
 
 void Graphics::ready()
 {
-    extern  int  g_engineMode;
-    if(g_engineMode == 1)
-        return;
-
     TIMELOG("Graphics::PostInit");
     g_postProcess.m_blurShader = find_shader("hdr_blur")->m_handle;
     g_postProcess.m_brightShader = find_shader("hdr_bright")->m_handle;

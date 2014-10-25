@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Resource.h"
+#include "Profiler.h"
 #include "MemorySystem.h"
 #include "Log.h"
 #include "DataDef.h"
@@ -286,10 +287,13 @@ void* get_render_models()
     return id_array::begin(m_models);
 }
 
-
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------
 #include "DebugDraw.h"
 void draw_debug_models()
 {
+    PROFILE(draw_debug_models);
     uint32_t num = id_array::size(m_models);
     ModelInstance* models = id_array::begin(m_models);
     for (uint32_t i=0; i<num; ++i)

@@ -42,31 +42,6 @@ ENGINE_NATIVE_ALIGN struct Actor
 };
 
 
-struct ActorId
-{
-    uint32_t    m_id       : 16;
-    uint32_t    m_index    : 12;
-    uint32_t    m_class    : 4;
-
-    uint32_t pack() const
-    {
-        return *((uint32_t*)(this));    
-    }
-
-    void set(uint32_t pack_id)
-    {
-        *((uint32_t*)(this)) = pack_id;
-    }
-
-    bool is_valid() const
-    {
-        return pack() != INVALID_U32;
-    }
-
-    void set_id(Id id);
-    Id get_id();
-};
-
 struct ActorWorld
 {
     void        init();
@@ -75,10 +50,10 @@ struct ActorWorld
     void        clear();
     void        clear_actors(uint32_t type);
     
-    ActorId     create_actor(const StringId& resourceName, const hkQsTransform& t);
-    ActorId     create_actor(const void* actorResource, const hkQsTransform& t);
-    void        destroy_actor(ActorId id);
-    Actor*      get_actor(ActorId id);
+    ActorId32   create_actor(const StringId& resourceName, const hkQsTransform& t);
+    ActorId32   create_actor(const void* actorResource, const hkQsTransform& t);
+    void        destroy_actor(ActorId32 id);
+    Actor*      get_actor(ActorId32 id);
     uint32_t    num_actors(uint32_t type);
     Actor*      get_actors(uint32_t type);
 

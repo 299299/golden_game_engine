@@ -2,6 +2,7 @@
 #include "Profiler.h"
 #include "CommonUtils.h"
 #include "Level.h"
+#include "Actor.h"
 
 void dumpNodeRec(hkxNode* theNode)
 {

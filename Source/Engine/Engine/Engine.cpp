@@ -132,7 +132,6 @@ void Engine::frame(float timeStep)
     debug_update_vdb_camera();
     g_threadMgr.vdb_update(timeStep);
 
-    if(g_engineMode == 0)
     {
         PROFILE(Game_Render);
         m_state = kFrameRendering;

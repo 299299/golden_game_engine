@@ -4,7 +4,6 @@
 #include "DataDef.h"
 #include "Profiler.h"
 #include "Log.h"
-#include "DebugDraw.h"
 #include "id_array.h"
 #include "config.h"
 #include "Event.h"
@@ -172,27 +171,6 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             REMOVE_BITS(model->m_flag, kNodeTransformDirty);
         }
 #endif
-        
-
-#ifndef _RETIAL
-        draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
-        uint32_t num_attach = rig->m_resource->m_attachNum;
-        const BoneAttachment* attachments = rig->m_resource->m_attachments;
-        const float* world_poses = rig->m_attachmentTransforms;
-        for (uint32_t i=0; i<num_attach; ++i)
-        {
-            const BoneAttachment& attchment = attachments[i];
-            const float* world_pose = world_poses + 16 * i;
-            hkQsTransform t;
-            transform_matrix(t, world_pose);
-            g_debugDrawMgr.add_axis(t);
-            float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
-            g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
-        }
-        float center_pos[3];
-        transform_vec3(center_pos, t.m_translation);
-        g_debugDrawMgr.add_locomotion_angle(center_pos, 0, RGBCOLOR(255,0,0), false);
-#endif
     }
 }
 
@@ -240,11 +218,12 @@ void AnimationSystem::apply_animation_rootmotion( Actor* actors, uint32_t num, f
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_anim_rig( const void* resource, ActorId32 )
+Id create_anim_rig( const void* resource, ActorId32 id)
 {
     check_status();
     AnimRigInstance inst;
     inst.init(resource);
+    inst.m_actor = id;
     return id_array::create(m_rigs, inst);
 }
 
@@ -271,6 +250,44 @@ uint32_t num_anim_rigs()
 void* get_anim_rigs()
 {
     return id_array::begin(m_rigs);
+}
+//-----------------------------------------------------------------
+//
+//-----------------------------------------------------------------
+#include "DebugDraw.h"
+#include "Actor.h"
+void draw_debug_animation()
+{
+    PROFILE(draw_debug_animation);
+    extern int g_engineMode;
+    uint32_t num = id_array::size(m_rigs);
+    AnimRigInstance* rigs = id_array::begin(m_rigs);
+    for (uint32_t i=0; i<num; ++i)
+    {
+        AnimRigInstance& rig = rigs[i];
+        const AnimRig* res = rig.m_resource;
+        hkaPose* pose = rig.m_pose;
+        Actor* actor = g_actorWorld.get_actor(rig.m_actor);
+        const hkQsTransform& t = actor->m_transform;
+        if(g_engineMode == 0) draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
+        else draw_pose_vdb(*pose, t);
+        uint32_t num_attach = res->m_attachNum;
+        const BoneAttachment* attachments = res->m_attachments;
+        const float* world_poses = rig.m_attachmentTransforms;
+        for (uint32_t i=0; i<num_attach; ++i)
+        {
+            const BoneAttachment& attchment = attachments[i];
+            const float* world_pose = world_poses + 16 * i;
+            hkQsTransform t;
+            transform_matrix(t, world_pose);
+            g_debugDrawMgr.add_axis(t);
+            float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
+            g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
+        }
+    }
+
+    float center_pos[3] = {0, 0, 0};
+    g_debugDrawMgr.add_locomotion_angle(center_pos, 0, RGBCOLOR(255,0,0), false);
 }
 //-----------------------------------------------------------------
 //

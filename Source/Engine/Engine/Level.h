@@ -1,13 +1,12 @@
 #pragma once
 #include "StringId.h"
-#include "Actor.h"
 
 struct LevelObject
 {
     float               m_translation[3];
     float               m_rotation[4];
     float               m_scale[3];
-    ActorId             m_actorId;
+    ActorId32           m_actorId;
     StringId            m_name;
     int                 m_resourceIndex;
 };
