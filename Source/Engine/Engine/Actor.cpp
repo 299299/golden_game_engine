@@ -296,6 +296,7 @@ void ActorWorld::frame_start(float dt)
 void ActorWorld::pre_step( float dt )
 {
     g_animMgr.update_animations(dt);
+	g_animMgr.update_attachment(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
 	g_animMgr.apply_animation_rootmotion(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size(), dt);
     g_physicsWorld.update_character_proxies(dt);
 }

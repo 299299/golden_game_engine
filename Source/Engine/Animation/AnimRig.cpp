@@ -342,12 +342,11 @@ void AnimRigInstance::update(float dt)
     }
 }
 
-
-void AnimRigInstance::update_attachments( const hkQsTransform& worldFromModel )
+void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 {
     uint32_t num = m_resource->m_attachNum;
+	m_attachmentTransforms = FRAME_ALLOC(float, num*16);
     const BoneAttachment* attachments = m_resource->m_attachments;
-    m_attachmentTransforms = FRAME_ALLOC(float, num*16);
     const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
     for (uint32_t i=0; i<num; ++i)
     {
@@ -449,7 +448,6 @@ void AnimRigInstance::easeout_animation(int index, float blend_time, float when,
     m_animMachine->addCommand(cmd);
 }
 
-
 void AnimRigInstance::set_animation_weight( int index, float weight, float when )
 {
     Command cmd;
@@ -512,5 +510,4 @@ void AnimRigInstance::get_rootmotion( int index, float dt, hkQsTransform& t ) co
 {
     m_controls[index]->getExtractedMotionDeltaReferenceFrame(dt, t);
 }
-
 

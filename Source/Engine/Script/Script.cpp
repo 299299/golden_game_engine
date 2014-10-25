@@ -99,7 +99,7 @@ static bool GM_CDECL machine_callback(gmMachine * a_machine, gmMachineCommand a_
 }
 static void GM_CDECL print_callback(gmMachine * a_machine, const char * a_string)
 {
-    LOGI("[GM] print %s.", a_string);
+    LOGI("[GameMonkey] %s.", a_string);
     OutputDebugString(a_string);
     OutputDebugString("\n");
 }

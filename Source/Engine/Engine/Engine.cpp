@@ -32,7 +32,6 @@ Engine    g_engine;
 void Engine::init( const EngineConfig& cfg )
 {
     m_running = true;
-    m_updating = true;
     m_cfg = cfg;
     m_state = kFrameStart;
     LOG_INIT("EngineLog.html", "ENGINE");
@@ -85,59 +84,62 @@ void Engine::frame(float timeStep)
         LOGW("FrameId overflow!!");
     }
 
-    m_state = kFrameStart;
-    g_memoryMgr.frame_start();
-    frame_start_websocket(timeStep);
-    Graphics::frame_start();
-    g_physicsWorld.frame_start();
-    g_animMgr.frame_start();
-    g_actorWorld.frame_start(timeStep);
+	{
+		PROFILE(Engine_FrameStart);
+		m_state = kFrameStart;
+		g_memoryMgr.frame_start();
+		frame_start_websocket(timeStep);
+		Graphics::frame_start();
+		g_physicsWorld.frame_start();
+		g_animMgr.frame_start();
+		g_actorWorld.frame_start(timeStep);
+	}
 
-    if(m_updating)
-    {
-        {
-            PROFILE(Game_PreStep);
-            m_state = kFramePreStepping;
-            if(m_cfg.m_preStepHook) m_cfg.m_preStepHook(timeStep);
-            g_actorWorld.pre_step(timeStep);
-            g_script.pre_step(timeStep);
-        }
-        {
-            PROFILE(Game_Step);
-            g_physicsWorld.kick_in_jobs(timeStep);
-            g_animMgr.kick_in_jobs();
-            g_threadMgr.process_all_jobs();
-            //------------------------------------
-            m_state = kFrameUpdating;
-            g_actorWorld.step(timeStep);
-            g_script.step(timeStep);
-            if(m_cfg.m_stepHook) m_cfg.m_stepHook(timeStep);
-            //------------------------------------
-            g_threadMgr.wait();
-            g_physicsWorld.tick_finished_jobs();
-            g_animMgr.tick_finished_jobs();
-        }
-        {
-            PROFILE(Game_PostStep);
-            m_state = kFramePostStepping;
-            g_actorWorld.post_step(timeStep);
-            g_script.post_step(timeStep);
-            if(m_cfg.m_postStepHook) m_cfg.m_postStepHook(timeStep);
-        }
-    }
-
-    m_state = kFrameEnd;
-    Graphics::frame_end();
-    g_script.frame_end(timeStep);
-    debug_update_vdb_camera();
-    g_threadMgr.vdb_update(timeStep);
+	{
+		PROFILE(Engine_PreStep);
+		m_state = kFramePreStepping;
+		if(m_cfg.m_preStepHook) m_cfg.m_preStepHook(timeStep);
+		g_actorWorld.pre_step(timeStep);
+		g_script.pre_step(timeStep);
+	}
+	{
+		PROFILE(Engine_Step);
+		g_physicsWorld.kick_in_jobs(timeStep);
+		g_animMgr.kick_in_jobs();
+		g_threadMgr.process_all_jobs();
+		//------------------------------------
+		m_state = kFrameUpdating;
+		g_actorWorld.step(timeStep);
+		g_script.step(timeStep);
+		if(m_cfg.m_stepHook) m_cfg.m_stepHook(timeStep);
+		//------------------------------------
+		g_threadMgr.wait();
+		g_physicsWorld.tick_finished_jobs();
+		g_animMgr.tick_finished_jobs();
+	}
+	{
+		PROFILE(Engine_PostStep);
+		m_state = kFramePostStepping;
+		g_actorWorld.post_step(timeStep);
+		g_script.post_step(timeStep);
+		if(m_cfg.m_postStepHook) m_cfg.m_postStepHook(timeStep);
+	}
 
     {
-        PROFILE(Game_Render);
+        PROFILE(Engine_Render);
         m_state = kFrameRendering;
         if(m_cfg.m_renderHook) m_cfg.m_renderHook(timeStep);
         g_actorWorld.draw();
     }
+
+	{
+		PROFILE(Engine_FrameEnd);
+		m_state = kFrameEnd;
+		Graphics::frame_end();
+		g_script.frame_end(timeStep);
+		debug_update_vdb_camera();
+		g_threadMgr.vdb_update(timeStep);
+	}
 }
 
 void Engine::apply_framelimit(double timeMS)

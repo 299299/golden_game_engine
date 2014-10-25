@@ -11,7 +11,6 @@ struct WebServerTool : public gamedevwebtools::Service
     virtual void onNewClient();
 
     void on_request_quit();
-    void on_request_active();
     void on_request_step();
     void on_request_keydown(const gamedevwebtools::Message &message);
     void on_request_keyup(const gamedevwebtools::Message &message);

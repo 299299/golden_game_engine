@@ -25,7 +25,8 @@ global create_preview = function(id)
 
     preview.running_state = function()
     {
-        print("enter ---------------> running state ");
+        print("preview enter ---------------> running state ");
+        sleep(0.001f);
 
         local w = get_window_width();
         local h = get_window_height();  
@@ -56,6 +57,8 @@ global create_preview = function(id)
             graphics.debug_add_axis(0,0,0,0,0,0,10);
             graphics.debug_draw_models();
             graphics.debug_draw_lights();
+            graphics.debug_draw_animation();
+
             if(bShowProfile)
             {
                 show_profile();

@@ -142,7 +142,6 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         const Matrix* invMats = model->m_resource->m_mesh->m_jointMatrix;
         const hkQsTransform* poseMS = pose->getSyncedPoseModelSpace().begin();
         int num_of_pose = pose->getSyncedPoseModelSpace().getSize();
-        rig->update_attachments(t);
 
         {
             PROFILE(Animation_SkinMatrix);
@@ -178,7 +177,7 @@ void AnimationSystem::update_animations(float dt)
 {
     uint32_t num = id_array::size(m_rigs);
     if(!num) return;
-    PROFILE(Animation_UpdateLocalClock);
+    PROFILE(Animation_Update);
     AnimRigInstance* rigs = id_array::begin(m_rigs);
     for(uint32_t i=0; i<num;++i)
     {
@@ -209,8 +208,21 @@ void AnimationSystem::apply_animation_rootmotion( Actor* actors, uint32_t num, f
 		hkVector4 desiredMotionWorld;
 		hkQuaternion currentOrient;
 		desiredMotionWorld.setRotatedDir( transform.m_rotation, t.m_translation );
-		// Divide motion by time
 		proxy->m_targetVelocity.setMul4 (1.0f / dt, desiredMotionWorld );
+	}
+}
+
+void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
+{
+	PROFILE(Animation_UpdateAttachment);
+	extern void* get_anim_rig(Id);
+	for (uint32_t i=0; i<num; ++i)
+	{
+		Actor& actor = actors[i];
+		Id rigId = actor.m_components[kComponentAnimRig];
+		AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
+		if(!rig) continue;
+		rig->update_attachment(actor.m_transform);
 	}
 }
 
@@ -269,25 +281,30 @@ void draw_debug_animation()
         hkaPose* pose = rig.m_pose;
         Actor* actor = g_actorWorld.get_actor(rig.m_actor);
         const hkQsTransform& t = actor->m_transform;
+		//draw debug pose
         if(g_engineMode == 0) draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
         else draw_pose_vdb(*pose, t);
+		//draw debug attachment
         uint32_t num_attach = res->m_attachNum;
         const BoneAttachment* attachments = res->m_attachments;
         const float* world_poses = rig.m_attachmentTransforms;
+		if(!world_poses) return;
         for (uint32_t i=0; i<num_attach; ++i)
         {
             const BoneAttachment& attchment = attachments[i];
             const float* world_pose = world_poses + 16 * i;
-            hkQsTransform t;
-            transform_matrix(t, world_pose);
-            g_debugDrawMgr.add_axis(t);
+            hkQsTransform t1;
+            transform_matrix(t1, world_pose);
+            g_debugDrawMgr.add_axis(t1);
             float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
             g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
         }
+		hkQsTransform t2 = t;
+		float y = t.m_translation.getSimdAt(1);
+		y -= 1.0f;
+		t2.m_translation(1) = y;
+		g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
     }
-
-    float center_pos[3] = {0, 0, 0};
-    g_debugDrawMgr.add_locomotion_angle(center_pos, 0, RGBCOLOR(255,0,0), false);
 }
 //-----------------------------------------------------------------
 //

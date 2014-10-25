@@ -40,7 +40,6 @@ void WebServerTool::start(uint32_t netPort)
     init(info,netOpts,1);
     
     connect("application.service.quit", *this ,&WebServerTool::on_request_quit);
-    connect("application.service.activate",*this ,&WebServerTool::on_request_active);
     connect("application.service.step",*this ,&WebServerTool::on_request_step);
     connect("input.keydown",*this,&WebServerTool::on_request_keydown);
     connect("input.keyup",*this,&WebServerTool::on_request_keyup);
@@ -86,11 +85,6 @@ void WebServerTool::on_log_message(int logLevel, const char* logMsg)
 void WebServerTool::on_request_quit()
 {
     g_engine.shutdown();
-}
-
-void WebServerTool::on_request_active()
-{
-    g_engine.set_update(!g_engine.updating());
 }
 
 void WebServerTool::on_request_step()

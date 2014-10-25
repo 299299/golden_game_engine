@@ -34,7 +34,8 @@ extern int find_component_type(const StringId& typeName);
 extern uint32_t num_components(uint32_t type);
 extern void* get_components(uint32_t type);
 
-#define SIMPLE_FUNC_REG(func_name, script_name) static int GM_CDECL script_name(gmThread* a_thread) { func_name; return GM_OK; }
+#define SIMPLE_FUNC_REG(func_name, script_name) \
+		static int GM_CDECL script_name(gmThread* a_thread) { func_name; return GM_OK; }
 
 gmTableNode* find_table_node(gmTableObject* table, const char* key)
 {
@@ -118,18 +119,6 @@ static int GM_CDECL script_require(gmThread* a_thread)
     ScriptResource* res = FIND_RESOURCE(ScriptResource, StringId(script_file));
     if(!res) return GM_OK;
     res->pre_load();
-    return GM_OK;
-}
-static int GM_CDECL script_is_updating(gmThread* a_thread)
-{
-    a_thread->PushInt(g_engine.updating());
-    return GM_OK;
-}
-static int GM_CDECL script_set_updating(gmThread* a_thread)
-{
-    GM_CHECK_NUM_PARAMS(1);
-    GM_CHECK_INT_PARAM(b_update, 0);
-    g_engine.set_update(b_update);
     return GM_OK;
 }
 static int GM_CDECL get_component_instance_num(gmThread* a_thread)
@@ -748,18 +737,12 @@ static int GM_CDECL graphics_update_debug_camera(gmThread* a_thread)
     g_fpsCamera.update(dt);
     return GM_OK;
 }
-static int GM_CDECL debug_draw_models(gmThread* a_thread)
-{
-    extern void draw_debug_models();
-    draw_debug_models();
-    return GM_OK;
-}
-static int GM_CDECL debug_draw_lights(gmThread* a_thread)
-{
-    extern void draw_debug_lights();
-    draw_debug_lights();
-    return GM_OK;
-}
+extern void draw_debug_models();
+extern void draw_debug_lights();
+extern void draw_debug_animation();
+SIMPLE_FUNC_REG(draw_debug_models(), debug_draw_models);
+SIMPLE_FUNC_REG(draw_debug_lights(), debug_draw_lights);
+SIMPLE_FUNC_REG(draw_debug_animation(), debug_draw_animation);
 static int GM_CDECL camera_set_position(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(3);
@@ -1035,7 +1018,7 @@ static int GM_CDECL actor_easeout_layers(gmThread* a_thread)
     GM_FLOAT_PARAM(when, 3, 0.0f);
     GM_INT_PARAM(type, 4, kEaseCurveSmooth);
     SCRIPT_GET_ANIM_RIG();
-    rig->easeout_layers(index, blend_time, type);
+    rig->easeout_layers(index, blend_time, when, type);
     return GM_OK;
 }
 static int GM_CDECL actor_set_animation_weight(gmThread* a_thread)
@@ -1128,8 +1111,6 @@ void register_script_api(gmMachine* machine)
         {"end_profile", end_profile},
         {"show_profile", show_profile},
         {"require", script_require},
-        {"is_updating", script_is_updating},
-        {"set_updating", script_set_updating},
         {"num_components", get_component_instance_num},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
@@ -1268,6 +1249,7 @@ void register_script_api(gmMachine* machine)
         {"update_debug_camera", graphics_update_debug_camera},
         {"debug_draw_models", debug_draw_models},
         {"debug_draw_lights", debug_draw_lights},
+		{"debug_draw_animation", debug_draw_animation},
         {"camera_set_position", camera_set_position},
         {"camera_set_lookat", camera_set_lookat},
     };

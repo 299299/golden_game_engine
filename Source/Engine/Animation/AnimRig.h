@@ -99,7 +99,7 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void init(const void* resource);
     void destroy();
     void update(float dt);
-    void update_attachments(const hkQsTransform& worldFromModel);
+    void update_attachment(const hkQsTransform& worldFromModel);
     hk_anim_ctrl* get_control(int index) const;
     int find_control(const StringId& name) const;
     void test_animation(const char* name);

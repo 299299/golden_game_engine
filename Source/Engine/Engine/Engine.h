@@ -40,8 +40,6 @@ struct Engine
     void frame(float timeStep);
     bool running() const { return m_running;};
     void shutdown() { m_running = false;};
-    bool updating() const { return m_updating; };
-    void set_update(bool bUpdate) { m_updating = bUpdate; };
 
     void apply_framelimit(double timeMS);
     void core_init();
@@ -52,7 +50,7 @@ struct Engine
     EngineConfig                            m_cfg;
     int                                     m_state;
     bool                                    m_running;
-    bool                                    m_updating;
+	char									m_padding[3];
 };
 
 
