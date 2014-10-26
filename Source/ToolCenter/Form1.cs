@@ -96,8 +96,8 @@ namespace ToolCenter
             watch.Stop();
             float time = (float)watch.ElapsedMilliseconds / 1000;
             string msg = "Build Total Time = " + time.ToString() + " seconds\n";
-            string hc_error = Utils.LoadString("havok_converter_error.txt");
-            string dc_error = Utils.LoadString("havok_convert_error.txt");
+            string hc_error = Utils.LoadString("havok_convert_error.txt");
+            string dc_error = Utils.LoadString("data_compiler_error.txt");
             MessageBox.Show(msg+hc_error + dc_error, "TOOL_CENTER");
         }
 

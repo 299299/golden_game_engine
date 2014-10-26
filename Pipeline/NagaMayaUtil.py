@@ -10,6 +10,7 @@ import getpass
 
 PROXY_PREFIX = 'Proxy_'
 PROXY_GROUP = 'Proxy'
+ENGINE_GROUP = 'naga_nodes'
 
 
 def getMatrix(node):
@@ -163,11 +164,14 @@ def findNode(name, type='transform'):
     return None
 
 
-def findNodeOrCreate(name):
+def findNodeOrCreate(name, parent=None):
     node = findNode(name)
     if(node):
         return None
-    node = cmds.group(em=1, name=name)
+    if(parent):
+        node = cmds.group(em=1, name=name, p=parent)
+    else:
+        node = cmds.group(em=1, name=name)
     return node
 
 
@@ -183,10 +187,22 @@ def addBackSlash(str):
     return str
 
 
+def addIntAttr(node_name, attr_name, int_value=None):
+    cmds.addAttr(node_name, ln=attr_name, at='long')
+    if(int_value):
+        cmds.setAttr(node_name + '.' + attr_name, int_value)
+
+
 def addFloatAttr(node_name, attr_name, float_value=None):
     cmds.addAttr(node_name, ln=attr_name)
     if(float_value):
         cmds.setAttr(node_name + '.' + attr_name, float_value)
+
+
+def addBoolAttr(node_name, attr_name, bool_value=None):
+    cmds.addAttr(node_name, ln=attr_name, at='bool')
+    if(bool_value):
+        cmds.setAttr(node_name + '.' + attr_name, bool_value, type='bool')
 
 
 def addStringAttr(node_name, attr_name, string_value=None, hidden=False):
@@ -214,12 +230,13 @@ def addEnumAttr(node_name, attr_name, enum_values):
 
 
 def createEngineNode(node_name, deleteOld=False):
-    node = findNodeOrCreate(node_name)
+    findNodeOrCreate(ENGINE_GROUP)
+    node = findNodeOrCreate(node_name, ENGINE_GROUP)
     if(node):
         addStringAttr(node, 'hkType', 'engine_attributes', True)
     else:
         cmds.delete(node_name)
-        node = findNodeOrCreate(node_name)
+        node = findNodeOrCreate(node_name, ENGINE_GROUP)
         addStringAttr(node, 'hkType', 'engine_attributes', True)
     return node
 
@@ -245,7 +262,8 @@ def createScriptNode(args):
     script_node = createEngineNode('script')
     if(script_node is None):
         return
-    addStringAttr(script_node, 'script_file', '')
+    addStringAttr(script_node, 'name', '')
+    addBoolAttr(script_node, 'packed', bool_value=False)
 
 
 def createAnimRigNode(args):
@@ -257,13 +275,36 @@ def createAnimRigNode(args):
 
 def createTriggerNode(args):
     triggers = ['attack', 'dust']
-    trigger_group = findNodeOrCreate('triggers')
+    trigger_group = findNodeOrCreate('triggers', ENGINE_GROUP)
     if(trigger_group):
         addEnumAttr(trigger_group, 'hk_trigger_', triggers)
-    beat_group = findNodeOrCreate('beats')
+    beat_group = findNodeOrCreate('beats', ENGINE_GROUP)
     if(beat_group):
         addEnumAttr(beat_group, 'hk_beat_',
                     ['left_foot_down', 'right_foot_down'])
+
+
+def createHistoryNode():
+    node = createEngineNode('naga_history')
+    if(node is None):
+        return
+    addIntAttr(node, 'last_hko_type', 1)
+    addIntAttr(node, 'last_rig_type', 1)
+    addIntAttr(node, 'last_package_type', 1)
+
+
+def updateHistoryNode(key, data, type):
+    node = findNode('naga_history')
+    if(node is None):
+        return
+    cmds.setAttr(node + '.' + key, data, type=type)
+
+
+def readHistory(key):
+    node = findNode('naga_history')
+    if(node is None):
+        return 0
+    return cmds.getAttr(node + '.' + key)
 
 
 class NagaMayaUtil(object):

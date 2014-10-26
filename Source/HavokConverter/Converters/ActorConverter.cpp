@@ -42,10 +42,11 @@ ActorConverter::serializeToJson() const
     rootObject << "asset_path" << srcFile;
 
     jsonxx::Array compsObject;
+	const std::string pack_key("packed");
     for(size_t i=0; i<m_components.size(); ++i)
     {
         jsonxx::Object obj = m_components[i]->serializeToJson();
-        obj << "packed" << true;
+		if(!obj.has<bool>(pack_key)) obj << pack_key << true;
         compsObject << obj;
     }
     rootObject << "components" << compsObject;

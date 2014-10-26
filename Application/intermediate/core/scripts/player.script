@@ -1,0 +1,31 @@
+global create_player = function(id)
+{
+    local player = 
+    {
+        self = id,
+    };
+
+    player.start = function()
+    {
+        print("player start.");
+        this:stateSet(.idle_state);
+    };
+
+    player.stop = function()
+    {
+        print("player stop.");
+    };
+
+    player.idle_state = function()
+    {
+        print("player enter ---------------> idle_state ");
+        sleep(0.001f);
+
+        while(true)
+        {
+            yield();
+        }
+    };
+
+    return player;
+};

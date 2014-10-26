@@ -182,7 +182,6 @@ void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int
 
 void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
 {
-    PROFILE(Animation_DrawPose);
     const hkaSkeleton* skeleton = pose.getSkeleton();
     const hkInt16* parentIndices = skeleton->m_parentIndices.begin();
     const hkQsTransform* poseMS = pose.getSyncedPoseModelSpace().begin();

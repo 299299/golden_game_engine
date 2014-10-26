@@ -65,7 +65,7 @@ global create_preview = function(id)
             }
 
             yield();
-        }  
+        }
     };
     return preview;
 };

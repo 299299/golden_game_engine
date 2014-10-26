@@ -14,6 +14,7 @@ GAME_APP = 'Game_Debug'
 UI_NAME = 'Naga_UI'
 DEBUG = True
 
+
 class NagaPipeline(object):
     NagaObject = None
 
@@ -63,6 +64,7 @@ class NagaPipeline(object):
         if cmds.window(UI_NAME, exists=1):
             cmds.deleteUI(UI_NAME)
 
+        NAGA.createHistoryNode()
         self.myWindow = cmds.window(UI_NAME, t='Pipeline')
         cmds.columnLayout(cal='center', adj=1)
 
@@ -89,10 +91,20 @@ class NagaPipeline(object):
         for packageName in self.naga.getPackageList():
             cmds.menuItem(label=packageName)
 
+        last_hko = NAGA.readHistory('last_hko_type')
+        last_rig = NAGA.readHistory('last_rig_type')
+        last_package = NAGA.readHistory('last_package_type')
+        print('last_hko=%d' % last_hko)
+        print('last_rig=%d' % last_rig)
+        print('last_package=%d' % last_package)
+        cmds.optionMenuGrp(self.hkoTypeGroup, sl=last_hko)
+        cmds.optionMenuGrp(self.rigTypeGroup, sl=last_rig)
+        cmds.optionMenuGrp(self.packageGroup, sl=last_package)
+
         cmds.setParent('..')
 
         cmds.frameLayout(l="Util", cll=1)
-        #cmds.rowLayout(nc=2)
+        # cmds.rowLayout(nc=2)
         cmds.button('Open Selection AR', c=self.onOpenARClicked)
         cmds.button('Back To Last Level', c=self.onBackLevelClicked)
         cmds.button('Add Anim-Trigger', c=NAGA.createTriggerNode)
@@ -175,9 +187,12 @@ class NagaPipeline(object):
             packageName = PREVIEW_PACK
 
         rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
+        NAGA.updateHistoryNode('last_rig_type', rigIndex + 1)
+
         rigName = self.naga.getRigList()[rigIndex]
         rigName = os.path.basename(rigName)
         hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
+        NAGA.updateHistoryNode('last_hko_type', hkoIndex + 1)
 
         self.doExport(exportName,
                       packageName,
@@ -192,15 +207,23 @@ class NagaPipeline(object):
 
     def export(self, exportName):
 
+        #
         packageIndex = cmds.optionMenuGrp(self.packageGroup, q=1, sl=1) - 1
         packageName = self.naga.getPackageList()[packageIndex]
-
         packageName = packageName
+        NAGA.updateHistoryNode('last_package_type', packageIndex + 1)
+
+        #
         rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
         rigName = self.naga.getRigList()[rigIndex]
         rigName = os.path.basename(rigName)
-        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
+        NAGA.updateHistoryNode('last_rig_type', rigIndex + 1)
 
+        #
+        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
+        NAGA.updateHistoryNode('last_hko_type', hkoIndex + 1)
+
+        #
         self.doExport(exportName,
                       packageName,
                       hkoType=hkoIndex,

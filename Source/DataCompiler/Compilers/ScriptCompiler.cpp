@@ -1,6 +1,7 @@
 #include "ScriptCompiler.h"
 #include <gamemonkey/gmMachine.h>
 #include <gamemonkey/gmStreamBuffer.h>
+#include <gamemonkey/gmCall.h>
 #include "Script.h"
 #include "CommonUtils.h"
 
@@ -40,6 +41,27 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
         addError("Script %s function name %s not found!", input.c_str(), script_name.c_str());
         return false;
     }
+
+#if 1
+	//dump the functions of script table
+	gmVariable a_param(0);
+	gmCall call;
+	call.BeginGlobalFunction(g_script.m_vm, script_name.c_str());
+	call.AddParam(a_param);
+	call.End();
+	gmTableObject* table = call.GetReturnedVariable().GetTableObjectSafe();
+	gmTableIterator iter;
+	gmTableNode* child_node = table->GetFirst(iter);
+	char buf[1024];
+	while(child_node)
+	{
+		child_node->m_value.AsStringWithType(vm, buf, sizeof(buf));
+		LOGI("script child key = %s", buf);
+		child_node->m_key.AsStringWithType(vm, buf, sizeof(buf));
+		LOGI("script child value = %s", buf);
+		child_node = table->GetNext(iter);
+	}
+#endif
 
     uint32_t memSize = sizeof(ScriptResource) + stream.GetSize();
     MemoryBuffer mem(memSize);

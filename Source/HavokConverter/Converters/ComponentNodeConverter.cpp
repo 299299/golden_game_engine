@@ -22,7 +22,6 @@ jsonxx::Object ComponentNodeConverter::serializeToJson() const
 {
     jsonxx::Object object;
     object << "type" << getTypeName();
-    object << "packaged" << true;
     object << "name" << getResourceName();
     fill_object_attributes(object, m_attributes);
     return object;
