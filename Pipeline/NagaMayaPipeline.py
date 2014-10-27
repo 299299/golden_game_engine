@@ -97,9 +97,9 @@ class NagaPipeline(object):
         print('last_hko=%d' % last_hko)
         print('last_rig=%d' % last_rig)
         print('last_package=%d' % last_package)
-        cmds.optionMenuGrp(self.hkoTypeGroup, sl=last_hko)
-        cmds.optionMenuGrp(self.rigTypeGroup, sl=last_rig)
-        cmds.optionMenuGrp(self.packageGroup, sl=last_package)
+        cmds.optionMenuGrp(self.hkoTypeGroup, e=1, sl=last_hko)
+        cmds.optionMenuGrp(self.rigTypeGroup, e=1, sl=last_rig)
+        cmds.optionMenuGrp(self.packageGroup, e=1, sl=last_package)
 
         cmds.setParent('..')
 

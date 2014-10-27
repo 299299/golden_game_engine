@@ -824,13 +824,10 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
     GM_FLOAT_OR_INT_PARAM(rot_x, 4, 0);
     GM_FLOAT_OR_INT_PARAM(rot_y, 5, 0);
     GM_FLOAT_OR_INT_PARAM(rot_z, 6, 0);
-    GM_FLOAT_OR_INT_PARAM(scale_x, 7, 1);
-    GM_FLOAT_OR_INT_PARAM(scale_y, 8, 1);
-    GM_FLOAT_OR_INT_PARAM(scale_z, 9, 1);
-    hkQsTransform t; 
+    hkQsTransform t;
+    t.setIdentity();
     t.m_translation.set(pos_x, pos_y, pos_z);
     t.m_rotation.setFromEulerAngles(rot_x, rot_y, rot_z);
-    t.m_scale.set(scale_x, scale_y, scale_z);
     a_thread->PushInt(g_actorWorld.create_actor(StringId(type), t));
     return GM_OK;
 }

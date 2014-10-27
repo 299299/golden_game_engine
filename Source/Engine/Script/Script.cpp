@@ -179,19 +179,9 @@ int ScriptSystem::call_global_function(const char* a_func_name, gmVariable* a_pa
 
 void ScriptSystem::step(float dt)
 {
-    
-}
-
-void ScriptSystem::pre_step( float dt )
-{
     PROFILE(script_update);
     int nThreadCount = m_vm->Execute((gmint)(dt*1000));
     print_error();
-}
-
-void ScriptSystem::post_step( float dt )
-{
-
 }
 
 void ScriptSystem::frame_end(float dt)

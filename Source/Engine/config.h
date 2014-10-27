@@ -32,3 +32,6 @@
 #define MAX_SCRIPT_KEY          256
 
 #define MAX_ANIM_EVENTS         1024
+
+#define MAX_ENGINE_COMMANDS     1024
+#define MAX_ENGINE_CMD_CALLBACK 32

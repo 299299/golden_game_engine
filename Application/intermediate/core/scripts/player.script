@@ -27,5 +27,15 @@ global create_player = function(id)
         }
     };
 
+    player.idle_to_move_state = function()
+    {
+        
+    };
+
+    player.move_state = function()
+    {
+
+    };
+
     return player;
 };

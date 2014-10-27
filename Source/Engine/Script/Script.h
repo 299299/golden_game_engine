@@ -50,10 +50,7 @@ struct ScriptSystem
 {
     void init();
     void quit();
-
-    void pre_step(float dt);
     void step(float dt);
-    void post_step(float dt);
 
     void print_error();
     int  call_function(const char* a_obj_name, const char * a_func_name, gmVariable *a_param);

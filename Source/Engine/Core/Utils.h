@@ -10,28 +10,6 @@ void unload_havok_inplace(void* data, uint32_t size);
 void msg_box(const char* text, const char* title);
 void accurate_sleep(uint32_t milliSeconds);
 
-#define INI_MAX_KEY_VALUE   (128)
-struct IniReader
-{
-    struct IniKeyValue
-    {
-        const char* m_key;
-        const char* m_value;
-        uint32_t    m_keyLen;
-        uint32_t    m_valueLen;
-    };
-
-    IniKeyValue     m_values[INI_MAX_KEY_VALUE];
-    const char*     m_data;
-    uint32_t        m_dataSize;
-    uint32_t        m_numKeys;
-
-    IniReader(const char* fileName);
-    ~IniReader();
-    uint32_t find_value(const char* key, char* bufOut) const;
-};
-
-
 struct ValueType
 {
     enum Enum
@@ -76,15 +54,16 @@ struct Command
 {
     float           m_time;
     uint8_t         m_command;
-    char            m_params[11];
-}; //-->16 byte.
+    char            m_params[27];
+}; //-->32 byte.
 
 typedef void (*_command_callback_)(const Command& cmd, void* context);
 
 struct CommandMachine
 {
     void init(int max_commands, int max_callbacks);
-    static uint32_t caculate_memory(int max_commands, int max_callbacks);
+    static uint32_t caculate_memory(int max_commands, 
+                                    int max_callbacks);
     
     /// Adds a command to the queue
     void addCommand( const Command& command );

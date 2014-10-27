@@ -49,8 +49,9 @@ struct Engine
 
     EngineConfig                            m_cfg;
     int                                     m_state;
+    struct CommandMachine*                  m_cmd_machine;
     bool                                    m_running;
-	char									m_padding[3];
+    char                                    m_padding[3];
 };
 
 
