@@ -162,6 +162,7 @@
     <ClCompile Include="Core\Thread.cpp" />
     <ClCompile Include="Core\Utils.cpp" />
     <ClCompile Include="Engine\Actor.cpp" />
+    <ClCompile Include="Engine\CommandAPI.cpp" />
     <ClCompile Include="Engine\DataDef.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\Level.cpp" />
@@ -316,6 +317,7 @@
     <ClInclude Include="..\ThirdParty\stb_truetype\stb_truetype.h" />
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Animation\AnimationSystem.h" />
+    <ClInclude Include="Animation\AnimControl.h" />
     <ClInclude Include="Animation\AnimRaycast.h" />
     <ClInclude Include="Animation\AnimRig.h" />
     <ClInclude Include="Animation\IK.h" />
@@ -339,8 +341,8 @@
     <ClInclude Include="Core\StringId.h" />
     <ClInclude Include="Core\Thread.h" />
     <ClInclude Include="Core\Utils.h" />
-    <ClInclude Include="Core\Variant.h" />
     <ClInclude Include="Engine\Actor.h" />
+    <ClInclude Include="Engine\CommandAPI.h" />
     <ClInclude Include="Engine\DataDef.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Level.h" />

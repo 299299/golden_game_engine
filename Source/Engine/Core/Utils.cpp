@@ -198,17 +198,16 @@ bool Fact::set_key(char* values, const StringId& k, const float* v) const
 }
 
 
-void CommandMachine::init(int max_commands, int max_callbacks)
+void CommandMachine::init(int max_commands)
 {
     char* p_this = (char*)this;
-    m_commandCallbacks = (_command_callback_*)(p_this + sizeof(CommandMachine));
-    m_commands = (Command*)(p_this + sizeof(CommandMachine) + max_callbacks * sizeof(void*));
+    m_commands = (Command*)(p_this + sizeof(CommandMachine));
     m_maxCommands = max_commands;
 }
 
-uint32_t CommandMachine::caculate_memory(int max_commands, int max_callbacks)
+uint32_t CommandMachine::caculate_memory(int max_commands)
 {
-    return sizeof(CommandMachine) + max_callbacks * sizeof(void*) + max_commands * sizeof(Command);
+    return sizeof(CommandMachine) + max_commands * sizeof(Command);
 }
 
 void CommandMachine::addCommand( const Command& command )
@@ -220,7 +219,7 @@ void CommandMachine::addCommand( const Command& command )
     gCmd.m_time += getCurrentTime();
 
     int idx = 0;
-    uint32_t num = m_numCommands;
+    int num = m_numCommands;
     while( (idx < num) && (gCmd.m_time >= m_commands[idx].m_time) )
     {
         idx++;
@@ -254,7 +253,7 @@ float CommandMachine::getCurrentTime() const
 void CommandMachine::resetTime(float newTime)
 {
     float diffTime = newTime - m_currentTime;
-    uint32_t num = m_numCommands;
+    int num = m_numCommands;
     Command* head = m_commands;
     for (int i=0; i< num; ++i)
     {
@@ -268,15 +267,15 @@ void CommandMachine::update( float timestep )
     PROFILE(CommandMachine_Update);
     const float endTime = m_currentTime + timestep;
     int idx = 0;
-    uint32_t num = m_numCommands;
+    int num = m_numCommands;
     Command* head = m_commands;
     for (; idx < num; ++idx)
     {
         const Command& cmd = head[idx];
         float cmdTime = cmd.m_time;
         if(cmdTime > endTime) break;
-        _command_callback_ cb = m_commandCallbacks[cmd.m_command];
-        cb(cmd, m_context);
+        _command_callback_ func = m_callbacks[cmd.m_command];
+        func(cmd);
         m_currentTime = hkMath::max2(m_currentTime, cmd.m_time);
     }
     m_currentTime = endTime;

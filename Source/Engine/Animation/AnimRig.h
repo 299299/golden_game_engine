@@ -10,7 +10,6 @@ struct  AnimationTrigger;
 class   hkaDefaultAnimationControl;
 struct  Animation;
 struct  hk_anim_ctrl;
-struct  CommandMachine;
 
 enum HumanBodypart
 {
@@ -85,7 +84,6 @@ ENGINE_NATIVE_ALIGN struct AnimRig
 
 ENGINE_NATIVE_ALIGN struct AnimRigInstance
 {
-    CommandMachine*                 m_animMachine;
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
@@ -105,12 +103,6 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void test_animation(const char* name);
     //----------------------------------------------------------------------
     // ANIMATION API
-    void easein_animation(int index, float blend_time, bool bloop, int layer, float when = 0.0f, int type = kEaseCurveSmooth);
-    void easeout_animation(int index, float blend_time, float when = 0.0f, int type = kEaseCurveSmooth);
-    void easeout_layers(int layer, float blend_time, float when = 0.0f, int type = kEaseCurveSmooth);
-    void set_animation_weight(int index, float weight, float when = 0.0f);
-    void set_animation_speed(int index, float speed, float when = 0.0f);
-    void set_animation_time(int index, float local_time, float when = 0.0f);
     float get_animation_weight(int index) const;
     float get_animation_speed(int index) const;
     float get_animation_time(int index) const;

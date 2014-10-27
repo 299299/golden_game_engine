@@ -369,6 +369,9 @@
     <ClCompile Include="Script\DebugGuiTools.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\CommandAPI.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Log.h">
@@ -712,9 +715,6 @@
     <ClInclude Include="Engine\Win32Context.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Variant.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Gui.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -895,6 +895,12 @@
     </ClInclude>
     <ClInclude Include="..\ThirdParty\gamemonkey\gmParser.cpp.h">
       <Filter>ThirdParty\gamemonkey</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CommandAPI.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimControl.h">
+      <Filter>Animation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

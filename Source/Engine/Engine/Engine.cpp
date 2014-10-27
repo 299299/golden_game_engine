@@ -38,10 +38,10 @@ void Engine::init( const EngineConfig& cfg )
     m_running = true;
     m_cfg = cfg;
     m_state = kFrameStart;
-    uint32_t mem_size = CommandMachine::caculate_memory(MAX_ENGINE_COMMANDS, MAX_ENGINE_CMD_CALLBACK);
+    uint32_t mem_size = CommandMachine::caculate_memory(MAX_ENGINE_COMMANDS);
     m_cmd_machine = (CommandMachine*)::malloc(mem_size);
     memset(m_cmd_machine, 0x00, mem_size);
-    m_cmd_machine->init(MAX_ENGINE_COMMANDS, MAX_ENGINE_CMD_CALLBACK);
+    m_cmd_machine->init(MAX_ENGINE_COMMANDS);
     init_engine_commands(m_cmd_machine);
 
     LOG_INIT("EngineLog.html", "ENGINE");
@@ -111,7 +111,7 @@ void Engine::frame(float timeStep)
         PROFILE(Engine_PreStep);
         m_state = kFramePreStepping;
         if(m_cfg.m_preStepHook) m_cfg.m_preStepHook(timeStep);
-        m_cmd_machine->pre_step(timeStep);
+        m_cmd_machine->update(timeStep);
         g_actorWorld.pre_step(timeStep);
     }
     {

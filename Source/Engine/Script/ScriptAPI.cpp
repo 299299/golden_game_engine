@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Script.h"
 #include "AnimRig.h"
+#include "CommandAPI.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
 #include <imgui/imgui.h>
@@ -930,19 +931,16 @@ static int GM_CDECL level_load(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(level_name, 0);
-    Level* level = FIND_RESOURCE(Level, StringId(level_name));
-    if(!level) return GM_OK;
-    level->load();
-    a_thread->PushInt(level->m_numLoadedObjects);
+    GM_FLOAT_OR_INT_PARAM(when, 1, 0.0f);
+	command_load_level(StringId(level_name), when);
     return GM_OK;
 }
 static int GM_CDECL level_unload(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(level_name, 0);
-    Level* level = FIND_RESOURCE(Level, StringId(level_name));
-    if(!level) return GM_OK;
-    level->unload();
+	GM_FLOAT_OR_INT_PARAM(when, 1, 0.0f);
+	command_unload_level(StringId(level_name), when);
     return GM_OK;
 }
 #define SCRIPT_GET_ANIM_RIG()\
@@ -980,8 +978,7 @@ static int GM_CDECL actor_ease_in_animation(gmThread* a_thread)
     GM_INT_PARAM(layer, 4, 0);
     GM_FLOAT_PARAM(when, 5, 0.0f);
     GM_INT_PARAM(type, 6, kEaseCurveSmooth);
-    SCRIPT_GET_ANIM_RIG();
-    rig->easein_animation(index, blend_time, looped, layer, when, type);
+    command_easein_animation(actor_id, index, blend_time, looped, layer, type, when);
     return GM_OK;
 }
 static int GM_CDECL actor_ease_out_animation(gmThread* a_thread)
@@ -992,8 +989,7 @@ static int GM_CDECL actor_ease_out_animation(gmThread* a_thread)
     GM_CHECK_FLOAT_PARAM(blend_time, 2);
     GM_FLOAT_PARAM(when, 3, 0.0f);
     GM_INT_PARAM(type, 4, kEaseCurveSmooth);
-    SCRIPT_GET_ANIM_RIG();
-    rig->easeout_animation(index, blend_time, when, type);
+    command_easeout_animation(actor_id, index, blend_time, type, when);
     return GM_OK;
 }
 static int GM_CDECL actor_is_playing_animation(gmThread* a_thread)
@@ -1010,12 +1006,11 @@ static int GM_CDECL actor_easeout_layers(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(actor_id, 0);
-    GM_CHECK_INT_PARAM(index, 1);
+    GM_CHECK_INT_PARAM(layer, 1);
     GM_CHECK_FLOAT_PARAM(blend_time, 2);
     GM_FLOAT_PARAM(when, 3, 0.0f);
     GM_INT_PARAM(type, 4, kEaseCurveSmooth);
-    SCRIPT_GET_ANIM_RIG();
-    rig->easeout_layers(index, blend_time, when, type);
+    command_easeout_layers(actor_id, layer, blend_time, type, when);
     return GM_OK;
 }
 static int GM_CDECL actor_set_animation_weight(gmThread* a_thread)
@@ -1025,8 +1020,7 @@ static int GM_CDECL actor_set_animation_weight(gmThread* a_thread)
     GM_CHECK_INT_PARAM(index, 1);
     GM_CHECK_FLOAT_PARAM(weight, 2);
     GM_FLOAT_PARAM(when, 2, 0.0f);
-    SCRIPT_GET_ANIM_RIG();
-    rig->set_animation_weight(index, weight, when);
+    command_set_animation_weight(actor_id, index, weight, when);
     return GM_OK;
 }
 static int GM_CDECL actor_set_animation_speed(gmThread* a_thread)
@@ -1036,8 +1030,7 @@ static int GM_CDECL actor_set_animation_speed(gmThread* a_thread)
     GM_CHECK_INT_PARAM(index, 1);
     GM_CHECK_FLOAT_PARAM(speed, 2);
     GM_FLOAT_PARAM(when, 2, 0.0f);
-    SCRIPT_GET_ANIM_RIG();
-    rig->set_animation_speed(index, speed, when);
+    command_set_animation_speed(actor_id, index, speed, when);
     return GM_OK;
 }
 static int GM_CDECL actor_set_animation_time(gmThread* a_thread)
@@ -1048,7 +1041,7 @@ static int GM_CDECL actor_set_animation_time(gmThread* a_thread)
     GM_CHECK_FLOAT_PARAM(time, 2);
     GM_FLOAT_PARAM(when, 2, 0.0f);
     SCRIPT_GET_ANIM_RIG();
-    rig->set_animation_time(index, time, when);
+    command_set_animation_time(actor_id, index, time, when);
     return GM_OK;
 }
 static int GM_CDECL actor_get_animation_weight(gmThread* a_thread)
