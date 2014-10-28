@@ -36,7 +36,7 @@ extern uint32_t num_components(uint32_t type);
 extern void* get_components(uint32_t type);
 
 #define SIMPLE_FUNC_REG(func_name, script_name) \
-		static int GM_CDECL script_name(gmThread* a_thread) { func_name; return GM_OK; }
+        static int GM_CDECL script_name(gmThread* a_thread) { func_name; return GM_OK; }
 
 gmTableNode* find_table_node(gmTableObject* table, const char* key)
 {
@@ -819,24 +819,23 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(type, 0);
-    GM_FLOAT_OR_INT_PARAM(pos_x, 1, 0);
-    GM_FLOAT_OR_INT_PARAM(pos_y, 2, 0);
-    GM_FLOAT_OR_INT_PARAM(pos_z, 3, 0);
-    GM_FLOAT_OR_INT_PARAM(rot_x, 4, 0);
-    GM_FLOAT_OR_INT_PARAM(rot_y, 5, 0);
-    GM_FLOAT_OR_INT_PARAM(rot_z, 6, 0);
-    hkQsTransform t;
-    t.setIdentity();
-    t.m_translation.set(pos_x, pos_y, pos_z);
-    t.m_rotation.setFromEulerAngles(rot_x, rot_y, rot_z);
-    a_thread->PushInt(g_actorWorld.create_actor(StringId(type), t));
+    float transform[6];
+    GM_FLOAT_OR_INT_PARAM(transform[0], 1, 0);
+    GM_FLOAT_OR_INT_PARAM(transform[1], 2, 0);
+    GM_FLOAT_OR_INT_PARAM(transform[2], 3, 0);
+    GM_FLOAT_OR_INT_PARAM(transform[3], 4, 0);
+    GM_FLOAT_OR_INT_PARAM(transform[4], 5, 0);
+    GM_FLOAT_OR_INT_PARAM(transform[5], 6, 0);
+    GM_FLOAT_OR_INT_PARAM(when, 7, 0);
+    command_create_actor(StringId(type), transform, when);
     return GM_OK;
 }
 static int GM_CDECL world_destroy_actor(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
-    GM_CHECK_INT_PARAM(packed_id, 0);
-    g_actorWorld.destroy_actor((uint32_t)packed_id);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_FLOAT_OR_INT_PARAM(when, 1, 0);
+    command_destroy_actor(actor_id, when);
     return GM_OK;
 }
 static int GM_CDECL world_clear_actors(gmThread* a_thread)
@@ -932,15 +931,15 @@ static int GM_CDECL level_load(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(level_name, 0);
     GM_FLOAT_OR_INT_PARAM(when, 1, 0.0f);
-	command_load_level(StringId(level_name), when);
+    command_load_level(StringId(level_name), when);
     return GM_OK;
 }
 static int GM_CDECL level_unload(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(level_name, 0);
-	GM_FLOAT_OR_INT_PARAM(when, 1, 0.0f);
-	command_unload_level(StringId(level_name), when);
+    GM_FLOAT_OR_INT_PARAM(when, 1, 0.0f);
+    command_unload_level(StringId(level_name), when);
     return GM_OK;
 }
 #define SCRIPT_GET_ANIM_RIG()\
@@ -1239,7 +1238,7 @@ void register_script_api(gmMachine* machine)
         {"update_debug_camera", graphics_update_debug_camera},
         {"debug_draw_models", debug_draw_models},
         {"debug_draw_lights", debug_draw_lights},
-		{"debug_draw_animation", debug_draw_animation},
+        {"debug_draw_animation", debug_draw_animation},
         {"camera_set_position", camera_set_position},
         {"camera_set_lookat", camera_set_lookat},
     };

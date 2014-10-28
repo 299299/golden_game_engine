@@ -124,7 +124,7 @@ void ScriptSystem::print_error()
     if(!msg) return;
 
     memset(script_error_buffer, 0x00, sizeof(script_error_buffer));
-    while(msg)	
+    while(msg)  
     {
         LOGE(msg);
         strcat_s(script_error_buffer, msg);
