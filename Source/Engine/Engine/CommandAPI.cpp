@@ -71,6 +71,7 @@ static void on_command_create_actor(const Command& cmd)
     t.setIdentity();
     t.m_translation.set(transforms[0], transforms[1], transforms[2]);
     t.m_rotation.setFromEulerAngles(transforms[3], transforms[4], transforms[5]);
+	t.m_scale.set(transforms[6], transforms[7], transforms[8]);
     g_actorWorld.create_actor(actor_name, t);
 }
 static void on_command_destroy_actor(const Command& cmd)
@@ -245,7 +246,7 @@ void command_create_actor(const StringId& type, const float* transform, float wh
     cmd.m_command = kEngineCmdCreateActor;
     char* params = cmd.m_params;
     *(StringId*)(params) = type;
-    memcpy(params + sizeof(StringId), transform, sizeof(float)*6);
+    memcpy(params + sizeof(StringId), transform, sizeof(float)*9);
     g_engine.m_cmd_machine->addCommand(cmd);
 }
 

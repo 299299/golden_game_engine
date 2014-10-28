@@ -825,8 +825,11 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
     GM_FLOAT_OR_INT_PARAM(t3, 4, 0);
     GM_FLOAT_OR_INT_PARAM(t4, 5, 0);
     GM_FLOAT_OR_INT_PARAM(t5, 6, 0);
-    GM_FLOAT_OR_INT_PARAM(when, 7, 0);
-	float transform[6] = {t0, t1, t2, t3, t4, t5};
+	GM_FLOAT_OR_INT_PARAM(t6, 7, 1);
+	GM_FLOAT_OR_INT_PARAM(t7, 8, 1);
+	GM_FLOAT_OR_INT_PARAM(t8, 9, 1);
+    GM_FLOAT_OR_INT_PARAM(when, 10, 0);
+	float transform[] = {t0, t1, t2, t3, t4, t5, t6, t7, t8};
     command_create_actor(StringId(type), transform, when);
     return GM_OK;
 }

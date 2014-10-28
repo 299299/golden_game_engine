@@ -167,6 +167,7 @@ def findNode(name, type='transform'):
 def findNodeOrCreate(name, parent=None):
     node = findNode(name)
     if(node):
+        print('node already exist = ' + name)
         return None
     if(parent):
         node = cmds.group(em=1, name=name, p=parent)
@@ -232,9 +233,9 @@ def addEnumAttr(node_name, attr_name, enum_values):
 def createEngineNode(node_name, deleteOld=False):
     findNodeOrCreate(ENGINE_GROUP)
     node = findNodeOrCreate(node_name, ENGINE_GROUP)
-    if(node):
+    if node:
         addStringAttr(node, 'hkType', 'engine_attributes', True)
-    else:
+    elif deleteOld:
         cmds.delete(node_name)
         node = findNodeOrCreate(node_name, ENGINE_GROUP)
         addStringAttr(node, 'hkType', 'engine_attributes', True)
@@ -293,11 +294,14 @@ def createHistoryNode():
     addIntAttr(node, 'last_package_type', 1)
 
 
-def updateHistoryNode(key, data, type):
+def updateHistoryNode(key, data, type=None):
     node = findNode('naga_history')
     if(node is None):
         return
-    cmds.setAttr(node + '.' + key, data, type=type)
+    if type:
+        cmds.setAttr(node + '.' + key, data, type=type)
+    else:
+        cmds.setAttr(node + '.' + key, data)
 
 
 def readHistory(key):
