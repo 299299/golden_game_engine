@@ -38,10 +38,10 @@ void Engine::init( const EngineConfig& cfg )
     m_running = true;
     m_cfg = cfg;
     m_state = kFrameStart;
-    uint32_t mem_size = CommandMachine::caculate_memory(MAX_ENGINE_COMMANDS);
+    uint32_t mem_size = CommandMachine::caculate_memory(MAX_ENGINE_COMMANDS, MAX_ENGINE_CALLBACKS);
     m_cmd_machine = (CommandMachine*)::malloc(mem_size);
     memset(m_cmd_machine, 0x00, mem_size);
-    m_cmd_machine->init(MAX_ENGINE_COMMANDS);
+    m_cmd_machine->init(MAX_ENGINE_COMMANDS, MAX_ENGINE_CALLBACKS);
     init_engine_commands(m_cmd_machine);
 
     LOG_INIT("EngineLog.html", "ENGINE");

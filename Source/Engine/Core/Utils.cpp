@@ -198,16 +198,17 @@ bool Fact::set_key(char* values, const StringId& k, const float* v) const
 }
 
 
-void CommandMachine::init(int max_commands)
+void CommandMachine::init(int max_commands, int max_callbacks)
 {
     char* p_this = (char*)this;
-    m_commands = (Command*)(p_this + sizeof(CommandMachine));
+    m_callbacks = (_command_callback_*)(p_this + sizeof(CommandMachine));
+    m_commands = (Command*)(p_this + + sizeof(CommandMachine) + sizeof(_command_callback_) * max_callbacks);
     m_maxCommands = max_commands;
 }
 
-uint32_t CommandMachine::caculate_memory(int max_commands)
+uint32_t CommandMachine::caculate_memory(int max_commands, int max_callbacks)
 {
-    return sizeof(CommandMachine) + max_commands * sizeof(Command);
+    return sizeof(CommandMachine) + sizeof(_command_callback_) * max_callbacks + max_commands * sizeof(Command);
 }
 
 void CommandMachine::addCommand( const Command& command )
@@ -216,7 +217,7 @@ void CommandMachine::addCommand( const Command& command )
 
     // Set the global time for the command
     Command gCmd = command;
-    gCmd.m_time += getCurrentTime();
+    gCmd.m_time += m_currentTime;
 
     int idx = 0;
     int num = m_numCommands;

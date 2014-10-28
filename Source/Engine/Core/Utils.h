@@ -57,13 +57,13 @@ struct Command
     char            m_params[27];
 }; //-->32 byte.
 
-#define MAX_CMD_CALLBACK	(32)
+
 typedef void (*_command_callback_)(const Command& cmd);
 
 struct CommandMachine
 {
-    void init(int max_commands);
-    static uint32_t caculate_memory(int max_commands);
+    void init(int max_commands, int max_callbacks);
+    static uint32_t caculate_memory(int max_commands, int max_callbacks);
     
     /// Adds a command to the queue
     void addCommand( const Command& command );
@@ -76,7 +76,7 @@ struct CommandMachine
     /// Reset the internal clock
     void resetTime(float newTime = 0.0f);
     
-	_command_callback_		m_callbacks[MAX_CMD_CALLBACK];
+    _command_callback_*     m_callbacks;
     Command*                m_commands;
     float                   m_currentTime;
     int                     m_numCommands;
