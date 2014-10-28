@@ -312,9 +312,11 @@ void reload_script_resource(void* oldResource, void* newResource)
     LOGI("component %s instance num = %d", ScriptResource::get_name(), componentNum);
     for(size_t i=0; i<componentNum; ++i)
     {
-        if(components[i].m_resource == oldScript)
+        ScriptInstance& script = components[i];
+        if(script.m_resource == oldScript)
         {
-            components[i].reload(newScript);
+            script.destroy();
+            script.init(newScript);
         }
     }
     

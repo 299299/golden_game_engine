@@ -32,17 +32,16 @@ ENGINE_NATIVE_ALIGN struct ScriptResource
     void pre_load();
 };
 
-
-struct ScriptInstance
+ENGINE_NATIVE_ALIGN struct ScriptInstance
 {
-    void init(const void* resource, Id id);
+    void init(const void* resource);
     void destroy();
-    void reload(const ScriptResource* resource);
     int  call_function(const char* a_func_name, const gmVariable* a_param = 0);
 
     const ScriptResource*       m_resource;
     gmTableObject*              m_table;
     int                         m_threadId;
+    ActorId32                   m_actor;
 };
 
 

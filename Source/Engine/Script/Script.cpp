@@ -42,10 +42,10 @@ void ScriptResource::pre_load()
     m_preLoaded = true;
 }
 
-void ScriptInstance::init( const void* resource, Id id )
+void ScriptInstance::init( const void* resource)
 {
     m_resource = (const ScriptResource*)resource;
-    gmVariable a_param((int)id.encode());
+    gmVariable a_param((int)m_actor);
     gmCall call;
     call.BeginGlobalFunction(g_script.m_vm, m_resource->m_funcName);
     call.AddParam(a_param);
@@ -60,22 +60,6 @@ void ScriptInstance::destroy()
     call_function("stop");
     g_script.m_vm->KillThread(m_threadId);
     m_threadId = -1;
-}
-
-void ScriptInstance::reload( const ScriptResource* resource )
-{
-    Id id;
-    if(m_table)
-    {
-        gmVariable idVar = m_table->GetLinearSearch("self");
-        if(!idVar.IsNull())
-        {
-            uint32_t inst_id = (uint32_t)idVar.GetInt();
-            id.decode(inst_id);
-        }
-    }
-    destroy();
-    init(resource, id);
 }
 
 int ScriptInstance::call_function( const char* a_func_name, const gmVariable* a_param )
@@ -198,7 +182,7 @@ void ScriptSystem::full_garbge_collect()
 }
 
 //-----------------------------------------------------------------------
-Id create_script_object(const void* resource, ActorId32)
+Id create_script_object(const void* resource, ActorId32 actor)
 {
     if(!resource) 
     {
@@ -207,9 +191,9 @@ Id create_script_object(const void* resource, ActorId32)
         return id;
     }
     ScriptInstance inst;
-    Id id = id_array::create(g_scriptObjects, inst);
-    id_array::get(g_scriptObjects, id).init(resource, id);
-    return id;
+    inst.m_actor = actor;
+    inst.init((const ScriptResource*)resource);
+    return id_array::create(g_scriptObjects, inst);;
 }
 void destroy_script_object(Id id)
 {
