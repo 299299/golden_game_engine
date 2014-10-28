@@ -20,7 +20,10 @@ webtool for monitor engine runtime
 ![short_4](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/web_tool.jpg)
 
 from level to engine & script hot reload.
-![short_5](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipline_tool.png)
+![short_5](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipline_tool.jpg)
+
+animation and locomotion marker
+![short_6](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/animation.jpg)
 
 ##Dependencies
 1. **Graphics**: bgfx (https://github.com/bkaradzic/bgfx)

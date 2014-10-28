@@ -54,8 +54,8 @@ struct Command
 {
     float           m_time;
     uint8_t         m_command;
-    char            m_params[39];
-}; //-->48 byte. ---> a more elegant way ?
+    char            m_params[59];
+}; //-->64 byte. ---> a more elegant way ?
 
 
 typedef void (*_command_callback_)(const Command& cmd);

@@ -243,10 +243,10 @@ void command_create_actor(const StringId& type, const float* transform, float wh
     Command cmd;
     cmd.m_time = when;
     cmd.m_command = kEngineCmdCreateActor;
-    char* params = cmds.m_params;
+    char* params = cmd.m_params;
     *(StringId*)(params) = type;
     memcpy(params + sizeof(StringId), transform, sizeof(float)*6);
-    g_engine->m_cmd_machine->addCommand(cmd);
+    g_engine.m_cmd_machine->addCommand(cmd);
 }
 
 void command_destroy_actor(ActorId32 actor, float when)
@@ -254,7 +254,7 @@ void command_destroy_actor(ActorId32 actor, float when)
     Command cmd;
     cmd.m_time = when;
     cmd.m_command = kEngineCmdDestroyActor;
-    char* params = cmds.m_params;
+    char* params = cmd.m_params;
     *(ActorId32*)(params) = actor;
-    g_engine->m_cmd_machine->addCommand(cmd);
+    g_engine.m_cmd_machine->addCommand(cmd);
 }

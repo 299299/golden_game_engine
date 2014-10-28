@@ -819,14 +819,14 @@ static int GM_CDECL world_create_actor(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(type, 0);
-    float transform[6];
-    GM_FLOAT_OR_INT_PARAM(transform[0], 1, 0);
-    GM_FLOAT_OR_INT_PARAM(transform[1], 2, 0);
-    GM_FLOAT_OR_INT_PARAM(transform[2], 3, 0);
-    GM_FLOAT_OR_INT_PARAM(transform[3], 4, 0);
-    GM_FLOAT_OR_INT_PARAM(transform[4], 5, 0);
-    GM_FLOAT_OR_INT_PARAM(transform[5], 6, 0);
+    GM_FLOAT_OR_INT_PARAM(t0, 1, 0);
+    GM_FLOAT_OR_INT_PARAM(t1, 2, 0);
+    GM_FLOAT_OR_INT_PARAM(t2, 3, 0);
+    GM_FLOAT_OR_INT_PARAM(t3, 4, 0);
+    GM_FLOAT_OR_INT_PARAM(t4, 5, 0);
+    GM_FLOAT_OR_INT_PARAM(t5, 6, 0);
     GM_FLOAT_OR_INT_PARAM(when, 7, 0);
+	float transform[6] = {t0, t1, t2, t3, t4, t5};
     command_create_actor(StringId(type), transform, when);
     return GM_OK;
 }
