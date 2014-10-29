@@ -5,6 +5,10 @@ global bShowShadingEnv = false;
 
 global check_input_debug = function()
 {
+    global debug_index;
+    global bShowProfile;
+    global bShowShadingEnv;
+
     if(input.is_key_just_pressed(input.ESC))
     {
         shut_down();
@@ -31,6 +35,7 @@ global check_input_debug = function()
     graphics.debug_add_axis(0,0,0,0,0,0,10);
     graphics.debug_draw_models();
     graphics.debug_draw_lights();
+    graphics.debug_draw_animation();
 
     if(bShowProfile)
     {
@@ -41,5 +46,5 @@ global check_input_debug = function()
     {
         debug.debug_shading_enviroment(0, 0, 400, 500, "core/common/default");
     }
-}
+};
 

@@ -21,6 +21,18 @@ global create_core = function(id)
         graphics.camera_set_position(0, 10, -10);
         graphics.camera_set_lookat(0, 0, 0);
 
+        local w = get_window_width(); 
+        local h = get_window_height();
+        local x = 1000;
+
+        while(x > 0)
+        {
+            x -= 1;
+            print("x = "+x);
+            gui.draw_image(string_to_id("core/common/logo"), 0, w, h);
+            yield();
+        }
+
         this:stateSet(.splash_state);
     };
 

@@ -92,6 +92,7 @@
   <ItemGroup>
     <ClCompile Include="..\ThirdParty\bgfx\bgfx.cpp" />
     <ClCompile Include="..\ThirdParty\bgfx\image.cpp" />
+    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp" />
     <ClCompile Include="..\ThirdParty\bgfx\renderer_d3d11.cpp" />
     <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp" />
     <ClCompile Include="..\ThirdParty\bgfx\vertexdecl.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="..\ThirdParty\bgfx\fs_clear3.bin.h" />
     <ClInclude Include="..\ThirdParty\bgfx\fs_debugfont.bin.h" />
     <ClInclude Include="..\ThirdParty\bgfx\image.h" />
+    <ClInclude Include="..\ThirdParty\bgfx\ovr.h" />
     <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d.h" />
     <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d11.h" />
     <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h" />

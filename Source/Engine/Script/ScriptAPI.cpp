@@ -540,10 +540,10 @@ static int GM_CDECL imgui_draw_image(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(width, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(height, 3);
-    GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
+    GM_INT_PARAM(align, 4, ImguiAlign::Center);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    tex->bringin(0);
     imguiImage(tex->m_handle, lod, (int)width, (int)height, (ImguiAlign::Enum)align);
     return GM_OK;
 }
@@ -554,7 +554,7 @@ static int GM_CDECL imgui_draw_image_scaled(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(scale, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(aspect, 3);
-    GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
+    GM_INT_PARAM(align, 4, ImguiAlign::Center);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
     if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);

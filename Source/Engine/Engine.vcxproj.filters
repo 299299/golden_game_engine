@@ -372,6 +372,9 @@
     <ClCompile Include="Engine\CommandAPI.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Log.h">
@@ -901,6 +904,9 @@
     </ClInclude>
     <ClInclude Include="Animation\AnimControl.h">
       <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\ovr.h">
+      <Filter>ThirdParty\bgfx</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
