@@ -32,42 +32,9 @@ global create_preview = function(id)
         print("preview enter ---------------> running state ");
         sleep(0.001f);
 
-        local w = get_window_width();
-        local h = get_window_height();  
-        local debug_index = 0;
-        
-        local bShowProfile = false;
         while(true)
         {
-            if(input.is_key_just_pressed(input.F1))
-            {
-                graphics.set_debug_mode(debug_index);
-                debug_index += 1;
-                if(debug_index > 4)
-                {
-                    debug_index = 0;
-                }
-            }
-            else if(input.is_key_just_pressed(input.ESC))
-            {
-                shut_down();
-            }
-            else if(input.is_key_just_pressed(input.F2))
-            {
-                bShowProfile = !bShowProfile;
-            }
-
-            graphics.update_debug_camera();
-            graphics.debug_add_axis(0,0,0,0,0,0,10);
-            graphics.debug_draw_models();
-            graphics.debug_draw_lights();
-            graphics.debug_draw_animation();
-
-            if(bShowProfile)
-            {
-                show_profile();
-            }
-
+            check_input_debug();
             yield();
         }
     };

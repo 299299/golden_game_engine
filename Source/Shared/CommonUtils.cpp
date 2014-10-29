@@ -482,7 +482,11 @@ std::string get_last_string( const std::string& input, char c, int count )
 
 bool str_begin_with( const std::string& str1, const std::string& str2 )
 {
-    return hkString::strNcasecmp(str1.c_str(), str2.c_str(), str2.length()) == 0;
+    return hkString::beginsWithCase(str1.c_str(), str2.c_str());
+}
+bool str_end_with(const std::string& str1, const std::string& str2)
+{
+    return hkString::endsWithCase(str1.c_str(), str2.c_str());
 }
 
 void fixPathSlash( std::string& inout )

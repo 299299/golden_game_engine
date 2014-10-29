@@ -31,16 +31,21 @@ bool ScriptCompiler::process( const std::string& input, const std::string& outpu
     }
 
     std::string script_name = getFileName(input);
-    script_name = "create_" + script_name;
-    //check if this function name is exist or not.
-    gmFunctionObject* rootFunction = vm->BindLibToFunction(stream);
-    vm->ExecuteFunction(rootFunction, 0, true);
-    gmFunctionObject* func = vm->GetGlobals()->Get(vm, script_name.c_str()).GetFunctionObjectSafe();
-    if(!func)
+    //just ignore the include script.
+    if(!str_end_with(script_name, "include"))
     {
-        addError("Script %s function name %s not found!", input.c_str(), script_name.c_str());
-        return false;
+        script_name = "create_" + script_name;
+        //check if this function name is exist or not.
+        gmFunctionObject* rootFunction = vm->BindLibToFunction(stream);
+        vm->ExecuteFunction(rootFunction, 0, true);
+        gmFunctionObject* func = vm->GetGlobals()->Get(vm, script_name.c_str()).GetFunctionObjectSafe();
+        if(!func)
+        {
+            addError("Script %s function name %s not found!", input.c_str(), script_name.c_str());
+            return false;
+        }
     }
+
 
 #if 1
 	//dump the functions of script table

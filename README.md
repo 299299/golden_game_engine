@@ -5,7 +5,7 @@ GameProject for hobby
 ## Info
  Win32 only game project, not targeting a cross-platform or generic game engine.
 
-##Screenshots
+## Screenshots
 
 maya dx11 material
 ![short_0](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/maya_dx11.jpg)
@@ -23,10 +23,10 @@ webtool for monitor engine runtime
 from level to engine & script hot reload.
 ![short_5](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipline_tool.jpg)
 
-animation and locomotion marker
+animation and bone attachment
 ![short_6](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/animation.jpg)
 
-##Dependencies
+## Dependencies
 1. **Graphics**: bgfx (https://github.com/bkaradzic/bgfx)
 2. **Physics**:  Havok free PC SDK (https://software.intel.com/sites/havok/en/)
 3. **Animation**: Havok free PC SDK (https://software.intel.com/sites/havok/en/)

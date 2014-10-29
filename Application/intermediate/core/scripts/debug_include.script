@@ -1,0 +1,45 @@
+
+global debug_index = 0;
+global bShowProfile = false;
+global bShowShadingEnv = false;
+
+global check_input_debug = function()
+{
+    if(input.is_key_just_pressed(input.ESC))
+    {
+        shut_down();
+    }
+    else if(input.is_key_just_pressed(input.F1))
+    {
+        graphics.set_debug_mode(debug_index);
+        debug_index += 1;
+        if(debug_index > 4)
+        {
+            debug_index = 0;
+        }
+    }
+    else if(input.is_key_just_pressed(input.F2))
+    {
+        bShowProfile = !bShowProfile;
+    }
+    else if(input.is_key_just_pressed(input.F3))
+    {
+        bShowShadingEnv = !bShowShadingEnv;
+    }
+
+    graphics.update_debug_camera();
+    graphics.debug_add_axis(0,0,0,0,0,0,10);
+    graphics.debug_draw_models();
+    graphics.debug_draw_lights();
+
+    if(bShowProfile)
+    {
+        show_profile();
+    }
+
+    if(bShowShadingEnv)
+    {
+        debug.debug_shading_enviroment(0, 0, 400, 500, "core/common/default");
+    }
+}
+

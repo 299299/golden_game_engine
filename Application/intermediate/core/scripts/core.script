@@ -100,58 +100,11 @@ global create_core = function(id)
     core.loaded_state = function()
     {
         print("enter ---------------> loaded state ");
-
         world.load_level(string_to_id("world0/Level_Test"));
-
-        local w = get_window_width();
-        local h = get_window_height();  
-        local debug_index = 0;
-        
         .fade_in(1.5);
-
-        local bShowProfile = false;
-        local bShowShadingEnv = false;
-        .scroll = 0.0;
-
         while(true)
         {
-            if(input.is_key_just_pressed(input.F1))
-            {
-                graphics.set_debug_mode(debug_index);
-                debug_index += 1;
-                if(debug_index > 4)
-                {
-                    debug_index = 0;
-                }
-            }
-            else if(input.is_key_just_pressed(input.ESC))
-            {
-                shut_down();
-            }
-            else if(input.is_key_just_pressed(input.F2))
-            {
-                bShowProfile = !bShowProfile;
-            }
-            else if(input.is_key_just_pressed(input.F3))
-            {
-                bShowShadingEnv = !bShowShadingEnv;
-            }
-
-            graphics.update_debug_camera();
-            graphics.debug_add_axis(0,0,0,0,0,0,10);
-            graphics.debug_draw_models();
-            graphics.debug_draw_lights();
-            if(bShowShadingEnv)
-            {
-                debug.debug_shading_enviroment(0, 0, 400, 500, "core/common/default");
-            }
-            
-
-            if(bShowProfile)
-            {
-                show_profile();
-            }
-
+            check_input_debug();
             yield();
         }  
     };
