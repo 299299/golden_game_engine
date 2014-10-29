@@ -1,5 +1,6 @@
 GameProject for hobby
 ===========
+![logo](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/logo.png)
 
 ## Info
  Win32 only game project, not targeting a cross-platform or generic game engine.
