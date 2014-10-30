@@ -92,7 +92,6 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     uint32_t                        m_numControls;
     char*                           m_blob;
     ActorId32                       m_actor;
-    bool                            m_applyRootmotion;
 
     void init(const void* resource);
     void destroy();

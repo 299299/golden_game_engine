@@ -185,6 +185,7 @@ void AnimationSystem::update_animations(float dt)
     }
 }
 
+#if 0
 void AnimationSystem::apply_animation_rootmotion( Actor* actors, uint32_t num, float dt )
 {
 	PROFILE(Animation_ApplyRootmotion);
@@ -211,6 +212,7 @@ void AnimationSystem::apply_animation_rootmotion( Actor* actors, uint32_t num, f
 		proxy->m_targetVelocity.setMul4 (1.0f / dt, desiredMotionWorld );
 	}
 }
+#endif
 
 void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 {

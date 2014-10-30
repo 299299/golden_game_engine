@@ -115,7 +115,6 @@ int AnimRig::find_animation_index( const StringId& name ) const
 void AnimRigInstance::init( const void* resource )
 {
     m_attachmentTransforms = 0;
-    m_applyRootmotion = true;
     m_resource = (const AnimRig*)resource;
     const hkaSkeleton* skeleton = m_resource->m_skeleton;
     uint32_t numAnimations = m_resource->m_numAnimations;
@@ -222,7 +221,6 @@ void AnimRigInstance::test_animation(const char* name)
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
     ac->set_loop(true);
     ac->removeReference();
-    m_applyRootmotion = false;
 }
 
 hk_anim_ctrl* AnimRigInstance::get_control( int index ) const
