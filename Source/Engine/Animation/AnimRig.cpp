@@ -214,7 +214,7 @@ bool AnimRigInstance::is_playing_animation(int index) const
 
 void AnimRigInstance::test_animation(const char* name)
 {
-    Animation* anim = FIND_RESOURCE(Animation, StringId(name));
+    Animation* anim = FIND_RESOURCE_NAMED(Animation, name);
     if(!anim) return;
     hk_anim_ctrl* ac = new hk_anim_ctrl(anim);
     ac->easeIn(0.0f);

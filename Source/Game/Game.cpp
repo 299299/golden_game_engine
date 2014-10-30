@@ -14,6 +14,7 @@
 #include "Actor.h"
 #include "Level.h"
 #include "AnimRig.h"
+#include "PhysicsWorld.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -127,24 +128,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
     Graphics::ready();
     g_debugDrawMgr.ready();
+    g_physicsWorld.create_world(FIND_RESOURCE_NAMED(PhysicsConfig, "core/global"));
+    g_physicsWorld.create_plane(500.0f);
 
     if(package_name) g_resourceMgr.load_package_and_wait(package_name);
-    if(script) 
-    {
-        LOGI("run script ----> %s", script);
-        extern Id create_script_object(const void*, ActorId32);
-        create_script_object(FIND_RESOURCE(ScriptResource, StringId(script)), INVALID_U32);
-    }
 
     if(actor_name) 
     {
         printf("loading actor %s \n", actor_name);
-        g_actor = g_actorWorld.create_actor(FIND_RESOURCE(ActorResource, StringId(actor_name)), hkQsTransform::getIdentity());
+        g_actor = g_actorWorld.create_actor(
+                    FIND_RESOURCE_NAMED(ActorResource, actor_name), 
+                    hkQsTransform::getIdentity());
     }
     if(level_name)
     {
         printf("loading level %s \n", level_name);
-        Level* level = FIND_RESOURCE(Level, StringId(level_name));
+        Level* level = FIND_RESOURCE_NAMED(Level, level_name);
         if(level) level->load();
     }
 
@@ -164,14 +163,13 @@ int _tmain(int argc, _TCHAR* argv[])
         }
     }
 
-    //---------------------------------------------------------
-    // funny hack here
-    extern uint32_t num_render_lights();
-    if(num_render_lights() == 0)
+
+    if(script) 
     {
-        g_actorWorld.create_actor(StringId("core/common/sun"), hkQsTransform::getIdentity());
+        LOGI("run script ----> %s", script);
+        extern Id create_script_object(const void*, ActorId32);
+        create_script_object(FIND_RESOURCE_NAMED(ScriptResource, script), INVALID_U32);
     }
-    //---------------------------------------------------------
 
     g_engine.run();
     quitWebServerTool();

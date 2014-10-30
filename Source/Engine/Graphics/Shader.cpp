@@ -82,5 +82,5 @@ ShaderProgram* find_shader( const char* name )
 {
     char buf[256];
     sprintf_s(buf, PROGRAM_PATH"%s", name);
-    return FIND_RESOURCE(ShaderProgram, StringId(buf));
+    return FIND_RESOURCE_NAMED(ShaderProgram, buf);
 }

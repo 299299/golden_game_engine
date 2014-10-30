@@ -557,7 +557,7 @@ static int GM_CDECL imgui_draw_image_scaled(gmThread* a_thread)
     GM_INT_PARAM(align, 4, ImguiAlign::Center);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    tex->bringin(0);
     imguiImage(tex->m_handle, lod, scale, aspect, (ImguiAlign::Enum)align);
     return GM_OK;
 }
@@ -572,7 +572,7 @@ static int GM_CDECL imgui_draw_image_channel(gmThread* a_thread)
     GM_INT_PARAM(align, 5, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    tex->bringin(0);
     imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, (int)width, (int)height, (ImguiAlign::Enum)align);
     return GM_OK;
 }
@@ -587,7 +587,7 @@ static int GM_CDECL imgui_draw_image_channel_scaled(gmThread* a_thread)
     GM_INT_PARAM(align, 5, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
-    if(!bgfx::isValid(tex->m_handle)) tex->bringin(0);
+    tex->bringin(0);
     imguiImageChannel(tex->m_handle, (uint8_t)channel, lod, scale, aspect, (ImguiAlign::Enum)align);
     return GM_OK;
 }

@@ -164,5 +164,5 @@ private:
 extern ResourceManager      g_resourceMgr;
 
 #define FIND_RESOURCE(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), name))
-
+#define FIND_RESOURCE_NAMED(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), StringId(name)))
 

@@ -54,13 +54,13 @@ extern void* get_anim_rig(Id id);
 static void on_command_load_level(const Command& cmd)
 {
     StringId level_name = *((StringId*)cmd.m_params);
-    Level* level = FIND_RESOURCE(Level, StringId(level_name));
+    Level* level = FIND_RESOURCE_NAMED(Level, level_name);
     if(level) level->load();
 }
 static void on_command_unload_level(const Command& cmd)
 {
     StringId level_name = *((StringId*)cmd.m_params);
-    Level* level = FIND_RESOURCE(Level, StringId(level_name));
+    Level* level = FIND_RESOURCE_NAMED(Level, level_name);
     if(level) level->unload();
 }
 static void on_command_create_actor(const Command& cmd)

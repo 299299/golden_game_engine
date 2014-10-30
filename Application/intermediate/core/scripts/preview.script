@@ -10,8 +10,6 @@ global create_preview = function(id)
         print("preview start.");
         .shading_env = resource.find_resource(string_to_id("shading_enviroment"), string_to_id("core/common/default"));
         world.set_shading_enviroment(.shading_env);
-        physics.create_world(string_to_id("core/global"));
-        physics.create_plane(500);
         graphics.camera_set_position(-5, 5, 0);
         graphics.camera_set_lookat(0, 0, 0);
         world.create_actor(string_to_id("core/common/cube"), 1, 1, 0, 0, 0, 0, 1, 2, 1, 0);

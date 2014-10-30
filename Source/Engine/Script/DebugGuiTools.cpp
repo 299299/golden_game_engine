@@ -159,7 +159,7 @@ static int GM_CDECL script_light_debug_gui(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
     GM_CHECK_STRING_PARAM(light_name, 4);
-    LightResource* lt = FIND_RESOURCE(LightResource, StringId(light_name));
+    LightResource* lt = FIND_RESOURCE_NAMED(LightResource, light_name);
     if(!lt) return GM_OK;
     static int scroll = 0;
     imguiBeginScrollArea("light", (int)x, (int)y, (int)w, (int)h, &scroll);
@@ -176,7 +176,7 @@ static int GM_CDECL script_shading_enviroment_debug_gui(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(w, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(h, 3);
     GM_CHECK_STRING_PARAM(shading_name, 4);
-    ShadingEnviroment* shading_env = FIND_RESOURCE(ShadingEnviroment, StringId(shading_name));
+    ShadingEnviroment* shading_env = FIND_RESOURCE_NAMED(ShadingEnviroment, shading_name);
     if(!shading_env) return GM_OK;
     static int scroll = 0;
     imguiBeginScrollArea("shading_enviroment", (int)x, (int)y, (int)w, (int)h, &scroll);
