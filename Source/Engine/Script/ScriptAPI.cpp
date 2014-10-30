@@ -729,15 +729,22 @@ static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
     g_debugDrawMgr.add_grid(grid_num, grid_width, color, depth);
     return GM_OK;
 }
+static uint32_t g_debug_mode = BGFX_DEBUG_TEXT;
 static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_INT_PARAM(mode, 0);
-    static uint32_t debug_modes[] = 
-    {
-        BGFX_DEBUG_NONE, BGFX_DEBUG_TEXT, BGFX_DEBUG_STATS, BGFX_DEBUG_IFH, BGFX_DEBUG_WIREFRAME, 
-    };
-    bgfx::setDebug(debug_modes[mode]);
+    g_debug_mode |= (1 << mode);
+    bgfx::setDebug(g_debug_mode);
+    return GM_OK;
+}
+static int GM_CDECL graphics_set_wireframe(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(wireframe, 0);
+    if(wireframe) ADD_BITS(g_debug_mode, BGFX_DEBUG_WIREFRAME);
+    else REMOVE_BITS(g_debug_mode, BGFX_DEBUG_WIREFRAME);
+    bgfx::setDebug(g_debug_mode);
     return GM_OK;
 }
 static int GM_CDECL graphics_update_debug_camera(gmThread* a_thread)
@@ -1248,6 +1255,7 @@ void register_script_api(gmMachine* machine)
         {"debug_add_sphere", debug_draw_add_circle},
         {"debug_add_grid", debug_draw_add_grid},
         {"set_debug_mode", graphics_set_debug_mode},
+        {"set_wireframe", graphics_set_wireframe},
         {"update_debug_camera", graphics_update_debug_camera},
         {"debug_draw_models", debug_draw_models},
         {"debug_draw_lights", debug_draw_lights},
