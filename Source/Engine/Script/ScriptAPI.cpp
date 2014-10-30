@@ -125,7 +125,7 @@ static int GM_CDECL script_require(gmThread* a_thread)
 static int GM_CDECL get_component_instance_num(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
-    GM_CHECK_STRING_PARAM(comp_name, 0);
+    GM_CHECK_INT_PARAM(comp_name, 0);
     int type = find_component_type(StringId(comp_name));
     int nRet = 0;
     if(type >= 0) nRet = num_components(type);
@@ -549,7 +549,7 @@ static int GM_CDECL imgui_draw_image(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(width, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(height, 3);
-    GM_INT_PARAM(align, 4, ImguiAlign::Center);
+    GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
     tex->bringin(0);
@@ -563,7 +563,7 @@ static int GM_CDECL imgui_draw_image_scaled(gmThread* a_thread)
     GM_CHECK_FLOAT_OR_INT_PARAM(lod, 1);
     GM_CHECK_FLOAT_OR_INT_PARAM(scale, 2);
     GM_CHECK_FLOAT_OR_INT_PARAM(aspect, 3);
-    GM_INT_PARAM(align, 4, ImguiAlign::Center);
+    GM_INT_PARAM(align, 4, ImguiAlign::LeftIndented);
     Texture* tex = FIND_RESOURCE(Texture, StringId(image_name));
     if(!tex) return GM_OK;
     tex->bringin(0);

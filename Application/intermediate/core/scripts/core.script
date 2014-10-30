@@ -8,6 +8,7 @@ global create_core = function(id)
     core.start = function()
     {
         print("game core start.");
+
         .shading_env = resource.find_resource(string_to_id("shading_enviroment"), string_to_id("core/common/default"));
         world.set_shading_enviroment(.shading_env);
 
@@ -15,25 +16,8 @@ global create_core = function(id)
         global g_package_loading = string_to_id(package_name);
         resource.load_package(package_name);
 
-        if(num_components(string_to_id("light")) == 0)
-        {
-            world.create_actor(string_to_id("core/common/sun"));
-        }
-
         graphics.camera_set_position(0, 10, -10);
         graphics.camera_set_lookat(0, 0, 0);
-
-        local w = get_window_width(); 
-        local h = get_window_height();
-        local x = 1000;
-
-        while(x > 0)
-        {
-            x -= 1;
-            print("x = "+x);
-            gui.draw_image(string_to_id("core/common/logo"), 0, w, h);
-            yield();
-        }
 
         this:stateSet(.splash_state);
     };
@@ -89,6 +73,18 @@ global create_core = function(id)
     {
         print("enter ---------------> splash state ");
 
+        local w = get_window_width(); 
+        local h = get_window_height();
+        local x = 200;
+
+        while(x > 0)
+        {
+            x -= 1;
+            print("x = "+x);
+            gui.draw_image(string_to_id("core/common/logo"), 0, w, h);
+            yield();
+        }
+
         while( true )
         {
             local w = get_window_width(); 
@@ -116,14 +112,18 @@ global create_core = function(id)
         print("enter ---------------> loaded state ");
         world.load_level(string_to_id("world0/Level_Test"));
         .fade_in(1.5);
+
+        if(num_components(string_to_id("light")) == 0)
+        {
+            world.create_actor(string_to_id("core/common/sun"));
+        }
+
         while(true)
         {
             check_input_debug();
             yield();
         }  
     };
-
-    print("core ver 1!");
 
     return core;
 };

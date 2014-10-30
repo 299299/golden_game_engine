@@ -12,9 +12,9 @@
 #define COMMON_ASSET_PATH       INTERMEDIATE_PATH"core/common/"
 #define ROOT_DATA               ("data")
 #define ROOT_DATA_PATH          ("data/")
-#define DDS_FORMAT              ("bc1")
-#define DDS_NM_FORMAT           ("bc5n")
-#define DDS_ALPHA_FORMAT        ("bc1a")
+#define DDS_FORMAT              ("DXT1")
+#define DDS_NM_FORMAT           ("DXT5")
+#define DDS_ALPHA_FORMAT        ("DXT5")
 #define NVTT_PATH               ("nvcompress.exe")
 #define TEXCONV_PATH            ("texconv.exe")
 #define SHADERC_PATH            ("shaderc.exe")

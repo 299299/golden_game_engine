@@ -46,12 +46,9 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     std::string ddsFile = getFilePath(output) + fileName + ".dds";
     std::string fileNameExt = getFileNameAndExtension(input);
     toLower(fileNameExt);
-    //bad here nvtt do not support skydome.jpg like this.
-    if(fileNameExt == "sky.jpg") texconv_compress(input, getFilePath(output), "DXT1");
-    else nvtt_compress(input, ddsFile, m_format);
+    texconv_compress(input, getFilePath(output), m_format);
     addDependency("texture", input);
     
-
     //2. read the dds file back
     FileReader texutreReader(ddsFile);
     if(!texutreReader.m_size) return false;
