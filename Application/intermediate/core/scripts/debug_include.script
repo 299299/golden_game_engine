@@ -1,12 +1,12 @@
 
 global debug_index = 0;
-global bShowProfile = false;
+global bDrawProfile = false;
 global bShowShadingEnv = false;
 
 global check_input_debug = function()
 {
     global debug_index;
-    global bShowProfile;
+    global bDrawProfile;
     global bShowShadingEnv;
 
     if(input.is_key_just_pressed(input.ESC))
@@ -24,7 +24,7 @@ global check_input_debug = function()
     }
     else if(input.is_key_just_pressed(input.F2))
     {
-        bShowProfile = !bShowProfile;
+        bDrawProfile = !bDrawProfile;
     }
     else if(input.is_key_just_pressed(input.F3))
     {
@@ -37,9 +37,9 @@ global check_input_debug = function()
     graphics.debug_draw_lights();
     graphics.debug_draw_animation();
 
-    if(bShowProfile)
+    if(bDrawProfile)
     {
-        show_profile();
+        draw_profile();
     }
 
     if(bShowShadingEnv)

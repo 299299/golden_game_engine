@@ -12,6 +12,12 @@ global create_animation = function(id)
         world.set_shading_enviroment(.shading_env);
         graphics.camera_set_position(0, 10, -10);
         graphics.camera_set_lookat(0, 0, 0);
+
+        if(num_components(string_to_id("light")) == 0)
+        {
+            world.create_actor(string_to_id("core/common/sun"));
+        }
+        
         this:stateSet(.running_state);
     };
 

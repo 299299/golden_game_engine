@@ -17,6 +17,12 @@ global create_preview = function(id)
         world.create_actor(string_to_id("core/common/cube"), 3, 1, 0, 0, 0, 0, 1, 2, 1, 2);
         world.create_actor(string_to_id("core/common/cube"), 4, 1, 0, 0, 0, 0, 1, 2, 1, 0.5);
         world.create_actor(string_to_id("core/common/cube"), 5, 1, 0, 0, 0, 0, 1, 2, 1, 5);
+
+        if(num_components(string_to_id("light")) == 0)
+        {
+            world.create_actor(string_to_id("core/common/sun"));
+        }
+        
         this:stateSet(.running_state);
     };
 

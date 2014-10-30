@@ -105,7 +105,7 @@ static int GM_CDECL begin_profile(gmThread* a_thread)
     return GM_OK;
 }
 SIMPLE_FUNC_REG(g_profiler.end_block(), end_profile);
-static int GM_CDECL show_profile(gmThread* a_thread)
+static int GM_CDECL script_draw_profile(gmThread* a_thread)
 {
     GM_INT_PARAM(show_unused, 0, 0);
     GM_INT_PARAM(show_total, 1, 0);
@@ -127,8 +127,17 @@ static int GM_CDECL get_component_instance_num(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(1);
     GM_CHECK_STRING_PARAM(comp_name, 0);
     int type = find_component_type(StringId(comp_name));
-    if(type < 0) a_thread->PushInt(0);
-    else a_thread->PushInt(num_components(type));
+    int nRet = 0;
+    if(type >= 0) nRet = num_components(type);
+    a_thread->PushInt(nRet);
+    return GM_OK;
+}
+static int GM_CDECL script_msg_box(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_STRING_PARAM(text, 0);
+    GM_CHECK_STRING_PARAM(title, 1);
+    msg_box(text, title);
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -1101,9 +1110,10 @@ void register_script_api(gmMachine* machine)
         {"rgba_to_int", rgba_to_int },
         {"begin_profile", begin_profile},
         {"end_profile", end_profile},
-        {"show_profile", show_profile},
+        {"draw_profile", script_draw_profile},
         {"require", script_require},
         {"num_components", get_component_instance_num},
+        {"msg_box", script_msg_box},
 #ifndef _RETAIL
         {"id_to_string", id_to_string},
 #endif
