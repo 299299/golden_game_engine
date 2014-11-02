@@ -220,8 +220,8 @@ void DebugFPSCamera::update(float dt)
         bMove = true;
     }
 
-    if(!bMove && !bRotating) 
-        return;
+    if(!bMove && !bRotating) return;
+
     bx::vec3Add(at, eye, direction);
     bx::vec3Cross(up, right, direction);
     sync();
@@ -249,7 +249,7 @@ void debug_update_vdb_camera(const char* name)
     hkVector4 from, to, up;
     transform_vec3(from, g_camera.m_eye);
     transform_vec3(to, g_camera.m_at);
-    transform_vec3(to, g_camera.m_up);
+    transform_vec3(up, g_camera.m_up);
     HK_DISPLAY_STAR(from, 1.0f, hkColor::RED);
     HK_UPDATE_CAMERA(from, to, up, g_camera.m_near, g_camera.m_far, g_camera.m_fov, name);
 }

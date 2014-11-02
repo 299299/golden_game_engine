@@ -53,8 +53,7 @@ class NagaPipeline(object):
     # Callbacks
     #
     def onSceneChanged(self):
-        displayName = '*** %s ***' % NAGA.getSceneName()
-        cmds.text(self.nameText, e=1, label=displayName)
+        self.updateUIByData()
 
     #
     # GUI FUNCTIONS
@@ -91,16 +90,6 @@ class NagaPipeline(object):
         for packageName in self.naga.getPackageList():
             cmds.menuItem(label=packageName)
 
-        last_hko = NAGA.readHistory('last_hko_type')
-        last_rig = NAGA.readHistory('last_rig_type')
-        last_package = NAGA.readHistory('last_package_type')
-        print('last_hko=%d' % last_hko)
-        print('last_rig=%d' % last_rig)
-        print('last_package=%d' % last_package)
-        cmds.optionMenuGrp(self.hkoTypeGroup, e=1, sl=last_hko)
-        cmds.optionMenuGrp(self.rigTypeGroup, e=1, sl=last_rig)
-        cmds.optionMenuGrp(self.packageGroup, e=1, sl=last_package)
-
         cmds.setParent('..')
 
         cmds.frameLayout(l="Util", cll=1)
@@ -129,9 +118,11 @@ class NagaPipeline(object):
                     c=self.onExportButtonClicked)
         cmds.setParent('..')
         cmds.showWindow(UI_NAME)
+        #
+        self.updateUIByData()
 
     def onPreviewButtonClicked(self, *arg):
-        self.preview('preview')
+        self.preview(NAGA.getSceneName())
 
     def isSelectOnly(self):
         return cmds.checkBox(self.selectCheck, q=1, v=1)
@@ -148,6 +139,21 @@ class NagaPipeline(object):
 
     def onExportButtonClicked(self, *arg):
         self.export(NAGA.getSceneName())
+
+    def updateUIByData(self):
+        #
+        displayName = '*** %s ***' % NAGA.getSceneName()
+        cmds.text(self.nameText, e=1, label=displayName)
+        #
+        last_hko = NAGA.readHistory('last_hko_type')
+        last_rig = NAGA.readHistory('last_rig_type')
+        last_package = NAGA.readHistory('last_package_type')
+        print('last_hko=%d' % last_hko)
+        print('last_rig=%d' % last_rig)
+        print('last_package=%d' % last_package)
+        cmds.optionMenuGrp(self.hkoTypeGroup, e=1, sl=last_hko)
+        cmds.optionMenuGrp(self.rigTypeGroup, e=1, sl=last_rig)
+        cmds.optionMenuGrp(self.packageGroup, e=1, sl=last_package)
 
     #
     # UTIL FUNCTIONS

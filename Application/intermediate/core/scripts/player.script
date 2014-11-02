@@ -21,8 +21,17 @@ global create_player = function(id)
         print("player enter ---------------> idle_state ");
         sleep(0.001f);
 
+        print("ease in animation");
+        world.actor_ease_in_animation(.self, 0);
+
         while(true)
         {
+            if(input.is_key_down(UP))
+            {
+                world.actor_easeout_layers(.self, 0);
+                this:stateSet(.move_state);
+            }
+
             yield();
         }
     };
@@ -34,7 +43,18 @@ global create_player = function(id)
 
     player.move_state = function()
     {
+        world.actor_ease_in_animation(.self, 1);
 
+        while(true)
+        {
+            if(!input.is_key_down(UP))
+            {
+                world.actor_easeout_layers(.self, 0);
+                this:stateSet(.idle_state);
+            }
+
+            yield();
+        }
     };
 
     return player;

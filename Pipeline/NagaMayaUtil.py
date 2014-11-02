@@ -231,6 +231,7 @@ def addEnumAttr(node_name, attr_name, enum_values):
 
 
 def createEngineNode(node_name, deleteOld=False):
+    print("create engine node = " + node_name)
     findNodeOrCreate(ENGINE_GROUP)
     node = findNodeOrCreate(node_name, ENGINE_GROUP)
     if node:
