@@ -26,7 +26,7 @@ global create_player = function(id)
 
         while(true)
         {
-            if(input.is_key_down(UP))
+            if(input.is_key_down(input.UP))
             {
                 world.actor_easeout_layers(.self, 0);
                 this:stateSet(.move_state);
@@ -47,7 +47,7 @@ global create_player = function(id)
 
         while(true)
         {
-            if(!input.is_key_down(UP))
+            if(!input.is_key_down(input.UP))
             {
                 world.actor_easeout_layers(.self, 0);
                 this:stateSet(.idle_state);

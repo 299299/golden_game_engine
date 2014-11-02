@@ -1025,7 +1025,7 @@ static int GM_CDECL actor_easeout_layers(gmThread* a_thread)
     GM_CHECK_NUM_PARAMS(2);
     GM_CHECK_INT_PARAM(actor_id, 0);
     GM_CHECK_INT_PARAM(layer, 1);
-    GM_CHECK_FLOAT_PARAM(blend_time, 2, 0.2f);
+    GM_FLOAT_PARAM(blend_time, 2, 0.2f);
     GM_FLOAT_PARAM(when, 3, 0.0f);
     GM_INT_PARAM(type, 4, kEaseCurveSmooth);
     command_easeout_layers(actor_id, layer, blend_time, type, when);

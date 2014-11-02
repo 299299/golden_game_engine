@@ -49,7 +49,8 @@ extern void* get_anim_rig(Id id);
     AnimRigInstance* inst = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
 #define GET_CONTROL_FROM_CMD()\
     GET_RIG_FROM_CMD();\
-    hk_anim_ctrl* control = inst->get_control(params->m_int[0]);
+    hk_anim_ctrl* control = inst->get_control(params->m_int[0]);\
+    if(!control) return;
 
 static void on_command_load_level(const Command& cmd)
 {
