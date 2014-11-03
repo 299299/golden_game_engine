@@ -730,11 +730,16 @@ static int GM_CDECL debug_draw_add_grid(gmThread* a_thread)
     return GM_OK;
 }
 static uint32_t g_debug_mode = BGFX_DEBUG_TEXT;
+static uint32_t modes[] = {BGFX_DEBUG_IFH, BGFX_DEBUG_STATS, BGFX_DEBUG_TEXT};
 static int GM_CDECL graphics_set_debug_mode(gmThread* a_thread)
 {
     GM_CHECK_NUM_PARAMS(1);
-    GM_CHECK_INT_PARAM(mode, 0);
-    g_debug_mode |= (1 << mode);
+    GM_CHECK_INT_PARAM(index, 0);
+    uint32_t mode = modes[index];
+    bool wireframe = HAS_BITS(g_debug_mode, BGFX_DEBUG_WIREFRAME);
+    g_debug_mode = mode;
+    if(wireframe) ADD_BITS(g_debug_mode, BGFX_DEBUG_WIREFRAME);
+    else REMOVE_BITS(g_debug_mode, BGFX_DEBUG_WIREFRAME);
     bgfx::setDebug(g_debug_mode);
     return GM_OK;
 }
@@ -996,7 +1001,7 @@ static int GM_CDECL actor_ease_in_animation(gmThread* a_thread)
     GM_INT_PARAM(layer, 4, 0);
     GM_FLOAT_PARAM(when, 5, 0.0f);
     GM_INT_PARAM(type, 6, kEaseCurveSmooth);
-    command_easein_animation(actor_id, index, blend_time, looped, layer, type, when);
+    command_easein_animation(actor_id, index, blend_time, layer, looped, type, when);
     return GM_OK;
 }
 static int GM_CDECL actor_ease_out_animation(gmThread* a_thread)
@@ -1062,31 +1067,63 @@ static int GM_CDECL actor_set_animation_time(gmThread* a_thread)
     command_set_animation_time(actor_id, index, time, when);
     return GM_OK;
 }
+#define ACTOR_ANIM_GET(param_num)\
+        GM_CHECK_NUM_PARAMS(param_num);\
+        GM_CHECK_INT_PARAM(actor_id, 0);\
+        GM_CHECK_INT_PARAM(index, 1);\
+        SCRIPT_GET_ANIM_RIG();\
+        return GM_OK;
+
 static int GM_CDECL actor_get_animation_weight(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(2);
-    GM_CHECK_INT_PARAM(actor_id, 0);
-    GM_CHECK_INT_PARAM(index, 1);
-    SCRIPT_GET_ANIM_RIG();
+    ACTOR_ANIM_GET(2);
     a_thread->PushFloat(rig->get_animation_weight(index));
     return GM_OK;
 }
 static int GM_CDECL actor_get_animation_speed(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(2);
-    GM_CHECK_INT_PARAM(actor_id, 0);
-    GM_CHECK_INT_PARAM(index, 1);
-    SCRIPT_GET_ANIM_RIG();
+    ACTOR_ANIM_GET(2);
     a_thread->PushFloat(rig->get_animation_speed(index));
     return GM_OK;
 }
 static int GM_CDECL actor_get_animation_time(gmThread* a_thread)
 {
-    GM_CHECK_NUM_PARAMS(2);
-    GM_CHECK_INT_PARAM(actor_id, 0);
-    GM_CHECK_INT_PARAM(index, 1);
-    SCRIPT_GET_ANIM_RIG();
+    ACTOR_ANIM_GET(2);
     a_thread->PushFloat(rig->get_animation_time(index));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_closest_beat(gmThread* a_thread)
+{
+    ACTOR_ANIM_GET(2);
+    a_thread->PushInt(rig->get_closest_beat(index));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_first_beat(gmThread* a_thread)
+{
+    ACTOR_ANIM_GET(3);
+    GM_CHECK_INT_PARAM(type, 2);
+    a_thread->PushInt(rig->get_first_beat(index, type));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_beat_time(gmThread* a_thread)
+{
+    ACTOR_ANIM_GET(3);
+    GM_CHECK_INT_PARAM(beat_index, 2);
+    a_thread->PushFloat(rig->get_beat_time(index, beat_index));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_beat_type(gmThread* a_thread)
+{
+    ACTOR_ANIM_GET(3);
+    GM_CHECK_INT_PARAM(beat_index, 2);
+    a_thread->PushInt(rig->get_beat_type(index, beat_index));
+    return GM_OK;
+}
+static int GM_CDECL actor_get_animation_next_sync_time(gmThread* a_thread)
+{
+    ACTOR_ANIM_GET(3);
+    GM_CHECK_INT_PARAM(index_1, 2);
+    a_thread->PushFloat(rig->next_anim_sync_time(index, index_1));
     return GM_OK;
 }
 //-------------------------------------------------------------------------
@@ -1309,6 +1346,11 @@ void register_script_api(gmMachine* machine)
         {"actor_get_animation_weight", actor_get_animation_weight},
         {"actor_get_animation_speed", actor_get_animation_speed},
         {"actor_get_animation_time", actor_get_animation_time},
+        {"actor_get_animation_closest_beat", actor_get_animation_closest_beat},
+        {"actor_get_animation_first_beat", actor_get_animation_first_beat},
+        {"actor_get_animation_beat_time", actor_get_animation_beat_time},
+        {"actor_get_animation_beat_type", actor_get_animation_beat_type},
+        {"actor_get_animation_next_sync_time", actor_get_animation_next_sync_time},
     };
     static gmVariableEntry s_world_values[] =
     {

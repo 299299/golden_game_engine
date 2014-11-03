@@ -110,5 +110,10 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     void  get_rootmotion(int index, float dt, hkQsTransform& t) const;
     bool  is_playing_animation() const;
     bool  is_playing_animation(int index) const;
+    float get_beat_time(int index, int beat_index) const;
+    int   get_beat_type(int index, int beat_index) const;
+    int   get_closest_beat(int index) const;
+    int   get_first_beat(int index, int type) const;
+    float next_anim_sync_time(int indexA, int indexB) const;
     //----------------------------------------------------------------------
 }; 

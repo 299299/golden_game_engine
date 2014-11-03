@@ -83,7 +83,11 @@ static void on_command_destroy_actor(const Command& cmd)
 static void on_command_easein_animation(const Command& cmd)
 {
     GET_CONTROL_FROM_CMD();
-    if(!control->m_enabled) inst->m_skeleton->addAnimationControl(control);
+    if(!control->m_enabled) 
+    {
+        inst->m_skeleton->addAnimationControl(control);
+        control->m_enabled = true;
+    }
     control->m_layer = params->m_int[1];
     control->set_loop(params->m_int[2]);
     control->ease_in(params->m_float, params->m_int[3]);

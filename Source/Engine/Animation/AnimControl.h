@@ -41,9 +41,7 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 			deltaMotionOut.m_translation.setZero4();
 			break;
 		case kMotionIgnoreAll:
-			return;
-		default:
-			return;
+		default: return;
 		}
 	}
 

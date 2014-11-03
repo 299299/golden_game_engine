@@ -219,6 +219,7 @@ void AnimRigInstance::test_animation(const char* name)
     ac->easeIn(0.0f);
     m_skeleton->addAnimationControl(ac);
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
+    ac->m_enabled = true;
     ac->set_loop(true);
     ac->removeReference();
 }
@@ -268,5 +269,40 @@ void AnimRigInstance::get_rootmotion(float dt, hkQsTransform& t ) const
 void AnimRigInstance::get_rootmotion( int index, float dt, hkQsTransform& t ) const
 {
     m_controls[index]->getExtractedMotionDeltaReferenceFrame(dt, t);
+}
+
+float AnimRigInstance::get_beat_time( int index, int beat_index ) const
+{
+    return m_controls[index]->m_animation->get_beat(beat_index).m_time;
+}
+
+int AnimRigInstance::get_beat_type( int index, int beat_index ) const
+{
+    return m_controls[index]->m_animation->get_beat(beat_index).m_type;
+}
+
+int AnimRigInstance::get_closest_beat( int index ) const
+{
+    hk_anim_ctrl* ac = m_controls[index];
+    return ac->m_animation->find_next_closest_beat(ac->getLocalTime(), ac->is_loop());
+}
+
+int AnimRigInstance::get_first_beat( int index, int type ) const
+{
+    return m_controls[index]->m_animation->find_first_beat(type);
+}
+
+float AnimRigInstance::next_anim_sync_time( int indexA, int indexB ) const
+{
+    hk_anim_ctrl* acA = m_controls[indexA];
+    hk_anim_ctrl* acB = m_controls[indexB];
+    Animation* animA = acA->m_animation;
+    Animation* animB = acB->m_animation;
+    int beat_index = animA->find_next_closest_beat(acA->getLocalTime(), acA->is_loop());
+    if(beat_index < 0) return -1;
+    int beat_type = animA->get_beat(beat_index).m_type;
+    beat_index = animB->find_first_beat(beat_type);
+    if(beat_index < 0) return -1;
+    return animB->get_beat(beat_index).m_time;
 }
 

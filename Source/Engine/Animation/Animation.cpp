@@ -47,39 +47,28 @@ void Animation::create_mirrored_animation(const Animation* orginalAnim)
     m_animation = anim;
 }
 
-float Animation::find_beat(uint32_t type) const
+int Animation::find_first_beat( uint32_t type ) const
 {
     uint32_t num = m_numBeats;
     AnimationBeat* head = m_beats;
     for (uint32_t i = 0; i < num; ++i)
     {
         if(head[i].m_type == type)
-            return head[i].m_time;
+            return i;
     }
     return -1;
 }
 
-float Animation::find_next_closest_beat(float time, bool bLoop) const
+int Animation::find_next_closest_beat(float time, bool bLoop) const
 {
-    uint32_t num = m_numBeats;
+    int num = m_numBeats;
     AnimationBeat* head = m_beats;
-
     if(!num || time >= get_length()) return -1;
-
-    float retTime = -1;
-    for(uint32_t i = 0; i < num; ++i)
+    for(int i = 0; i < num; ++i)
     {
-        float curTime = head[i].m_time;
-        if(curTime >= time)
-        {
-            retTime = curTime;
-            break;
-        }
+        if(head[i].m_time >= time) return i;
     }
-    
-    if(!bLoop) return -1;
-    if(retTime < 0) retTime = m_beats[0].m_time;
-    return retTime;
+    return bLoop ? 0 : -1;
 }
 
 int Animation::get_frames() const
@@ -109,6 +98,8 @@ uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* e
     }
     return retNum;
 }
+
+
 
 void* load_resource_animation( const char* data, uint32_t size)
 {

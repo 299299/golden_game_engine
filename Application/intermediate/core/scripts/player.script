@@ -49,6 +49,9 @@ global create_player = function(id)
         {
             if(!input.is_key_down(input.UP))
             {
+                next_time = actor_get_animation_closest_beat(self, 1);
+                print("next beat time = " + next_time);
+                sleep(next_time);
                 world.actor_easeout_layers(.self, 0);
                 this:stateSet(.idle_state);
             }
