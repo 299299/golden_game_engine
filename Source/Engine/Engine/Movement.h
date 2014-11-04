@@ -1,6 +1,6 @@
 #pragma once
 #include "Prerequisites.h"
-
+#include "StringId.h"
 
 ENGINE_NATIVE_ALIGN struct MovementResource 
 {
@@ -10,7 +10,7 @@ ENGINE_NATIVE_ALIGN struct MovementResource
 
 ENGINE_NATIVE_ALIGN struct MovementInstance
 {
-    hkVector                        m_linearVelocity;
+    hkVector4                       m_linearVelocity;
     float                           m_rotateSpeed;
     ActorId32                       m_actor;
     const MovementResource*         m_resource;

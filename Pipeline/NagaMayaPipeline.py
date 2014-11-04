@@ -83,9 +83,7 @@ class NagaPipeline(object):
             hkoType = os.path.basename(hkoType)
             cmds.menuItem(label=hkoType)
         self.rigTypeGroup = cmds.optionMenuGrp('RigType', l='rig:')
-        for rigType in self.naga.getRigList():
-            rigName = os.path.basename(rigType)
-            rigName = rigName[:-6]
+        for rigName in self.naga.getRigList():
             cmds.menuItem(label=rigName)
         self.packageGroup = cmds.optionMenuGrp('PackageName', l='package:')
         for packageName in self.naga.getPackageList():
@@ -101,7 +99,7 @@ class NagaPipeline(object):
         cmds.button('Add Proxy', c=NAGA.createProxyNode)
         cmds.button('Add Script', c=NAGA.createScriptNode)
         cmds.button('Add Anim Rig', c=self.onCreateRigButtonClicked)
-        cmds.button('Add Movement', c=self.createMovementNode)
+        cmds.button('Add Movement', c=NAGA.createMovementNode)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -201,7 +199,7 @@ class NagaPipeline(object):
         NAGA.updateHistoryNode('last_rig_type', rigIndex + 1)
 
         rigName = self.naga.getRigList()[rigIndex]
-        rigName = os.path.basename(rigName)
+        rigName = rigName + '.bones'
         hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
         NAGA.updateHistoryNode('last_hko_type', hkoIndex + 1)
 

@@ -71,7 +71,7 @@
     <ClInclude Include="Compilers\TextureCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
-    <ClInclude Include="Compilers\ScriptCompiler.h">
+    <ClInclude Include="Compilers\MovementCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -138,7 +138,7 @@
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Compilers\ScriptCompiler.cpp">
+    <ClCompile Include="Compilers\MovementCompiler.cpp">
       <Filter>compilers</Filter>
     </ClCompile>
   </ItemGroup>

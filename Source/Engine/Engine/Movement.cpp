@@ -2,6 +2,8 @@
 #include "AnimRig.h"
 #include "ProxyInstance.h"
 #include "Profiler.h"
+#include "id_array.h"
+#include "Actor.h"
 
 static IdArray<MAX_MOVEMENT_INSTNACE, MovementInstance>      m_movements;
 
@@ -27,7 +29,7 @@ void* get_movement( Id id )
     return &id_array::get(m_movements, id);
 }
 
-uint32_t num_movement()
+uint32_t num_movements()
 {
     return id_array::size(m_movements);
 }
@@ -60,7 +62,7 @@ void MovementManager::move_characters(Actor* actors, uint32_t num, float dt)
         Actor& actor = actors[i];
         Id* components = actor.m_components;
         ProxyInstance* proxy = (ProxyInstance*)get_physics_proxy(components[kComponentProxy]);
-        AnimRig* rig = (AnimRig*)get_anim_rig(components[kComponentAnimRig]);
+        AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(components[kComponentAnimRig]);
         MovementInstance* move = (MovementInstance*)get_movement(components[kComponentMovement]);
         if(!proxy || !rig || !move) continue;
 
@@ -71,17 +73,17 @@ void MovementManager::move_characters(Actor* actors, uint32_t num, float dt)
         t.m_rotation.mul(motion_transform.m_rotation);
 
         hkQuaternion q;
-        q.setAxisAngle(hkVector4(0,1,0), m_rotateSpeed*dt);
+        q.setAxisAngle(hkVector4(0,1,0), move->m_rotateSpeed*dt);
         t.m_rotation.mul(q);
 
         hkVector4 desiredMotionWorld;
-        desiredMotionWorld.setRotatedDir( motion_transform.m_translation,  desiredMotion);
+        desiredMotionWorld.setRotatedDir( t.m_rotation,  motion_transform.m_translation);
         motion_velocity.setMul4 (1.0f / dt, desiredMotionWorld );
 
-        proxy->m_targetVelocity.setMul4(motion_velocity, m_motionWeight);
+        proxy->m_targetVelocity.setMul4(move->m_motionWeight, motion_velocity);
 
         hkVector4 velocityWorld;
-        velocityWorld.setRotatedDir( motion_transform.m_translation,  move->m_velocity);
-        proxy->m_targetVelocity.addMul4(velocityWorld, m_velocityWeight);
+        velocityWorld.setRotatedDir( t.m_rotation,  move->m_linearVelocity);
+        proxy->m_targetVelocity.addMul4(move->m_velocityWeight, velocityWorld);
     }
 }

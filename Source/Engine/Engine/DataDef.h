@@ -65,10 +65,10 @@ enum ComponentType
     kComponentPhysics,
     kComponentProxy,
     kComponentAnimRig,
-    kComponentScript,
     kComponentMovement,
     //kComponentIk,
     
-    kComponentTypeNum = 32
+    kComponentTypeNum,
+    kComponentMaxFlag = 32
 };
 

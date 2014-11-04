@@ -5,11 +5,9 @@
 #include "MemorySystem.h"
 #include "Utils.h"
 #include "linear_allocator.h"
-#include "Script.h"
 #include "Resource.h"
 #include "DebugDraw.h"
 #include "Graphics.h"
-#include "Script.h"
 #include "Utils.h"
 #include "Actor.h"
 #include "Level.h"
@@ -29,7 +27,6 @@ void showHelp()
             "-h set window height\n"
             "-t set window title\n"
             "--package --> package to load\n"
-            "--script --> script name\n"
             "--actor --> actor name\n"
             "--level --> level name\n"
             "--animation --> animation name\n"
@@ -121,9 +118,6 @@ int _tmain(int argc, _TCHAR* argv[])
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
 
-    extern void register_game_api(class gmMachine*);
-    register_game_api(g_script.m_vm);
-
     g_resourceMgr.load_package_and_wait("data/core.package");
 
     Graphics::ready();
@@ -161,14 +155,6 @@ int _tmain(int argc, _TCHAR* argv[])
                rig->test_animation(anim_name);
             }
         }
-    }
-
-
-    if(script) 
-    {
-        LOGI("run script ----> %s", script);
-        extern Id create_script_object(const void*, ActorId32);
-        create_script_object(FIND_RESOURCE_NAMED(ScriptResource, script), INVALID_U32);
     }
 
     g_engine.run();

@@ -180,7 +180,7 @@ const char* movement_names[] =
 #include "ShadingEnviroment.h"
 #include "Level.h"
 #include "Actor.h"
-#include "Script.h"
+#include "Movement.h"
 //-----------------------------------------------------------------
 extern void* load_resource_texture(const char*, uint32_t);
 extern void  bringout_resource_texture(void*);
@@ -240,10 +240,6 @@ extern void  lookup_resource_actor(void*);
 extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
-extern void* load_resource_script(const char* data, uint32_t size);
-extern void  bringin_resource_script(void* resource);
-extern void  bringout_resource_script(void* resource);
-//-----------------------------------------------------------------
 
 static ResourceFactory g_resourceFactories[] = 
 {
@@ -267,7 +263,6 @@ static ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::get_name()},
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::get_name()},
     {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::get_name()},
-    {load_resource_script, 0, 0, bringin_resource_script, bringout_resource_script, ScriptResource::get_name()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::get_name()},
 };
 void regster_resource_factories()
@@ -319,12 +314,6 @@ extern void*    get_physics_proxy(Id);
 extern uint32_t num_physics_proxies();
 extern void*    get_physics_proxies();
 //-----------------------------------------------------------------
-extern Id       create_script_object(const void*, ActorId32);
-extern void     destroy_script_object(Id);
-extern void*    get_script_object(Id);
-extern uint32_t num_script_objects();
-extern void*    get_script_objects();
-//-----------------------------------------------------------------
 //-----------------------------------------------------------------
 extern Id       create_movement(const void*, ActorId32);
 extern void     destroy_movement(Id);
@@ -347,7 +336,6 @@ static ComponentFactory g_componentFactories[] =
     create_physics_object, destroy_physics_object, get_physics_object, num_physics_objects, get_physics_objects,
     create_physics_proxy, destroy_physics_proxy, get_physics_proxy, num_physics_proxies, get_physics_proxies,
     create_anim_rig, destroy_anim_rig, get_anim_rig, num_anim_rigs, get_anim_rigs,
-    create_script_object, destroy_script_object, get_script_object, num_script_objects, get_script_objects,
     create_movement, destroy_movement, get_movement, num_movements, get_movements,
 };
 StringId g_componentTypes[kComponentTypeNum];
@@ -389,9 +377,6 @@ void init_component_names()
 
     g_componentTypeNames[kComponentAnimRig] = AnimRig::get_name();
     g_componentTypes[kComponentAnimRig] = AnimRig::get_type();
-
-    g_componentTypeNames[kComponentScript] = ScriptResource::get_name();
-    g_componentTypes[kComponentScript] = ScriptResource::get_type();
 
     g_componentTypeNames[kComponentMovement] = MovementResource::get_name();
     g_componentTypes[kComponentMovement] = MovementResource::get_type();

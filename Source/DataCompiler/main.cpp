@@ -18,7 +18,7 @@
 #include "ModelCompiler.h"
 #include "ShadingEnviromentCompiler.h"
 #include "LevelCompiler.h"
-#include "ScriptCompiler.h"
+#include "MovementCompiler.h"
 #include <bx/tinystl/allocator.h>
 #include <bx/tinystl/unordered_map.h>
 #include <bx/thread.h>
@@ -77,7 +77,7 @@ static const char* g_resourceTypeNames[] =
     ShadingEnviroment::get_name(),
     SHADER_INCLUDE_EXT,
     "dds",
-    ScriptResource::get_name(),
+    MovementResource::get_name(),
 };
 static __create_compiler__ g_funtions[] =
 {
@@ -103,7 +103,7 @@ static __create_compiler__ g_funtions[] =
     create_compiler<ShadingEnviromentCompiler>,
     create_compiler<ShaderIncludeCompiler>,
     create_compiler<DDSCompiler>,
-    create_compiler<ScriptCompiler>,
+    create_compiler<MovementCompiler>,
 };
 
 void init_factories()
@@ -340,7 +340,6 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     g_memoryMgr.init(0,0,false,false);
-    g_script.init();
 
     showHelp();
     LOG_INIT("DataCompilerLog.html", MSG_TITLE);
@@ -489,7 +488,6 @@ int _tmain(int argc, _TCHAR* argv[])
     clear_resources();
     g_database.m_files.clear();
     g_compilerBuilder.clear();
-    g_script.quit();
     g_memoryMgr.quit();
 
     g_profiler.dump_to_file("datacompiler_profile.txt", true, true);

@@ -21,7 +21,6 @@
 #include "ProxyInstance.h"
 #include "Level.h"
 #include "Actor.h"
-#include "Script.h"
 #include "Camera.h"
 #include "DebugDraw.h"
 #include <bx/bx.h>
@@ -299,30 +298,6 @@ void reload_actor_resource(void* oldResource, void* newResource)
         }
     }
 }
-
-void reload_script_resource(void* oldResource, void* newResource)
-{
-    float old_cam_pos[3], old_cam_at[3];
-    bx::vec3Move(old_cam_pos, g_camera.m_eye);
-    bx::vec3Move(old_cam_at, g_camera.m_at);
-    ScriptResource* oldScript = (ScriptResource*)oldResource;
-    ScriptResource* newScript = (ScriptResource*)newResource;
-    uint32_t componentNum = num_components(kComponentScript);
-    ScriptInstance* components = (ScriptInstance*)get_components(kComponentScript);
-    LOGI("component %s instance num = %d", ScriptResource::get_name(), componentNum);
-    for(size_t i=0; i<componentNum; ++i)
-    {
-        ScriptInstance& script = components[i];
-        if(script.m_resource == oldScript)
-        {
-            script.destroy();
-            script.init(newScript);
-        }
-    }
-    
-    g_camera.update(old_cam_pos, old_cam_at);
-    g_script.full_garbge_collect();
-}
 //===================================================================================================
 
 
@@ -339,7 +314,6 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(Level::get_type(), reload_level_resource);
     g_resourceMgr.register_reload_callback(Animation::get_type(), reload_animation_resource);
     g_resourceMgr.register_reload_callback(LightResource::get_type(), reload_light_resource);
-    g_resourceMgr.register_reload_callback(ScriptResource::get_type(), reload_script_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();

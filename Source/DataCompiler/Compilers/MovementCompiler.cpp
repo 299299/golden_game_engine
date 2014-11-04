@@ -1,4 +1,5 @@
 #include "MovementCompiler.h"
+#include "CommonUtils.h"
 
 MovementCompiler::MovementCompiler()
 {
@@ -17,7 +18,7 @@ bool MovementCompiler::readJSON(const JsonValue& root)
     MovementResource move;
     memset(&move, 0x00, sizeof(move));
 
-    move.m_moveState = JSON_GetEnum(root.GetValue("state"), movement_names);
+    //move.m_moveState = JSON_GetEnum(root.GetValue("state"), movement_names);
     //------------------------------------------------------
     //
     //------------------------------------------------------

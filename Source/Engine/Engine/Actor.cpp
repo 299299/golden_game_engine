@@ -4,7 +4,6 @@
 #include "Resource.h"
 #include "Model.h"
 #include "Light.h"
-#include "Script.h"
 #include "Graphics.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
@@ -299,13 +298,12 @@ void ActorWorld::pre_step( float dt )
 {
     g_animMgr.update_animations(dt);
     g_animMgr.update_attachment(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
-    //g_animMgr.apply_animation_rootmotion(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size(), dt);
     g_physicsWorld.update_character_proxies(dt);
 }
 
 void ActorWorld::step( float dt )
 {
-    g_moveMgr.move_characters(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
+    g_moveMgr.move_characters(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size(), dt);
     Graphics::update(m_shading_env, dt);
 }
 

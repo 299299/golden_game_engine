@@ -64,9 +64,6 @@
     <Filter Include="ThirdParty\entry">
       <UniqueIdentifier>{600413b2-53b5-4312-8546-696bf1b05f82}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script">
-      <UniqueIdentifier>{2f1fb340-9dec-44d5-8181-615e86112279}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ThirdParty\gamemonkey">
       <UniqueIdentifier>{29f2e831-3e44-4486-b05d-972493e781f3}</UniqueIdentifier>
     </Filter>
@@ -213,9 +210,6 @@
     <ClCompile Include="..\ThirdParty\stb_image\stb_image_.cpp">
       <Filter>ThirdParty\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="Script\ScriptAPI.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\gamemonkey\gmArrayLib.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
@@ -360,20 +354,17 @@
     <ClCompile Include="Engine\Actor.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Script\Script.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\gamemonkey\gmParser.cpp">
       <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
-    <ClCompile Include="Script\DebugGuiTools.cpp">
-      <Filter>Script</Filter>
+    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Movement.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\CommandAPI.cpp">
       <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -893,20 +884,20 @@
     <ClInclude Include="Engine\Actor.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Script\Script.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="..\ThirdParty\gamemonkey\gmParser.cpp.h">
       <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\CommandAPI.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Animation\AnimControl.h">
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\ThirdParty\bgfx\ovr.h">
       <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Movement.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CommandAPI.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -30,5 +30,4 @@ animation and bone attachment
 1. **Graphics**: bgfx (https://github.com/bkaradzic/bgfx)
 2. **Physics**:  Havok free PC SDK (https://software.intel.com/sites/havok/en/)
 3. **Animation**: Havok free PC SDK (https://software.intel.com/sites/havok/en/)
-4. **Script**: GameMonkey (http://www.gmscript.com)
-5. **WebSocket**: gamedevwebtools (https://github.com/hyp/gamedevwebtools)
+4. **WebSocket**: gamedevwebtools (https://github.com/hyp/gamedevwebtools)

@@ -9,7 +9,6 @@
 #include "XBoxInput.h"
 #include "Graphics.h"
 #include "Profiler.h"
-#include "Script.h"
 #include "Actor.h"
 #include "WebServerTool.h"
 #include "Camera.h"
@@ -122,7 +121,6 @@ void Engine::frame(float timeStep)
         //------------------------------------
         m_state = kFrameUpdating;
         g_actorWorld.step(timeStep);
-        g_script.step(timeStep);
         if(m_cfg.m_stepHook) m_cfg.m_stepHook(timeStep);
         //------------------------------------
         g_threadMgr.wait();
@@ -147,7 +145,6 @@ void Engine::frame(float timeStep)
         PROFILE(Engine_FrameEnd);
         m_state = kFrameEnd;
         Graphics::frame_end();
-        g_script.frame_end(timeStep);
         debug_update_vdb_camera();
         g_threadMgr.vdb_update(timeStep);
     }
@@ -180,7 +177,6 @@ void Engine::subsystem_init()
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init();
     g_animMgr.init();
-    g_script.init();
     g_actorWorld.init();
 }
 
@@ -197,7 +193,6 @@ void Engine::subsystem_shutdown()
     TIMELOG("Engine Subsystem Shutdown");
     g_resourceMgr.offline_all_resources();
     g_actorWorld.destroy();
-    g_script.quit();
     g_animMgr.quit();
     g_physicsWorld.quit();
     Graphics::quit();

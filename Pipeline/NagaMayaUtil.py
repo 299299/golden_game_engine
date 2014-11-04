@@ -288,7 +288,7 @@ def createTriggerNode(args):
 
 
 def createMovementNode(args):
-    move_states = ['move_by_velociy',
+    move_states = ['move_by_velocity',
                    'move_by_animation',
                    'move_by_velociy_and_animation']
     move_node = createEngineNode('movement')
@@ -488,7 +488,13 @@ class NagaMayaUtil(object):
         return os.listdir(self.intermediatePath)
 
     def getRigList(self):
-        return osGetFileList(self.pipelinePath + 'bones', '.bones')
+        rigFileList = osGetFileList(self.pipelinePath + 'bones', '.bones')
+        rigNameList = []
+        for rigFile in rigFileList:
+            rigName = os.path.basename(rigFile)
+            rigName = rigName[:-6]
+            rigNameList.append(rigName)
+        return rigNameList
 
     def getHkoList(self):
         return osGetFileList(self.pipelinePath + 'hko', '.hko')

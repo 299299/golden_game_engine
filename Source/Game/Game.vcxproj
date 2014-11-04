@@ -103,7 +103,6 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameHooks.cpp" />
-    <ClCompile Include="GameScriptAPI.cpp" />
     <ClCompile Include="HotReload.cpp" />
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="PhysicsTools.cpp" />

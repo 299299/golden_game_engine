@@ -167,6 +167,7 @@
     <ClCompile Include="Engine\DataDef.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\Level.cpp" />
+    <ClCompile Include="Engine\Movement.cpp" />
     <ClCompile Include="Engine\Win32Context.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\DebugDraw.cpp" />
@@ -186,9 +187,6 @@
     <ClCompile Include="Physics\ProxyInstance.cpp" />
     <ClCompile Include="Physics\PhysicsAutoLock.cpp" />
     <ClCompile Include="Physics\PhysicsInstance.cpp" />
-    <ClCompile Include="Script\DebugGuiTools.cpp" />
-    <ClCompile Include="Script\Script.cpp" />
-    <ClCompile Include="Script\ScriptAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ThirdParty\bgfx\bgfx.c99.h" />
@@ -348,6 +346,7 @@
     <ClInclude Include="Engine\DataDef.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Level.h" />
+    <ClInclude Include="Engine\Movement.h" />
     <ClInclude Include="Engine\Win32Context.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\DebugDraw.h" />
@@ -369,7 +368,6 @@
     <ClInclude Include="Physics\PhysicsInstance.h" />
     <ClInclude Include="Physics\PhysicsWorld.h" />
     <ClInclude Include="Prerequisites.h" />
-    <ClInclude Include="Script\Script.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

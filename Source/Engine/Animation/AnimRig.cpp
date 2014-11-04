@@ -41,12 +41,6 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
     offset = data + rig->m_havokDataOffset;
     rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
     if(rig->m_mirrored) rig->create_mirrored_skeleton();
-#if 0
-	rig->m_skeleton->m_bones.pushBack(hkaBone());
-	rig->m_skeleton->m_bones.pushBack(hkaBone());
-	rig->m_skeleton->m_parentIndices.pushBack(0);
-	rig->m_skeleton->m_parentIndices.pushBack(0);
-#endif
     return rig;
 }
 void  lookup_resource_anim_rig(void * resource)
@@ -132,6 +126,7 @@ void AnimRigInstance::init( const void* resource )
     m_pose = new(offset) hkaPose(skeleton);
     m_pose->setToReferencePose();
     m_pose->syncAll();
+    if(numAnimations > 0) m_skeleton->setReferencePoseWeightThreshold(0.0f);
     offset += pose_size;
     m_numControls = numAnimations;
 	char* ptr = offset;

@@ -113,10 +113,10 @@
     <ClInclude Include="Compilers\LightCompiler.h" />
     <ClInclude Include="Compilers\MaterialCompiler.h" />
     <ClInclude Include="Compilers\ModelCompiler.h" />
+    <ClInclude Include="Compilers\MovementCompiler.h" />
     <ClInclude Include="Compilers\PackageCompiler.h" />
     <ClInclude Include="Compilers\PhysicsCompiler.h" />
     <ClInclude Include="Compilers\RagdollCompiler.h" />
-    <ClInclude Include="Compilers\ScriptCompiler.h" />
     <ClInclude Include="Compilers\ShaderCompiler.h" />
     <ClInclude Include="Compilers\ShadingEnviromentCompiler.h" />
     <ClInclude Include="Compilers\TextureCompiler.h" />
@@ -138,10 +138,10 @@
     <ClCompile Include="Compilers\LightCompiler.cpp" />
     <ClCompile Include="Compilers\MaterialCompiler.cpp" />
     <ClCompile Include="Compilers\ModelCompiler.cpp" />
+    <ClCompile Include="Compilers\MovementCompiler.cpp" />
     <ClCompile Include="Compilers\PackageCompiler.cpp" />
     <ClCompile Include="Compilers\PhysicsCompiler.cpp" />
     <ClCompile Include="Compilers\RagdollCompiler.cpp" />
-    <ClCompile Include="Compilers\ScriptCompiler.cpp" />
     <ClCompile Include="Compilers\ShaderCompiler.cpp" />
     <ClCompile Include="Compilers\ShadingEnviromentCompiler.cpp" />
     <ClCompile Include="Compilers\TextureCompiler.cpp" />

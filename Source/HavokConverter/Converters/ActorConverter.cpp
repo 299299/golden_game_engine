@@ -3,7 +3,6 @@
 #include "HC_Utils.h"
 #include "ComponentNodeConverter.h"
 #include "ProxyInstance.h"
-#include "Script.h"
 #include "Movement.h"
 #include <bx/bx.h>
 
@@ -87,8 +86,7 @@ void ActorConverter::processComponentNodes()
     static const char* s_componet_node_names[] =
     {
         ProxyResource::get_name(),
-        ScriptResource::get_name(),
-        MovmentResource::get_name(),
+        MovementResource::get_name(),
     };
 
     for (int i=0; i<BX_COUNTOF(s_componet_node_names); ++i)

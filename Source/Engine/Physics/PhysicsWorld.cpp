@@ -506,13 +506,12 @@ void* get_physics_objects()
     return id_array::begin(m_objects);
 }
 
-Id create_physics_proxy(const void* resource, ActorId32 id)
+Id create_physics_proxy(const void* resource, ActorId32 )
 {
     check_status();
     ProxyInstance inst;
     memset(&inst, 0x00, sizeof(inst));
     inst.init(resource);
-    inst.m_actor = id;
     return id_array::create(m_proxies, inst);
 }
 
