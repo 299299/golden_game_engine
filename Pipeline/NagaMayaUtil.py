@@ -268,11 +268,12 @@ def createScriptNode(args):
     addBoolAttr(script_node, 'packed', bool_value=False)
 
 
-def createAnimRigNode(args):
+def createAnimRigNode(rig_list):
     anim_rig_node = createEngineNode('rig')
     if(anim_rig_node is None):
         return
-    addStringAttr(anim_rig_node, 'anim_set_file', '')
+    #addStringAttr(anim_rig_node, 'anim_set_file', '')
+    addEnumAttr(anim_rig_node, 'anim_set', rig_list)
 
 
 def createTriggerNode(args):

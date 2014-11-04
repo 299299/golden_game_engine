@@ -31,7 +31,8 @@ class NagaPipeline(object):
         self._createUI()
         # WEB
         self.webSock = WEB.MayaWebSocket()
-        self.connect_to_game_server()
+        self.webSock.connect(self.onWebSocketOpen, self.onWebSocketMessage,
+                             self.onWebSocketClosed)
         self.created = True
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
                        event=('SceneOpened', self.onSceneChanged))
@@ -45,7 +46,7 @@ class NagaPipeline(object):
         if cmds.window(UI_NAME, exists=True):
             cmds.deleteUI(UI_NAME)
         # print("########### NagaPipeline::destroy start ##################")
-        self.disconnect_to_game_server()
+        self.webSock.disconnect()
         self.created = False
         # print("########### NagaPipeline::destroy end ##################")
 
@@ -99,7 +100,7 @@ class NagaPipeline(object):
         cmds.button('Add Anim-Trigger', c=NAGA.createTriggerNode)
         cmds.button('Add Proxy', c=NAGA.createProxyNode)
         cmds.button('Add Script', c=NAGA.createScriptNode)
-        cmds.button('Add Anim Rig', c=NAGA.createAnimRigNode)
+        cmds.button('Add Anim Rig', c=self.onCreateRigButtonClicked)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
@@ -139,6 +140,9 @@ class NagaPipeline(object):
 
     def onExportButtonClicked(self, *arg):
         self.export(NAGA.getSceneName())
+
+    def onCreateRigButtonClicked(self, *arg):
+        NAGA.createAnimRigNode(self.naga.getRigList())
 
     def updateUIByData(self):
         #
@@ -283,13 +287,6 @@ class NagaPipeline(object):
     #
     # WEB SOCKET FUNCTIONS
     #
-    def connect_to_game_server(self):
-        self.webSock.connect(self.onWebSocketOpen,
-                             self.onWebSocketMessage,
-                             self.onWebSocketClosed)
-
-    def disconnect_to_game_server(self):
-        self.webSock.disconnect()
 
     def onWebSocketOpen(self):
         pass
@@ -318,7 +315,3 @@ def create():
     pipe = NagaPipeline()
     pipe.create()
     NagaPipeline.NagaObject = pipe
-
-
-def test():
-    NagaPipeline.NagaObject = None

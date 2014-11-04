@@ -157,15 +157,19 @@ void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
 	const hkxAttributeGroup* group = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
 	if(!group) return;
 	fill_object_attributes(object, group);
-	const char* anim_set_file = 0;
-	hkResult result = group->getStringValue("anim_set_file", true, anim_set_file);
+	const char* animSetName = 0;
+	hkResult result = group->getStringValue("anim_set", true, animSetName);
 	if(result != HK_SUCCESS) return;
-	FileReader reader(anim_set_file);
+    //HACK HERE!
+    std::string animSetFile("../pipeline/bones/");
+    animSetFile += animSetName;
+    animSetFile += "_animset.json";
+	FileReader reader(animSetFile.c_str());
 	if (!reader.m_size) return;
 	jsonxx::Value obj;
 	if(!obj.parse(reader.m_buf)) 
 	{
-		addError("anim-set %s json parse error.", anim_set_file);
+		addError("anim-set %s json parse error.", animSetFile.c_str());
 		return;
 	}
 	object<<"animation-set"<<obj;

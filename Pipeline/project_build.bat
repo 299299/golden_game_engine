@@ -1,7 +1,7 @@
 @echo off
 
 ::
-:: Helper script that builds the FBXImporter solution and then calls
+:: Helper script that builds the Game solution and then calls
 :: the packaging script. Assumes you have VS2010 and Python installed.
 ::
 
@@ -25,7 +25,7 @@ goto END
 
 :NO_VS10
 
-echo Failed to find Visual Studio 2012! Please ensure it's installed.
+echo Failed to find Visual Studio 2010! Please ensure it's installed.
 echo Environment batch not found: %VCVARS32%
 
 :END
