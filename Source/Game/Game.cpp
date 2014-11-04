@@ -13,6 +13,8 @@
 #include "Level.h"
 #include "AnimRig.h"
 #include "PhysicsWorld.h"
+#include "ShadingEnviroment.h"
+#include "Camera.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -124,6 +126,10 @@ int _tmain(int argc, _TCHAR* argv[])
     g_debugDrawMgr.ready();
     g_physicsWorld.create_world(FIND_RESOURCE_NAMED(PhysicsConfig, "core/global"));
     g_physicsWorld.create_plane(500.0f);
+    g_actorWorld.m_shading_env = FIND_RESOURCE_NAMED(ShadingEnviroment, "core/common/default");
+    float eye[] = {-5,5,0};
+    float at[] = {0,0,0};
+    g_camera.update(eye, at);
 
     if(package_name) g_resourceMgr.load_package_and_wait(package_name);
 
