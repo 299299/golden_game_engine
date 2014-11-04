@@ -101,6 +101,7 @@ class NagaPipeline(object):
         cmds.button('Add Proxy', c=NAGA.createProxyNode)
         cmds.button('Add Script', c=NAGA.createScriptNode)
         cmds.button('Add Anim Rig', c=self.onCreateRigButtonClicked)
+        cmds.button('Add Movement', c=self.createMovementNode)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')

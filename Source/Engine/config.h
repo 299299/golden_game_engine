@@ -1,15 +1,14 @@
 #pragma once
 
 #define MAX_PHYSICS             1024
-#define MAX_PROXY               64
+#define MAX_PROXY               32
 #define MAX_LIGHTS              64
 #define MAX_MODELS              1024
 
 #define MAX_MATERIAL_NUM        8 // per model
 
-
-#define MAX_ANIM_FSM            64
-#define MAX_ANIM_RIG            64
+#define MAX_ANIM_FSM            16
+#define MAX_ANIM_RIG            16
 
 #define MAX_DEBUG_LINES         1024
 #define MAX_DEBUG_TEXTS         300
@@ -35,3 +34,5 @@
 
 #define MAX_ENGINE_COMMANDS     1024
 #define MAX_ENGINE_CALLBACKS    32
+
+#define MAX_MOVEMENT_INSTNACE   64

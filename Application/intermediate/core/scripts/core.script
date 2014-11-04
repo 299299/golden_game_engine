@@ -75,12 +75,13 @@ global create_core = function(id)
 
         local w = get_window_width(); 
         local h = get_window_height();
-        local x = 200;
+        local splash_time = 2.0;
+        local time_per_tick = 1.0/60.0;
+        local elapsed_time = 0.0;
 
-        while(x > 0)
+        while(elapsed_time <= splash_time)
         {
-            x -= 1;
-            print("x = "+x);
+            elapsed_time += time_per_tick;
             gui.draw_image(string_to_id("core/common/logo"), 0, w, h);
             yield();
         }

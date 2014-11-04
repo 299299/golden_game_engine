@@ -118,6 +118,7 @@ void ProxyInstance::init(const void* resource)
     m_verticalDisplacement = 0;
     m_targetVelocity.setZero4();
     m_transform.setIdentity();
+    m_enabled = true;
 
     m_resource = (const ProxyResource*)resource;
     hkpWorld* world = g_physicsWorld.world();
@@ -227,6 +228,8 @@ bool ProxyInstance::isInWorld() const
 
 void ProxyInstance::update(float timeStep)
 {
+    if(!m_enabled) return;
+
     const ProxyResource* res = m_resource;
     hkVector4 gravity; getGravity(gravity);
 

@@ -185,47 +185,18 @@ void AnimationSystem::update_animations(float dt)
     }
 }
 
-#if 0
-void AnimationSystem::apply_animation_rootmotion( Actor* actors, uint32_t num, float dt )
-{
-	PROFILE(Animation_ApplyRootmotion);
-	extern void* get_anim_rig(Id);
-	extern void* get_physics_proxy(Id);
-	hkQsTransform t;
-	for (uint32_t i=0; i<num; ++i)
-	{
-		Actor& actor = actors[i];
-		Id rigId = actor.m_components[kComponentAnimRig];
-		Id proxyId = actor.m_components[kComponentProxy];
-		AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
-		ProxyInstance* proxy = (ProxyInstance*)get_physics_proxy(proxyId);
-		if(!proxy||!rig) continue;
-		if(!rig->m_applyRootmotion) continue;
-		rig->get_rootmotion(dt, t);
-
-		hkQsTransform& transform = proxy->m_transform;
-		transform.m_rotation.mul(t.m_rotation);
-
-		hkVector4 desiredMotionWorld;
-		hkQuaternion currentOrient;
-		desiredMotionWorld.setRotatedDir( transform.m_rotation, t.m_translation );
-		proxy->m_targetVelocity.setMul4 (1.0f / dt, desiredMotionWorld );
-	}
-}
-#endif
-
 void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 {
-	PROFILE(Animation_UpdateAttachment);
-	extern void* get_anim_rig(Id);
-	for (uint32_t i=0; i<num; ++i)
-	{
-		Actor& actor = actors[i];
-		Id rigId = actor.m_components[kComponentAnimRig];
-		AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
-		if(!rig) continue;
-		rig->update_attachment(actor.m_transform);
-	}
+    PROFILE(Animation_UpdateAttachment);
+    extern void* get_anim_rig(Id);
+    for (uint32_t i=0; i<num; ++i)
+    {
+        Actor& actor = actors[i];
+        Id rigId = actor.m_components[kComponentAnimRig];
+        AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
+        if(!rig) continue;
+        rig->update_attachment(actor.m_transform);
+    }
 }
 
 
@@ -283,14 +254,14 @@ void draw_debug_animation()
         hkaPose* pose = rig.m_pose;
         Actor* actor = g_actorWorld.get_actor(rig.m_actor);
         const hkQsTransform& t = actor->m_transform;
-		//draw debug pose
+        //draw debug pose
         if(g_engineMode == 0) draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
         else draw_pose_vdb(*pose, t);
-		//draw debug attachment
+        //draw debug attachment
         uint32_t num_attach = res->m_attachNum;
         const BoneAttachment* attachments = res->m_attachments;
         const float* world_poses = rig.m_attachmentTransforms;
-		if(!world_poses) return;
+        if(!world_poses) return;
         for (uint32_t i=0; i<num_attach; ++i)
         {
             const BoneAttachment& attchment = attachments[i];
@@ -301,11 +272,11 @@ void draw_debug_animation()
             float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
             g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
         }
-		hkQsTransform t2 = t;
-		float y = t.m_translation.getSimdAt(1);
-		y -= 1.0f;
-		t2.m_translation(1) = y;
-		g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
+        hkQsTransform t2 = t;
+        float y = t.m_translation.getSimdAt(1);
+        y -= 1.0f;
+        t2.m_translation(1) = y;
+        g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
     }
 }
 //-----------------------------------------------------------------

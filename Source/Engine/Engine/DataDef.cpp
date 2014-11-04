@@ -154,6 +154,13 @@ const char*   physics_type_names[] =
     0
 };
 
+const char* movement_names[] =
+{
+    "move_by_velociy",
+    "move_by_animation",
+    "move_by_velociy_and_animation",
+    0
+};
 
 //======================================================
 // RESOURCES
@@ -318,6 +325,13 @@ extern void*    get_script_object(Id);
 extern uint32_t num_script_objects();
 extern void*    get_script_objects();
 //-----------------------------------------------------------------
+//-----------------------------------------------------------------
+extern Id       create_movement(const void*, ActorId32);
+extern void     destroy_movement(Id);
+extern void*    get_movement(Id);
+extern uint32_t num_movements();
+extern void*    get_movements();
+//-----------------------------------------------------------------
 struct ComponentFactory
 {
     Id          (*create)(const void*, ActorId32 id);
@@ -334,6 +348,7 @@ static ComponentFactory g_componentFactories[] =
     create_physics_proxy, destroy_physics_proxy, get_physics_proxy, num_physics_proxies, get_physics_proxies,
     create_anim_rig, destroy_anim_rig, get_anim_rig, num_anim_rigs, get_anim_rigs,
     create_script_object, destroy_script_object, get_script_object, num_script_objects, get_script_objects,
+    create_movement, destroy_movement, get_movement, num_movements, get_movements,
 };
 StringId g_componentTypes[kComponentTypeNum];
 const char* g_componentTypeNames[kComponentTypeNum];
@@ -377,6 +392,9 @@ void init_component_names()
 
     g_componentTypeNames[kComponentScript] = ScriptResource::get_name();
     g_componentTypes[kComponentScript] = ScriptResource::get_type();
+
+    g_componentTypeNames[kComponentMovement] = MovementResource::get_name();
+    g_componentTypes[kComponentMovement] = MovementResource::get_type();
 };
 int find_component_type(const StringId& typeName)
 {

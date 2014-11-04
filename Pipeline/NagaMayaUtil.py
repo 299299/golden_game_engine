@@ -278,13 +278,22 @@ def createAnimRigNode(rig_list):
 
 def createTriggerNode(args):
     triggers = ['attack', 'dust']
-    trigger_group = findNodeOrCreate('triggers', ENGINE_GROUP)
+    trigger_group = createEngineNode('triggers')
     if(trigger_group):
         addEnumAttr(trigger_group, 'hk_trigger_', triggers)
-    beat_group = findNodeOrCreate('beats', ENGINE_GROUP)
+    beat_group = createEngineNode('beats')
     if(beat_group):
         addEnumAttr(beat_group, 'hk_beat_',
                     ['left_foot_down', 'right_foot_down'])
+
+
+def createMovementNode(args):
+    move_states = ['move_by_velociy',
+                   'move_by_animation',
+                   'move_by_velociy_and_animation']
+    move_node = createEngineNode('movement')
+    if(move_node):
+        addEnumAttr(move_node, 'state', move_states)
 
 
 def createHistoryNode():

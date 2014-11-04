@@ -66,8 +66,9 @@ enum ComponentType
     kComponentProxy,
     kComponentAnimRig,
     kComponentScript,
+    kComponentMovement,
     //kComponentIk,
     
-    kComponentTypeNum
+    kComponentTypeNum = 32
 };
 
