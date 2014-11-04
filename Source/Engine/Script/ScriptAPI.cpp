@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Script.h"
 #include "AnimRig.h"
+#include "Movement.h"
 #include "CommandAPI.h"
 #include <bx/bx.h>
 #include <gamemonkey/gmThread.h>
@@ -1126,6 +1127,74 @@ static int GM_CDECL actor_get_animation_next_sync_time(gmThread* a_thread)
     a_thread->PushFloat(rig->next_anim_sync_time(index, index_1));
     return GM_OK;
 }
+#define SCRIPT_GET_MOVEMENT()\
+        Actor* actor = g_actorWorld.get_actor((uint32_t)actor_id);\
+        if(!actor) { a_thread->PushInt(-1); return GM_OK; }\
+        extern void* get_movement(Id);\
+        MovementInstance* move = (MovementInstance*)get_movement(actor->m_components[kComponentMovement]);\
+        if(!move) { a_thread->PushInt(-1); return GM_OK; }
+static int GM_CDECL actor_set_movement_motion_weight(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_FLOAT_PARAM(weight, 1);
+    SCRIPT_GET_MOVEMENT();
+    move->m_motionWeight = weight;
+    return GM_OK;
+}
+static int GM_CDECL actor_get_movement_motion_weight(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    SCRIPT_GET_MOVEMENT();
+    a_thread->PushFloat(move->m_motionWeight);
+    return GM_OK;
+}
+static int GM_CDECL actor_set_movement_velocity_weight(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_FLOAT_PARAM(weight, 1);
+    SCRIPT_GET_MOVEMENT();
+    move->m_velocityWeight = weight;
+    return GM_OK;
+}
+static int GM_CDECL actor_get_movement_velocity_weight(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    SCRIPT_GET_MOVEMENT();
+    a_thread->PushFloat(move->m_velocityWeight);
+    return GM_OK;
+}
+static int GM_CDECL actor_set_movement_linear_velocity(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(4);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_FLOAT_PARAM(velocity_x, 1);
+    GM_CHECK_FLOAT_PARAM(velocity_y, 2);
+    GM_CHECK_FLOAT_PARAM(velocity_z, 3);
+    SCRIPT_GET_MOVEMENT();
+    move->m_linearVelocity.set(velocity_x, velocity_y, velocity_z);
+    return GM_OK;
+}
+static int GM_CDECL actor_set_movement_rotate_speed(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(2);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    GM_CHECK_FLOAT_PARAM(rotate_speed, 1);
+    SCRIPT_GET_MOVEMENT();
+    move->m_rotateSpeed = rotate_speed;
+    return GM_OK;
+}
+static int GM_CDECL actor_get_movement_rotate_speed(gmThread* a_thread)
+{
+    GM_CHECK_NUM_PARAMS(1);
+    GM_CHECK_INT_PARAM(actor_id, 0);
+    SCRIPT_GET_MOVEMENT();
+    a_thread->PushFloat(move->m_rotateSpeed);
+    return GM_OK;
+}
 //-------------------------------------------------------------------------
 
 void register_enum_values(gmMachine* machine, const char* libName, gmVariableEntry* entries, uint32_t numEntries)
@@ -1351,6 +1420,13 @@ void register_script_api(gmMachine* machine)
         {"actor_get_animation_beat_time", actor_get_animation_beat_time},
         {"actor_get_animation_beat_type", actor_get_animation_beat_type},
         {"actor_get_animation_next_sync_time", actor_get_animation_next_sync_time},
+        {"actor_set_movement_motion_weight", actor_set_movement_motion_weight},
+        {"actor_get_movement_motion_weight", actor_get_movement_motion_weight},
+        {"actor_set_movement_velocity_weight", actor_set_movement_velocity_weight},
+        {"actor_get_movement_velocity_weight", actor_get_movement_velocity_weight},
+        {"actor_set_movement_linear_velocity", actor_set_movement_linear_velocity},
+        {"actor_set_movement_rotate_speed", actor_set_movement_rotate_speed},
+        {"actor_get_movement_rotate_speed", actor_get_movement_rotate_speed},
     };
     static gmVariableEntry s_world_values[] =
     {

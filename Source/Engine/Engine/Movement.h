@@ -2,28 +2,20 @@
 #include "Prerequisites.h"
 
 
-enum MovementState
-{
-    kMoveByVelocity,
-    kMoveByAnimation,
-    kMoveByVelocityAndAnimation,
-};
-
 ENGINE_NATIVE_ALIGN struct MovementResource 
 {
     DECLARE_RESOURCE(movement);
-    int                             m_moveState;
+    int                             m_dummy;
 };
 
 ENGINE_NATIVE_ALIGN struct MovementInstance
 {
-    hkVector                        m_velocity;
-    float                           m_targetAngle;
+    hkVector                        m_linearVelocity;
+    float                           m_rotateSpeed;
     ActorId32                       m_actor;
-    int                             m_moveState;
     const MovementResource*         m_resource;
-    bool                            m_worldVelocity;
-    char                            m_padding[3];
+    float                           m_motionWeight;
+    float                           m_velocityWeight;
     
     void init(const void* resource, ActorId32 actor);
 };

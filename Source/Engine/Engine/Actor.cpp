@@ -8,6 +8,7 @@
 #include "Graphics.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
+#include "Movement.h"
 #include "MemorySystem.h"
 #include "memory.h"
 #include "Utils.h"
@@ -304,6 +305,7 @@ void ActorWorld::pre_step( float dt )
 
 void ActorWorld::step( float dt )
 {
+    g_moveMgr.move_characters(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
     Graphics::update(m_shading_env, dt);
 }
 
