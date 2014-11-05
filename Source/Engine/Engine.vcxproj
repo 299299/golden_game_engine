@@ -166,6 +166,7 @@
     <ClCompile Include="Engine\CommandAPI.cpp" />
     <ClCompile Include="Engine\DataDef.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\GameState.cpp" />
     <ClCompile Include="Engine\Level.cpp" />
     <ClCompile Include="Engine\Movement.cpp" />
     <ClCompile Include="Engine\Win32Context.cpp" />
@@ -345,6 +346,7 @@
     <ClInclude Include="Engine\CommandAPI.h" />
     <ClInclude Include="Engine\DataDef.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\GameState.h" />
     <ClInclude Include="Engine\Level.h" />
     <ClInclude Include="Engine\Movement.h" />
     <ClInclude Include="Engine\Win32Context.h" />

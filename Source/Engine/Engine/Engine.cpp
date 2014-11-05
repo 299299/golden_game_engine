@@ -106,15 +106,13 @@ void Engine::frame(float timeStep)
         Graphics::frame_start();
         g_physicsWorld.frame_start();
         g_animMgr.frame_start();
-        g_actorWorld.frame_start(timeStep);
     }
 
     {
         PROFILE(Engine_PreStep);
         m_state = kFramePreStepping;
-        if(m_cfg.m_preStepHook) m_cfg.m_preStepHook(timeStep);
         m_cmd_machine->update(timeStep);
-        g_actorWorld.pre_step(timeStep);
+        g_gameFSM.pre_step(timeStep);
     }
     {
         PROFILE(Engine_Step);
@@ -123,7 +121,6 @@ void Engine::frame(float timeStep)
         g_threadMgr.process_all_jobs();
         //------------------------------------
         m_state = kFrameUpdating;
-        g_actorWorld.step(timeStep);
         g_gameFSM.step(timeStep);
         //------------------------------------
         g_threadMgr.wait();
@@ -133,15 +130,13 @@ void Engine::frame(float timeStep)
     {
         PROFILE(Engine_PostStep);
         m_state = kFramePostStepping;
-        g_actorWorld.post_step(timeStep);
         g_gameFSM.post_step(timeStep);
     }
 
     {
         PROFILE(Engine_Render);
         m_state = kFrameRendering;
-        g_gameFSM.render(timeStep);
-        g_actorWorld.draw();
+        g_gameFSM.render();
     }
 
     {

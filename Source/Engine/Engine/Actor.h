@@ -57,7 +57,6 @@ struct ActorWorld
     uint32_t    num_actors(uint32_t type);
     Actor*      get_actors(uint32_t type);
 
-    void        frame_start(float dt);
     void        pre_step(float dt);
     void        step(float dt);
     void        post_step(float dt);

@@ -366,6 +366,9 @@
     <ClCompile Include="Engine\CommandAPI.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameState.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Log.h">
@@ -897,6 +900,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\CommandAPI.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameState.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

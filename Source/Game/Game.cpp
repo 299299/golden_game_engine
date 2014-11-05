@@ -15,6 +15,7 @@
 #include "PhysicsWorld.h"
 #include "ShadingEnviroment.h"
 #include "Camera.h"
+#include "PreviewState.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -29,6 +30,7 @@ void showHelp()
             "-h set window height\n"
             "-t set window title\n"
             "--package --> package to load\n"
+            "--state --> game state to run\n"
             "--actor --> actor name\n"
             "--level --> level name\n"
             "--animation --> animation name\n"
@@ -64,6 +66,7 @@ int _tmain(int argc, _TCHAR* argv[])
     const char* level_name = 0;
     const char* package_name = 0;
     const char* script = 0;
+    const char* state_name = 0;
 
     EngineConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
@@ -72,14 +75,6 @@ int _tmain(int argc, _TCHAR* argv[])
     cfg.m_windowWidth = 1280;
     cfg.m_windowHeight = 720;
     cfg.m_fixedFPS = 60;
-    extern void game_pre_step(float);
-    extern void game_step(float);
-    extern void game_post_step(float);
-    extern void game_render(float);
-    cfg.m_preStepHook = game_pre_step;
-    cfg.m_stepHook = game_step;
-    cfg.m_postStepHook = game_post_step;
-    cfg.m_renderHook = game_render;
 
     bx::CommandLine cmdline(argc, argv);
     
@@ -96,6 +91,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if(name) cfg.m_windowTitle = name;
     script = cmdline.findOption("script");
     package_name = cmdline.findOption("package");
+    state_name = cmdline.findOption("state");
 
     if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.", "ENGINE");
 
@@ -116,6 +112,7 @@ int _tmain(int argc, _TCHAR* argv[])
     register_memory_allocators();
 
     g_engine.init(cfg);
+    g_gameFSM.add_state(new PreviewState);
 
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
@@ -162,6 +159,8 @@ int _tmain(int argc, _TCHAR* argv[])
             }
         }
     }
+
+    if(state_name) g_gameFSM.change_state(state_name);
 
     g_engine.run();
     quitWebServerTool();

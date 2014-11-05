@@ -8,6 +8,7 @@
 #include "AnimRig.h"
 #include "AnimControl.h"
 #include "MathDefs.h"
+#include "GameState.h"
 //=======================================================================================
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
 #include <Animation/Animation/hkaAnimationContainer.h>
@@ -22,6 +23,7 @@
 
 enum EngineCommandId
 {
+    kEngineCmdChagneState,
     kEngineCmdLoadLevel,
     kEngineCmdUnLoadLevel,
     kEngineCmdCreateActor,
@@ -51,6 +53,12 @@ extern void* get_anim_rig(Id id);
     GET_RIG_FROM_CMD();\
     hk_anim_ctrl* control = inst->get_control(params->m_int[0]);\
     if(!control) return;
+
+static void on_command_change_gamestate(const Command& cmd)
+{
+    GameState* p_state = (GameState*)(*(int*)cmd.m_params);
+    g_gameFSM.change_state((GameState*)cmd.m_params);
+}
 
 static void on_command_load_level(const Command& cmd)
 {
@@ -263,4 +271,14 @@ void command_destroy_actor(ActorId32 actor, float when)
     char* params = cmd.m_params;
     *(ActorId32*)(params) = actor;
     g_engine.m_cmd_machine->addCommand(cmd);
+}
+
+void command_chang_gamestate( const char* name, float when /*= 0.0f*/ )
+{
+    GameState* state = g_gameFSM.find_state(name);
+    if(!state) return;
+    Command cmd;
+    cmd.m_time = when;
+    cmd.m_command = kEngineCmdDestroyActor;
+    *(int*)cmd.m_params = (int)state;
 }

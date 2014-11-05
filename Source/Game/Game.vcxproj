@@ -98,14 +98,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="InputController.h" />
+    <ClInclude Include="PreviewState.h" />
     <ClInclude Include="Remote.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameHooks.cpp" />
     <ClCompile Include="HotReload.cpp" />
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="PhysicsTools.cpp" />
+    <ClCompile Include="PreviewState.cpp" />
     <ClCompile Include="RemoteCommands.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

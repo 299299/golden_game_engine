@@ -289,11 +289,6 @@ Actor* ActorWorld::get_actors( uint32_t type )
     return g_actorBuckets[type].begin();
 }
 
-void ActorWorld::frame_start(float dt)
-{
-    
-}
-
 void ActorWorld::pre_step( float dt )
 {
     g_animMgr.update_animations(dt);

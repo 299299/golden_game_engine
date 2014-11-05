@@ -2,6 +2,7 @@
 #include "EngineAssert.h"
 #include "Log.h"
 #include "Profiler.h"
+#include "Actor.h"
 
 GameState::GameState()
 {
@@ -11,6 +12,26 @@ GameState::GameState()
 GameState::~GameState()
 {
 
+}
+
+void GameState::pre_step( float dt )
+{
+    g_actorWorld.pre_step(dt);
+}
+
+void GameState::step( float dt )
+{
+    g_actorWorld.step(dt);
+}
+
+void GameState::post_step( float dt )
+{
+    g_actorWorld.post_step(dt);
+}
+
+void GameState::render()
+{
+    g_actorWorld.draw();
 }
 
 GameFSM g_gameFSM;
@@ -51,17 +72,22 @@ void GameFSM::add_state(GameState* p_state)
 
 void GameFSM::change_state(const char* name)
 {
-    GameState* cur_state = m_state;
-    GameState* next_state = find_state(name);
-    if(cur_state == next_state) return;
-    if(!next_state) return;
-    LOGI("change_state from %s to %s.", p_state ? cur_state->get_name() : "(null)",  next_state->get_name());
-    cur_state->on_exit(next_state);
-    next_state->on_enter(cur_state);
-    m_state = next_state;     
+    change_state(find_state(name));
 }
 
-GameState* GameFSM::find_state(const char* name) const
+void GameFSM::change_state( GameState* state )
+{
+    GameState* cur_state = m_state;
+    GameState* next_state = state;
+    if(cur_state == next_state) return;
+    if(!next_state) return;
+    LOGI("change_state from %s to %s.", cur_state ? cur_state->get_name() : "(null)",  next_state->get_name());
+    if(cur_state) cur_state->on_exit(next_state);
+    next_state->on_enter(cur_state);
+    m_state = next_state;    
+}
+
+GameState* GameFSM::find_state(const char* name)
 {
     int num = m_numStates;
     GameState** states = m_states;
@@ -92,8 +118,8 @@ void GameFSM::post_step(float dt)
     m_state->post_step(dt);
 }
 
-void GameFSM::render(float dt)
+void GameFSM::render()
 {
     if(!m_state) return;
-    m_state->render(dt);
+    m_state->render();
 }

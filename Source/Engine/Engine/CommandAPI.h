@@ -1,6 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
 
+void command_chang_gamestate(const char* name, float when = 0.0f);
 //-------------------------------------------------------
 // LEVEL API
 void command_load_level(const StringId& level_name, float when = 0.0f);

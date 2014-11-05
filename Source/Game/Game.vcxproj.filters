@@ -17,6 +17,9 @@
     <ClInclude Include="InputController.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PreviewState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -37,7 +40,7 @@
     <ClCompile Include="PhysicsTools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GameHooks.cpp">
+    <ClCompile Include="PreviewState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
