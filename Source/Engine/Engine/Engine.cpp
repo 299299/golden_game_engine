@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "Utils.h"
 #include "config.h"
+#include "GameState.h"
 //=================================================================
 #include "Log.h"
 #include "DataDef.h"
@@ -47,10 +48,12 @@ void Engine::init( const EngineConfig& cfg )
     HiresTimer::init();
     core_init();
     subsystem_init();
+    g_gameFSM.init();
 }
 
 void Engine::quit()
 {
+    g_gameFSM.quit();
     subsystem_shutdown();
     core_shutdown();
     ::free(m_cmd_machine);
@@ -121,7 +124,7 @@ void Engine::frame(float timeStep)
         //------------------------------------
         m_state = kFrameUpdating;
         g_actorWorld.step(timeStep);
-        if(m_cfg.m_stepHook) m_cfg.m_stepHook(timeStep);
+        g_gameFSM.step(timeStep);
         //------------------------------------
         g_threadMgr.wait();
         g_physicsWorld.tick_finished_jobs();
@@ -131,13 +134,13 @@ void Engine::frame(float timeStep)
         PROFILE(Engine_PostStep);
         m_state = kFramePostStepping;
         g_actorWorld.post_step(timeStep);
-        if(m_cfg.m_postStepHook) m_cfg.m_postStepHook(timeStep);
+        g_gameFSM.post_step(timeStep);
     }
 
     {
         PROFILE(Engine_Render);
         m_state = kFrameRendering;
-        if(m_cfg.m_renderHook) m_cfg.m_renderHook(timeStep);
+        g_gameFSM.render(timeStep);
         g_actorWorld.draw();
     }
 

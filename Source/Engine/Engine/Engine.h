@@ -1,8 +1,6 @@
 #pragma once
 #include "BaseTypes.h"
 
-typedef void (*__tick_func)(float);
-
 struct EngineConfig
 {
     void*                       m_windowHandle;
@@ -13,11 +11,6 @@ struct EngineConfig
     bool                        m_fullScreen;
     bool                        m_checkMemory;
     bool                        m_headless;
-
-    __tick_func                 m_preStepHook;
-    __tick_func                 m_postStepHook;
-    __tick_func                 m_stepHook;
-    __tick_func                 m_renderHook;
 };
 
 enum EngineFrameState
