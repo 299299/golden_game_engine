@@ -31,7 +31,8 @@ class NagaPipeline(object):
         self._createUI()
         # WEB
         self.webSock = WEB.MayaWebSocket()
-        self.webSock.connect(self.onWebSocketOpen, self.onWebSocketMessage,
+        self.webSock.connect(self.onWebSocketOpen,
+                             self.onWebSocketMessage,
                              self.onWebSocketClosed)
         self.created = True
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
@@ -210,9 +211,12 @@ class NagaPipeline(object):
 
         if not self.webSock.connected:
             self.lunchEngine(packageName, debug=DEBUG)
-            time.sleep(0.2)
+            sleep_time = 2
+            time.sleep(sleep_time)
         else:
             self.reloadCompileResult()
+
+        self.syncCamera()
 
     def export(self, exportName):
 
@@ -283,12 +287,25 @@ class NagaPipeline(object):
         hkoFile = hkoList[hkoIndex]
         return hkoFile.find('animation') != -1
 
+    def syncCamera(self):
+        nodeName = 'persp'
+        translate = cmds.getAttr(nodeName + '.translate')[0]
+        lookAt = cmds.camera(nodeName, q=1, wci=1)
+        #rotate = cmds.getAttr(nodeName + '.rotate')[0]
+        fov = NAGA.getCameraFov()
+        senddata = '%g,%g,%g,%g,%g,%g,%g'\
+            % ( translate[0]*0.01, translate[1]*0.01, translate[2]*0.01,
+                lookAt[0]*0.01, lookAt[1]*0.01, lookAt[2]*0.01, fov)
+        self.webSock.sendmayacommand("camera_transform", senddata)
+
     #
     # WEB SOCKET FUNCTIONS
     #
 
     def onWebSocketOpen(self):
         pass
+        #print('-- onWebSocketOpen --')
+        # self.syncCamera()
 
     def onWebSocketMessage(self, json_object):
         type_name = json_object['type']

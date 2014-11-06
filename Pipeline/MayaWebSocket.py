@@ -75,7 +75,7 @@ class MayaWebSocket(object):
             self.ws.close()
         if self.socketThread:
             print('wait for socket thread exit')
-            #self.socketThread.join()
+            # self.socketThread.join()
             print('wait for socket thread finished')
         self.ws = None
         self.workList = []
@@ -96,12 +96,12 @@ class MayaWebSocket(object):
         #print('----> web socket on error = ' + str(error))
 
     def __on_close(self, ws):
-        #print('################ web socket on close ################')
+        # print('################ web socket on close ################')
         self.connected = False
         self.workList = []
 
     def __on_open(self, ws):
-        #print('################web socket on open################')
+        # print('################web socket on open################')
         self.connected = True
         self.workList = []
         if(self.openCallback):
@@ -127,8 +127,9 @@ class MayaWebSocket(object):
                      websocket.ABNF.OPCODE_BINARY)
 
     def sendmayacommand(self, commandName, data1='', data2=''):
-        msg = '{"command":"%s", "data1":"%s", "data2":"%s", \
-              "type":"remote.command"}' % (commandName, data1, data2)
+        msg = '{"command":"%s", "data1":"%s", "data2":"%s", "type":"remote.command"}'\
+            % (commandName, data1, data2)
+        print(msg)
         self.__putDataToWorkQueue(msg)
 
     def __putDataToWorkQueue(self, data):

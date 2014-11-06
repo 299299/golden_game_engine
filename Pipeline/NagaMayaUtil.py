@@ -65,6 +65,14 @@ def lunchApplication(name, folder, args, wait=False):
         print(stderr)
 
 
+def getCameraFov(cameraShapeName='perspShape'):
+    aperture = cmds.getAttr(cameraShapeName + '.hfa')
+    fl = cmds.getAttr(cameraShapeName + '.focalLength')
+    fov = aperture * 0.5 / (fl * 0.03937)
+    fov = 2.0 * math.atan(fov) / 3.14159 * 180.0
+    return fov
+
+
 def getSceneName():
     fileName = cmds.file(q=True, sn=True)
     print("current scene = " + fileName)

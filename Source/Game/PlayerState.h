@@ -6,7 +6,7 @@ class PlayerState : public GameState
 {
 public:
     PlayerState();
-    ~PreviewState();
+    ~PlayerState();
 
     virtual const char* get_name() const { return "player"; };
     virtual void step(float dt);

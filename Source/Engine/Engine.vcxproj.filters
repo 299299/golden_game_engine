@@ -64,9 +64,6 @@
     <Filter Include="ThirdParty\entry">
       <UniqueIdentifier>{600413b2-53b5-4312-8546-696bf1b05f82}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ThirdParty\gamemonkey">
-      <UniqueIdentifier>{29f2e831-3e44-4486-b05d-972493e781f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\memory">
       <UniqueIdentifier>{2809e10d-2957-47f0-8c4e-eb935ca48f36}</UniqueIdentifier>
     </Filter>
@@ -210,126 +207,6 @@
     <ClCompile Include="..\ThirdParty\stb_image\stb_image_.cpp">
       <Filter>ThirdParty\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmArrayLib.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmArraySimple.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmByteCode.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmByteCodeGen.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmCall.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmCodeGen.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmCodeGenHooks.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmCodeTree.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmCrc.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmDebug.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmDebugger.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmFunctionObject.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmGCRoot.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmGCRootUtil.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmHash.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmHelpers.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmIncGC.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmLibHooks.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmListDouble.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmLog.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMachine.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMachineLib.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMathLib.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMem.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMemChain.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMemFixed.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmMemFixedSet.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmOperators.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmScanner.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmStream.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmStreamBuffer.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmStringLib.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmStringObject.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmSystemLib.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmTableObject.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmThread.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmUserObject.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmUtil.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmVariable.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmVector3Lib.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Memory\linear_allocator.cpp">
       <Filter>Core\memory</Filter>
     </ClCompile>
@@ -353,9 +230,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Actor.cpp">
       <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\gamemonkey\gmParser.cpp">
-      <Filter>ThirdParty\gamemonkey</Filter>
     </ClCompile>
     <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp">
       <Filter>ThirdParty\bgfx</Filter>
@@ -715,147 +589,6 @@
     <ClInclude Include="Graphics\Gui.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmArrayLib.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmArraySimple.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmBind.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmBindFuncGen.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmBindHeader.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmBindHelper.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmByteCode.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmByteCodeGen.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmCall.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmCodeGen.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmCodeGenHooks.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmCodeTree.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmConfig.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmConfig_p.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmCrc.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmDebug.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmDebugger.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmFunctionObject.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmGCRoot.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmGCRootUtil.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmHash.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmHelpers.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmIncGC.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmIterator.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmLibHooks.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmListDouble.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmLog.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMachine.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMachineLib.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMathLib.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMem.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMemChain.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMemFixed.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmMemFixedSet.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmOperators.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmScanner.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmStream.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmStreamBuffer.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmStringLib.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmStringObject.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmSystemLib.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmTableObject.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmThread.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmUserObject.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmUtil.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmVariable.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmVector3Lib.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
-    </ClInclude>
     <ClInclude Include="Core\id_array.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -886,9 +619,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Actor.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\gamemonkey\gmParser.cpp.h">
-      <Filter>ThirdParty\gamemonkey</Filter>
     </ClInclude>
     <ClInclude Include="Animation\AnimControl.h">
       <Filter>Animation</Filter>

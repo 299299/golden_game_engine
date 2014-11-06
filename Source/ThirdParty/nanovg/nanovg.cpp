@@ -22,7 +22,7 @@
 #include "nanovg.h"
 #define FONTSTASH_IMPLEMENTATION
 #include "fontstash.h"
-#include <stb_image/stb_image.h>
+#include <stb_image/stb_image.c>
 
 
 #define NVG_INIT_PATH_SIZE 256

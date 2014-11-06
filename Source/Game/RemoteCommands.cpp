@@ -109,6 +109,23 @@ void load_package(const char* data1, const char* data2)
 {
     g_resourceMgr.load_package_and_wait(data1);
 }
+void camera_transform(const char* data1, const char* data2)
+{
+    hkStringBuf dataStr(data1);
+    hkArray<const char*>::Temp bits;
+    int nSplit = dataStr.split(',', bits);
+    float transform[7];
+    int num = BX_COUNTOF(transform);
+    if(nSplit != num) return;
+    for (int i=0; i<num; ++i)
+    {
+        transform[i] = hkString::atof(bits[i]);
+    }
+    g_camera.update(transform, transform+3);
+    extern DebugFPSCamera  g_fpsCamera;
+    g_fpsCamera.set(transform, transform+3);
+    g_camera.m_fov = transform[6];
+}
 
 void list_command(const char* data1, const char* data2);
 struct RemoteCommand
@@ -127,6 +144,7 @@ static RemoteCommand gCommands[] =
     REMOTE_CMD(load_package),
     REMOTE_CMD(list_command),
     REMOTE_CMD(exit_command),
+    REMOTE_CMD(camera_transform),
 };
 void list_command(const char* data1, const char* data2)
 {
@@ -151,8 +169,7 @@ void console_command(const gamedevwebtools::Message &message)
     const char* cmd = message.fields()[0].asString();
     const char* data1 = message.fields()[1].asString();
     const char* data2 = message.fields()[2].asString();
-    bool bLog = strcmp(cmd, "camera_transform") && strcmp(cmd, "object_transform");
-    if(bLog) LOGD("onConsoleCommand cmd = %s, data1 = %s, data2 = %s", cmd, data1, data2);
+    LOGD("onConsoleCommand cmd = %s, data1 = %s, data2 = %s", cmd, data1, data2);
     int command = parse_command(cmd);
     if(command < 0)
     {
