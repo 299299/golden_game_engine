@@ -16,6 +16,7 @@
 #include "ShadingEnviroment.h"
 #include "Camera.h"
 #include "PreviewState.h"
+#include "PlayerState.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -113,6 +114,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     g_engine.init(cfg);
     g_gameFSM.add_state(new PreviewState);
+    g_gameFSM.add_state(new PlayerState);
 
     extern void resource_hot_reload_init();
     resource_hot_reload_init();

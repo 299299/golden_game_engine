@@ -142,6 +142,7 @@ void init_engine_commands(CommandMachine* cmd_machine)
 {
     _command_callback_ command_funcs[] =
     {
+        on_command_change_gamestate,
         on_command_load_level,
         on_command_unload_level,
         on_command_create_actor,
@@ -279,6 +280,6 @@ void command_chang_gamestate( const char* name, float when /*= 0.0f*/ )
     if(!state) return;
     Command cmd;
     cmd.m_time = when;
-    cmd.m_command = kEngineCmdDestroyActor;
+    cmd.m_command = kEngineCmdChagneState;
     *(int*)cmd.m_params = (int)state;
 }

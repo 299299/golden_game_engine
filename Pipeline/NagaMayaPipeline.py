@@ -244,7 +244,7 @@ class NagaPipeline(object):
         height = 600
         args = ['--websocket',
                 '--package', 'data/' + packageName + '.package',
-                '--script', 'core/scripts/preview',
+                '--state', 'preview',
                 '-w', str(width),
                 '-h', str(height)]
 
