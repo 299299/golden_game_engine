@@ -18,7 +18,6 @@
 #include "ModelCompiler.h"
 #include "ShadingEnviromentCompiler.h"
 #include "LevelCompiler.h"
-#include "MovementCompiler.h"
 #include <bx/tinystl/allocator.h>
 #include <bx/tinystl/unordered_map.h>
 #include <bx/thread.h>
@@ -77,7 +76,6 @@ static const char* g_resourceTypeNames[] =
     ShadingEnviroment::get_name(),
     SHADER_INCLUDE_EXT,
     "dds",
-    MovementResource::get_name(),
 };
 static __create_compiler__ g_funtions[] =
 {
@@ -103,7 +101,6 @@ static __create_compiler__ g_funtions[] =
     create_compiler<ShadingEnviromentCompiler>,
     create_compiler<ShaderIncludeCompiler>,
     create_compiler<DDSCompiler>,
-    create_compiler<MovementCompiler>,
 };
 
 void init_factories()

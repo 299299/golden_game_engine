@@ -378,8 +378,8 @@ void init_component_names()
     g_componentTypeNames[kComponentAnimRig] = AnimRig::get_name();
     g_componentTypes[kComponentAnimRig] = AnimRig::get_type();
 
-    g_componentTypeNames[kComponentMovement] = MovementResource::get_name();
-    g_componentTypes[kComponentMovement] = MovementResource::get_type();
+    g_componentTypeNames[kComponentMovement] = MovementInstance::get_name();
+    g_componentTypes[kComponentMovement] = MovementInstance::get_type();
 };
 int find_component_type(const StringId& typeName)
 {

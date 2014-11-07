@@ -75,7 +75,6 @@ std::string ActorConverter::getResourceName() const
     return m_config->m_rootPath + m_name;
 }
 
-
 hkxNode* ActorConverter::findNode(const char* name)
 {
     return m_config->m_scene->findNodeByName(name);
@@ -86,7 +85,7 @@ void ActorConverter::processComponentNodes()
     static const char* s_componet_node_names[] =
     {
         ProxyResource::get_name(),
-        MovementResource::get_name(),
+        MovementInstance::get_name(),
     };
 
     for (int i=0; i<BX_COUNTOF(s_componet_node_names); ++i)

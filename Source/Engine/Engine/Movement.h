@@ -2,18 +2,14 @@
 #include "Prerequisites.h"
 #include "StringId.h"
 
-ENGINE_NATIVE_ALIGN struct MovementResource 
-{
-    DECLARE_RESOURCE(movement);
-    int                             m_dummy;
-};
 
 ENGINE_NATIVE_ALIGN struct MovementInstance
 {
+    DECLARE_RESOURCE(movement);
+
     hkVector4                       m_linearVelocity;
     float                           m_rotateSpeed;
     ActorId32                       m_actor;
-    const MovementResource*         m_resource;
     float                           m_motionWeight;
     float                           m_velocityWeight;
     

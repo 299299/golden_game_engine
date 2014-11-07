@@ -42,7 +42,6 @@ void* get_movements()
 
 void MovementInstance::init(const void* resource, ActorId32 actor)
 {
-    m_resource = (const MovementResource*)resource;
     m_actor = actor;
     m_linearVelocity.setZero4();
     m_motionWeight = 1.0f;
