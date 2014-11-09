@@ -94,7 +94,6 @@ class NagaPipeline(object):
 
         cmds.frameLayout(l="Util", cll=1)
         # cmds.rowLayout(nc=2)
-        cmds.button('Sync Camera', c=self.onSyncCameraClicked)
         cmds.button('Open Selection AR', c=self.onOpenARClicked)
         cmds.button('Back To Last Level', c=self.onBackLevelClicked)
         cmds.button('Add Anim-Trigger', c=NAGA.createTriggerNode)
@@ -102,7 +101,7 @@ class NagaPipeline(object):
         cmds.button('Add Script', c=NAGA.createScriptNode)
         cmds.button('Add Anim Rig', c=self.onCreateRigButtonClicked)
         cmds.button('Add Movement', c=NAGA.createMovementNode)
-        for i in [0, 8]:
+        for i in [0, 7]:
             cmds.setParent('..')
 
         height = 75
@@ -140,9 +139,6 @@ class NagaPipeline(object):
 
     def onCreateRigButtonClicked(self, *arg):
         NAGA.createAnimRigNode(self.naga.getRigList())
-
-    def onSyncCameraClicked(self, *arg):
-        self.syncCamera()
 
     def updateUIByData(self):
         #
@@ -282,19 +278,6 @@ class NagaPipeline(object):
         hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
         hkoFile = hkoList[hkoIndex]
         return hkoFile.find('animation') != -1
-
-    def syncCamera(self):
-        nodeName = 'persp'
-        # need test
-        shapeName = 'perspShape'
-        translate = cmds.getAttr(nodeName + '.translate')[0]
-        lookAt = cmds.camera(shapeName, q=1, wci=1)
-        #rotate = cmds.getAttr(nodeName + '.rotate')[0]
-        fov = NAGA.getCameraFov()
-        senddata = '%g,%g,%g,%g,%g,%g,%g'\
-            % (translate[0] * 0.01, translate[1] * 0.01, translate[2] * 0.01,
-                lookAt[0] * 0.01, lookAt[1] * 0.01, lookAt[2] * 0.01, fov)
-        self.webSock.sendmayacommand("camera_transform", senddata)
 
     #
     # WEB SOCKET FUNCTIONS

@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Light.h"
 #include "Camera.h"
+#include "DebugDraw.h"
 #include <bgfx/bgfx.h>
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
@@ -55,6 +56,8 @@ void PreviewState::step( float dt )
         draw_debug_lights();
         draw_debug_models();
     }
+
+    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());
 }
 
 void PreviewState::on_enter( GameState* prev_state )

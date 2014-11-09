@@ -113,7 +113,6 @@
     <ClInclude Include="Compilers\LightCompiler.h" />
     <ClInclude Include="Compilers\MaterialCompiler.h" />
     <ClInclude Include="Compilers\ModelCompiler.h" />
-    <ClInclude Include="Compilers\MovementCompiler.h" />
     <ClInclude Include="Compilers\PackageCompiler.h" />
     <ClInclude Include="Compilers\PhysicsCompiler.h" />
     <ClInclude Include="Compilers\RagdollCompiler.h" />
@@ -138,7 +137,6 @@
     <ClCompile Include="Compilers\LightCompiler.cpp" />
     <ClCompile Include="Compilers\MaterialCompiler.cpp" />
     <ClCompile Include="Compilers\ModelCompiler.cpp" />
-    <ClCompile Include="Compilers\MovementCompiler.cpp" />
     <ClCompile Include="Compilers\PackageCompiler.cpp" />
     <ClCompile Include="Compilers\PhysicsCompiler.cpp" />
     <ClCompile Include="Compilers\RagdollCompiler.cpp" />

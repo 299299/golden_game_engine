@@ -71,9 +71,6 @@
     <ClInclude Include="Compilers\TextureCompiler.h">
       <Filter>compilers</Filter>
     </ClInclude>
-    <ClInclude Include="Compilers\MovementCompiler.h">
-      <Filter>compilers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -138,9 +135,6 @@
       <Filter>compilers</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Compilers\MovementCompiler.cpp">
-      <Filter>compilers</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="path.cfg" />
