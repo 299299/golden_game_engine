@@ -207,8 +207,7 @@ Id create_anim_rig( const void* resource, ActorId32 id)
 {
     check_status();
     AnimRigInstance inst;
-    inst.init(resource);
-    inst.m_actor = id;
+    inst.init(resource, id);
     return id_array::create(m_rigs, inst);
 }
 

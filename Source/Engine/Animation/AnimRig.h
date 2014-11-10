@@ -93,7 +93,7 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     char*                           m_blob;
     ActorId32                       m_actor;
 
-    void init(const void* resource);
+    void init(const void* resource, ActorId32 actor);
     void destroy();
     void update(float dt);
     void update_attachment(const hkQsTransform& worldFromModel);

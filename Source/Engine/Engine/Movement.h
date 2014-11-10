@@ -16,6 +16,22 @@ ENGINE_NATIVE_ALIGN struct MovementInstance
     void init(const void* resource, ActorId32 actor);
 };
 
+
+enum LocomotionState
+{
+    kLocomotion_Stand,
+    kLocomotion_StandToMove,
+    kLocomotion_Move,
+    kLocomotion_MoveToStand,
+    //
+};
+
+ENGINE_NATIVE_ALIGN struct Locomotion
+{
+    uint8_t                         m_state;
+    char                            m_padding[3];
+};
+
 struct Actor;
 struct MovementManager
 {

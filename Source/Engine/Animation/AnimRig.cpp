@@ -106,8 +106,9 @@ int AnimRig::find_animation_index( const StringId& name ) const
 //          INSTANCE
 //------------------------------------------------------------------------------------------------
 
-void AnimRigInstance::init( const void* resource )
+void AnimRigInstance::init( const void* resource , ActorId32 actor)
 {
+    m_actor = actor;
     m_attachmentTransforms = 0;
     m_resource = (const AnimRig*)resource;
     const hkaSkeleton* skeleton = m_resource->m_skeleton;
