@@ -13,6 +13,8 @@ set "nanovg_dest_dir=%dest_proj_dir%nanovg\"
 ::copy python scirpts
 copy %bgfx_inc_dir%*.h                      %bgfx_dest_dir%
 copy %bgfx_src_dir%*.bin.h                  %bgfx_dest_dir%
+copy %bgfx_src_dir%ovr.h                  	%bgfx_dest_dir%
+copy %bgfx_src_dir%ovr.cpp                  %bgfx_dest_dir%
 copy %bgfx_src_dir%bgfx.cpp                 %bgfx_dest_dir%
 copy %bgfx_src_dir%bgfx_p.h                 %bgfx_dest_dir%
 copy %bgfx_src_dir%config.h                 %bgfx_dest_dir%

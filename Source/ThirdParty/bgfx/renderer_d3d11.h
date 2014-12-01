@@ -18,7 +18,11 @@ BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG("-Wunknown-pragmas" );
 BX_PRAGMA_DIAGNOSTIC_IGNORED_GCC("-Wpragmas");
 BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4005) // warning C4005: '' : macro redefinition
 #define D3D11_NO_HELPERS
+#if BX_PLATFORM_WINRT
+#include <d3d11_2.h>
+#else
 #include <d3d11.h>
+#endif
 BX_PRAGMA_DIAGNOSTIC_POP()
 
 #include "renderer_d3d.h"
@@ -31,6 +35,17 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 #ifndef D3DCOLOR_RGBA
 #	define D3DCOLOR_RGBA(_r, _g, _b, _a) D3DCOLOR_ARGB(_a, _r, _g, _b)
 #endif // D3DCOLOR_RGBA
+
+#ifndef DXGI_FORMAT_B4G4R4A4_UNORM
+// Win8 only BS
+// https://blogs.msdn.com/b/chuckw/archive/2012/11/14/directx-11-1-and-windows-7.aspx?Redirected=true
+// http://msdn.microsoft.com/en-us/library/windows/desktop/bb173059%28v=vs.85%29.aspx
+#	define DXGI_FORMAT_B4G4R4A4_UNORM DXGI_FORMAT(115)
+#endif // DXGI_FORMAT_B4G4R4A4_UNORM
+
+#ifndef D3D_FEATURE_LEVEL_11_1
+#	define D3D_FEATURE_LEVEL_11_1 D3D_FEATURE_LEVEL(0xb100)
+#endif // D3D_FEATURE_LEVEL_11_1
 
 namespace bgfx
 {

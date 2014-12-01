@@ -97,6 +97,23 @@ void reload_light_resource(void* oldResource, void* newResource)
 
 
 //===============================================================================
+void reload_anim_rig_resource(void* oldResource, void* newResource)
+{
+    AnimRig* oldCompResource = (AnimRig*)oldResource;
+    AnimRig* newCompResource = (AnimRig*)newResource;
+    uint32_t componentNum = num_components(AnimRig::get_type());
+    AnimRigInstance* components = (AnimRigInstance*)get_components(AnimRig::get_type());
+    LOGI("component %s instance num = %d", AnimRig::get_name(), componentNum);
+    for(size_t i=0; i<componentNum; ++i)
+    {
+        if(components[i].m_resource == oldCompResource)
+        {
+            components[i].destroy();
+            components[i].init(newCompResource, components[i].m_actor); //---> no destroy?? may memleak
+        }
+    }
+}
+
 void reload_animation_resource(void* oldResource, void* newResource)
 {
     Animation* oldAnimation = (Animation*)oldResource;
@@ -314,13 +331,13 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(Level::get_type(), reload_level_resource);
     g_resourceMgr.register_reload_callback(Animation::get_type(), reload_animation_resource);
     g_resourceMgr.register_reload_callback(LightResource::get_type(), reload_light_resource);
+    g_resourceMgr.register_reload_callback(AnimRig::get_type(), reload_anim_rig_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();
     register_component_resource_reload_callback<ReachResource, ReachInstance>();
 
     register_component_resource_reload_callback_<RagdollResource,RagdollInstance>();
-    register_component_resource_reload_callback_<AnimRig, AnimRigInstance>();
     register_component_resource_reload_callback_<FootResource, FootInstance>();
     register_component_resource_reload_callback_<PhysicsResource, PhysicsInstance>();
     register_component_resource_reload_callback_<ProxyResource, ProxyInstance>();

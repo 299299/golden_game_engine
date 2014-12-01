@@ -55,12 +55,6 @@
     <Filter Include="ThirdParty\nanovg">
       <UniqueIdentifier>{ee884d03-b39c-42c8-ac2a-2703c7cb2cc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ThirdParty\stb_truetype">
-      <UniqueIdentifier>{bfff3c6c-5086-485c-9f76-f8db694c6e00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\stb_image">
-      <UniqueIdentifier>{8e9e2208-58f8-4a28-bba3-a371a865417f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ThirdParty\entry">
       <UniqueIdentifier>{600413b2-53b5-4312-8546-696bf1b05f82}</UniqueIdentifier>
     </Filter>
@@ -162,9 +156,6 @@
     <ClCompile Include="..\ThirdParty\entry\dbg.cpp">
       <Filter>ThirdParty\entry</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\stb_image\stb_image.h">
-      <Filter>ThirdParty\stb_image</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DebugDraw.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -203,9 +194,6 @@
     </ClCompile>
     <ClCompile Include="Graphics\Gui.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\stb_image\stb_image_.cpp">
-      <Filter>ThirdParty\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="Core\Memory\linear_allocator.cpp">
       <Filter>Core\memory</Filter>
@@ -534,9 +522,6 @@
     </ClInclude>
     <ClInclude Include="..\ThirdParty\nanovg\vs_nanovg_fill.bin.h">
       <Filter>ThirdParty\nanovg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\stb_truetype\stb_truetype.h">
-      <Filter>ThirdParty\stb_truetype</Filter>
     </ClInclude>
     <ClInclude Include="..\ThirdParty\entry\dbg.h">
       <Filter>ThirdParty\entry</Filter>

@@ -149,6 +149,7 @@ void imguiSeparatorLine(uint16_t _height = IMGUI_SEPARATOR_VALUE);
 
 int32_t imguiGetWidgetX();
 int32_t imguiGetWidgetY();
+void imguiSetCurrentScissor(); // Call before drawing custom widgets over imgui area.
 
 bool imguiButton(const char* _text, bool _enabled = true, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, uint32_t _rgb0 = IMGUI_BUTTON_RGB0, int32_t _r = IMGUI_BUTTON_R);
 bool imguiItem(const char* _text, bool _enabled = true);
@@ -162,23 +163,26 @@ bool imguiSlider(const char* _text, float& _val, float _vmin, float _vmax, float
 bool imguiSlider(const char* _text, int32_t& _val, int32_t _vmin, int32_t _vmax, bool _enabled = true, ImguiAlign::Enum _align = ImguiAlign::LeftIndented);
 void imguiInput(const char* _label, char* _str, uint32_t _len, bool _enabled = true, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, int32_t _r = IMGUI_INPUT_R);
 
-uint8_t imguiTabsUseMacroInstead(uint8_t _selected, ...);
-uint8_t imguiTabsUseMacroInstead(uint8_t _selected, bool _enabled, ...);
-uint8_t imguiTabsUseMacroInstead(uint8_t _selected, bool _enabled, ImguiAlign::Enum _align, ...);
-uint8_t imguiTabsUseMacroInstead(uint8_t _selected, bool _enabled, ImguiAlign::Enum _align, int32_t _height, int32_t _r, ...);
-#define imguiTabs(...) imguiTabsUseMacroInstead(__VA_ARGS__, NULL)
+/// Usage example:
+///     imguiTabs(0, true, ImguiAlign::CenterIndented, 20, 0, 3, 2, "Tab0", "Tab1", "Tab2", true, false);
+/// _nTabs    - Number of tabs (in the above example, 3, and their labes are 'Tab0', 'Tab1' and 'Tab2'.
+/// _nEnabled - Number of specified 'enabled' flags. All other unspecified tabs are considered enabled by default.
+///             In the above example, there are 2 enabled flags: 'Tab0' is specified as enabled and 'Tab1' is specified as disabled.
+///             Tab2 is unspecified and therefore is treated as enabled.
+uint8_t imguiTabs(uint8_t _selected, bool _enabled, ImguiAlign::Enum _align, int32_t _height, int32_t _r, uint8_t _nTabs, uint8_t _nEnabled, ...);
+uint8_t imguiTabs(uint8_t _selected, bool _enabled, ImguiAlign::Enum _align, int32_t _height, int32_t _r, uint8_t _nTabs, ...);
 
 uint32_t imguiChooseUseMacroInstead(uint32_t _selected, ...);
 #define imguiChoose(...) imguiChooseUseMacroInstead(__VA_ARGS__, NULL)
 
-void imguiColorWheel(float _rgb[3], bool _respectIndentation = false, bool _enabled = true);
-void imguiColorWheel(const char* _str, float _rgb[3], bool& _activated, bool _enabled = true);
+void imguiColorWheel(float _rgb[3], bool _respectIndentation = false, float _size = 0.8f, bool _enabled = true);
+void imguiColorWheel(const char* _str, float _rgb[3], bool& _activated, float _size = 0.8f, bool _enabled = true);
 
-void imguiImage(bgfx::TextureHandle _image, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _originBottomLeft = false);
-void imguiImage(bgfx::TextureHandle _image, float _lod, float _scale, float _aspect, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _originBottomLeft = false);
-void imguiImageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align = ImguiAlign::LeftIndented);
-void imguiImageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod, float _scale, float _aspect, ImguiAlign::Enum _align = ImguiAlign::LeftIndented);
-bool imguiCube(bgfx::TextureHandle _cubemap, float _lod = 0.0f, bool _cross = true, ImguiAlign::Enum _align = ImguiAlign::LeftIndented);
+bool imguiImage(bgfx::TextureHandle _image, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _enabled = true, bool _originBottomLeft = false);
+bool imguiImage(bgfx::TextureHandle _image, float _lod, float _scale, float _aspect, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _enabled = true, bool _originBottomLeft = false);
+bool imguiImageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod, int32_t _width, int32_t _height, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _enabled = true);
+bool imguiImageChannel(bgfx::TextureHandle _image, uint8_t _channel, float _lod, float _scale, float _aspect, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _enabled = true);
+bool imguiCube(bgfx::TextureHandle _cubemap, float _lod = 0.0f, bool _cross = true, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, bool _enabled = true);
 
 float imguiGetTextLength(const char* _text, ImguiFontHandle _handle);
 bool imguiMouseOverArea();

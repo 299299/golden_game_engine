@@ -198,6 +198,8 @@ namespace bgfx
 	extern void* g_bgfxNSWindow;
 #elif BX_PLATFORM_WINDOWS
 	extern ::HWND g_bgfxHwnd;
+#elif BX_PLATFORM_WINRT
+    extern ::IUnknown* g_bgfxCoreWindow;
 #endif // BX_PLATFORM_*
 
 	struct Clear
@@ -1070,7 +1072,7 @@ namespace bgfx
 		{
 			Image,
 			Buffer,
-			
+
 			Count
 		};
 
@@ -2223,7 +2225,12 @@ namespace bgfx
 			&&  BGFX_CHUNK_MAGIC_FSH != magic
 			&&  BGFX_CHUNK_MAGIC_VSH != magic)
 			{
-				BX_WARN(false, "Invalid shader signature! 0x%08x.", magic);
+				BX_WARN(false, "Invalid shader signature! %c%c%c%d."
+					, ( (uint8_t*)&magic)[0]
+					, ( (uint8_t*)&magic)[1]
+					, ( (uint8_t*)&magic)[2]
+					, ( (uint8_t*)&magic)[3]
+					);
 				ShaderHandle invalid = BGFX_INVALID_HANDLE;
 				return invalid;
 			}
@@ -2536,12 +2543,12 @@ namespace bgfx
 				memset(ref.un.m_th, 0xff, sizeof(ref.un.m_th) );
 				for (uint32_t ii = 0; ii < _num; ++ii)
 				{
-					TextureHandle handle = _handles[ii];
+					TextureHandle texHandle = _handles[ii];
 
-					cmdbuf.write(handle);
+					cmdbuf.write(texHandle);
 
-					ref.un.m_th[ii] = handle;
-					textureIncRef(handle);
+					ref.un.m_th[ii] = texHandle;
+					textureIncRef(texHandle);
 				}
 			}
 
@@ -3027,7 +3034,7 @@ namespace bgfx
 			int16_t  m_refCount;
 			uint16_t m_num;
 		};
-		
+
 		struct ProgramRef
 		{
 			ShaderHandle m_vsh;

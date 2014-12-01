@@ -1,6 +1,6 @@
 #include "TextureCompiler.h"
 #include "DC_Utils.h"
-#include <stb_image/stb_image.h>
+#include <stb/stb_image.c>
 #include "stdafx.h"
 
 TextureCompiler::TextureCompiler()
