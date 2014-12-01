@@ -9,16 +9,6 @@ namespace ToolCenter
     {
         public Form1()
         {
-            string ret = Environment.GetEnvironmentVariable("NAGA_DIR");
-            if (ret == null)
-            {
-                string nagaDir = Directory.GetCurrentDirectory();
-                int index = nagaDir.LastIndexOf('\\');
-                nagaDir = nagaDir.Substring(0, index + 1);
-                MessageBox.Show("can not find NAGA_DIR registry, set it to " + nagaDir);
-                Environment.SetEnvironmentVariable("NAGA_DIR", nagaDir);
-            }
-
             InitializeComponent();
         }
 

@@ -14,8 +14,8 @@ enum ResourceStatus
     kResourceLoading = 0,
     kResourceOffline,
     kResourceOnline,
-    kResourceError,
     kResourceRequestUnload,
+    kResourceNotFound,
     kResourceStatusMax
 };
 
@@ -132,7 +132,7 @@ struct ResourceManager
     //--------------------------------------------------------------------
     // Package API
     bool load_package(const char* packageName);
-    void load_package_and_wait(const char* packageName);
+    bool load_package_and_wait(const char* packageName);
     bool unload_package(const StringId& packageName);
     int  get_package_status(const StringId& packageName);
     void flush_package(const StringId& packageName, int maxNum = -1);

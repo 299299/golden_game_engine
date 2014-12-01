@@ -119,7 +119,11 @@ int _tmain(int argc, _TCHAR* argv[])
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
 
-    g_resourceMgr.load_package_and_wait("data/core.package");
+    if(!g_resourceMgr.load_package_and_wait("data/core.package"))
+    {
+        msg_box("data/core.package load failed", "game");
+        goto err;
+    }
 
     Graphics::ready();
     g_debugDrawMgr.ready();
@@ -162,6 +166,8 @@ int _tmain(int argc, _TCHAR* argv[])
     if(state_name) g_gameFSM.change_state(state_name);
 
     g_engine.run();
+
+err:
     quitWebServerTool();
 
     //------------------------------------------------------------

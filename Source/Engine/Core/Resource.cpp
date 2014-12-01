@@ -536,7 +536,7 @@ bool ResourceManager::unload_package(const StringId& packageName)
 int ResourceManager::get_package_status(const StringId& packageName)
 {
     ResourcePackage* package = find_package(packageName);
-    if(!package) return kResourceError;
+    if(!package) return kResourceNotFound;
     return package->get_status();
 }
 
@@ -648,18 +648,21 @@ ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const S
     return 0;
 }
 
-void ResourceManager::load_package_and_wait(const char* packageName)
+bool ResourceManager::load_package_and_wait(const char* packageName)
 {
     TIMELOG("load_package_and_wait %s", packageName);
     StringId name(packageName);
     if(load_package(packageName))
     {
-        while(get_package_status(name) != kResourceOffline)
+        while(1)
         {
+            int status = get_package_status(name);
+            if(status == kResourceOffline) break;
             Sleep(0);
         }
     }
     flush_package(name);
+    return true;
 }
 
 
