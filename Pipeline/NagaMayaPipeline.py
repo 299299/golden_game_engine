@@ -1,5 +1,3 @@
-import MayaWebSocket as WEB
-reload(WEB)
 import NagaMayaUtil as NAGA
 reload(NAGA)
 import maya.cmds as cmds
@@ -29,11 +27,6 @@ class NagaPipeline(object):
         self.lastSyncCallback = None
         # GUI
         self._createUI()
-        # WEB
-        self.webSock = WEB.MayaWebSocket()
-        self.webSock.connect(self.onWebSocketOpen,
-                             self.onWebSocketMessage,
-                             self.onWebSocketClosed)
         self.created = True
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
                        event=('SceneOpened', self.onSceneChanged))
@@ -46,10 +39,6 @@ class NagaPipeline(object):
             return
         if cmds.window(UI_NAME, exists=True):
             cmds.deleteUI(UI_NAME)
-        # print("########### NagaPipeline::destroy start ##################")
-        self.webSock.disconnect()
-        self.created = False
-        # print("########### NagaPipeline::destroy end ##################")
 
     #
     # Callbacks
@@ -108,18 +97,13 @@ class NagaPipeline(object):
         margin_w = 5
         margin_h = 5
         cmds.frameLayout(
-            l="Preview and Export", cll=1, mh=margin_h, mw=margin_w)
-        cmds.button('Preview', h=height, bgc=[1, 1, 0],
-                    c=self.onPreviewButtonClicked)
-        cmds.button('Export', h=height, bgc=[0, 1, 1],
+            l="Export", cll=1, mh=margin_h, mw=margin_w)
+        cmds.button('EXPORT', h=height, bgc=[0, 1, 1],
                     c=self.onExportButtonClicked)
         cmds.setParent('..')
         cmds.showWindow(UI_NAME)
         #
         self.updateUIByData()
-
-    def onPreviewButtonClicked(self, *arg):
-        self.preview(NAGA.getSceneName())
 
     def isSelectOnly(self):
         return cmds.checkBox(self.selectCheck, q=1, v=1)
@@ -169,47 +153,6 @@ class NagaPipeline(object):
         # step3: lunch data-compiler to convert intermediate to finally package
         self.naga.convertHkx(exportName, packageName, bDebug=DEBUG)
 
-    def reloadCompileResult(self):
-        if not self.webSock.connected:
-            return
-        fileName = self.naga.appPath + 'data_compiler_result.txt'
-        if not os.path.exists(fileName):
-            return
-        f = open(fileName, 'r')
-        lines = f.readlines()
-        for line in lines:
-            theLine = line[0:len(line) - 2]
-            print('reload ' + theLine)
-            self.webSock.sendmayacommand('reload_resource_file', theLine)
-
-    def preview(self, exportName):
-        if(NAGA.isLevel(exportName)):
-            # validate level
-            proxyNum, packageName = self.naga.addLevelProxy()
-            if proxyNum <= 0:
-                cmds.error('add level proxy failed!')
-                return
-        else:
-            packageName = PREVIEW_PACK
-
-        rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
-        NAGA.updateHistoryNode('last_rig_type', rigIndex + 1)
-
-        rigName = self.naga.getRigList()[rigIndex]
-        rigName = rigName + '.bones'
-        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
-        NAGA.updateHistoryNode('last_hko_type', hkoIndex + 1)
-
-        self.doExport(exportName,
-                      packageName,
-                      hkoType=hkoIndex,
-                      rigName=rigName)
-
-        if not self.webSock.connected:
-            self.lunchEngine(packageName, debug=DEBUG)
-        else:
-            self.reloadCompileResult()
-
     def export(self, exportName):
 
         #
@@ -233,69 +176,6 @@ class NagaPipeline(object):
                       packageName,
                       hkoType=hkoIndex,
                       rigName=rigName)
-
-    def lunchEngine(self, packageName, debug=False):
-        sceneName = NAGA.getSceneName()
-        width = 800
-        height = 600
-        args = ['--websocket',
-                '--package', 'data/' + packageName + '.package',
-                '--state', 'preview',
-                '-w', str(width),
-                '-h', str(height)]
-
-        if(NAGA.isLevel(sceneName)):
-            print('preview ---- level')
-            previewName = packageName + '/' + sceneName
-            args.append('--level')
-            args.append(previewName)
-        elif(self.isAnimationType()):
-            print('preview ---- animation')
-            # add animation
-            previewName = packageName + '/actor/' + sceneName
-            args.append('--animation')
-            args.append(previewName)
-            # add rig actor
-            rigIndex = cmds.optionMenuGrp(self.rigTypeGroup, q=1, sl=1) - 1
-            rigName = self.naga.getRigList()[rigIndex]
-            rigName = os.path.basename(rigName)
-            rigName = rigName[:-6]
-            rigName = packageName + '/actor/' + rigName
-
-            args.append('--actor')
-            args.append(rigName)
-        else:
-            print('preview ---- actor')
-            previewName = packageName + '/actor/' + sceneName
-            args.append('--actor')
-            args.append(previewName)
-        if(debug):
-            args.append('--debug')
-        NAGA.lunchApplication(GAME_APP, self.naga.appPath, args, False)
-
-    def isAnimationType(self):
-        hkoList = self.naga.getHkoList()
-        hkoIndex = cmds.optionMenuGrp(self.hkoTypeGroup, q=1, sl=1) - 1
-        hkoFile = hkoList[hkoIndex]
-        return hkoFile.find('animation') != -1
-
-    #
-    # WEB SOCKET FUNCTIONS
-    #
-
-    def onWebSocketOpen(self):
-        pass
-
-    def onWebSocketMessage(self, json_object):
-        type_name = json_object['type']
-        if type_name == 'logging.msg':
-            print('[ENGINE LOG] ' + str(json_object['msg']))
-        else:
-            pass
-
-    def onWebSocketClosed(self):
-        # print('\n\nonWebSocketClosed\n\n')
-        pass
 
 
 def clean():
