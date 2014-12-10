@@ -1,5 +1,0 @@
-{
-    "shader": "base",
-    "shadow-shader":"shadow",
-    "diffuse":[128, 128, 128]
-} 
