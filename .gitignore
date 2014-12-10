@@ -29,7 +29,6 @@ Keyboard/
 *.manifest
 
 test/
-Monk_New_Rig2/
 keyboard/
 *.manifest
 *Log.html
@@ -45,27 +44,3 @@ keyboard/
 *.manifest
 *.pyc
 data/
-string_table.txt
-dump.txt
-havok_convert_database.txt
-data_compiler_database.txt
-maya_export_database.txt
-data_compiler_result.txt
-Application/intermediate/core/actor/
-Application/intermediate/preview/actor/
-Application/intermediate/world0
-Application/intermediate/world1
-Application/intermediate/world2
-Application/intermediate/world_city
-DCC_Export/havok/preview
-DCC_Export/havok/world0
-DCC_Export/havok/world1
-DCC_Export/havok/world2
-DCC_Export/havok/world_city
-DataCompiler.exe
-HavokConverter.exe
-*_error.txt
-output_rig.txt
-game_profile.txt
-havokconverter_profile.txt
-datacompiler_profile.txt
