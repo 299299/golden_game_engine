@@ -36,7 +36,7 @@ def getSceneName():
     fileName = os.path.basename(fileName)
     if(not fileName):
         cmds.warning('not named scene!')
-        return 'untitiled'
+        return ''
     (prefix, sep, suffix) = fileName.rpartition('.')
     return prefix
 
@@ -152,8 +152,8 @@ class NagaPipeline(object):
         cmds.scriptJob(parent=self.myWindow, cu=False, ro=False,
                        event=('SceneSaved', self.onSceneChanged))
         self.nagaDir = os.environ['NAGA_DIR']
-        self.binDir = self.nagaDir + '/Application'
-        self.dataDir = self.binDir + '/Data'
+        self.binDir = self.nagaDir + '\Application'
+        self.dataDir = self.binDir + '\Data'
 
     def destroy(self):
         if not self.created:
@@ -216,7 +216,7 @@ class NagaPipeline(object):
     def isSelectOnly(self):
         return cmds.checkBox(self.selectCheck, q=1, v=1)
 
-    def onFixPathClicked(self):
+    def onFixPathClicked(self, *arg):
         fixAssemblyRepPath()
 
     def onOpenARClicked(self, *arg):
@@ -224,18 +224,24 @@ class NagaPipeline(object):
         openAD_Reference()
 
     def onBackLevelClicked(self, *arg):
-        if(not self.lastMayaScene):
+        if(self.lastMayaScene == ''):
             return
         cmds.file(mf=0)
         cmds.file(self.lastMayaScene, o=True)
         self.lastMayaScene = ''
 
     def onExportButtonClicked(self, *arg):
-        self.export(getSceneName())
+        name = getSceneName()
+        if name == '':
+            return
+        self.export(name)
 
     def updateUIByData(self):
         #
-        displayName = '*** %s ***' % getSceneName()
+        name = getSceneName()
+        if name == '':
+            name = 'untitiled'
+        displayName = '*** %s ***' % name
         cmds.text(self.nameText, e=1, label=displayName)
 
     def getExportType(self):
