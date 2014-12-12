@@ -27,10 +27,10 @@ class NagaPipeline(object):
         if not self.nagaDir:
             print('set NAGA_DIR environment first!.')
             cmds.error('!!!!')
-        self.nagaDir.replace('\\', '/')
-        self.binDir = self.nagaDir + '/Application/'
-        self.dataDir = self.binDir + '/Data/'
-        self.fbxDir = self.binDir + '/FBX/'
+        self.nagaDir = self.nagaDir.replace('\\', '/')
+        self.binDir = self.nagaDir + 'Application/'
+        self.dataDir = self.binDir + 'Data/'
+        self.fbxDir = self.binDir + 'FBX/'
         # create fbx folder if not exist
         if not os.path.exists(self.fbxDir):
             os.makedirs(self.fbxDir)
@@ -131,7 +131,7 @@ class NagaPipeline(object):
         cmds.text(self.nameText, e=1, label=displayName)
 
     def getExportType(self):
-        return cmds.optionMenuGrp(self.exportTypeGrp, v=1, sl=1)
+        return cmds.optionMenuGrp(self.exportTypeGrp, q=1, v=1)
 
     def export(self, exportName):
         fbxFile = self.fbxDir + exportName + '.fbx'
@@ -140,7 +140,6 @@ class NagaPipeline(object):
             print('export error')
             return
         eType = self.getExportType()
-        toolFile = self.binDir + 'NagaTool'
         outputDir = self.dataDir + exportName + '/'
         extName = 'xml'
         if eType == 'model':
@@ -148,7 +147,7 @@ class NagaPipeline(object):
         outputFile = outputDir + exportName + '.' + extName
         args = [eType, fbxFile, outputFile, '-t', '-ns', '-v']
         utils.mkdir(outputDir)
-        utils.lunchApplication(toolFile, self.binDir, args)
+        utils.lunchApplication('NagaTool', self.binDir, args, True)
         self.lastOutputFile = outputFile
         self.lastFBXFile = fbxFile
 

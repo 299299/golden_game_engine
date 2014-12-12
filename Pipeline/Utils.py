@@ -106,10 +106,10 @@ def fbx_export(outFile):
     # mm.eval("FBXExportBakeResampleAll -v true")
     #mel.eval("FBXExportUseSceneName -v false")
     #mel.eval("FBXExportQuaternion -v euler")
-    mel.eval("FBXExportShapes -v true")
-    mel.eval("FBXExportSkins -v true")
+    #mel.eval("FBXExportShapes -v true")
+    #mel.eval("FBXExportSkins -v true")
     # Constraints
-    mel.eval("FBXExportConstraints -v false")
+    #mel.eval("FBXExportConstraints -v false")
     # Cameras
     mel.eval("FBXExportCameras -v true")
     # Lights
@@ -121,7 +121,9 @@ def fbx_export(outFile):
     # Axis Conversion
     mel.eval("FBXExportUpAxis y")
     # Export!
-    mel.eval("FBXExport -f " + outFile + ".fbx -s")
+    eval_cmd = 'FBXExport -f \"' + outFile + '\"'
+    print(eval_cmd)
+    mel.eval(eval_cmd)
 
 
 def mkdir(path):
