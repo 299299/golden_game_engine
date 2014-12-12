@@ -70,6 +70,7 @@ class NagaPipeline(object):
         self.exportTypeGrp = cmds.optionMenuGrp('ExportType', l='type:')
         cmds.menuItem(label='model')
         cmds.menuItem(label='scene')
+        cmds.menuItem(label='node')
         cmds.menuItem(label='animation')
         cmds.setParent('..')
 
