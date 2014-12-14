@@ -90,37 +90,11 @@ def openAD_Reference():
     cmds.file(refFile, open=True)
 
 
-def fbx_export(outFile):
+def fbx_export(outFile, presetFile):
     print('fbx_export = ' + outFile)
-    mel.eval("FBXExportSmoothingGroups -v true")
-    #mel.eval("FBXExportHardEdges -v false")
-    #mel.eval("FBXExportTangents -v false")
-    mel.eval("FBXExportSmoothMesh -v true")
-    #mel.eval("FBXExportInstances -v false")
-    #mel.eval("FBXExportReferencedContainersContent -v false")
-    # Animation
-    #mel.eval("FBXExportBakeComplexAnimation -v true")
-    #mel.eval("FBXExportBakeComplexStart -v "+str(exportStartFrame[x]))
-    #mel.eval("FBXExportBakeComplexEnd -v "+str(exportEndFrame[x]))
-    #mel.eval("FBXExportBakeComplexStep -v 1")
-    # mm.eval("FBXExportBakeResampleAll -v true")
-    #mel.eval("FBXExportUseSceneName -v false")
-    #mel.eval("FBXExportQuaternion -v euler")
-    #mel.eval("FBXExportShapes -v true")
-    #mel.eval("FBXExportSkins -v true")
-    # Constraints
-    #mel.eval("FBXExportConstraints -v false")
-    # Cameras
-    mel.eval("FBXExportCameras -v true")
-    # Lights
-    mel.eval("FBXExportLights -v true")
-    # Embed Media
-    #mel.eval("FBXExportEmbeddedTextures -v true")
-    # Connections
-    #mel.eval("FBXExportInputConnections -v false")
-    # Axis Conversion
-    mel.eval("FBXExportUpAxis y")
-    # Export!
+    eval_cmd = 'FBXLoadExportPresetFile -f \"' + presetFile + '\"'
+    print(eval_cmd)
+    mel.eval(eval_cmd)
     eval_cmd = 'FBXExport -f \"' + outFile + '\"'
     print(eval_cmd)
     mel.eval(eval_cmd)

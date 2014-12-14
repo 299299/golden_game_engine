@@ -121,7 +121,7 @@ float GetDiffuseVolumetric(float3 worldPos)
 float GetSpecular(float3 normal, float3 eyeVec, float3 lightDir, float specularPower)
 {
     float3 halfVec = normalize(normalize(eyeVec) + lightDir);
-#if 0
+#if 1
     return pow(dot(normal, halfVec), specularPower);
 #else
     #define BRDF(lh, nh, shine) ((shine+1) * pow(nh, shine)) / (8 * pow(lh,3))

@@ -29,6 +29,7 @@ class NagaPipeline(object):
             cmds.error('!!!!')
         self.nagaDir = self.nagaDir.replace('\\', '/')
         self.binDir = self.nagaDir + 'Application/'
+        self.pipelineDir = self.nagaDir + 'Pipeline/'
         self.dataDir = self.binDir + 'Data/'
         self.fbxDir = self.binDir + 'FBX/'
         # create fbx folder if not exist
@@ -135,7 +136,8 @@ class NagaPipeline(object):
 
     def export(self, exportName):
         fbxFile = self.fbxDir + exportName + '.fbx'
-        utils.fbx_export(fbxFile)
+        presetFile = self.pipelineDir + 'fbx.fbxexportpreset'
+        utils.fbx_export(fbxFile, presetFile)
         if not os.path.exists(fbxFile):
             print('export error')
             return
@@ -145,7 +147,9 @@ class NagaPipeline(object):
         if eType == 'model':
             extName = 'mdl'
         outputFile = outputDir + exportName + '.' + extName
-        args = [eType, fbxFile, outputFile, '-t', '-ns', '-v']
+        prefixPath = 'Data/' + exportName + '/'
+        args = [eType, fbxFile, outputFile, '-t', '-v',
+                '-prefix', prefixPath, '-flipuv']
         utils.mkdir(outputDir)
         utils.lunchApplication('NagaTool', self.binDir, args, True)
         self.lastOutputFile = outputFile
@@ -154,11 +158,10 @@ class NagaPipeline(object):
     def preview(self):
         if not self.lastOutputFile:
             return
-        appFile = self.binDir + 'NagaGame'
         scriptFile = 'Data/Scripts/Viewer.as'
         eType = self.getExportType()
-        args = [scriptFile, '-w', eType, self.lastOutputFile]
-        utils.lunchApplication(appFile, self.binDir, args, False)
+        args = [scriptFile, eType, self.lastOutputFile, '-w']
+        utils.lunchApplication('NagaGame', self.binDir, args, False)
 
 
 def clean():
