@@ -1,0 +1,1 @@
+shaderc.exe -f intermediate/core/shaders/%1.shader -o data/core/shaders/%1.shader --type f --platform windows --verbose -p ps_5_0 --varyingdef intermediate/core/shaders/%2.def
