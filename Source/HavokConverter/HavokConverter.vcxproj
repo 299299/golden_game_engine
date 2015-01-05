@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{88BF6DD4-C52F-405E-BDC2-6A6AF098E542}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>DataCompiler</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\Application</OutDir>
+    <IntDir>..\Obj\HC\Debug</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\Application</OutDir>
+    <IntDir>..\Obj\HC\Release</IntDir>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;NDEBUG;HK_PLATFORM_SIM;HK_CONFIG_SIMD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>@path.cfg %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Shared\CommonUtils.h" />
+    <ClInclude Include="Converters\ActorConverter.h" />
+    <ClInclude Include="Converters\AnimationConverter.h" />
+    <ClInclude Include="Converters\AnimRigConverter.h" />
+    <ClInclude Include="Converters\CharacterConverter.h" />
+    <ClInclude Include="Converters\ComponentConverter.h" />
+    <ClInclude Include="Converters\LevelConverter.h" />
+    <ClInclude Include="Converters\LightConverter.h" />
+    <ClInclude Include="Converters\MaterialConverter.h" />
+    <ClInclude Include="Converters\MeshConverter.h" />
+    <ClInclude Include="Converters\ModelConverter.h" />
+    <ClInclude Include="Converters\PhysicsConverter.h" />
+    <ClInclude Include="Converters\SamplerConverter.h" />
+    <ClInclude Include="Converters\ComponentNodeConverter.h" />
+    <ClInclude Include="Converters\StaticModelConverter.h" />
+    <ClInclude Include="SharedInc.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Utils\bounds.h" />
+    <ClInclude Include="Utils\forsythtriangleorderoptimizer.h" />
+    <ClInclude Include="Utils\HC_Utils.h" />
+    <ClInclude Include="Utils\jsonxx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Shared\CommonUtils.cpp" />
+    <ClCompile Include="Converters\ActorConverter.cpp" />
+    <ClCompile Include="Converters\AnimationConverter.cpp" />
+    <ClCompile Include="Converters\AnimRigConverter.cpp" />
+    <ClCompile Include="Converters\CharacterConverter.cpp" />
+    <ClCompile Include="Converters\ComponentConverter.cpp" />
+    <ClCompile Include="Converters\LevelConverter.cpp" />
+    <ClCompile Include="Converters\LightConverter.cpp" />
+    <ClCompile Include="Converters\MaterialConverter.cpp" />
+    <ClCompile Include="Converters\MeshConverter.cpp" />
+    <ClCompile Include="Converters\ModelConverter.cpp" />
+    <ClCompile Include="Converters\PhysicsConverter.cpp" />
+    <ClCompile Include="Converters\SamplerConverter.cpp" />
+    <ClCompile Include="Converters\ComponentNodeConverter.cpp" />
+    <ClCompile Include="Converters\StaticModelConverter.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Utils\bounds.cpp" />
+    <ClCompile Include="Utils\forsythtriangleorderoptimizer.cpp" />
+    <ClCompile Include="Utils\HC_Utils.cpp" />
+    <ClCompile Include="Utils\jsonxx.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{d799c22f-9898-4977-9231-c66da71ff22e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="path.cfg" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

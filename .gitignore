@@ -29,6 +29,7 @@ Keyboard/
 *.manifest
 
 test/
+Monk_New_Rig2/
 keyboard/
 *.manifest
 *Log.html
@@ -36,7 +37,6 @@ keyboard/
 *.pdb
 *ilk
 *.sdf
-*.suo
 *.user
 *.opensdf
 *.bin
@@ -44,62 +44,27 @@ keyboard/
 *.manifest
 *.pyc
 data/
-
-# Compiled shaders
-*.vs2
-*.vs3
-*.ps2
-*.ps3
-
-# Compiled AngelScript
-*.asc
-
-# Compiled Lua script
-*.luc
-
-# Generated documentation
-Docs/html/
-Docs/qch/
-Docs/Doxyfile
-Docs/minimal-*
-
-# Eclipse project settings
-Source/.*project
-Source/.settings
-
-# KDevelop project settings
-*.kdev?
-
-# Qt Creator project settings
-Source/CMakeLists.txt.user
-
-# Android in-the-source project settings
-Source/Android/project.properties
-Source/Android/local.properties
-Source/Android/proguard-project.txt
-
-# Android in-the-source build and output directories
-Source/Android/Engine
-Source/Android/ThirdParty
-Source/Android/libs
-
-# Android in-the-source CMake build files
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-Makefile
-cmake_install.cmake
-install_manifest.txt
-
-# GCC PCH files that are some-how ending up in the Source tree instead of the Build directory
-*.gch
-
-# Misc.
-configure*
-*~
-*.swp
-.DS_Store
-*.log
-*.bak
-Thumbs.db
-*.log
+string_table.txt
+dump.txt
+havok_convert_database.txt
+data_compiler_database.txt
+maya_export_database.txt
+data_compiler_result.txt
+Application/intermediate/core/actor/
+Application/intermediate/preview/actor/
+Application/intermediate/world0
+Application/intermediate/world1
+Application/intermediate/world2
+Application/intermediate/world_city
+DCC_Export/havok/preview
+DCC_Export/havok/world0
+DCC_Export/havok/world1
+DCC_Export/havok/world2
+DCC_Export/havok/world_city
+DataCompiler.exe
+HavokConverter.exe
+*_error.txt
+output_rig.txt
+game_profile.txt
+havokconverter_profile.txt
+datacompiler_profile.txt

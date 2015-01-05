@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="converters">
+      <UniqueIdentifier>{81a0d773-5612-4fce-8571-5458d90903c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{512213fb-9c12-41e8-b2d1-d0e9cbfee20d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SharedInc.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Utils\bounds.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\forsythtriangleorderoptimizer.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\HC_Utils.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\jsonxx.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ActorConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\AnimRigConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\CharacterConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ComponentConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\LevelConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\LightConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\MaterialConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\MeshConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ModelConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\PhysicsConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\SamplerConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\StaticModelConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\CommonUtils.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\AnimationConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ComponentNodeConverter.h">
+      <Filter>converters</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Utils\bounds.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\forsythtriangleorderoptimizer.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\HC_Utils.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\jsonxx.cc">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ActorConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\AnimRigConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\CharacterConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ComponentConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\LevelConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\LightConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\MaterialConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\MeshConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ModelConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\PhysicsConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\SamplerConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\StaticModelConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Shared\CommonUtils.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\AnimationConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ComponentNodeConverter.cpp">
+      <Filter>converters</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="path.cfg" />
+  </ItemGroup>
+</Project>

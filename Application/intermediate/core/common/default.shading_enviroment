@@ -1,0 +1,51 @@
+{
+    "fog":
+    {
+        "near":10,
+        "far":40
+        "density":0,
+        "height":0,
+    },
+    
+    "bloom":
+    {
+        "expose":2.0,
+        "bloomThreshold":0.63,
+        "bloomWidth":1.0,
+        "bloomIntensity":1.0,
+    },
+    
+    "defocus":0.2,
+    "film_gain_noise":0.25,
+    
+    "dof":
+    {
+        "focusDistance":1.0,
+        "focusRange":100.0,
+        "dof_blur_width":2.5,
+        "focusFalloff":10.0
+    },
+
+    "ambient_sky_color": [0.37, 0.55, 0.66],
+    "ambient_ground_color":[0, 0, 0],
+    
+    "color_grading":
+    {
+        "textures":
+        [
+            "core/common/lut_identity",
+            "core/common/lut_dark_blue",
+            "core/common/lut_light_yellow",
+        ],
+    
+        "grading-index":0
+    },
+    
+    "shadow":
+    {
+        "area":50,
+        "far":100,
+        "offset":0.01,
+        "bias":0.001,
+    }
+}

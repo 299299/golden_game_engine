@@ -1,0 +1,624 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="path.cfg" />
+    <None Include="..\ThirdParty\bx\bx\float4_swizzle.inl">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </None>
+    <None Include="Graphics\ShaderInc.h">
+      <Filter>Graphics</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{c6f82033-9040-43e2-853e-d4952be7589a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{5582a54b-fca5-4405-a6cb-b5793d2f6803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{0745dd0b-7569-43e4-a125-930b43dfa2ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{29acb58c-4fed-42ae-98ac-25dac00ba422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{0fe34359-73e6-401b-ba83-6084ccad6174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{07943436-c1c3-49aa-9899-b69521009aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{a598df45-1bd9-4f5c-93f9-98eca7b6d45d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{afcb3359-6821-4060-b941-db617744aba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{089c8644-62fc-41ac-9ec0-b326a6abd98f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bx">
+      <UniqueIdentifier>{909732b3-a004-4d48-9eb2-99f08fe14d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bgfx">
+      <UniqueIdentifier>{d72f4fc0-2356-4011-87c6-6da5ae9c88c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bx\bx">
+      <UniqueIdentifier>{ad793507-7f12-4ba7-afe9-c7aa087b17e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\bx\tinystl">
+      <UniqueIdentifier>{b3376f4a-e768-4302-afe4-d1ae4100f3a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\imgui">
+      <UniqueIdentifier>{e327288b-9ad5-4427-b6e5-8b50c5e83ee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\nanovg">
+      <UniqueIdentifier>{ee884d03-b39c-42c8-ac2a-2703c7cb2cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\entry">
+      <UniqueIdentifier>{600413b2-53b5-4312-8546-696bf1b05f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\memory">
+      <UniqueIdentifier>{2809e10d-2957-47f0-8c4e-eb935ca48f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{7cf7d848-f780-4a99-8ab8-27036b428c02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\Log.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Thread.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\StringId.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MathDefs.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsAutoLock.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimationSystem.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\XBoxInput.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Animation.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsInstance.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimRaycast.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Resource.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimRig.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\IK.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Ragdoll.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Graphics.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\bgfx.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\image.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\renderer_d3d11.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\vertexdecl.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Material.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Mesh.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Light.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Model.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\imgui\imgui.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\nanovg\nanovg.cpp">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\nanovg\nanovg_bgfx.cpp">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\entry\dbg.cpp">
+      <Filter>ThirdParty\entry</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DebugDraw.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\ProxyInstance.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ShadingEnviroment.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\gamedevwebtools.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\WebServerTool.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Profiler.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DataDef.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Level.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Win32Context.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Gui.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\linear_allocator.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\memory.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\pool_allocator.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Memory\stack_allocator.cpp">
+      <Filter>Core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\MemorySystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsWorld.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EngineAssert.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Actor.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Movement.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\CommandAPI.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameState.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Log.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Prerequisites.h" />
+    <ClInclude Include="Core\MemorySystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Thread.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\StringId.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\MathDefs.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsWorld.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsAutoLock.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimationSystem.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\XBoxInput.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\Animation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsInstance.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseTypes.h" />
+    <ClInclude Include="Animation\AnimRaycast.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Resource.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimRig.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\IK.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\Ragdoll.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxdefines.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\allocator.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\buffer.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\hash.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\hash_base.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\new.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\stddef.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\string.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\traits.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_map.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_set.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\tinystl\vector.h">
+      <Filter>ThirdParty\bx\tinystl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\blockalloc.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\bx.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\cl.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\commandline.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\cpu.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\debug.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\endian.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_neon.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_ni.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_ref.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_sse.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4_t.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\float4x4_t.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\foreach.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\fpumath.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\handlealloc.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\hash.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\macros.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\maputil.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\mutex.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\os.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\platform.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\radixsort.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\readerwriter.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\ringbuffer.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\rng.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\sem.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\spscqueue.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\string.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\thread.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\timer.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\uint32_t.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Graphics.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx_p.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\charset.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\config.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear0.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear1.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear2.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_clear3.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\fs_debugfont.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\image.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d11.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\vs_clear.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\vs_debugfont.bin.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfx.c99.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.c99.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Material.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Mesh.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bx\bx\allocator.h">
+      <Filter>ThirdParty\bx\bx</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Light.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Model.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_color.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_texture.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\imgui.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_color.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_texture.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\fontstash.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\fs_nanovg_fill.bin.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\nanovg.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\nanovg\vs_nanovg_fill.bin.h">
+      <Filter>ThirdParty\nanovg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\entry\dbg.h">
+      <Filter>ThirdParty\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DebugDraw.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\ProxyInstance.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\droidsans.ttf.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ShadingEnviroment.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image_swizz.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\gamedevwebtools.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\WebServerTool.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Profiler.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DataDef.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Level.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Win32Context.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Gui.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\id_array.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\id_table.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h" />
+    <ClInclude Include="Core\Memory\allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\linear_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\memory.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\pool_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\stack_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\temp_allocator.h">
+      <Filter>Core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EngineAssert.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Actor.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimControl.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ThirdParty\bgfx\ovr.h">
+      <Filter>ThirdParty\bgfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Movement.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CommandAPI.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameState.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

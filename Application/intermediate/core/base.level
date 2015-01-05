@@ -1,0 +1,22 @@
+{
+    "actors":
+    [
+        {
+            "name":"sun",
+            "type":"core/common/sun"        
+        },
+        
+        {
+            "name":"floor",
+            "type":"core/common/floor",
+            "translation":[0, -0.5, 0],
+            "scale":[100, 1, 100]
+        },
+        
+        {
+            "name":"box",
+            "type":"core/actor/cube",
+            "translation":[0, 10, 0]
+        }
+    ]
+}
