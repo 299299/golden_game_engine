@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\Lib</OutDir>
-    <IntDir>..\Obj\Engine\Debug</IntDir>
+    <OutDir>..\Lib\</OutDir>
+    <IntDir>..\Obj\Engine\Debug\</IntDir>
     <TargetName>$(ProjectName)_Debug</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
@@ -85,7 +85,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\ThirdParty\bx\bx\float4_swizzle.inl" />
     <None Include="Graphics\ShaderInc.h" />
     <None Include="path.cfg" />
   </ItemGroup>
@@ -167,50 +166,6 @@
     <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h" />
     <ClInclude Include="..\ThirdParty\bgfx\vs_clear.bin.h" />
     <ClInclude Include="..\ThirdParty\bgfx\vs_debugfont.bin.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\allocator.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\blockalloc.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\bx.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\cl.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\commandline.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\cpu.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\debug.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\endian.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\float4x4_t.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\float4_neon.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\float4_ni.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\float4_ref.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\float4_sse.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\float4_t.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\foreach.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\fpumath.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\handlealloc.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\hash.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\macros.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\maputil.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\mutex.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\os.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\platform.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\radixsort.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\readerwriter.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\ringbuffer.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\rng.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\sem.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\spscqueue.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\string.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\thread.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\timer.h" />
-    <ClInclude Include="..\ThirdParty\bx\bx\uint32_t.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\allocator.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\buffer.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\hash.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\hash_base.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\new.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\stddef.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\string.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\traits.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_map.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\unordered_set.h" />
-    <ClInclude Include="..\ThirdParty\bx\tinystl\vector.h" />
     <ClInclude Include="..\ThirdParty\entry\dbg.h" />
     <ClInclude Include="..\ThirdParty\imgui\fs_imgui_color.bin.h" />
     <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image.bin.h" />

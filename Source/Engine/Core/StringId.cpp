@@ -6,8 +6,8 @@
 
 #ifndef _RETAIL
 #include "MemorySystem.h"
-#include <bx/tinystl/allocator.h>
-#include <bx/tinystl/unordered_map.h>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 #include <stdio.h>
 #include <fstream>
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>

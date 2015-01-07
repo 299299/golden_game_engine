@@ -1,8 +1,8 @@
 #pragma once
 #include "BaseCompiler.h"
 #include "Level.h"
-#include <bx/tinystl/allocator.h>
-#include <bx/tinystl/unordered_map.h>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 
 
 typedef tinystl::unordered_map<uint32_t, int> ResourceKeyMap;

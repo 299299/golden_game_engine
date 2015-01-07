@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{D799C22F-9898-4977-9231-C66DA71FF22E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolCenter", "ToolCenter\ToolCenter.csproj", "{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataCompiler", "DataCompiler\DataCompiler.vcxproj", "{14F1BE2C-FE43-4602-BE7C-31DF8247F8DD}"
 EndProject
@@ -31,16 +29,6 @@ Global
 		{D799C22F-9898-4977-9231-C66DA71FF22E}.Release|Win32.ActiveCfg = Release|Win32
 		{D799C22F-9898-4977-9231-C66DA71FF22E}.Release|Win32.Build.0 = Release|Win32
 		{D799C22F-9898-4977-9231-C66DA71FF22E}.Release|x86.ActiveCfg = Release|Win32
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Debug|Win32.ActiveCfg = Debug|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Debug|x86.ActiveCfg = Debug|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Debug|x86.Build.0 = Debug|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Release|Mixed Platforms.Build.0 = Release|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Release|Win32.ActiveCfg = Release|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Release|x86.ActiveCfg = Release|x86
-		{AA2E504A-1CFA-4C73-ABDC-0955F61076DE}.Release|x86.Build.0 = Release|x86
 		{14F1BE2C-FE43-4602-BE7C-31DF8247F8DD}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{14F1BE2C-FE43-4602-BE7C-31DF8247F8DD}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{14F1BE2C-FE43-4602-BE7C-31DF8247F8DD}.Debug|Win32.ActiveCfg = Debug|Win32

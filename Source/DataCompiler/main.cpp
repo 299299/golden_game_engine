@@ -18,8 +18,8 @@
 #include "ModelCompiler.h"
 #include "ShadingEnviromentCompiler.h"
 #include "LevelCompiler.h"
-#include <bx/tinystl/allocator.h>
-#include <bx/tinystl/unordered_map.h>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 #include <bx/thread.h>
 //=================================================================
 

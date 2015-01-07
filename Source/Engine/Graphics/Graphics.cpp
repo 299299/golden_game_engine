@@ -24,7 +24,12 @@
 #include <bx/allocator.h>
 #include <bx/uint32_t.h>
 
+
 #define BGFX_COLOR 0x303030ff
+
+#ifndef max
+#define max(a,b) ((a) > (b) ? (a) : (b))
+#endif
 
 struct bgfxCallback : public bgfx::CallbackI
 {

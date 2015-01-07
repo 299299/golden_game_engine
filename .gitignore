@@ -68,3 +68,6 @@ output_rig.txt
 game_profile.txt
 havokconverter_profile.txt
 datacompiler_profile.txt
+
+ipch/
+*.suo

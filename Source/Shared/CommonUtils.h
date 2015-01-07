@@ -3,8 +3,8 @@
 #include <string>
 #include <windows.h>
 #include <vector>
-#include <bx/tinystl/allocator.h>
-#include <bx/tinystl/unordered_map.h>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 
 #define MAKE_U64(dwordHigh, dwordLow) (((uint64_t)(dwordHigh) << 32) | (uint64_t)(dwordLow))
 #define COMMON_RESOURCE_PATH    ("core/common/")

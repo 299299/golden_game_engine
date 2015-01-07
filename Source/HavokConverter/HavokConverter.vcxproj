@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Application</OutDir>
-    <IntDir>..\Obj\HC\Debug</IntDir>
+    <OutDir>..\..\Application\</OutDir>
+    <IntDir>..\Obj\HC\Debug\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />

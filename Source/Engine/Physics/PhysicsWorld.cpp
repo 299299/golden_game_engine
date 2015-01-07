@@ -20,8 +20,8 @@
 #include "Actor.h"
 //===========================================
 
-#include <bx/tinystl/allocator.h>
-#include <bx/tinystl/unordered_map.h>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 
 //========================================================================================
 #include <Physics2012/Dynamics/World/Listener/hkpWorldPostSimulationListener.h>

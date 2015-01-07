@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <ctype.h> // isprint
-
+							
 #include "dbg.h"
 #include <bx/string.h>
 #include <bx/debug.h>
