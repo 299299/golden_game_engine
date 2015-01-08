@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -97,27 +97,126 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="InputController.h" />
-    <ClInclude Include="PlayerState.h" />
-    <ClInclude Include="PreviewState.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HotReload.cpp" />
-    <ClCompile Include="InputController.cpp" />
-    <ClCompile Include="PhysicsTools.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
-    <ClCompile Include="PreviewState.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\bgfx\src\bgfx.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_egl.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_glx.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_ppapi.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_wgl.cpp" />
+    <None Include="..\..\..\bgfx\src\image.cpp" />
+    <None Include="..\..\..\bgfx\src\ovr.cpp" />
+    <None Include="..\..\..\bgfx\src\renderdoc.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_d3d11.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_d3d12.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_d3d9.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_gl.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_null.cpp" />
+    <None Include="..\..\..\bgfx\src\vertexdecl.cpp" />
+    <None Include="Animation\Animation.cpp" />
+    <None Include="Animation\Animation.h" />
+    <None Include="Animation\AnimationSystem.cpp" />
+    <None Include="Animation\AnimationSystem.h" />
+    <None Include="Animation\AnimControl.h" />
+    <None Include="Animation\AnimRaycast.cpp" />
+    <None Include="Animation\AnimRaycast.h" />
+    <None Include="Animation\AnimRig.cpp" />
+    <None Include="Animation\AnimRig.h" />
+    <None Include="Animation\IK.cpp" />
+    <None Include="Animation\IK.h" />
+    <None Include="Animation\Ragdoll.cpp" />
+    <None Include="Animation\Ragdoll.h" />
+    <None Include="Core\allocator.h" />
+    <None Include="Core\EngineAssert.cpp" />
+    <None Include="Core\EngineAssert.h" />
+    <None Include="Core\Event.h" />
+    <None Include="Core\id_array.h" />
+    <None Include="Core\id_table.h" />
+    <None Include="Core\linear_allocator.cpp" />
+    <None Include="Core\linear_allocator.h" />
+    <None Include="Core\Log.cpp" />
+    <None Include="Core\Log.h" />
+    <None Include="Core\MathDefs.cpp" />
+    <None Include="Core\MathDefs.h" />
+    <None Include="Core\memory.cpp" />
+    <None Include="Core\memory.h" />
+    <None Include="Core\MemorySystem.cpp" />
+    <None Include="Core\MemorySystem.h" />
+    <None Include="Core\pool_allocator.cpp" />
+    <None Include="Core\pool_allocator.h" />
+    <None Include="Core\Profiler.cpp" />
+    <None Include="Core\Profiler.h" />
+    <None Include="Core\Resource.cpp" />
+    <None Include="Core\Resource.h" />
+    <None Include="Core\stack_allocator.cpp" />
+    <None Include="Core\stack_allocator.h" />
+    <None Include="Core\StringId.cpp" />
+    <None Include="Core\StringId.h" />
+    <None Include="Core\temp_allocator.h" />
+    <None Include="Core\Thread.cpp" />
+    <None Include="Core\Thread.h" />
+    <None Include="Core\Utils.cpp" />
+    <None Include="Core\Utils.h" />
+    <None Include="Engine\Actor.cpp" />
+    <None Include="Engine\Actor.h" />
+    <None Include="Engine\CommandAPI.cpp" />
+    <None Include="Engine\CommandAPI.h" />
+    <None Include="Engine\DataDef.cpp" />
+    <None Include="Engine\DataDef.h" />
+    <None Include="Engine\Engine.cpp" />
+    <None Include="Engine\Engine.h" />
+    <None Include="Engine\GameState.cpp" />
+    <None Include="Engine\GameState.h" />
+    <None Include="Engine\Level.cpp" />
+    <None Include="Engine\Level.h" />
+    <None Include="Engine\Movement.cpp" />
+    <None Include="Engine\Movement.h" />
+    <None Include="Engine\Win32Context.cpp" />
+    <None Include="Engine\Win32Context.h" />
+    <None Include="Engine\XBoxInput.cpp" />
+    <None Include="Engine\XBoxInput.h" />
+    <None Include="Game\HotReload.cpp" />
+    <None Include="Game\InputController.cpp" />
+    <None Include="Game\InputController.h" />
+    <None Include="Game\PhysicsTools.cpp" />
+    <None Include="Game\PlayerState.cpp" />
+    <None Include="Game\PlayerState.h" />
+    <None Include="Game\PreviewState.cpp" />
+    <None Include="Game\PreviewState.h" />
+    <None Include="Graphics\Camera.cpp" />
+    <None Include="Graphics\Camera.h" />
+    <None Include="Graphics\DebugDraw.cpp" />
+    <None Include="Graphics\DebugDraw.h" />
+    <None Include="Graphics\Graphics.cpp" />
+    <None Include="Graphics\Graphics.h" />
+    <None Include="Graphics\Gui.cpp" />
+    <None Include="Graphics\Gui.h" />
+    <None Include="Graphics\Light.cpp" />
+    <None Include="Graphics\Light.h" />
+    <None Include="Graphics\Material.cpp" />
+    <None Include="Graphics\Material.h" />
+    <None Include="Graphics\Mesh.cpp" />
+    <None Include="Graphics\Mesh.h" />
+    <None Include="Graphics\Model.cpp" />
+    <None Include="Graphics\Model.h" />
+    <None Include="Graphics\Shader.cpp" />
+    <None Include="Graphics\Shader.h" />
+    <None Include="Graphics\ShaderInc.h" />
+    <None Include="Graphics\ShadingEnviroment.cpp" />
+    <None Include="Graphics\ShadingEnviroment.h" />
+    <None Include="Graphics\Texture.cpp" />
+    <None Include="Graphics\Texture.h" />
     <None Include="path.cfg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Engine\Engine.vcxproj">
-      <Project>{d799c22f-9898-4977-9231-c66da71ff22e}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <None Include="Physics\PhysicsAutoLock.cpp" />
+    <None Include="Physics\PhysicsAutoLock.h" />
+    <None Include="Physics\PhysicsInstance.cpp" />
+    <None Include="Physics\PhysicsInstance.h" />
+    <None Include="Physics\PhysicsWorld.cpp" />
+    <None Include="Physics\PhysicsWorld.h" />
+    <None Include="Physics\ProxyInstance.cpp" />
+    <None Include="Physics\ProxyInstance.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

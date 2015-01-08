@@ -1,44 +1,378 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="states">
-      <UniqueIdentifier>{aa59a4a7-9b8c-46cb-b9cf-a678b22bc0ad}</UniqueIdentifier>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{04a0e45b-1819-49fe-a2a7-347e9afe71fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils">
-      <UniqueIdentifier>{ffb1d4ae-7f7d-42e0-bad4-21bee0155380}</UniqueIdentifier>
+    <Filter Include="Core">
+      <UniqueIdentifier>{510d95f5-5518-408e-aec3-c74567d8be43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{9b484027-4f0e-41be-a19e-5041abb77606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{a41882c2-e728-480a-844d-fd65db3eb8ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{8484ccf4-2cc5-4278-9ae1-8c9bb4eb21c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{fe256ee9-980a-4ac9-b6e3-7a01cf5b3350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{06461f03-6190-4039-827b-a06ba2f4e8ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PreviewState.h">
-      <Filter>states</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>states</Filter>
-    </ClInclude>
-    <ClInclude Include="InputController.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>states</Filter>
-    </ClCompile>
-    <ClCompile Include="PreviewState.cpp">
-      <Filter>states</Filter>
-    </ClCompile>
-    <ClCompile Include="InputController.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="HotReload.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsTools.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="path.cfg" />
+    <None Include="Animation\Animation.cpp">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\Animation.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimationSystem.cpp">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimationSystem.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimControl.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimRaycast.cpp">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimRaycast.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimRig.cpp">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\AnimRig.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\IK.cpp">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\IK.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\Ragdoll.cpp">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Animation\Ragdoll.h">
+      <Filter>Animation</Filter>
+    </None>
+    <None Include="Core\allocator.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\EngineAssert.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\EngineAssert.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Event.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\id_array.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\id_table.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\linear_allocator.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\linear_allocator.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Log.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Log.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\MathDefs.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\MathDefs.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\memory.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\memory.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\MemorySystem.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\MemorySystem.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\pool_allocator.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\pool_allocator.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Profiler.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Profiler.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Resource.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Resource.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\stack_allocator.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\stack_allocator.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\StringId.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\StringId.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\temp_allocator.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Thread.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Thread.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Utils.cpp">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Core\Utils.h">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Engine\Actor.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Actor.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\CommandAPI.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\CommandAPI.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\DataDef.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\DataDef.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Engine.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Engine.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\GameState.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\GameState.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Level.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Level.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Movement.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Movement.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Win32Context.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\Win32Context.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\XBoxInput.cpp">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Engine\XBoxInput.h">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="Graphics\Camera.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Camera.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\DebugDraw.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\DebugDraw.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Graphics.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Graphics.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Gui.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Gui.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Light.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Light.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Material.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Material.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Mesh.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Mesh.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Model.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Model.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Shader.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Shader.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\ShaderInc.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\ShadingEnviroment.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\ShadingEnviroment.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Texture.cpp">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Graphics\Texture.h">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="Game\HotReload.cpp">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\InputController.cpp">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\InputController.h">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\PhysicsTools.cpp">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\PlayerState.cpp">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\PlayerState.h">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\PreviewState.cpp">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Game\PreviewState.h">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="Physics\PhysicsAutoLock.cpp">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\PhysicsAutoLock.h">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\PhysicsInstance.cpp">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\PhysicsInstance.h">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\PhysicsWorld.cpp">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\PhysicsWorld.h">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\ProxyInstance.cpp">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="Physics\ProxyInstance.h">
+      <Filter>Physics</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\bgfx.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_egl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_glx.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_ppapi.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_wgl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\image.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\ovr.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderdoc.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_d3d9.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_d3d11.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_d3d12.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_gl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_null.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\vertexdecl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
   </ItemGroup>
 </Project>

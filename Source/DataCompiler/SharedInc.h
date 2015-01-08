@@ -15,7 +15,7 @@
 #include <fstream>
 #include <io.h>
 #include <algorithm>
-#include <bgfx/bgfx.h>
+#include <bgfx.h>
 #include <bx/fpumath.h>
 #include <bx/bx.h>
 #include <bx/commandline.h>

@@ -5,6 +5,48 @@
     <None Include="Graphics\ShaderInc.h">
       <Filter>Graphics</Filter>
     </None>
+    <None Include="..\..\..\bgfx\src\bgfx.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_egl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_glx.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_ppapi.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\glcontext_wgl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\image.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\ovr.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderdoc.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_d3d9.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_d3d11.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_d3d12.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_gl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\renderer_null.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
+    <None Include="..\..\..\bgfx\src\vertexdecl.cpp">
+      <Filter>ThirdParty</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -33,18 +75,6 @@
     </Filter>
     <Filter Include="Network">
       <UniqueIdentifier>{089c8644-62fc-41ac-9ec0-b326a6abd98f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\bgfx">
-      <UniqueIdentifier>{d72f4fc0-2356-4011-87c6-6da5ae9c88c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\imgui">
-      <UniqueIdentifier>{e327288b-9ad5-4427-b6e5-8b50c5e83ee5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\nanovg">
-      <UniqueIdentifier>{ee884d03-b39c-42c8-ac2a-2703c7cb2cc4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\entry">
-      <UniqueIdentifier>{600413b2-53b5-4312-8546-696bf1b05f82}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\memory">
       <UniqueIdentifier>{2809e10d-2957-47f0-8c4e-eb935ca48f36}</UniqueIdentifier>
@@ -99,18 +129,6 @@
     <ClCompile Include="Graphics\Graphics.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\bgfx.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\image.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\renderer_d3d11.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\vertexdecl.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Material.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -132,18 +150,6 @@
     <ClCompile Include="Graphics\Camera.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\imgui\imgui.cpp">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\nanovg\nanovg.cpp">
-      <Filter>ThirdParty\nanovg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\nanovg\nanovg_bgfx.cpp">
-      <Filter>ThirdParty\nanovg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\entry\dbg.cpp">
-      <Filter>ThirdParty\entry</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DebugDraw.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -155,9 +161,6 @@
     </ClCompile>
     <ClCompile Include="Core\Utils.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
     </ClCompile>
     <ClCompile Include="Core\Profiler.cpp">
       <Filter>Core</Filter>
@@ -200,9 +203,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Actor.cpp">
       <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp">
-      <Filter>ThirdParty\bgfx</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Movement.cpp">
       <Filter>Engine</Filter>
@@ -265,65 +265,8 @@
     <ClInclude Include="Animation\Ragdoll.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfx.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfxdefines.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Graphics.h">
       <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfx_p.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\charset.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\config.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear0.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear1.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear2.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear3.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\fs_debugfont.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\image.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d11.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\vs_clear.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\vs_debugfont.bin.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfx.c99.h">
-      <Filter>ThirdParty\bgfx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.c99.h">
-      <Filter>ThirdParty\bgfx</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Material.h">
       <Filter>Graphics</Filter>
@@ -346,36 +289,6 @@
     <ClInclude Include="Graphics\Camera.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_color.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_texture.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\imgui.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_color.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_texture.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\nanovg\fontstash.h">
-      <Filter>ThirdParty\nanovg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\nanovg\fs_nanovg_fill.bin.h">
-      <Filter>ThirdParty\nanovg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\nanovg\nanovg.h">
-      <Filter>ThirdParty\nanovg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\nanovg\vs_nanovg_fill.bin.h">
-      <Filter>ThirdParty\nanovg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\entry\dbg.h">
-      <Filter>ThirdParty\entry</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DebugDraw.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -390,15 +303,6 @@
     </ClInclude>
     <ClInclude Include="Core\Utils.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image_swizz.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h">
-      <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>
@@ -451,9 +355,6 @@
     </ClInclude>
     <ClInclude Include="Animation\AnimControl.h">
       <Filter>Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\bgfx\ovr.h">
-      <Filter>ThirdParty\bgfx</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Movement.h">
       <Filter>Engine</Filter>

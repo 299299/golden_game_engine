@@ -1,11 +1,5 @@
 #include "Prerequisites.h"
 
-#ifdef _DEBUG
-#pragma comment(lib, "../Lib/Engine_Debug.lib")
-#else
-#pragma comment(lib, "../Lib/Engine.lib")
-#endif
-
 //=======================================================================
 //  HAVOK LIBS
 //=======================================================================

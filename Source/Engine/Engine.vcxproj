@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -85,20 +85,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\..\..\bgfx\src\bgfx.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_egl.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_glx.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_ppapi.cpp" />
+    <None Include="..\..\..\bgfx\src\glcontext_wgl.cpp" />
+    <None Include="..\..\..\bgfx\src\image.cpp" />
+    <None Include="..\..\..\bgfx\src\ovr.cpp" />
+    <None Include="..\..\..\bgfx\src\renderdoc.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_d3d11.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_d3d12.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_d3d9.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_gl.cpp" />
+    <None Include="..\..\..\bgfx\src\renderer_null.cpp" />
+    <None Include="..\..\..\bgfx\src\vertexdecl.cpp" />
     <None Include="Graphics\ShaderInc.h" />
     <None Include="path.cfg" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ThirdParty\bgfx\bgfx.cpp" />
-    <ClCompile Include="..\ThirdParty\bgfx\image.cpp" />
-    <ClCompile Include="..\ThirdParty\bgfx\ovr.cpp" />
-    <ClCompile Include="..\ThirdParty\bgfx\renderer_d3d11.cpp" />
-    <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp" />
-    <ClCompile Include="..\ThirdParty\bgfx\vertexdecl.cpp" />
-    <ClCompile Include="..\ThirdParty\entry\dbg.cpp" />
-    <ClCompile Include="..\ThirdParty\imgui\imgui.cpp" />
-    <ClCompile Include="..\ThirdParty\nanovg\nanovg.cpp" />
-    <ClCompile Include="..\ThirdParty\nanovg\nanovg_bgfx.cpp" />
     <ClCompile Include="Animation\Animation.cpp" />
     <ClCompile Include="Animation\AnimationSystem.cpp" />
     <ClCompile Include="Animation\AnimRaycast.cpp" />
@@ -144,39 +148,6 @@
     <ClCompile Include="Physics\PhysicsInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ThirdParty\bgfx\bgfx.c99.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\bgfx.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\bgfxdefines.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.c99.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\bgfxplatform.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\bgfx_p.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\charset.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\config.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear0.bin.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear1.bin.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear2.bin.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\fs_clear3.bin.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\fs_debugfont.bin.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\image.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\ovr.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\renderer_d3d11.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\vertexdecl.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\vs_clear.bin.h" />
-    <ClInclude Include="..\ThirdParty\bgfx\vs_debugfont.bin.h" />
-    <ClInclude Include="..\ThirdParty\entry\dbg.h" />
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_color.bin.h" />
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image.bin.h" />
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_image_swizz.bin.h" />
-    <ClInclude Include="..\ThirdParty\imgui\fs_imgui_texture.bin.h" />
-    <ClInclude Include="..\ThirdParty\imgui\imgui.h" />
-    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_color.bin.h" />
-    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h" />
-    <ClInclude Include="..\ThirdParty\imgui\vs_imgui_texture.bin.h" />
-    <ClInclude Include="..\ThirdParty\nanovg\fontstash.h" />
-    <ClInclude Include="..\ThirdParty\nanovg\fs_nanovg_fill.bin.h" />
-    <ClInclude Include="..\ThirdParty\nanovg\nanovg.h" />
-    <ClInclude Include="..\ThirdParty\nanovg\vs_nanovg_fill.bin.h" />
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Animation\AnimationSystem.h" />
     <ClInclude Include="Animation\AnimControl.h" />
