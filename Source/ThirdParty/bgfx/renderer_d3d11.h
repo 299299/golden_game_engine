@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2015 Branimir Karadzic. All rights reserved.
  * License: http://www.opensource.org/licenses/BSD-2-Clause
  */
 
@@ -25,8 +25,10 @@ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4005) // warning C4005: '' : macro redefinitio
 #endif
 BX_PRAGMA_DIAGNOSTIC_POP()
 
+#include "renderer.h"
 #include "renderer_d3d.h"
 #include "ovr.h"
+#include "renderdoc.h"
 
 #ifndef D3DCOLOR_ARGB
 #	define D3DCOLOR_ARGB(_a, _r, _g, _b) ( (DWORD)( ( ( (_a)&0xff)<<24)|( ( (_r)&0xff)<<16)|( ( (_g)&0xff)<<8)|( (_b)&0xff) ) )
@@ -46,6 +48,27 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 #ifndef D3D_FEATURE_LEVEL_11_1
 #	define D3D_FEATURE_LEVEL_11_1 D3D_FEATURE_LEVEL(0xb100)
 #endif // D3D_FEATURE_LEVEL_11_1
+
+// MinGW Linux/Wine missing defines...
+#ifndef D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT
+#	define D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT 8
+#endif // D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT
+
+#ifndef D3D11_PS_CS_UAV_REGISTER_COUNT
+#	define D3D11_PS_CS_UAV_REGISTER_COUNT 8
+#endif // D3D11_PS_CS_UAV_REGISTER_COUNT
+
+#ifndef D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT
+#	define D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT 8
+#endif
+
+#ifndef D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT
+#	define D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT 8
+#endif // D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT
+
+#ifndef D3D11_APPEND_ALIGNED_ELEMENT
+#	define D3D11_APPEND_ALIGNED_ELEMENT UINT32_MAX
+#endif // D3D11_APPEND_ALIGNED_ELEMENT
 
 namespace bgfx
 {
@@ -78,11 +101,13 @@ namespace bgfx
 	{
 		VertexBufferD3D11()
 			: m_ptr(NULL)
+			, m_srv(NULL)
+			, m_uav(NULL)
 			, m_dynamic(false)
 		{
 		}
 
-		void create(uint32_t _size, void* _data, VertexDeclHandle _declHandle);
+		void create(uint32_t _size, void* _data, VertexDeclHandle _declHandle, uint8_t _flags);
 		void update(uint32_t _offset, uint32_t _size, void* _data, bool _discard = false);
 
 		void destroy()
@@ -92,9 +117,14 @@ namespace bgfx
 				DX_RELEASE(m_ptr, 0);
 				m_dynamic = false;
 			}
+
+			DX_RELEASE(m_srv, 0);
+			DX_RELEASE(m_uav, 0);
 		}
 
 		ID3D11Buffer* m_ptr;
+		ID3D11ShaderResourceView* m_srv;
+		ID3D11UnorderedAccessView* m_uav;
 		uint32_t m_size;
 		VertexDeclHandle m_decl;
 		bool m_dynamic;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2015 Branimir Karadzic. All rights reserved.
  * License: http://www.opensource.org/licenses/BSD-2-Clause
  */
 
@@ -195,6 +195,12 @@
 #define BGFX_DEBUG_TEXT                  UINT32_C(0x00000008)
 
 ///
+#define BGFX_BUFFER_COMPUTE_NONE         UINT8_C(0x00)
+#define BGFX_BUFFER_COMPUTE_READ         UINT8_C(0x01)
+#define BGFX_BUFFER_COMPUTE_WRITE        UINT8_C(0x02)
+#define BGFX_BUFFER_COMPUTE_READ_WRITE   (BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_COMPUTE_WRITE)
+
+///
 #define BGFX_TEXTURE_NONE                UINT32_C(0x00000000)
 #define BGFX_TEXTURE_U_MIRROR            UINT32_C(0x00000001)
 #define BGFX_TEXTURE_U_CLAMP             UINT32_C(0x00000002)
@@ -286,5 +292,11 @@
 ///
 #define BGFX_VIEW_NONE   UINT8_C(0x00)
 #define BGFX_VIEW_STEREO UINT8_C(0x01)
+
+///
+#define BGFX_SUBMIT_EYE_LEFT  UINT8_C(0x01)
+#define BGFX_SUBMIT_EYE_RIGHT UINT8_C(0x02)
+#define BGFX_SUBMIT_EYE_MASK  UINT8_C(0x03)
+#define BGFX_SUBMIT_EYE_FIRST BGFX_SUBMIT_EYE_LEFT
 
 #endif // BGFX_DEFINES_H_HEADER_GUARD

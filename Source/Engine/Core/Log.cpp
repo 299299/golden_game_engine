@@ -4,7 +4,6 @@
 #include <time.h>
 #include "DataDef.h"
 #include "Prerequisites.h"
-#include "WebServerTool.h"
 //================================================
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 //================================================
@@ -164,8 +163,6 @@ void Log::log( int logLevel, const char* msg, ...)
     m_stream << "</tr>\n";
 
     m_stream.flush();
-    
-    if(g_webServerTool) g_webServerTool->on_log_message(logLevel, g_logBuffer);
 
     if(logLevel >= LOG_LEVEL_WARNING) 
     {

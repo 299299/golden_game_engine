@@ -1,7 +1,6 @@
 #include "Engine.h"
 #include "Log.h"
 #include "Profiler.h"
-#include "WebServerTool.h"
 #include "MemorySystem.h"
 #include "Utils.h"
 #include "linear_allocator.h"
@@ -35,7 +34,6 @@ void showHelp()
             "--actor --> actor name\n"
             "--level --> level name\n"
             "--animation --> animation name\n"
-            "--websocket wait for debug attach when launched.\n"
             "--debug wait for debug attach when launched.\n"
             "--headless no graphics & no window\n");
 }
@@ -96,19 +94,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
     if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.", "ENGINE");
 
-    if(cmdline.hasArg("websocket"))
-    {
-        if(checkSingleProcess() == FALSE)
-        {
-            msg_box("process already exist!", "ENGINE");
-            return 0;
-        }
-        printf("\n\n------ create web socket ----\n\n");
-        initWebServerTool(6161);
-        extern void init_remote_commands();
-        init_remote_commands();
-    }
-
     extern void register_memory_allocators();
     register_memory_allocators();
 
@@ -168,8 +153,6 @@ int _tmain(int argc, _TCHAR* argv[])
     g_engine.run();
 
 err:
-    quitWebServerTool();
-
     //------------------------------------------------------------
     g_engine.quit();
     //------------------------------------------------------------

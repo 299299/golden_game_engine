@@ -138,8 +138,6 @@
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Input\XBoxInput.cpp" />
-    <ClCompile Include="Network\gamedevwebtools.cpp" />
-    <ClCompile Include="Network\WebServerTool.cpp" />
     <ClCompile Include="Physics\PhysicsWorld.cpp" />
     <ClCompile Include="Physics\ProxyInstance.cpp" />
     <ClCompile Include="Physics\PhysicsAutoLock.cpp" />
@@ -226,8 +224,6 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Input\XBoxInput.h" />
-    <ClInclude Include="Network\gamedevwebtools.h" />
-    <ClInclude Include="Network\WebServerTool.h" />
     <ClInclude Include="Physics\ProxyInstance.h" />
     <ClInclude Include="Physics\PhysicsAutoLock.h" />
     <ClInclude Include="Physics\PhysicsInstance.h" />

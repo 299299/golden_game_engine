@@ -10,7 +10,6 @@
 #include "Graphics.h"
 #include "Profiler.h"
 #include "Actor.h"
-#include "WebServerTool.h"
 #include "Camera.h"
 #include "Utils.h"
 #include "config.h"
@@ -102,7 +101,6 @@ void Engine::frame(float timeStep)
         PROFILE(Engine_FrameStart);
         m_state = kFrameStart;
         g_memoryMgr.frame_start();
-        frame_start_websocket(timeStep);
         Graphics::frame_start();
         g_physicsWorld.frame_start();
         g_animMgr.frame_start();

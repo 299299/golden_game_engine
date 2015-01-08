@@ -35,9 +35,6 @@
     <ClCompile Include="PhysicsTools.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="RemoteCommands.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

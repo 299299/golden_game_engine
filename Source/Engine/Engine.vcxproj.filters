@@ -156,12 +156,6 @@
     <ClCompile Include="Core\Utils.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Network\gamedevwebtools.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
-    <ClCompile Include="Network\WebServerTool.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\bgfx\renderer_null.cpp">
       <Filter>ThirdParty\bgfx</Filter>
     </ClCompile>
@@ -405,12 +399,6 @@
     </ClInclude>
     <ClInclude Include="..\ThirdParty\imgui\vs_imgui_image.bin.h">
       <Filter>ThirdParty\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Network\gamedevwebtools.h">
-      <Filter>Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Network\WebServerTool.h">
-      <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Core\Profiler.h">
       <Filter>Core</Filter>

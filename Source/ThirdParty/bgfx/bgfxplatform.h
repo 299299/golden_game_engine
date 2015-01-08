@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2015 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
@@ -96,8 +96,8 @@ namespace bgfx
 
 namespace bgfx
 {
-    ///
-    void winrtSetWindow(IUnknown* _window);
+	///
+	void winrtSetWindow(IUnknown* _window);
 
 } // namespace bgfx
 

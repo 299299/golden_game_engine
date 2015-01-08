@@ -108,7 +108,6 @@
     <ClCompile Include="PhysicsTools.cpp" />
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PreviewState.cpp" />
-    <ClCompile Include="RemoteCommands.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>

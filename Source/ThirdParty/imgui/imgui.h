@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2015 Branimir Karadzic. All rights reserved.
  * License: http://www.opensource.org/licenses/BSD-2-Clause
  */
 
@@ -149,6 +149,7 @@ void imguiSeparatorLine(uint16_t _height = IMGUI_SEPARATOR_VALUE);
 
 int32_t imguiGetWidgetX();
 int32_t imguiGetWidgetY();
+int32_t imguiGetWidgetW();
 void imguiSetCurrentScissor(); // Call before drawing custom widgets over imgui area.
 
 bool imguiButton(const char* _text, bool _enabled = true, ImguiAlign::Enum _align = ImguiAlign::LeftIndented, uint32_t _rgb0 = IMGUI_BUTTON_RGB0, int32_t _r = IMGUI_BUTTON_R);
