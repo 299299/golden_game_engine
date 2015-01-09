@@ -57,18 +57,3 @@ enum LightType
     kLightCount
 };
 
-
-enum ComponentType
-{
-    kComponentModel,
-    kComponentLight,
-    kComponentPhysics,
-    kComponentProxy,
-    kComponentAnimRig,
-    kComponentMovement,
-    //kComponentIk,
-    
-    kComponentTypeNum,
-    kComponentMaxFlag = 32
-};
-

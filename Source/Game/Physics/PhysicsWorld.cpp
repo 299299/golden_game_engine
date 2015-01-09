@@ -57,28 +57,28 @@ static void set_status(int newStatus)
     m_status = newStatus;
 }
 
-/// The Havok Physics contact listener is added to the Havok Physics world to provide collision information. 
-/// It responds to collision callbacks, collects the collision information and sends messages to the 
-/// collider objects. 
-/// 
+/// The Havok Physics contact listener is added to the Havok Physics world to provide collision information.
+/// It responds to collision callbacks, collects the collision information and sends messages to the
+/// collider objects.
+///
 class HavokContactListener : public hkpContactListener, public hkpEntityListener
 {
     //called in havok thread.
     virtual void contactPointCallback(const hkpContactPointEvent& event)
-    {   
+    {
         hkUlong dataA = event.getBody(0)->getUserData();
         hkUlong dataB = event.getBody(1)->getUserData();
         PhysicsInstance* objectA = (PhysicsInstance*)dataA;
         PhysicsInstance* objectB = (PhysicsInstance*)dataB;
         if(!objectA || !objectB) return;
-        
+
         CollisionEvent evt;
         evt.m_objects[0] = objectA->m_actor;
         evt.m_objects[1] = objectB->m_actor;
         transform_vec3(evt.m_position, event.m_contactPoint->getPosition());
         transform_vec3(evt.m_normal, event.m_contactPoint->getNormal());
         evt.m_velocity = event.getSeparatingVelocity();
-        
+
         uint64_t key = (uint64_t)dataA << 32 | (uint64_t)dataB;
         g_physicsWorld.add_collision_event(key, evt);
     }
@@ -244,16 +244,16 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
     int num = collisionEntries.getSize();
     const hkpLinkedCollidable::CollisionEntry* head = collisionEntries.begin();
 
-    for(int i = 0; i < num; i++) 
-    { 
-        const hkpLinkedCollidable::CollisionEntry& entry = head[i]; 
+    for(int i = 0; i < num; i++)
+    {
+        const hkpLinkedCollidable::CollisionEntry& entry = head[i];
         hkpRigidBody* otherBody = hkpGetRigidBody(entry.m_partner);
-        if (otherBody != HK_NULL) 
-        { 
-            if (entry.m_agentEntry->m_contactMgr->m_type == 
+        if (otherBody != HK_NULL)
+        {
+            if (entry.m_agentEntry->m_contactMgr->m_type ==
                 hkpContactMgr::TYPE_SIMPLE_CONSTRAINT_CONTACT_MGR)
             {
-                hkpSimpleConstraintContactMgr* mgr = 
+                hkpSimpleConstraintContactMgr* mgr =
                     static_cast<hkpSimpleConstraintContactMgr*>(entry.m_agentEntry->m_contactMgr);
                 if (mgr->m_contactConstraintData.getNumContactPoints() > 0)
                 {
@@ -304,7 +304,7 @@ void PhysicsWorld::add_to_world(PhysicsInstance* instance)
     default:
         break;
     }
-    
+
 }
 
 void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
@@ -394,7 +394,7 @@ void PhysicsWorld::kickin_raycast_jobs()
     size_t memSize = sizeof(hkpWorldRayCastJob);
     char* p = FRAME_ALLOC(char, memSize);
     hkpWorldRayCastJob* worldRayCastJob = new (p) hkpWorldRayCastJob(
-        m_world->getCollisionInput(), jobHeader, commands, 
+        m_world->getCollisionInput(), jobHeader, commands,
         m_numRaycasts, m_world->m_broadPhase, m_raycastSem);
     m_world->unmarkForRead();
 
@@ -420,6 +420,7 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 {
     PROFILE(sync_rigidbody_actors);
     check_status();
+    /*
     hkQsTransform t;
     hkTransform t1;
     for (uint32_t i=0; i<num; ++i)
@@ -432,12 +433,14 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
         actor.transform_renders(t);
         physics_object->m_dirty = false;
     }
+    */
 }
 
 void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
 {
     PROFILE(sync_proxy_actors);
     check_status();
+    /*
     float pos[3];
     hkQsTransform t;
     t.setIdentity();
@@ -452,6 +455,7 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
         transform_vec3(t.m_translation, pos);
         actor.transform_renders(t);
     }
+    */
 }
 
 void PhysicsWorld::update_character_proxies(float timeStep)

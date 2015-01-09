@@ -4,42 +4,42 @@
 #include <bx/bx.h>
 #include <bgfx.h>
 
-const char*  g_textureNames[] = 
+const char*  g_textureNames[] =
 {
-    "u_texColor", 
+    "u_texColor",
     "u_texNormal",
-    "u_texSpecular", 
-    "u_texRelfection", 
-    "u_texEmissive", 
+    "u_texSpecular",
+    "u_texRelfection",
+    "u_texEmissive",
     "u_texLightmap",
     "u_texBlendNormalMask",
-    "u_texIBL", 
-    "u_shadowMap", 
-    "u_texReflectionMask", 
-    "u_texAndirMap", 
+    "u_texIBL",
+    "u_shadowMap",
+    "u_texReflectionMask",
+    "u_texAndirMap",
     "u_texThickness",
     0
 };
 
 const char* g_humanBodyNames[] =
 {
-    "head", 
-    "neck", 
-    "left_shoulder", 
-    "left_arm", 
+    "head",
+    "neck",
+    "left_shoulder",
+    "left_arm",
     "left_fore_arm",
     "left_hand",
-    "right_shoulder", 
-    "right_arm", 
+    "right_shoulder",
+    "right_arm",
     "right_fore_arm",
     "right_hand",
     "hip",
-    "left_up_leg", 
-    "left_leg", 
+    "left_up_leg",
+    "left_leg",
     "left_foot",
-    "right_up_leg", 
-    "right_leg", 
-    "right_foot", 
+    "right_up_leg",
+    "right_leg",
+    "right_foot",
     0
 };
 
@@ -58,31 +58,31 @@ const char* g_defaultTextureNames[] =
 
 const char* g_lightTypeNames[] =
 {
-    "directional", 
-    "spot", 
-    "point", 
+    "directional",
+    "spot",
+    "point",
     0
 };
 
 
 const char* g_beatTypeNames[] =
 {
-    "left_foot_down", 
-    "right_foot_down", 
+    "left_foot_down",
+    "right_foot_down",
     0,
 };
 
-const char* g_matFlagNames[] = 
+const char* g_matFlagNames[] =
 {
-    "skinning", 
-    "alpha_mask", 
-    "rim_color", 
-    "translucency", 
-    "opacity", 
+    "skinning",
+    "alpha_mask",
+    "rim_color",
+    "translucency",
+    "opacity",
     0
 };
 
-const char* g_textureFlagNames[] = 
+const char* g_textureFlagNames[] =
 {
     "u_mirror",
     "u_clamp",
@@ -93,21 +93,21 @@ const char* g_textureFlagNames[] =
     "min_point",
     "min_anisotropic",
     "mag-point",
-    "mag_anisotropic", 
-    "min_point", 
+    "mag_anisotropic",
+    "min_point",
     0
 };
-uint32_t g_textureFlags[] = 
+uint32_t g_textureFlags[] =
 {
     BGFX_TEXTURE_U_MIRROR, BGFX_TEXTURE_U_CLAMP,
     BGFX_TEXTURE_V_MIRROR, BGFX_TEXTURE_V_CLAMP,
     BGFX_TEXTURE_W_MIRROR, BGFX_TEXTURE_W_CLAMP,
     BGFX_TEXTURE_MIN_POINT,BGFX_TEXTURE_MIN_ANISOTROPIC,
     BGFX_TEXTURE_MAG_POINT,BGFX_TEXTURE_MAG_ANISOTROPIC,
-    BGFX_TEXTURE_MIP_POINT, 
+    BGFX_TEXTURE_MIP_POINT,
 };
 uint32_t g_textureFlagNum = BX_COUNTOF(g_textureFlags);
- const char* g_uniformNames[] = 
+ const char* g_uniformNames[] =
 {
     "uniform-1i", "uniform-1f", "end", "uniform-1iv",
     "uniform-1fv", "uniform-2fv", "uniform-3fv", "uniform-4fv",
@@ -145,12 +145,12 @@ const char* g_modelFlagNames[] =
     0,
 };
 
-const char*   physics_type_names[] = 
+const char*   physics_type_names[] =
 {
-    "rigidbody", 
-    "ragdoll", 
-    "trigger", 
-    "complex", 
+    "rigidbody",
+    "ragdoll",
+    "trigger",
+    "complex",
     0
 };
 
@@ -241,7 +241,7 @@ extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
 
-static ResourceFactory g_resourceFactories[] = 
+static ResourceFactory g_resourceFactories[] =
 {
     {load_resource_texture, 0, 0, 0, bringout_resource_texture, Texture::get_name()},
     {load_resource_texture2d, 0, 0, bringin_resource_texture2d, bringout_resource_texture2d, Raw2DTexture::get_name()},
@@ -283,111 +283,3 @@ int get_resource_order(const StringId& type)
     }
     return -1;
 }
-//-----------------------------------------------------------------
-extern Id       create_render_model(const void*, ActorId32);
-extern void     destroy_render_model(Id);
-extern void*    get_render_model(Id);
-extern uint32_t num_render_models();
-extern void*    get_render_models();
-//-----------------------------------------------------------------
-extern Id       create_render_light(const void*, ActorId32);
-extern void     destroy_render_light(Id);
-extern void*    get_render_light(Id);
-extern uint32_t num_render_lights();
-extern void*    get_render_lights();
-//-----------------------------------------------------------------
-extern Id       create_anim_rig(const void*, ActorId32);
-extern void     destroy_anim_rig(Id);
-extern void*    get_anim_rig(Id);
-extern uint32_t num_anim_rigs();
-extern void*    get_anim_rigs();
-//-----------------------------------------------------------------
-extern Id       create_physics_object(const void*, ActorId32);
-extern void     destroy_physics_object(Id);
-extern void*    get_physics_object(Id);
-extern uint32_t num_physics_objects();
-extern void*    get_physics_objects();
-//-----------------------------------------------------------------
-extern Id       create_physics_proxy(const void*, ActorId32);
-extern void     destroy_physics_proxy(Id);
-extern void*    get_physics_proxy(Id);
-extern uint32_t num_physics_proxies();
-extern void*    get_physics_proxies();
-//-----------------------------------------------------------------
-//-----------------------------------------------------------------
-extern Id       create_movement(const void*, ActorId32);
-extern void     destroy_movement(Id);
-extern void*    get_movement(Id);
-extern uint32_t num_movements();
-extern void*    get_movements();
-//-----------------------------------------------------------------
-struct ComponentFactory
-{
-    Id          (*create)(const void*, ActorId32 id);
-    void        (*destroy)(Id);
-    void*       (*get)(Id);
-    uint32_t    (*get_num)();
-    void*       (*get_total)();
-};
-static ComponentFactory g_componentFactories[] =
-{
-    create_render_model, destroy_render_model, get_render_model, num_render_models, get_render_models,
-    create_render_light, destroy_render_light, get_render_light, num_render_lights, get_render_lights,
-    create_physics_object, destroy_physics_object, get_physics_object, num_physics_objects, get_physics_objects,
-    create_physics_proxy, destroy_physics_proxy, get_physics_proxy, num_physics_proxies, get_physics_proxies,
-    create_anim_rig, destroy_anim_rig, get_anim_rig, num_anim_rigs, get_anim_rigs,
-    create_movement, destroy_movement, get_movement, num_movements, get_movements,
-};
-StringId g_componentTypes[kComponentTypeNum];
-const char* g_componentTypeNames[kComponentTypeNum];
-
-Id create_componet(uint32_t type, const void* resource, ActorId32 id)
-{
-    return g_componentFactories[type].create(resource, id);
-}
-void destroy_component(uint32_t type, Id id)
-{
-    g_componentFactories[type].destroy(id);
-}
-void* get_component(uint32_t type, Id id)
-{
-    return g_componentFactories[type].get(id);
-}
-uint32_t num_components(uint32_t type)
-{
-    return g_componentFactories[type].get_num();
-}
-void* get_components(uint32_t type)
-{
-    return g_componentFactories[type].get_total();
-}
-void init_component_names()
-{
-    g_componentTypeNames[kComponentModel] = ModelResource::get_name();
-    g_componentTypes[kComponentModel] = ModelResource::get_type();
-
-    g_componentTypeNames[kComponentLight] = LightResource::get_name();
-    g_componentTypes[kComponentLight] = LightResource::get_type();
-
-    g_componentTypeNames[kComponentPhysics] = PhysicsResource::get_name();
-    g_componentTypes[kComponentPhysics] = PhysicsResource::get_type();
-
-    g_componentTypeNames[kComponentProxy] = ProxyResource::get_name();
-    g_componentTypes[kComponentProxy] = ProxyResource::get_type();
-
-    g_componentTypeNames[kComponentAnimRig] = AnimRig::get_name();
-    g_componentTypes[kComponentAnimRig] = AnimRig::get_type();
-
-    g_componentTypeNames[kComponentMovement] = MovementInstance::get_name();
-    g_componentTypes[kComponentMovement] = MovementInstance::get_type();
-};
-int find_component_type(const StringId& typeName)
-{
-    for (int i=0; i<kComponentTypeNum; ++i)
-    {
-        if(g_componentTypes[i] == typeName)
-            return i;
-    }
-    return -1;
-}
-//-----------------------------------------------------------------
