@@ -1,18 +1,12 @@
 #include "Prerequisites.h"
 
-#ifdef _DEBUG
-#pragma comment(lib, "../Lib/Engine_Debug.lib")
-#else
-#pragma comment(lib, "../Lib/Engine.lib")
-#endif
-
 //=======================================================================
 //  HAVOK LIBS
 //=======================================================================
 #define HK_EXCLUDE_FEATURE_MemoryTracker
 #if 1
 #define HK_EXCLUDE_FEATURE_SerializeDeprecatedPre700
-#define HK_EXCLUDE_FEATURE_RegisterVersionPatches 
+#define HK_EXCLUDE_FEATURE_RegisterVersionPatches
 #endif
 #define HK_EXCLUDE_LIBRARY_hkGeometryUtilities
 
@@ -22,10 +16,6 @@
 #define HK_CLASSES_FILE <Common/Serialize/Classlist/hkKeyCodeClasses.h>
 #include <Common/Base/Config/hkProductFeatures.cxx>
 #include <Common/Base/keycode.cxx>
-
-//for xinput
-#pragma comment(lib, "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86\\XInput.lib")
-#pragma comment(lib, "Psapi.lib")
 
 //start of havok link config
 #ifdef _DEBUG
