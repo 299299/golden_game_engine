@@ -5,7 +5,7 @@
 #include "Profiler.h"
 #include "EngineAssert.h"
 //============================================
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "DebugDraw.h"
 #include "ShadingEnviroment.h"
 #include "Material.h"

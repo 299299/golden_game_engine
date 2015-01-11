@@ -2,7 +2,7 @@
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
 #include "PhysicsAutoLock.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "AnimRig.h"
 #include "Win32Context.h"
 #include "XBoxInput.h"

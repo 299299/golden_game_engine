@@ -1,10 +1,10 @@
 #include "PreviewState.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "Win32Context.h"
 #include "Profiler.h"
 #include "Model.h"
 #include "Light.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "DebugDraw.h"
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;

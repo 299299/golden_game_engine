@@ -1,6 +1,6 @@
 #include "PhysicsWorld.h"
 #include "PhysicsAutoLock.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "Log.h"
 #include "Win32Context.h"
 //===================================================

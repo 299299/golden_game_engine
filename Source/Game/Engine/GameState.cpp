@@ -2,7 +2,6 @@
 #include "EngineAssert.h"
 #include "Log.h"
 #include "Profiler.h"
-#include "Actor.h"
 
 GameState::GameState()
 {
@@ -16,22 +15,22 @@ GameState::~GameState()
 
 void GameState::pre_step( float dt )
 {
-    g_actorWorld.pre_step(dt);
+    
 }
 
 void GameState::step( float dt )
 {
-    g_actorWorld.step(dt);
+    
 }
 
 void GameState::post_step( float dt )
 {
-    g_actorWorld.post_step(dt);
+    
 }
 
 void GameState::render()
 {
-    g_actorWorld.draw();
+    
 }
 
 GameFSM g_gameFSM;

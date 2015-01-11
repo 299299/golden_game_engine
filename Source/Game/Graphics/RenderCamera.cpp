@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "Win32Context.h"
 #include "XBoxInput.h"
 #include <string.h>

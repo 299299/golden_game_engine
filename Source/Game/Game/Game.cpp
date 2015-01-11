@@ -8,14 +8,13 @@
 #include "DebugDraw.h"
 #include "Graphics.h"
 #include "Utils.h"
-#include "Actor.h"
 #include "Level.h"
 #include "AnimRig.h"
 #include "PhysicsWorld.h"
 #include "ShadingEnviroment.h"
 #include "PreviewState.h"
 #include "PlayerState.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 //==================================================
 #include <Windows.h>
 #include <tchar.h>
@@ -114,38 +113,14 @@ int _tmain(int argc, _TCHAR* argv[])
     g_debugDrawMgr.ready();
     g_physicsWorld.create_world(FIND_RESOURCE_NAMED(PhysicsConfig, "core/global"));
     g_physicsWorld.create_plane(500.0f);
-    g_actorWorld.m_shading_env = FIND_RESOURCE_NAMED(ShadingEnviroment, "core/common/default");
 
     if(package_name) g_resourceMgr.load_package_and_wait(package_name);
 
-    if(actor_name) 
-    {
-        printf("loading actor %s \n", actor_name);
-        g_actor = g_actorWorld.create_actor(
-                    FIND_RESOURCE_NAMED(ActorResource, actor_name), 
-                    hkQsTransform::getIdentity());
-    }
     if(level_name)
     {
         printf("loading level %s \n", level_name);
         Level* level = FIND_RESOURCE_NAMED(Level, level_name);
         if(level) level->load();
-    }
-
-    const char* anim_name = cmdline.findOption("animation");
-    if(anim_name && actor_name)
-    {
-        Actor* actor = g_actorWorld.get_actor(g_actor);
-        if(actor)
-        {
-            LOGI("loading animation %s to actor %s", anim_name, actor_name);
-            extern void* get_anim_rig(Id);
-            AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(actor->m_components[kComponentAnimRig]);
-            if(rig)
-            {
-               rig->test_animation(anim_name);
-            }
-        }
     }
 
     if(state_name) g_gameFSM.change_state(state_name);

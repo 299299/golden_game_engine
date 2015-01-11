@@ -179,8 +179,6 @@ const char* movement_names[] =
 #include "Ragdoll.h"
 #include "ShadingEnviroment.h"
 #include "Level.h"
-#include "Actor.h"
-#include "Movement.h"
 //-----------------------------------------------------------------
 extern void* load_resource_texture(const char*, uint32_t);
 extern void  bringout_resource_texture(void*);
@@ -234,9 +232,6 @@ extern void  lookup_resource_foot_ik(void*);
 //-----------------------------------------------------------------
 extern void  lookup_resource_shading_enviroment( void* );
 //-----------------------------------------------------------------
-extern void* load_resource_actor(const char*, uint32_t);
-extern void  lookup_resource_actor(void*);
-//-----------------------------------------------------------------
 extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
@@ -262,7 +257,6 @@ static ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_reach_ik, 0, 0, ReachResource::get_name()},
     {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::get_name()},
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::get_name()},
-    {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::get_name()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::get_name()},
 };
 void regster_resource_factories()

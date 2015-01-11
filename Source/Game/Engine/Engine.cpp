@@ -9,8 +9,7 @@
 #include "XBoxInput.h"
 #include "Graphics.h"
 #include "Profiler.h"
-#include "Actor.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "Utils.h"
 #include "config.h"
 #include "GameState.h"
@@ -34,13 +33,6 @@ void Engine::init( const EngineConfig& cfg )
     m_running = true;
     m_cfg = cfg;
     m_state = kFrameStart;
-    uint32_t mem_size = CommandMachine::caculate_memory(MAX_ENGINE_COMMANDS, MAX_ENGINE_CALLBACKS);
-    m_cmd_machine = (CommandMachine*)::malloc(mem_size);
-    memset(m_cmd_machine, 0x00, mem_size);
-    m_cmd_machine->init(MAX_ENGINE_COMMANDS, MAX_ENGINE_CALLBACKS);
-	extern void init_engine_commands(CommandMachine*);
-    init_engine_commands(m_cmd_machine);
-
     LOG_INIT("EngineLog.html", "ENGINE");
     HiresTimer::init();
     core_init();
@@ -171,7 +163,6 @@ void Engine::subsystem_init()
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init();
     g_animMgr.init();
-    g_actorWorld.init();
 }
 
 void Engine::core_shutdown()
@@ -186,7 +177,6 @@ void Engine::subsystem_shutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
     g_resourceMgr.offline_all_resources();
-    g_actorWorld.destroy();
     g_animMgr.quit();
     g_physicsWorld.quit();
     Graphics::quit();

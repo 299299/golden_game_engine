@@ -10,7 +10,6 @@
 //=======================================================================================
 // RESOURCES
 #include "Resource.h"
-#include "Actor.h"
 #include "Model.h"
 #include "Mesh.h"
 #include "Animation.h"
@@ -119,6 +118,7 @@ void AnimationSystem::tick_finished_jobs()
 
 void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 {
+#if 0
     PROFILE(Animation_SkinActors);
     extern void* get_anim_rig(Id);
     extern void* get_render_model(Id);
@@ -171,6 +171,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         }
 #endif
     }
+#endif
 }
 
 void AnimationSystem::update_animations(float dt)
@@ -188,6 +189,7 @@ void AnimationSystem::update_animations(float dt)
 void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 {
     PROFILE(Animation_UpdateAttachment);
+#if 0
     extern void* get_anim_rig(Id);
     for (uint32_t i=0; i<num; ++i)
     {
@@ -197,6 +199,7 @@ void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
         if(!rig) continue;
         rig->update_attachment(actor.m_transform);
     }
+#endif
 }
 
 
@@ -238,6 +241,7 @@ void* get_anim_rigs()
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
+#if 0
 #include "DebugDraw.h"
 #include "Actor.h"
 void draw_debug_animation()
@@ -278,6 +282,7 @@ void draw_debug_animation()
         g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
     }
 }
+#endif
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------

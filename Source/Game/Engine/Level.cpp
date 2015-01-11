@@ -1,7 +1,6 @@
 #include "Level.h"
 #include "Resource.h"
 #include "MathDefs.h"
-#include "Actor.h"
 #include "Log.h"
 #include "EngineAssert.h"
 
@@ -16,6 +15,7 @@ void transform_object(hkQsTransform& m, const float* t, const float* r, const fl
 
 void Level::load()
 {
+#if 0
     if(m_numLoadedObjects >= m_numObject) return;
     hkQsTransform t;
     uint32_t num = m_numObject;
@@ -27,27 +27,32 @@ void Level::load()
         object.m_actorId = g_actorWorld.create_actor(m_resources[object.m_resourceIndex].m_resource, t);
     }
     m_numLoadedObjects = m_numObject;
+#endif
 }
 
 void Level::unload()
 {
+#if 0
     uint32_t num = m_numObject;
     LevelObject* head = m_objects;
     for (uint32_t i=0; i<num; ++i)
     {
         g_actorWorld.destroy_actor(head[i].m_actorId);
     }
+#endif
     m_numLoadedObjects = 0;
 }
 
 void Level::lookup()
 {
+#if 0
     uint32_t num = m_numResources;
     LevelActorResource* head = m_resources;
     for (uint32_t i = 0; i < num; ++i)
     {
         head[i].m_resource = FIND_RESOURCE(ActorResource, head[i].m_name);
     }
+#endif
 }
 
 void*  load_resource_level(const char* data, uint32_t size)

@@ -17,7 +17,6 @@
 //          COMPONENTS
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
-#include "Actor.h"
 //===========================================
 
 #include <tinystl/allocator.h>

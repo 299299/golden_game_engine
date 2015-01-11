@@ -20,8 +20,7 @@
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
 #include "Level.h"
-#include "Actor.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include "DebugDraw.h"
 #include <bx/bx.h>
 //==========================================================================================
@@ -41,6 +40,7 @@ extern void* get_components(uint32_t type);
 //===================================================================================================
 template <typename T, typename U> void reload_component_resource(void* oldResource, void* newResource)
 {
+#if 0
     T* oldCompResource = (T*)oldResource;
     T* newCompResource = (T*)newResource;
     int type = find_component_type(T::get_type());
@@ -52,6 +52,7 @@ template <typename T, typename U> void reload_component_resource(void* oldResour
         if(components[i].m_resource == oldCompResource)
             components[i].init(newCompResource); //---> no destroy?? may memleak
     }
+#endif
 }
 template <typename T, typename U> void register_component_resource_reload_callback()
 {
@@ -60,6 +61,7 @@ template <typename T, typename U> void register_component_resource_reload_callba
 //----------------------------------------------------------------------------------------------
 template <typename T, typename U> void reload_component_resource_(void* oldResource, void* newResource)
 {
+#if 0
     T* oldCompResource = (T*)oldResource;
     T* newCompResource = (T*)newResource;
     int type = find_component_type(T::get_type());
@@ -74,6 +76,7 @@ template <typename T, typename U> void reload_component_resource_(void* oldResou
             components[i].init(newCompResource); //---> no destroy?? may memleak
         }
     }
+#endif
 }
 template <typename T, typename U> void register_component_resource_reload_callback_()
 {
@@ -82,6 +85,7 @@ template <typename T, typename U> void register_component_resource_reload_callba
 //----------------------------------------------------------------------------------------------
 void reload_light_resource(void* oldResource, void* newResource)
 {
+#if 0
     LightResource* oldLight = (LightResource*)oldResource;
     LightResource* newLight = (LightResource*)newResource;
     uint32_t num = num_components(kComponentLight);
@@ -92,6 +96,7 @@ void reload_light_resource(void* oldResource, void* newResource)
         if(light.m_resource == oldLight)
             light.m_resource = newLight;
     }
+#endif
 }
 //===================================================================================================
 
@@ -149,7 +154,7 @@ void reload_shading_enviroment(void* oldResource, void* newResource)
 {
     ShadingEnviroment* oldShading = (ShadingEnviroment*)oldResource;
     ShadingEnviroment* newShading = (ShadingEnviroment*)newResource;
-    if(g_actorWorld.m_shading_env == oldShading) g_actorWorld.m_shading_env = newShading;
+    //if(g_actorWorld.m_shading_env == oldShading) g_actorWorld.m_shading_env = newShading;
 }
 void reload_material_resource(void* oldResource, void* newResource)
 {
@@ -170,7 +175,8 @@ void reload_material_resource(void* oldResource, void* newResource)
         }
     }
 
-    numOfModels = num_components(kComponentModel);
+    numOfModels = g_modelWorld.m_numModels;
+#if 0
     ModelInstance* models = (ModelInstance*)get_components(kComponentModel);
     LOGD("total num of model instances = %d", numOfModels);
     for(uint32_t i=0; i<numOfModels; ++i)
@@ -184,6 +190,7 @@ void reload_material_resource(void* oldResource, void* newResource)
             }
         }
     }
+#endif
 }
 void reload_texture_resource(void* oldResource, void* newResource)
 {   
@@ -293,7 +300,7 @@ void reload_shader_resource(void* oldResource, void* newResource)
     }
 }
 
-
+#if 0
 void reload_actor_resource(void* oldResource, void* newResource)
 {
     ActorResource* oldActor = (ActorResource*)oldResource;
@@ -315,6 +322,7 @@ void reload_actor_resource(void* oldResource, void* newResource)
         }
     }
 }
+#endif
 //===================================================================================================
 
 
@@ -324,7 +332,7 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(Texture::get_type(), reload_texture_resource);
     g_resourceMgr.register_reload_callback(Raw3DTexture::get_type(), reload_texture_3d_resource);
     g_resourceMgr.register_reload_callback(Mesh::get_type(), reload_mesh_resource);
-    g_resourceMgr.register_reload_callback(ActorResource::get_type(), reload_actor_resource);
+    //g_resourceMgr.register_reload_callback(ActorResource::get_type(), reload_actor_resource);
     g_resourceMgr.register_reload_callback(Material::get_type(), reload_material_resource);
     g_resourceMgr.register_reload_callback(Shader::get_type(), reload_shader_resource);
     g_resourceMgr.register_reload_callback(ShaderProgram::get_type(), reload_program_resource);

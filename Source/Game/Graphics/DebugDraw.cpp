@@ -7,7 +7,7 @@
 #include "Log.h"
 #include "Shader.h"
 #include "Graphics.h"
-#include "Camera.h"
+#include "RenderCamera.h"
 #include <imgui/imgui.h>
 #include "config.h"
 

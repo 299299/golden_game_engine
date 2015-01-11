@@ -71,3 +71,4 @@ datacompiler_profile.txt
 
 ipch/
 *.suo
+.build/
