@@ -126,14 +126,32 @@ function exeProject(_name, _incdirs, _files)
 
     configuration {}
 
+    if(_ACTION == "vs2010") then
+        print("vs2010 force toolset to v100")
+        premake.vstudio.toolset = "v100"
+    end
 end
 
 game_inc_dirs = {
     BX_DIR .. "include",
     BGFX_DIR .. "include",
+    BGFX_DIR .. "src",
     BGFX_DIR .. "examples/common",
     HAVOK_DIR,
     GAME_SRC_DIR .. "**"
+}
+
+bgfx_files = {
+    BGFX_DIR .. "src/bgfx.cpp",
+    BGFX_DIR .. "src/image.cpp",
+    BGFX_DIR .. "src/ovr.cpp",
+    BGFX_DIR .. "src/renderdoc.cpp",
+    BGFX_DIR .. "src/renderer_d3d11.cpp",
+    BGFX_DIR .. "src/renderer_null.cpp",
+    BGFX_DIR .. "src/vertexdecl.cpp",
+    BGFX_DIR .. "examples/common/imgui/imgui.cpp",
+    BGFX_DIR .. "examples/common/nanovg/nanovg.cpp",
+    BGFX_DIR .. "examples/common/nanovg/nanovg_bgfx.cpp",
 }
 
 game_files = {
@@ -143,6 +161,7 @@ game_files = {
     GAME_SRC_DIR .. "Game/*",
     GAME_SRC_DIR .. "Graphics/*",
     GAME_SRC_DIR .. "Physics/*",
+    bgfx_files,
     GAME_SRC_DIR .. "linkopt.cpp",
 }
 exeProject("game", game_inc_dirs, game_files)
