@@ -4,28 +4,21 @@
 #include "EngineAssert.h"
 #include <cstdio>
 #include <cstring>
-#include <Windows.h>
 #include <bx/timer.h>
 
-long long HiresTimer::frequency = 0;
+int64_t HiresTimer::frequency = 0;
 static const int LINE_MAX_LENGTH = 256;
 static const int NAME_MAX_LENGTH = 30;
 
 void HiresTimer::init()
 {
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-    HiresTimer::frequency = frequency.QuadPart;
+    HiresTimer::frequency = bx::getHPFrequency();
 }
 
-long long HiresTimer::get_usec( bool reset )
+int64_t HiresTimer::get_usec( bool reset )
 {
-    long long currentTime;
-    LARGE_INTEGER counter;
-    QueryPerformanceCounter(&counter);
-    currentTime = counter.QuadPart;
-
-    long long elapsedTime = currentTime - startTime_;
+    int64_t currentTime = bx::getHPFrequency();
+    int64_t elapsedTime = currentTime - startTime_;
 
     // Correct for possible weirdness with changing internal frequency
     if (elapsedTime < 0)
@@ -39,9 +32,7 @@ long long HiresTimer::get_usec( bool reset )
 
 void HiresTimer::reset()
 {
-    LARGE_INTEGER counter;
-    QueryPerformanceCounter(&counter);
-    startTime_ = counter.QuadPart;
+    startTime_ = bx::getHPFrequency();
 }
 
 HiresTimer::HiresTimer()
@@ -65,7 +56,7 @@ Profiler::Profiler() :
 
 Profiler::~Profiler()
 {
-    
+
 }
 
 void Profiler::begin_frame()
@@ -136,10 +127,10 @@ void Profiler::dump_to_file(const char* fileName, bool showUnused, bool showTota
     fclose(fp);
 }
 
-void Profiler::dump_block(  ProfilerBlock* block, 
-                            unsigned depth, 
-                            unsigned maxDepth, 
-                            bool showUnused, 
+void Profiler::dump_block(  ProfilerBlock* block,
+                            unsigned depth,
+                            unsigned maxDepth,
+                            bool showUnused,
                             bool showTotal ) const
 {
     char indentedName[LINE_MAX_LENGTH];
@@ -168,12 +159,12 @@ void Profiler::dump_block(  ProfilerBlock* block,
                 float max = block->intervalMaxTime_ / 1000.0f;
                 float frame = block->intervalTime_ / intervalFrames / 1000.0f;
                 float all = block->intervalTime_ / 1000.0f;
-                DBG_TEX_PRINTF( color, "%s %5u %8.3f %8.3f %8.3f %9.3f", 
-                                indentedName, 
+                DBG_TEX_PRINTF( color, "%s %5u %8.3f %8.3f %8.3f %9.3f",
+                                indentedName,
                                 min(block->intervalCount_, 99999),
-                                avg, 
-                                max, 
-                                frame, 
+                                avg,
+                                max,
+                                frame,
                                 all);
             }
             else
@@ -186,15 +177,15 @@ void Profiler::dump_block(  ProfilerBlock* block,
                 float totalMax = block->totalMaxTime_ / 1000.0f;
                 float totalAll = block->totalTime_ / 1000.0f;
 
-                DBG_TEX_PRINTF( color, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f", 
-                                indentedName, 
+                DBG_TEX_PRINTF( color, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f",
+                                indentedName,
                                 min(block->frameCount_, 99999),
-                                avg, 
-                                max, 
-                                all, 
-                                min(block->totalCount_, 99999), 
-                                totalAvg, 
-                                totalMax, 
+                                avg,
+                                max,
+                                all,
+                                min(block->totalCount_, 99999),
+                                totalAvg,
+                                totalMax,
                                 totalAll);
             }
         }
@@ -209,11 +200,11 @@ void Profiler::dump_block(  ProfilerBlock* block,
     }
 }
 
-void Profiler::dump_block_to_file(  void* fp_, 
-                                    ProfilerBlock* block, 
-                                    unsigned depth, 
-                                    unsigned maxDepth, 
-                                    bool showUnused, 
+void Profiler::dump_block_to_file(  void* fp_,
+                                    ProfilerBlock* block,
+                                    unsigned depth,
+                                    unsigned maxDepth,
+                                    bool showUnused,
                                     bool showTotal ) const
 {
     FILE* fp = (FILE*)fp_;
@@ -240,12 +231,12 @@ void Profiler::dump_block_to_file(  void* fp_,
                 float max = block->intervalMaxTime_ / 1000.0f;
                 float frame = block->intervalTime_ / intervalFrames / 1000.0f;
                 float all = block->intervalTime_ / 1000.0f;
-                fprintf( fp,    "%s %5u %8.3f %8.3f %8.3f %9.3f\n", 
-                                indentedName, 
+                fprintf( fp,    "%s %5u %8.3f %8.3f %8.3f %9.3f\n",
+                                indentedName,
                                 min(block->intervalCount_, 99999),
-                                avg, 
-                                max, 
-                                frame, 
+                                avg,
+                                max,
+                                frame,
                                 all);
             }
             else
@@ -258,15 +249,15 @@ void Profiler::dump_block_to_file(  void* fp_,
                 float totalMax = block->totalMaxTime_ / 1000.0f;
                 float totalAll = block->totalTime_ / 1000.0f;
 
-                fprintf( fp, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f\n", 
-                            indentedName, 
+                fprintf( fp, "%s %5u %8.3f %8.3f %9.3f  %7u %9.3f %9.3f %11.3f\n",
+                            indentedName,
                             min(block->frameCount_, 99999),
-                            avg, 
-                            max, 
-                            all, 
-                            min(block->totalCount_, 99999), 
-                            totalAvg, 
-                            totalMax, 
+                            avg,
+                            max,
+                            all,
+                            min(block->totalCount_, 99999),
+                            totalAvg,
+                            totalMax,
                             totalAll);
             }
         }

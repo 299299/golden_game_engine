@@ -27,7 +27,7 @@ animation and bone attachment
 ![short_6](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/animation.jpg)
 
 ## Dependencies
-1. **Graphics**: bgfx (https://github.com/bkaradzic/bgfx)
-2. **Physics**:  Havok free PC SDK (https://software.intel.com/sites/havok/en/)
-3. **Animation**: Havok free PC SDK (https://software.intel.com/sites/havok/en/)
-4. **WebSocket**: gamedevwebtools (https://github.com/hyp/gamedevwebtools)
+1. **Common**: bx (https://github.com/bkaradzic/bx)
+2. **Graphics**: bgfx (https://github.com/bkaradzic/bgfx)
+3. **Physics**:  Havok free PC SDK (https://software.intel.com/sites/havok/en/)
+4. **Animation**: Havok free PC SDK (https://software.intel.com/sites/havok/en/)

@@ -10,19 +10,19 @@ public:
     HiresTimer();
 
     /// Return elapsed microseconds and optionally reset.
-    long long get_usec(bool reset);
+    int64_t get_usec(bool reset);
     /// Reset the timer.
     void reset();
 
     /// Return high-resolution timer frequency if supported.
-    static long long getFrequency() { return frequency; }
+    static int64_t getFrequency() { return frequency; }
     static void init();
 
 private:
     /// Starting clock value in CPU ticks.
-    long long startTime_;
+    int64_t startTime_;
     /// High-resolution timer frequency.
-    static long long frequency;
+    static int64_t frequency;
 };
 
 /// Profiling data for one block in the profiling tree.
@@ -30,10 +30,10 @@ struct ProfilerBlock
 {
     /// Begin timing.
     void begin();
-    
+
     /// End timing.
     void end();
-    
+
     /// End profiling frame and update interval and total values.
     void end_frame()
     {
@@ -56,19 +56,19 @@ struct ProfilerBlock
         for (uint32_t i=0; i<num; ++i)
             children_[i]->end_frame();
     }
-    
+
     /// Begin new profiling interval.
     void begin_interval()
     {
         intervalTime_ = 0;
         intervalMaxTime_ = 0;
         intervalCount_ = 0;
-        
+
         uint32_t num = numChildren_;
         for (uint32_t i=0; i<num; ++i)
             children_[i]->begin_interval();
     }
-    
+
     /// Return child block with the specified name.
     ProfilerBlock* get_child(const char* name);
 
@@ -118,7 +118,7 @@ public:
     Profiler();
     /// Destruct.
     ~Profiler();
-    
+
     void init();
 
     /// Begin timing a profiling block.
@@ -127,7 +127,7 @@ public:
         current_ = current_->get_child(name);
         current_->begin();
     }
-    
+
     /// End timing the current profiling block.
     void end_block()
     {
@@ -137,7 +137,7 @@ public:
             current_ = current_->parent_;
         }
     }
-    
+
     /// Begin the profiling frame. Called by HandleBeginFrame().
     void begin_frame();
     /// End the profiling frame. Called by HandleEndFrame().
@@ -149,29 +149,29 @@ public:
     const ProfilerBlock* get_current_block() const { return current_; }
     /// Return the root profiling block.
     const ProfilerBlock* get_root_block() const { return root_; }
-    
+
     ProfilerBlock* alloc_block(const char* name);
 
-    void dump(bool showUnused = false, 
-              bool showTotal = false, 
+    void dump(bool showUnused = false,
+              bool showTotal = false,
               unsigned maxDepth = -1) const;
 
-    void dump_to_file(const char* fileName, 
-                      bool showUnused = false, 
-                      bool showTotal = false, 
+    void dump_to_file(const char* fileName,
+                      bool showUnused = false,
+                      bool showTotal = false,
                       unsigned maxDepth = -1) const;
 private:
-    void dump_block(ProfilerBlock* block, 
-                    unsigned depth, 
-                    unsigned maxDepth, 
-                    bool showUnused, 
+    void dump_block(ProfilerBlock* block,
+                    unsigned depth,
+                    unsigned maxDepth,
+                    bool showUnused,
                     bool showTotal) const;
 
     void dump_block_to_file(void* fp,
-                            ProfilerBlock* block, 
-                            unsigned depth, 
-                            unsigned maxDepth, 
-                            bool showUnused, 
+                            ProfilerBlock* block,
+                            unsigned depth,
+                            unsigned maxDepth,
+                            bool showUnused,
                             bool showTotal) const;
 
     /// Current profiling block.
@@ -180,7 +180,7 @@ private:
     ProfilerBlock* root_;
 
     ProfilerBlock  blocks_[TOTAL_BLOCK_NUM];
-    uint32_t       numBlocks_; 
+    uint32_t       numBlocks_;
 
     /// Frames in the current interval.
     unsigned intervalFrames_;

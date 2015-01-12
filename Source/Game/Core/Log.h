@@ -33,7 +33,7 @@ enum LogLevel
 #define LOG_TERM()              __noop;
 #endif
 
-class Log 
+class Log
 {
 public:
     Log();
@@ -61,5 +61,5 @@ public:
     ~TimeAutoLog();
 private:
     char                    m_buffer[1024];
-    size_t                  m_time;
+    unsigned long           m_time;
 };

@@ -9,6 +9,7 @@
 //=====================================================
 #include <bx/readerwriter.h>
 //=====================================================
+#ifdef HAVOK_COMPILE
 #include <Common/Base/Thread/Thread/hkThread.h>
 #include <Common/Base/Thread/Semaphore/hkSemaphore.h>
 #include <Common/Base/Memory/System/hkMemorySystem.h>
@@ -18,6 +19,7 @@
 #include <Common/Serialize/Util/hkLoader.h>
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #include <Common/Base/Container/PointerMap/hkPointerMap.h>
+#endif
 
 ResourceManager                 g_resourceMgr;
 static hkCriticalSection        g_runningCS;
@@ -27,8 +29,10 @@ static hkCriticalSection        g_statusCS;
 static volatile bool            g_running = true;
 
 #define RESOURCE_WORKER_THREAD_ID                   (1)
+#ifdef HAVOK_COMPILE
 typedef hkPointerMap<hkUint64, void*> ResourceMap;
 static  ResourceMap*            g_resourceMap = 0;
+#endif
 
 static bool is_running()
 {
@@ -68,7 +72,7 @@ void ResourcePackage::load()
         memset(p, 0x00, m_memBudget);
         m_allocator = new (m_allocator_buffer) LinearAllocator(p, m_memBudget);
     }
-    
+
     uint32_t num = m_numGroups;
     if(m_bundled)
     {
@@ -84,8 +88,8 @@ void ResourcePackage::load()
             load_group(i);
         }
     }
-    
-    
+
+
     lookup_all_resources();
     set_status(kResourceOffline);
 }
@@ -101,7 +105,7 @@ void ResourcePackage::load_group(int index)
 
     if(!is_running())
         return;
-        
+
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
     ResourceFactory* fac = g_resourceMgr.find_factory(type);
@@ -140,10 +144,10 @@ void ResourcePackage::load_group(int index)
         reader.seek(0, bx::Whence::Begin);
         char* buffer = (char*)m_allocator->allocate(fileSize);
         if(!buffer) continue;
-        
+
         reader.read(buffer, fileSize);
         reader.close();
-        
+
         if(loadFunc) info.m_ptr = loadFunc(buffer, fileSize);
         else info.m_ptr = buffer; //---> MAGIC !
 
@@ -158,7 +162,7 @@ void ResourcePackage::load_group_bundled(int index)
 
     if(!is_running())
         return;
-        
+
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
     ResourceFactory* fac = g_resourceMgr.find_factory(type);
@@ -189,7 +193,9 @@ void ResourcePackage::flush(int maxNum)
 {
     if(m_status == kResourceOnline)
         return;
+#ifdef HAVOK_COMPILE
     hkCriticalSection::waitForValueEqual(&m_status, kResourceOffline);
+#endif
     bringin_all_resources(maxNum);
 }
 
@@ -382,6 +388,7 @@ void ResourceManager::init()
     m_numRequests = 0;
     m_requestListHead = 0;
 
+#ifdef HAVOK_COMPILE
     m_semaphore = new hkSemaphore;
     m_thread = new hkThread;
     m_thread->startThread(io_work_loop, this, "io_work_thread");
@@ -389,10 +396,12 @@ void ResourceManager::init()
     uint32_t memSize = RESOURCE_MAP_NUM*pairSize;
     m_resMapBuffer = COMMON_ALLOC(char, memSize);
     g_resourceMap = new ResourceMap(m_resMapBuffer, memSize);
+#endif
 }
 
 void ResourceManager::quit()
 {
+#ifdef HAVOK_COMPILE
     set_running(false);
     m_semaphore->release();
     m_thread->joinThread();
@@ -411,11 +420,12 @@ void ResourceManager::quit()
 #ifndef _RETAIL
     destroy_reload_resources();
 #endif
+#endif
 }
 
 
 ResourceFactory* ResourceManager::find_factory(const StringId& type)
-{ 
+{
     int index = -1;
     uint32_t num = m_numFactories;
     StringId* types = m_types;
@@ -432,7 +442,7 @@ ResourceFactory* ResourceManager::find_factory(const StringId& type)
 
 void ResourceManager::register_factory(const ResourceFactory& factory)
 {
-    m_types[m_numFactories] = StringId(factory.m_name); 
+    m_types[m_numFactories] = StringId(factory.m_name);
     m_factories[m_numFactories++] = factory;
     ENGINE_ASSERT(m_numFactories < MAX_RESOURCE_TYPES, "resource manager factories overflow.");
 }
@@ -441,6 +451,7 @@ void* ResourceManager::find_resource( const StringId& type, const StringId& name
 {
     if(!name) return 0;
     hkCriticalSectionLock _l(&g_resourceCS);
+#ifdef HAVOK_COMPILE
     ResourceMap::Iterator it = g_resourceMap->findKey(packId(type, name));
     if(!g_resourceMap->isValid(it))
     {
@@ -448,22 +459,30 @@ void* ResourceManager::find_resource( const StringId& type, const StringId& name
         return 0;
     }
     return g_resourceMap->getValue(it);
+#else
+    return 0;
+#endif
 }
 
 void ResourceManager::insert_resource( const StringId& type, const StringId& name, void* resource )
 {
     hkCriticalSectionLock _l(&g_resourceCS);
+#ifdef HAVOK_COMPILE
     g_resourceMap->insert(packId(type, name), resource);
+#endif
 }
 
 void ResourceManager::remove_resource( const StringId& type, const ResourceInfo& info )
 {
     hkCriticalSectionLock _l(&g_resourceCS);
+#ifdef HAVOK_COMPILE
     g_resourceMap->remove(packId(type, info.m_name));
+#endif
 }
 
 void* ResourceManager::io_work_loop( void* p )
 {
+#ifdef HAVOK_COMPILE
     hkWorkerThreadContext context(RESOURCE_WORKER_THREAD_ID);
     ResourceManager* mgr = (ResourceManager*)p;
     hkSemaphore* pSemaphore = mgr->m_semaphore;
@@ -472,6 +491,7 @@ void* ResourceManager::io_work_loop( void* p )
         pSemaphore->acquire();
         mgr->process_request();
     }
+#endif
     return 0;
 }
 
@@ -505,8 +525,10 @@ bool ResourceManager::load_package(const char* packageName)
     request->m_data = blob + sizeof(ResourceRequest);
     request->m_dataLen = packageNameLen;
     memcpy(request->m_data, packageName, packageNameLen);
-    push_request(request); 
+    push_request(request);
+#ifdef HAVOK_COMPILE
     m_semaphore->release();
+#endif
     return true;
 }
 
@@ -563,7 +585,7 @@ void ResourceManager::process_request()
         }
 
         const char* fileName = request->m_data;
-        LOGI("loading package %s.", fileName);        
+        LOGI("loading package %s.", fileName);
 
         bx::CrtFileReader reader;
         int32_t ret = reader.open(fileName);
@@ -589,11 +611,11 @@ void ResourceManager::process_request()
 void ResourceManager::push_request( ResourceRequest* request )
 {
     hkCriticalSectionLock _l(&g_queueCS);
-    if(!m_requestListHead) 
+    if(!m_requestListHead)
     {
         m_requestListHead = request;
     }
-    else 
+    else
     {
         ResourceRequest* curRequest = m_requestListHead;
         ResourceRequest* nextRequest = m_requestListHead->m_next;
@@ -624,7 +646,7 @@ uint32_t  ResourceManager::find_resources_type_of(const StringId& type, Resource
             resourceArray[retNum++] = &(resources[j]);
         }
     }
-    return retNum; 
+    return retNum;
 }
 
 ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const StringId& name )
@@ -641,7 +663,7 @@ ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const S
         ResourceInfo* resources = group->m_resources;
         for (uint32_t j=0; j<res_num; ++j)
         {
-            if(resources[j].m_name == name) 
+            if(resources[j].m_name == name)
                 return &resources[j];
         }
     }
@@ -658,7 +680,7 @@ bool ResourceManager::load_package_and_wait(const char* packageName)
         {
             int status = get_package_status(name);
             if(status == kResourceOffline) break;
-            Sleep(0);
+            bx::sleep(0);
         }
     }
     flush_package(name);
@@ -726,7 +748,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
         LOGW(__FUNCTION__" old resource not exist ---> %s!", pathName);
         bFireCallbacks = false;
     }
-    
+
     bx::CrtFileReader reader;
     int32_t ret = reader.open(pathName);
     if(ret)
@@ -734,22 +756,22 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
         LOGE(__FUNCTION__" load file failed ---> %s!", pathName);
         return 0;
     }
-    
+
     ResourceFactory* fac = find_factory(type);
     if(!fac) {
         LOGE("can not find factory = %x", stringid_lookup(type));
         return 0;
     }
-    
+
     hkUint64 key = packId(type, name);
     void* ptrToFree = 0;
-    
+
     ReloadResourceMap::iterator iter = g_reloadResources.find(key);
     if(iter != g_reloadResources.end())
     {
         ptrToFree = iter->second.m_resource;
     }
-    
+
     void* newResource = 0;
     uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
     reader.seek(0, bx::Whence::Begin);
@@ -759,7 +781,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     reader.close();
 
     LOGI("reload 0x%x ---> 0x%x", oldResource, newResource);
-    if(fac->m_loadFunc) newResource = fac->m_loadFunc((char*)newResource, fileSize);    
+    if(fac->m_loadFunc) newResource = fac->m_loadFunc((char*)newResource, fileSize);
     if(fac->m_lookupFunc) fac->m_lookupFunc(newResource);
     if(fac->m_bringInFunc) fac->m_bringInFunc(newResource);
 
@@ -771,7 +793,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
 
     ResourceInfo* info = find_resource_info(type, name);
     if(info) info->m_ptr = newResource;
-    
+
     if(bFireCallbacks)
     {
         ReloadCallbackMap::iterator iter1 = g_reloadCallbacks.find(type.value());

@@ -58,7 +58,7 @@ struct ResourceFactory
 ENGINE_NATIVE_ALIGN struct ResourcePackage
 {
     ResourceGroup*                      m_groups;
- 
+
     StringId                            m_name;
     uint32_t                            m_numGroups;
     int                                 m_lastOnLineGroup;
@@ -68,17 +68,17 @@ ENGINE_NATIVE_ALIGN struct ResourcePackage
     LinearAllocator*                    m_allocator;
     char                                m_allocator_buffer[32];
 
-    hkUint32                            m_status;
+    uint32_t                            m_status;
     bool                                m_bundled;
-    
+
     void  init();
     void  destroy();
 
     void  load();
     void  unload();
     void  flush(int maxNum);
-    
-    
+
+
     void  bringin_all_resources(int maxNum);
     void  bringout_all_resources();
     void  destroy_all_resources();

@@ -1,16 +1,15 @@
 #include "Log.h"
 #include <stdarg.h>
-#include <windows.h> 
 #include <time.h>
 #include "DataDef.h"
 #include "Prerequisites.h"
-//================================================
+#ifdef HAVOK_COMPILE
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
-//================================================
+#endif
 
 static bool                 g_logInited = false;
 static char                 g_logBuffer[4096*2];
-static DWORD                g_startTime = 0;
+static unsigned long        g_startTime = 0;
 static hkCriticalSection    g_CS;
 static const char*          g_loglevelTag[] =
 {
@@ -29,7 +28,7 @@ Log g_logger;
 
 Log::Log()
 {
-    
+
 }
 
 Log::~Log()
@@ -40,7 +39,7 @@ Log::~Log()
 bool Log::init( const char* logFile, const char* logTitle)
 {
     hkCriticalSectionLock _l(&g_CS);
-    g_startTime = GetTickCount();
+    g_startTime = ::GetTickCount();
     // Reset log file
     m_stream.setf( std::ios::fixed );
     m_stream.precision( 3 );
@@ -107,8 +106,8 @@ bool Log::init( const char* logFile, const char* logTitle)
     m_stream << "<body>\n";
     m_stream << "<h1>" << logTitle << "</h1>\n";
 
-    struct   tm   *tmNow;   
-    time_t   long_time;   
+    struct   tm   *tmNow;
+    time_t   long_time;
     time(&long_time);
     tmNow = localtime(&long_time);
     m_stream << "<h3>" << asctime(tmNow) << "</h3>\n";
@@ -138,7 +137,7 @@ void Log::log( int logLevel, const char* msg, ...)
     hkCriticalSectionLock _l(&g_CS);
     va_list argp;
     va_start(argp, msg);
-    vsprintf_s(g_logBuffer, msg, argp);
+    vsnprintf(g_logBuffer, sizeof(g_logBuffer), msg, argp);
     va_end(argp);
 
     const char* tag = g_loglevelTag[logLevel];
@@ -146,13 +145,13 @@ void Log::log( int logLevel, const char* msg, ...)
 
     m_stream << "<tr>\n";
     m_stream << "<td width=\"50\">";
-    
-    SYSTEMTIME lt;
-    GetLocalTime(&lt);
-    char timeBuf[32];
-    sprintf_s(timeBuf, "[%02d:%02d:%02d::%02d]", lt.wHour, lt.wMinute, lt.wSecond, lt.wMilliseconds);
 
-    m_stream << timeBuf;
+    struct   tm   *tmNow;
+    time_t   long_time;
+    time(&long_time);
+    tmNow = localtime(&long_time);
+
+    m_stream << asctime(tmNow);
     m_stream << "</td>\n";
     m_stream << "<td class=\"";
     m_stream << tag;
@@ -164,25 +163,28 @@ void Log::log( int logLevel, const char* msg, ...)
 
     m_stream.flush();
 
-    if(logLevel >= LOG_LEVEL_WARNING) 
+#ifdef HAVOK_COMPILE
+    if(logLevel >= LOG_LEVEL_WARNING)
     {
         OutputDebugStringA(g_logBuffer);
         OutputDebugStringA("\n");
     }
+#endif
 }
+
 
 TimeAutoLog::TimeAutoLog(const char* msg, ...)
 {
     m_time = ::GetTickCount();
     va_list argp;
     va_start(argp, msg);
-    vsprintf_s(m_buffer, msg, argp);
+    vsnprintf(m_buffer, sizeof(m_buffer), msg, argp);
     va_end(argp);
     LOGI("===============%s started....===============", m_buffer);
 }
 
 TimeAutoLog::~TimeAutoLog()
 {
-    DWORD dwTime = ::GetTickCount() - m_time;
+    unsigned long dwTime = ::GetTickCount() - m_time;
     LOGI("===============%s time cost : %d (msec)===============", m_buffer, dwTime);
 }

@@ -5,6 +5,8 @@
 #include "StringId.h"
 //=================================================================
 #include "Prerequisites.h"
+#include <string.h>
+#ifdef HAVOK_COMPILE
 #include <Common/Base/System/hkBaseSystem.h>
 #include <Common/Base/System/Error/hkDefaultError.h>
 #include <Common/Base/Memory/System/Util/hkMemoryInitUtil.h>
@@ -12,6 +14,7 @@
 #include <Common/Base/System/Io/OStream/hkOStream.h>
 #include <Common/Base/Monitor/hkMonitorStream.h>
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
+#endif
 //=================================================================
 
 #define STRING_TABLE_FILE                           ("string_table.txt")
@@ -39,15 +42,17 @@ MemorySystem::~MemorySystem()
 
 void MemorySystem::init(int havok_frame_size, int monitor_size, bool init_havok, bool havok_check_mem)
 {
+#ifdef HAVOK_COMPILE
     if(init_havok)
     {
-        if(havok_check_mem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator, 
+        if(havok_check_mem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator,
             hkMemorySystem::FrameInfo( havok_frame_size ) );
-        else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator, 
+        else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator,
             hkMemorySystem::FrameInfo( havok_frame_size ) );
         hkBaseSystem::init( m_memRouter, errorReport );
-        hkMonitorStream::getInstance().resize(monitor_size); 
+        hkMonitorStream::getInstance().resize(monitor_size);
     }
+#endif
     m_havokInited = init_havok;
     memory_globals::init();
     register_allocator(kMemoryCategoryCommon, &default_allocator());
@@ -55,9 +60,6 @@ void MemorySystem::init(int havok_frame_size, int monitor_size, bool init_havok,
     register_allocator(kMemoryCategoryDebug, &g_debugAllocator);
     load_string_table(STRING_TABLE_FILE);
 #endif
-
-    extern void init_component_names();
-    init_component_names();
 }
 
 void MemorySystem::quit()
@@ -65,11 +67,13 @@ void MemorySystem::quit()
 #ifndef _RETAIL
     save_string_table(STRING_TABLE_FILE);
 #endif
+#ifdef HAVOK_COMPILE
     if(m_havokInited)
     {
         hkBaseSystem::quit();
         hkMemoryInitUtil::quit();
     }
+#endif
     memory_globals::shutdown();
 }
 
@@ -93,7 +97,7 @@ uint32_t MemorySystem::allocated_size(uint32_t category)
 {
     return m_allocators[category]->allocated_size();
 }
-    
+
 void MemorySystem::clear(uint32_t category)
 {
     ((LinearAllocator*)m_allocators[category])->clear();

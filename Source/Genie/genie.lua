@@ -1,5 +1,19 @@
 
 
+function print_table(tab, name)
+    print("print table "..name)
+    for i,v in pairs(tab) do
+        if type(v) == "table" then
+        print("table",i,"{")
+        printTab(v)
+        print("}")
+        else
+            print(i.."="..v)
+        end
+    end
+end
+
+
 solution "game"
     configurations {
         "Debug",
@@ -16,8 +30,24 @@ solution "game"
 
 NAGA_SRC_DIR = (path.getabsolute("..") .. "/")
 local NAGA_BUILD_DIR = (NAGA_SRC_DIR .. ".build/")
-BGFX_DIR = ("C:/Project/bgfx/")
+
+print_table(_ARGS, "_ARGS")
+print_table(_OPTIONS, "_OPTIONS")
+
+OS = _OPTIONS["os"]
+if OS == nil then
+    print("os must be specified!")
+    return
+end
+
+if OS == "linux" then
+BX_DIR = ("/home/lixin/work/bx/")
+BGFX_DIR = ("/home/lixin/work/bgfx/")
+else
 BX_DIR = ("C:/Project/bx/")
+BGFX_DIR = ("C:/Project/bgfx/")
+end
+
 HAVOK_DIR = ("C:/Project/hk2014_1_0_r1/Source/")
 GAME_SRC_DIR = (NAGA_SRC_DIR .. "Game/")
 
@@ -52,6 +82,12 @@ function exeProject(_name, _incdirs, _files)
         }
         links { -- this is needed only for testing with GLES2/3 on Windows with VS2008
             "DelayImp",
+        }
+        defines {
+            "HAVOK_COMPILE"
+        }
+        includedirs {
+            BX_DIR .. "compat/msvc"
         }
 
     configuration { "vs201*" }
@@ -97,13 +133,7 @@ game_inc_dirs = {
     BGFX_DIR .. "include",
     BGFX_DIR .. "examples/common",
     HAVOK_DIR,
-    GAME_SRC_DIR,
-    GAME_SRC_DIR .. "Core",
-    GAME_SRC_DIR .. "Animation",
-    GAME_SRC_DIR .. "Engine",
-    GAME_SRC_DIR .. "Game",
-    GAME_SRC_DIR .. "Graphics",
-    GAME_SRC_DIR .. "Physics",
+    GAME_SRC_DIR .. "**"
 }
 
 game_files = {
