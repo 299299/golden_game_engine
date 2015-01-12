@@ -9,7 +9,8 @@
 #include "Graphics.h"
 #include "RenderCamera.h"
 #include <imgui/imgui.h>
-#include "config.h"
+#include <bx/fpumath.h>
+#include "GameConfig.h"
 
 #define  DEPTH_LINE_RENDER_STATE (BGFX_STATE_RGB_WRITE  | BGFX_STATE_PT_LINES | BGFX_STATE_DEPTH_WRITE| BGFX_STATE_DEPTH_TEST_LESS| BGFX_STATE_CULL_CCW)
 //#define  NO_DEPTH_LINE_RENDER_STATE (BGFX_STATE_RGB_WRITE | BGFX_STATE_PT_LINES | BGFX_STATE_DEPTH_WRITE | BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_CULL_CCW)
@@ -46,14 +47,21 @@ struct PosColorVertex
 bgfx::VertexDecl PosColorVertex::ms_decl;
 DebugDrawManager g_debugDrawMgr;
 
-static DebugLine              m_lines[2][MAX_DEBUG_LINES];
-static DebugText              m_texts[MAX_DEBUG_TEXTS];
-
 void DebugDrawManager::init()
 {
     PosColorVertex::init();
     m_numLines[0] = m_numLines[1] = 0;
     m_numTexts = 0;
+    m_texts = COMMON_ALLOC(DebugText, MAX_DEBUG_TEXTS);
+    m_lines[0] = COMMON_ALLOC(DebugLine, MAX_DEBUG_LINES);
+    m_lines[1] = COMMON_ALLOC(DebugLine, MAX_DEBUG_LINES);
+}
+
+void DebugDrawManager::shutdown()
+{
+    COMMON_DEALLOC(m_texts);
+    COMMON_DEALLOC(m_lines[0]);
+    COMMON_DEALLOC(m_lines[1]);
 }
 
 void DebugDrawManager::ready()
@@ -82,10 +90,10 @@ void DebugDrawManager::draw()
     for (uint32_t i = 0; i < num; ++i)
     {
         const DebugText& text = head[i];
-        imguiDrawText((int)text.m_screenPos[0], 
-                      (int)text.m_screenPos[1], 
-                      ImguiTextAlign::Center, 
-                      text.m_text, 
+        imguiDrawText((int)text.m_screenPos[0],
+                      (int)text.m_screenPos[1],
+                      ImguiTextAlign::Center,
+                      text.m_text,
                       text.m_color);
     }
 }
@@ -246,26 +254,26 @@ void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t c
 
     for (uint32_t deg = 0; deg < 360; deg += deg_step)
     {
-        const float rad0 = (float) deg * HK_REAL_DEG_TO_RAD;
-        const float rad1 = ((float) deg + deg_step) * HK_REAL_DEG_TO_RAD;
+        float _rad0 = bx::toRad((float)deg);
+        float _rad1 = bx::toRad((float)(deg + deg_step));
 
         // XZ plane
-        const float start0[] = {cosf(rad0) * radius, 0, -sinf(rad0) * radius};
-        const float end0[] =  {cosf(rad1) * radius, 0, -sinf(rad1) * radius};
+        const float start0[] = {cosf(_rad0) * radius, 0, -sinf(_rad0) * radius};
+        const float end0[] =  {cosf(_rad1) * radius, 0, -sinf(_rad1) * radius};
         bx::vec3Add(tmp1, start0, center);
         bx::vec3Add(tmp2, end0, center);
         add_line(tmp1, tmp2, color, bDepth);
 
         // XY plane
-        const float start1[] = {cosf(rad0) * radius, sinf(rad0) * radius, 0};
-        const float end1[] =  {cosf(rad1) * radius, sinf(rad1) * radius, 0};
+        const float start1[] = {cosf(_rad0) * radius, sinf(_rad0) * radius, 0};
+        const float end1[] =  {cosf(_rad1) * radius, sinf(_rad1) * radius, 0};
         bx::vec3Add(tmp1, start1, center);
         bx::vec3Add(tmp2, end1, center);
         add_line(tmp1, tmp2, color, bDepth);
 
         // YZ plane
-        const float start2[] = {0, sinf(rad0) * radius, -cosf(rad0) * radius};
-        const float end2[] =  {0, sinf(rad1) * radius, -cosf(rad1) * radius};
+        const float start2[] = {0, sinf(_rad0) * radius, -cosf(_rad0) * radius};
+        const float end2[] =  {0, sinf(_rad1) * radius, -cosf(_rad1) * radius};
         bx::vec3Add(tmp1, start2, center);
         bx::vec3Add(tmp2, end2, center);
         add_line(tmp1, tmp2, color, bDepth);
@@ -285,7 +293,7 @@ void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uin
     hkVector4		p;
     p.setRotatedDir(orientation,hkVector4(r,0,0,0));
     p.add4(o);
-        
+
     float start[3], end[3];
     for(int i=1;i<=steps;++i)
     {
@@ -415,3 +423,5 @@ void DebugDrawManager::add_direction( const hkQsTransform& t, float len, uint32_
 	add_line(s_v2, s_v3, color, bDepth);
 	add_line(s_v3, s_v0, color, bDepth);
 }
+
+

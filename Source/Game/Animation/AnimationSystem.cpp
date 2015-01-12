@@ -5,7 +5,7 @@
 #include "Profiler.h"
 #include "Log.h"
 #include "id_array.h"
-#include "config.h"
+#include "GameConfig.h"
 #include "Event.h"
 //=======================================================================================
 // RESOURCES
@@ -59,7 +59,7 @@ void AnimationSystem::init()
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 }
 
-void AnimationSystem::quit()
+void AnimationSystem::shutdown()
 {
     COMMON_DEALLOC(m_events);
 }
@@ -95,8 +95,8 @@ void AnimationSystem::kick_in_jobs()
         AnimRigInstance& instance = rigs[i];
         hkaAnimatedSkeleton* skel = instance.m_skeleton;
         hkaPose* pose = instance.m_pose;
-        skel->sampleAndCombineAnimations( 
-            pose->accessUnsyncedPoseLocalSpace().begin(), 
+        skel->sampleAndCombineAnimations(
+            pose->accessUnsyncedPoseLocalSpace().begin(),
             pose->getFloatSlotValues().begin() );
     }
 #endif
@@ -156,12 +156,12 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
                 matrix += 16;
             }
         }
-        
+
 #if 1
         {
             PROFILE(Animation_UpdateAABB);
             hkAabb aabb;
-            hkaSkeletonUtils::calcAabb(num_of_pose, pose->getSyncedPoseLocalSpace().begin(), 
+            hkaSkeletonUtils::calcAabb(num_of_pose, pose->getSyncedPoseLocalSpace().begin(),
                                       pose->getSkeleton()->m_parentIndices.begin(), t, aabb);
             Aabb& bbox = model->m_aabb;
             transform_vec3(bbox.m_min, aabb.m_min);

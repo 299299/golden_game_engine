@@ -50,14 +50,15 @@ end
 
 HAVOK_DIR = ("C:/Project/hk2014_1_0_r1/Source/")
 GAME_SRC_DIR = (NAGA_SRC_DIR .. "Game/")
+TARGET_DIR = (NAGA_SRC_DIR .. "../Application")
 
 defines {
     "HK_PLATFORM_SIM",
     "HK_CONFIG_SIMD=1"
 }
 
-dofile (BX_DIR .. "scripts/toolchain.lua")
-if not toolchain(NAGA_BUILD_DIR, "") then
+dofile ("toolchain.lua")
+if not toolchain(NAGA_BUILD_DIR, "", BX_DIR, TARGET_DIR) then
     return -- no action specified
 end
 
@@ -86,8 +87,8 @@ function exeProject(_name, _incdirs, _files)
         defines {
             "HAVOK_COMPILE"
         }
-        includedirs {
-            BX_DIR .. "compat/msvc"
+        removeflags {
+            "StaticRuntime"
         }
 
     configuration { "vs201*" }
@@ -137,6 +138,7 @@ game_inc_dirs = {
     BGFX_DIR .. "include",
     BGFX_DIR .. "src",
     BGFX_DIR .. "examples/common",
+    BGFX_DIR .. "3rdparty",
     HAVOK_DIR,
     GAME_SRC_DIR .. "**"
 }

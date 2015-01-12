@@ -1,7 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
 #include "StringId.h"
-#include "config.h"
+#include "GameConfig.h"
 
 struct ResourceFactory;
 struct ResourcePackage;
@@ -121,7 +121,7 @@ struct ResourceManager
     hkSemaphore*                    m_semaphore;
 
     void init();
-    void quit();
+    void shutdown();
     void offline_all_resources();
 
     //--------------------------------------------------------------------

@@ -104,6 +104,7 @@ void reload_light_resource(void* oldResource, void* newResource)
 //===============================================================================
 void reload_anim_rig_resource(void* oldResource, void* newResource)
 {
+#if 0
     AnimRig* oldCompResource = (AnimRig*)oldResource;
     AnimRig* newCompResource = (AnimRig*)newResource;
     uint32_t componentNum = num_components(AnimRig::get_type());
@@ -117,6 +118,7 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
             components[i].init(newCompResource, components[i].m_actor); //---> no destroy?? may memleak
         }
     }
+#endif
 }
 
 void reload_animation_resource(void* oldResource, void* newResource)

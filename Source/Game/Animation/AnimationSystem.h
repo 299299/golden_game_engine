@@ -18,7 +18,7 @@ struct AnimationEvent;
 struct AnimationSystem
 {
     void    init();
-    void    quit();
+    void    shutdown();
 
     void    frame_start();
     void    kick_in_jobs();

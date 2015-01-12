@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseTypes.h"
 #include "StringId.h"
-#include "config.h"
+#include "GameConfig.h"
 #include "MathDefs.h"
 
 struct Material;

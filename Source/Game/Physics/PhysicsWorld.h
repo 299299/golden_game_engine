@@ -48,7 +48,7 @@ ENGINE_NATIVE_ALIGN struct PhysicsConfig
 struct PhysicsWorld
 {
     void init();
-    void quit();
+    void shutdown();
 
     void frame_start();
     void kick_in_jobs(float timeStep);

@@ -9,6 +9,8 @@ struct DebugText;
 struct DebugDrawManager
 {
     void init();
+    void shutdown();
+
     //must called when common package loaded.
     void ready();
     void draw();
@@ -25,6 +27,9 @@ struct DebugDrawManager
     void add_frustum(const Frustum& frustum, uint32_t color, bool bDepth);
     void add_grid(int gridsNum, float gridWidth, uint32_t color, bool bDepth);
     void add_direction(const hkQsTransform& t, float len, uint32_t color, bool bDepth);
+
+    DebugText*              m_texts;
+    DebugLine*              m_lines[2];
 
     uint32_t                m_numLines[2];
     uint32_t                m_numTexts;

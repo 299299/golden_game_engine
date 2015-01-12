@@ -11,8 +11,9 @@
 #include "Profiler.h"
 #include "RenderCamera.h"
 #include "Utils.h"
-#include "config.h"
+#include "GameConfig.h"
 #include "GameState.h"
+#include "DebugDraw.h"
 //=================================================================
 #include "Log.h"
 #include "DataDef.h"
@@ -22,7 +23,7 @@
 #include <windows.h>
 
 float     g_totalSeconds = 0.0;
-double    g_frameTimeMS = 0.0; 
+double    g_frameTimeMS = 0.0;
 uint32_t  g_frameId = 0;
 int       g_engineMode = 0;
 uint32_t  g_frameLostNum = 0;
@@ -60,7 +61,7 @@ void Engine::run()
     {
         PROFILE_BEGIN();
         g_win32Context.frame_start();
-        if(g_win32Context.is_window_closed()) 
+        if(g_win32Context.is_window_closed())
         {
             m_running = false;
             PROFILE_END();
@@ -148,6 +149,7 @@ void Engine::core_init()
     TIMELOG("Engine Core Init");
     g_memoryMgr.init(SIZE_MB(4), SIZE_MB(2), true, m_cfg.m_checkMemory);
     g_threadMgr.init(true);
+    g_profiler.init();
     g_resourceMgr.init();
 }
 
@@ -168,6 +170,7 @@ void Engine::subsystem_init()
 void Engine::core_shutdown()
 {
     TIMELOG("Engine Core Shutdown");
+    g_profiler.shutdown();
     g_threadMgr.quit();
     g_memoryMgr.quit();
     g_win32Context.destroy_window();
@@ -177,8 +180,9 @@ void Engine::subsystem_shutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
     g_resourceMgr.offline_all_resources();
-    g_animMgr.quit();
-    g_physicsWorld.quit();
-    Graphics::quit();
-    g_resourceMgr.quit();
+    g_animMgr.shutdown();
+    g_physicsWorld.shutdown();
+    Graphics::shutdown();
+    g_debugDrawMgr.shutdown();
+    g_resourceMgr.shutdown();
 }

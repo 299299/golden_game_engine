@@ -67,3 +67,4 @@ datacompiler_profile.txt
 ipch/
 *.suo
 .build/
+gameDebug.exe

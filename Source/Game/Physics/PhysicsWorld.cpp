@@ -10,7 +10,7 @@
 #include "DebugDraw.h"
 #include "Resource.h"
 #include "id_array.h"
-#include "config.h"
+#include "GameConfig.h"
 #include "EngineAssert.h"
 #include "Event.h"
 //===========================================
@@ -110,7 +110,7 @@ void PhysicsWorld::init()
     hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 }
 
-void PhysicsWorld::quit()
+void PhysicsWorld::shutdown()
 {
     delete m_raycastSem;
     destroy_world();

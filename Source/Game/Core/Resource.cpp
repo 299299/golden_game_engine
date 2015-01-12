@@ -5,7 +5,7 @@
 #include "DataDef.h"
 #include "Utils.h"
 #include "EngineAssert.h"
-#include "config.h"
+#include "GameConfig.h"
 //=====================================================
 #include <bx/readerwriter.h>
 //=====================================================
@@ -399,7 +399,7 @@ void ResourceManager::init()
 #endif
 }
 
-void ResourceManager::quit()
+void ResourceManager::shutdown()
 {
 #ifdef HAVOK_COMPILE
     set_running(false);

@@ -9,7 +9,7 @@
 #include "MathDefs.h"
 #include "Graphics.h"
 #include "id_array.h"
-#include "config.h"
+#include "GameConfig.h"
 
 void ModelInstance::init(const void* resource)
 {
@@ -79,12 +79,12 @@ float* ModelInstance::alloc_skinning_mat()
     return m_skinMatrix;
 }
 
-bool ModelInstance::check_intersection( const float* rayOrig, 
-                                        const float* rayDir, 
+bool ModelInstance::check_intersection( const float* rayOrig,
+                                        const float* rayDir,
                                         float* intsPos,
                                         float* outNormal ) const
 {
-    if(!ray_aabb_intersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max)) 
+    if(!ray_aabb_intersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max))
         return false;
 
     const Mesh* mesh = m_resource->m_mesh;
@@ -155,7 +155,7 @@ void lookup_resource_model( void * resource )
     uint32_t num = model->m_numMaterials;
     Material** head = model->m_materials;
     StringId* matNames = model->m_materialNames;
-    for(uint32_t i=0; i<num;++i) 
+    for(uint32_t i=0; i<num;++i)
     {
         head[i] = FIND_RESOURCE(Material, matNames[i]);
     }

@@ -92,7 +92,7 @@ struct Graphics
 {
     static void init(void* hwnd, bool bFullScreen = false);
     static void ready();
-    static void quit();
+    static void shutdown();
     static void draw(ShadingEnviroment* env);
     static void update(ShadingEnviroment* env, float dt);
     static void frame_start();

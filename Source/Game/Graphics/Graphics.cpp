@@ -173,8 +173,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     if(bFullScreen) g_resetFlag |= BGFX_RESET_FULLSCREEN;
     bgfx::reset(g_win32Context.m_width, g_win32Context.m_height, g_resetFlag);
     bgfx::setDebug(BGFX_DEBUG_TEXT);
-    bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, BGFX_COLOR, 1.0f, 0);
-    bgfx::setViewClear(kBackgroundViewId, BGFX_CLEAR_COLOR_BIT|BGFX_CLEAR_DEPTH_BIT, BGFX_COLOR, 1.0f, 0);
+    bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, BGFX_COLOR, 1.0f, 0);
+    bgfx::setViewClear(kBackgroundViewId, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, BGFX_COLOR, 1.0f, 0);
 
     PosTexCoord0Vertex::init();
     createUniforms();
@@ -244,7 +244,7 @@ void postProcessInit()
 }
 
 
-void Graphics::quit()
+void Graphics::shutdown()
 {
     for (uint32_t i=0;i<g_numFrameBuffers;++i)
     {

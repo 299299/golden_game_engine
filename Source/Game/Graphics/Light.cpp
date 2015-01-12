@@ -7,7 +7,7 @@
 #include "MathDefs.h"
 #include "MemorySystem.h"
 #include "id_array.h"
-#include "config.h"
+#include "GameConfig.h"
 
 LightWorld g_lightWorld;
 static IdArray<MAX_LIGHTS, LightInstance>  m_lights;

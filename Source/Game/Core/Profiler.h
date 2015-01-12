@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseTypes.h"
-#include "config.h"
+#include "GameConfig.h"
 
 /// High-resolution operating system timer used in profiling.
 class HiresTimer
@@ -120,6 +120,7 @@ public:
     ~Profiler();
 
     void init();
+    void shutdown();
 
     /// Begin timing a profiling block.
     void begin_block(const char* name)
@@ -179,13 +180,13 @@ private:
     /// Root profiling block.
     ProfilerBlock* root_;
 
-    ProfilerBlock  blocks_[TOTAL_BLOCK_NUM];
-    uint32_t       numBlocks_;
+    ProfilerBlock*  blocks_;
+    uint32_t        numBlocks_;
 
     /// Frames in the current interval.
-    unsigned intervalFrames_;
+    unsigned        intervalFrames_;
     /// Total frames.
-    unsigned totalFrames_;
+    unsigned        totalFrames_;
 };
 
 extern Profiler g_profiler;

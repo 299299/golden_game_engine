@@ -272,6 +272,17 @@ void Profiler::dump_block_to_file(  void* fp_,
     }
 }
 
+void Profiler::init()
+{
+    blocks_ = COMMON_ALLOC(ProfilerBlock, TOTAL_BLOCK_NUM);
+}
+
+void Profiler::shutdown()
+{
+    COMMON_DEALLOC(blocks_);
+    blocks_ = NULL;
+}
+
 ProfilerBlock* ProfilerBlock::get_child( const char* name )
 {
     uint32_t num = numChildren_;
