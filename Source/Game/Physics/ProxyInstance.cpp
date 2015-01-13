@@ -5,7 +5,7 @@
 #include "Resource.h"
 #include "DataDef.h"
 #include "Utils.h"
-//=============================================================================================
+#ifdef HAVOK_COMPILE
 #include <Physics2012/Utilities/CharacterControl/CharacterProxy/hkpCharacterProxy.h>
 #include <Physics2012/Collide/Shape/Convex/Capsule/hkpCapsuleShape.h>
 #include <Physics2012/Dynamics/Phantom/hkpSimpleShapePhantom.h>
@@ -15,7 +15,7 @@
 #include <Physics2012/Collide/Filter/Group/hkpGroupFilter.h>
 #include <Physics2012/Utilities/CharacterControl/CharacterProxy/hkpCharacterProxyListener.h>
 #include <Common/Base/Types/Physics/hkStepInfo.h>
-//=============================================================================================
+#endif
 
 //--------------------------------------------------------------------------
 void* load_resource_proxy( const char* data, uint32_t size)
@@ -32,6 +32,7 @@ void destroy_resource_proxy( void * resource )
 }
 //--------------------------------------------------------------------------
 
+#ifdef HAVOK_COMPILE
 static hkVector4 UP(0,1,0);
 struct AnimCharacterListener : public hkReferencedObject, public hkpCharacterProxyListener
 {
@@ -40,8 +41,8 @@ struct AnimCharacterListener : public hkReferencedObject, public hkpCharacterPro
     :m_onMovingSurface(false)
     {};
     // Don't push objects
-    virtual void objectInteractionCallback(hkpCharacterProxy* proxy, 
-        const hkpCharacterObjectInteractionEvent& input, 
+    virtual void objectInteractionCallback(hkpCharacterProxy* proxy,
+        const hkpCharacterObjectInteractionEvent& input,
         hkpCharacterObjectInteractionResult& output )
     {
         output.m_objectImpulse.mul4( m_strength );
@@ -50,8 +51,8 @@ struct AnimCharacterListener : public hkReferencedObject, public hkpCharacterPro
     // The feedback between the character proxy and the animation system prevents the character proxy from moving
     // unless the animation system has told it to. In this listener we explicitly override this by adding additional
     // velocity for some moving obecjts (the crates in this demo). We add the lateral velocity of the obejct straight in to the controller.
-    virtual void processConstraintsCallback( const hkpCharacterProxy* proxy, 
-        const hkArray<hkpRootCdPoint>& manifold, 
+    virtual void processConstraintsCallback( const hkpCharacterProxy* proxy,
+        const hkArray<hkpRootCdPoint>& manifold,
         hkSimplexSolverInput& input )
     {
         // We go through the manifold and add velocity to the character proxy as required.
@@ -91,29 +92,34 @@ struct AnimCharacterListener : public hkReferencedObject, public hkpCharacterPro
     float                   m_friction;
     bool                    m_onMovingSurface;
 };
-
+#endif
 
 void ProxyResource::createShape()
 {
     const hkReal totalHeight = m_standHeight;
     const hkReal radius = m_radius;
     const hkReal capsulePoint = totalHeight*0.5f - radius;
+#ifdef HAVOK_COMPILE
     hkVector4 vertexA(0, capsulePoint * 2 + radius, 0);
     hkVector4 vertexB(0, radius, 0);
     m_standShape = new hkpCapsuleShape(vertexA, vertexB, radius);
+#endif
 }
 
 void ProxyResource::destroyShape()
 {
+#ifdef HAVOK_COMPILE
     SAFE_REMOVEREF(m_standShape);
+#endif
 }
 
 
 //======================================================
 //                INSTANCE
-//======================================================  
+//======================================================
 void ProxyInstance::init(const void* resource)
 {
+#ifdef HAVOK_COMPILE
     m_horizontalDisplacement.setZero4();
     m_verticalDisplacement = 0;
     m_targetVelocity.setZero4();
@@ -123,8 +129,8 @@ void ProxyInstance::init(const void* resource)
     m_resource = (const ProxyResource*)resource;
     hkpWorld* world = g_physicsWorld.world();
     int layerId = g_physicsWorld.get_layer(m_resource->m_layerName);
-    hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape, 
-                                                         hkTransform::getIdentity(), 
+    hkpShapePhantom* phantom = new hkpSimpleShapePhantom(m_resource->m_standShape,
+                                                         hkTransform::getIdentity(),
                                                          hkpGroupFilter::calcFilterInfo(layerId,0));
     hkpCharacterProxyCinfo cpci;
     cpci.m_staticFriction = 0.0f;
@@ -141,14 +147,17 @@ void ProxyInstance::init(const void* resource)
     m_listener->m_friction = m_resource->m_friction;
     m_listener->m_strength = m_resource->m_strength;
     m_proxy->addCharacterProxyListener(m_listener);
+#endif
     addToSimulation();
 }
 
 void ProxyInstance::setTransform(const hkQsTransform& t)
 {
+#ifdef HAVOK_COMPILE
     hkTransform tm;
     t.copyToTransformNoScale(tm);
     setTransform(tm);
+#endif
 }
 
 void ProxyInstance::setEnabled(bool bEnable)
@@ -159,10 +168,11 @@ void ProxyInstance::setEnabled(bool bEnable)
 
 void ProxyInstance::destroy()
 {
+#ifdef HAVOK_COMPILE
     if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     hkpWorld* world = phantom->getWorld();
-    if(world) 
+    if(world)
     {
         world->markForWrite();
         world->removePhantom(phantom);
@@ -170,64 +180,90 @@ void ProxyInstance::destroy()
     SAFE_REMOVEREF(m_listener);
     SAFE_REMOVEREF(m_proxy);
     if(world) world->unmarkForWrite();
+#endif
 }
 
 void ProxyInstance::addToSimulation()
 {
+#ifdef HAVOK_COMPILE
     if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     if(phantom->getWorld()) return;
     hkpWorld* world = g_physicsWorld.world();
     PHYSICS_LOCKWRITE(world);
     world->addPhantom(phantom);
+#endif
 }
 
 void ProxyInstance::removeFromSimulation()
 {
+#ifdef HAVOK_COMPILE
     if(!m_proxy) return;
     hkpPhantom* phantom = m_proxy->getShapePhantom();
     hkpWorld* world = phantom->getWorld();
     if(!world) return;
     PHYSICS_LOCKWRITE(world);
     world->removePhantom(phantom);
+#endif
 }
 
 bool ProxyInstance::checkSupport()
 {
+#ifdef HAVOK_COMPILE
     hkpSurfaceInfo ground;
     hkVector4 down; down.setNeg4( UP );
     m_proxy->checkSupport(down, ground);
     return ground.m_supportedState == hkpSurfaceInfo::SUPPORTED;
+#else
+    return false;
+#endif
 }
 
 const hkVector4& ProxyInstance::getLinearVelocity() const
 {
+#ifdef HAVOK_COMPILE
     return m_proxy->getLinearVelocity();
+#else
+    static hkVector4 s; return s;
+#endif
 }
 
 const hkVector4& ProxyInstance::getPosition() const
 {
+#ifdef HAVOK_COMPILE
     return m_proxy->getPosition();
+#else
+    static hkVector4 s; return s;
+#endif
 }
 
 void ProxyInstance::setLinearVelocity( const hkVector4& vel )
 {
+#ifdef HAVOK_COMPILE
     m_proxy->setLinearVelocity(vel);
+#endif
 }
 
 void ProxyInstance::setTransform( const hkTransform& t )
 {
+#ifdef HAVOK_COMPILE
     PHYSICS_LOCKWRITE(m_proxy->m_shapePhantom->getWorld());
     m_proxy->getShapePhantom()->setTransform(t);
+#endif
 }
 
 bool ProxyInstance::isInWorld() const
 {
+#ifdef HAVOK_COMPILE
     return m_proxy->m_shapePhantom->getWorld() != 0;
+#else
+    return false;
+#endif
 }
 
 void ProxyInstance::update(float timeStep)
 {
+#ifdef HAVOK_COMPILE
     if(!m_enabled) return;
 
     const ProxyResource* res = m_resource;
@@ -243,7 +279,7 @@ void ProxyInstance::update(float timeStep)
     m_proxy->setLinearVelocity(desiredVelocity);
 
     // Next expected position
-    hkVector4 expectedPosition; 
+    hkVector4 expectedPosition;
     expectedPosition.setAddMul4(m_proxy->getPosition(), desiredVelocity, timeStep);
 
     hkStepInfo si;
@@ -256,9 +292,9 @@ void ProxyInstance::update(float timeStep)
 
     // Update the horizontal displacement
     const hkVector4& finalPosition = m_proxy->getPosition();
-    hkVector4 horizontalFinalPosition; 
+    hkVector4 horizontalFinalPosition;
     horizontalFinalPosition.setAddMul4(finalPosition, UP, -finalPosition.dot4(UP));
-    hkVector4 horizontalExpectedPosition; 
+    hkVector4 horizontalExpectedPosition;
     horizontalExpectedPosition.setAddMul4(expectedPosition, UP, -expectedPosition.dot4(UP));
     m_horizontalDisplacement.setSub4(horizontalExpectedPosition, horizontalFinalPosition);
 
@@ -298,8 +334,9 @@ void ProxyInstance::update(float timeStep)
     }
 
     // Horizontal : no need to do gain or clamp (is done somewhere else)
-    hkVector4 newHorizontalPosition; 
+    hkVector4 newHorizontalPosition;
     newHorizontalPosition.setAddMul4(desiredPosition, UP, -desiredPosition.dot3(UP));
     m_transform.m_translation.setAddMul4(newHorizontalPosition, UP, newVerticalPosition);
+#endif
 }
 

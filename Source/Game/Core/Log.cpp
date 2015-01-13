@@ -3,14 +3,13 @@
 #include <time.h>
 #include "DataDef.h"
 #include "Prerequisites.h"
-#ifdef HAVOK_COMPILE
-#include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
-#endif
+#include <bx/debug.h>
+#include <bx/mutex.h>
 
 static bool                 g_logInited = false;
 static char                 g_logBuffer[4096*2];
 static unsigned long        g_startTime = 0;
-static hkCriticalSection    g_CS;
+static bx::LwMutex          g_logLock;
 static const char*          g_loglevelTag[] =
 {
     "trace",
@@ -38,7 +37,7 @@ Log::~Log()
 
 bool Log::init( const char* logFile, const char* logTitle)
 {
-    hkCriticalSectionLock _l(&g_CS);
+    bx::LwMutexScope _l(g_logLock);
     g_startTime = ::GetTickCount();
     // Reset log file
     m_stream.setf( std::ios::fixed );
@@ -122,7 +121,7 @@ bool Log::init( const char* logFile, const char* logTitle)
 
 void Log::destroy()
 {
-    hkCriticalSectionLock _l(&g_CS);
+    bx::LwMutexScope _l(g_logLock);
     m_stream << "</table>\n";
     m_stream << "</div>\n";
     m_stream << "</body>\n";
@@ -134,7 +133,7 @@ void Log::log( int logLevel, const char* msg, ...)
 {
     if(!g_logInited) return;
 
-    hkCriticalSectionLock _l(&g_CS);
+    bx::LwMutexScope _l(g_logLock);
     va_list argp;
     va_start(argp, msg);
     vsnprintf(g_logBuffer, sizeof(g_logBuffer), msg, argp);
@@ -163,13 +162,11 @@ void Log::log( int logLevel, const char* msg, ...)
 
     m_stream.flush();
 
-#ifdef HAVOK_COMPILE
     if(logLevel >= LOG_LEVEL_WARNING)
     {
-        OutputDebugStringA(g_logBuffer);
-        OutputDebugStringA("\n");
+        bx::debugOutput(g_logBuffer);
+        bx::debugOutput("\n");
     }
-#endif
 }
 
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "Prerequisites.h"
 #include "Animation.h"
+#ifdef HAVOK_COMPILE
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>
-
 
 struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
@@ -76,5 +76,8 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 	float get_weight() const { return getMasterWeight(); };
 	float get_peroid() const {return m_binding->m_animation->m_duration; }
 	void set_loop(bool bLooped) { m_maxCycles = bLooped ? -1 : 1; }
-	bool is_loop() const { return m_maxCycles < 0;} 
+	bool is_loop() const { return m_maxCycles < 0;}
 };
+#else
+struct hk_anim_ctrl{};
+#endif

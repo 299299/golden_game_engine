@@ -22,4 +22,3 @@
 #include "DataDef.h"
 #include "ShaderInc.h"
 #include "Utils.h"
-#include "EngineAssert.h"

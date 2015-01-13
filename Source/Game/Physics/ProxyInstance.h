@@ -42,7 +42,9 @@ ENGINE_NATIVE_ALIGN struct ProxyInstance
     inline void getGravity(hkVector4& gravity)
     {
         const float* g = m_resource->m_gravity;
+#ifdef HAVOK_COMPILE
         gravity.set(g[0], g[1], g[2]);
+#endif
     }
 
     const hkVector4& getLinearVelocity() const;

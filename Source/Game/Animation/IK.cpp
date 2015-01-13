@@ -5,7 +5,7 @@
 #include "DataDef.h"
 #include "Log.h"
 #include "PhysicsWorld.h"
-//============================================================
+#ifdef HAVOK_COMPILE
 #include <Animation/Animation/Rig/hkaSkeleton.h>
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
 #include <Animation/Animation/Rig/hkaPose.h>
@@ -15,7 +15,7 @@
 #include <Animation/Animation/Ik/Ccd/hkaCcdIkSolver.h>
 #include <Common/Visualize/hkDebugDisplay.h>
 #include <Physics2012/Collide/Filter/Group/hkpGroupFilter.h>
-//============================================================
+#endif
 
 
 //============================================================
@@ -25,13 +25,16 @@ void LookAtInstance::init(const void* resource)
 {
     m_resource = (const LookAtResource*)resource;
     m_lookAtWeight = 0.0f;
+#ifdef HAVOK_COMPILE
     m_lookAtLastTargetWS.setZero4();
+#endif
 }
 
-void LookAtInstance::do_lookat(const hkVector4& targetPosWS, 
-                              const hkQsTransform& worldFromModel, 
+void LookAtInstance::do_lookat(const hkVector4& targetPosWS,
+                              const hkQsTransform& worldFromModel,
                               hkaPose& thePose)
 {
+#ifdef HAVOK_COMPILE
     bool lookAtOn = m_enabled;
     const LookAtResource* res = m_resource;
     const int* jointIndices = res->m_rig->m_humanJointIndices;
@@ -108,6 +111,7 @@ void LookAtInstance::do_lookat(const hkVector4& targetPosWS,
         // By using hkaPose and the PROPAGATE flag we automatically update the descendant bones of the head
         hkaLookAtIkSolver::solve(setup, targetMS, m_lookAtWeight, thePose.accessBoneModelSpace(headIdx, hkaPose::PROPAGATE));
     }
+#endif
 }
 
 //============================================================
@@ -117,13 +121,16 @@ void ReachInstance::init(const void* resource)
 {
     m_reachWeight = 0;
     m_resource = (const ReachResource*)resource;
+#ifdef HAVOK_COMPILE
     m_reachLastTargetWS.setZero4();
+#endif
 }
 
 void ReachInstance::do_reach(  const hkVector4& targetPosWS,
-                              const hkQsTransform& worldFromModel, 
+                              const hkQsTransform& worldFromModel,
                               hkaPose& thePose)
 {
+#ifdef HAVOK_COMPILE
     bool reachOn = m_enabled;
     const ReachResource* res = m_resource;
     const int* jointIndices = res->m_rig->m_humanJointIndices;
@@ -131,8 +138,8 @@ void ReachInstance::do_reach(  const hkVector4& targetPosWS,
     {
         if (m_reachWeight > 0.0f)
         {
-            m_reachLastTargetWS.setInterpolate( m_reachLastTargetWS, 
-                                                targetPosWS, 
+            m_reachLastTargetWS.setInterpolate( m_reachLastTargetWS,
+                                                targetPosWS,
                                                 res->m_targetGain);
         }
         else
@@ -154,7 +161,7 @@ void ReachInstance::do_reach(  const hkVector4& targetPosWS,
     else
     {
         // Fix the position, use the Two Joints IK solver
-        hkVector4 pointMS; 
+        hkVector4 pointMS;
         pointMS.setTransformedInversePos(worldFromModel, m_reachLastTargetWS);
 
         hkaTwoJointsIkSolver::Setup setup;
@@ -175,6 +182,7 @@ void ReachInstance::do_reach(  const hkVector4& targetPosWS,
         setup.m_cosineMaxHingeAngle = cosf(res->m_hingeLimitAngle[1]*HK_REAL_DEG_TO_RAD);
         hkaTwoJointsIkSolver::solve(setup, thePose);
     }
+#endif
 }
 //============================================================
 //                  FOOT INSTANCE
@@ -185,6 +193,7 @@ void FootInstance::init(const void* resource)
     m_raycast = new AnimRaycastInterface();
     m_raycast->m_type = m_resource->m_raycastType;
 
+#ifdef HAVOK_COMPILE
     const FootResource* res = m_resource;
     const int* jointIndices = res->m_rig->m_humanJointIndices;
 
@@ -195,7 +204,7 @@ void FootInstance::init(const void* resource)
         setupData.m_skeleton = skel;
         const float* endLS = res->m_footEndLS;
         setupData.m_footEndLS.set(endLS[0], endLS[1], endLS[2]);
-        setupData.m_worldUpDirectionWS.set(0,1,0); 
+        setupData.m_worldUpDirectionWS.set(0,1,0);
         setupData.m_originalGroundHeightMS = res->m_orignalGroundHeightMS;
         setupData.m_minAnkleHeightMS = res->m_minAnkleHeightMS;
         setupData.m_maxAnkleHeightMS = res->m_maxAnkleHeightMS;
@@ -226,21 +235,25 @@ void FootInstance::init(const void* resource)
         setupData.m_ankleIndex = jointIndices[kBodyFoot_R];
         m_solver[1] = new hkaFootPlacementIkSolver(setupData);
     }
+#endif
 }
 
 void FootInstance::destroy()
 {
     SAFE_DELETE(m_raycast);
+#ifdef HAVOK_COMPILE
     SAFE_DELETE(m_solver[0]);
     SAFE_DELETE(m_solver[1]);
+#endif
 }
 
 
-void  FootInstance::do_foot(   bool isStanding,
-                                const hkQsTransform& worldFromModel,
-                                hkaPose& poseInOut, 
-                                hkReal& verticalDisplacementInOut)
+void  FootInstance::do_foot(bool isStanding,
+                            const hkQsTransform& worldFromModel,
+                            hkaPose& poseInOut,
+                            hkReal& verticalDisplacementInOut)
 {
+#ifdef HAVOK_COMPILE
     bool footIkOn = m_enabled;
     const FootResource* res = m_resource;
     const int* jointIndices = res->m_rig->m_humanJointIndices;
@@ -249,7 +262,7 @@ void  FootInstance::do_foot(   bool isStanding,
     hkReal leftError;
 
     const hkQsTransform& originalLeftFootMS = poseInOut.getBoneModelSpace(jointIndices[kBodyFoot_L]);
-    const hkQsTransform& originalRightFootMS = poseInOut.getBoneModelSpace(jointIndices[kBodyFoot_R]); 
+    const hkQsTransform& originalRightFootMS = poseInOut.getBoneModelSpace(jointIndices[kBodyFoot_R]);
 #if 0
     // Update some tweakable setup parameters
     m_solver[kRightLeg]->m_setup.m_maxAnkleHeightMS = res->m_maxAnkleHeightMS;;
@@ -313,6 +326,7 @@ void  FootInstance::do_foot(   bool isStanding,
     {
         verticalDisplacementInOut = -0.5f;
     }
+#endif
 }
 
 

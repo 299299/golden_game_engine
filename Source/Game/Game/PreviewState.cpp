@@ -25,9 +25,10 @@ PreviewState::~PreviewState()
 
 void PreviewState::step( float dt )
 {
-    __super::step(dt);
+    GameState::step(dt);
     g_fpsCamera.update(dt);
 
+#ifdef HAVOK_COMPILE
     if(g_win32Context.is_key_just_pressed(VK_F1))
     {
         bool is_wireframe = HAS_BITS(g_bgfx_debug,BGFX_DEBUG_WIREFRAME);
@@ -57,6 +58,7 @@ void PreviewState::step( float dt )
     }
 
     g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());
+#endif
 }
 
 void PreviewState::on_enter( GameState* prev_state )

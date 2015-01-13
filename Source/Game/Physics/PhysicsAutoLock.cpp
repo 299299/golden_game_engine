@@ -1,6 +1,8 @@
 #include "PhysicsAutoLock.h"
 #include "Prerequisites.h"
+#ifdef HAVOK_COMPILE
 #include <Physics2012/Dynamics/World/hkpWorld.h>
+#endif
 
 bool ignoreLock = false;
 PhysicsAutoLock::PhysicsAutoLock( hkpWorld* world, PhysicsLockMode mode )
@@ -12,6 +14,7 @@ PhysicsAutoLock::PhysicsAutoLock( hkpWorld* world, PhysicsLockMode mode )
         return;
     }
 
+#ifdef HAVOK_COMPILE
     switch (m_mode)
     {
     case kLockRead:
@@ -26,6 +29,7 @@ PhysicsAutoLock::PhysicsAutoLock( hkpWorld* world, PhysicsLockMode mode )
     default:
         break;
     }
+#endif
 }
 
 PhysicsAutoLock::~PhysicsAutoLock()
@@ -35,6 +39,7 @@ PhysicsAutoLock::~PhysicsAutoLock()
         return;
     }
 
+#ifdef HAVOK_COMPILE
     switch (m_mode)
     {
     case kLockRead:
@@ -49,6 +54,7 @@ PhysicsAutoLock::~PhysicsAutoLock()
     default:
         break;
     }
+#endif
 
 }
 
@@ -66,6 +72,7 @@ ObjectAutoLock::ObjectAutoLock( hkpWorldObject* obj, PhysicsLockMode mode )
         return;
     }
 
+#ifdef HAVOK_COMPILE
     switch (m_mode)
     {
     case kLockRead:
@@ -77,7 +84,7 @@ ObjectAutoLock::ObjectAutoLock( hkpWorldObject* obj, PhysicsLockMode mode )
     default:
         break;
     }
-
+#endif
 }
 
 ObjectAutoLock::~ObjectAutoLock()
@@ -86,7 +93,7 @@ ObjectAutoLock::~ObjectAutoLock()
     {
         return;
     }
-
+#ifdef HAVOK_COMPILE
     switch (m_mode)
     {
     case kLockRead:
@@ -98,5 +105,5 @@ ObjectAutoLock::~ObjectAutoLock()
     default:
         break;
     }
-
+#endif
 }

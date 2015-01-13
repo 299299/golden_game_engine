@@ -18,7 +18,7 @@
 #include "AnimRig.h"
 #include "ProxyInstance.h"
 //=======================================================================================
-//=======================================================================================
+#ifdef HAVOK_COMPILE
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Container/LocalArray/hkLocalArray.h>
 #include <Animation/Animation/Playback/SampleAndBlend/hkaSampleBlendJobQueueUtils.h>
@@ -34,7 +34,7 @@
 #include <Common/Visualize/hkDebugDisplay.h>
 #include <Common/Base/Types/Geometry/Aabb/hkAabb.h>
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
-//=======================================================================================
+#endif
 
 AnimationSystem g_animMgr;
 static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
@@ -56,7 +56,9 @@ void AnimationSystem::init()
 {
     m_status = 0;
     m_events = COMMON_ALLOC(AnimationEvent, MAX_ANIM_EVENTS);
+#ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
+#endif
 }
 
 void AnimationSystem::shutdown()
@@ -74,6 +76,7 @@ void AnimationSystem::kick_in_jobs()
     uint32_t num = id_array::size(m_rigs);
     if(num == 0) return;
     AnimRigInstance* rigs = id_array::begin(m_rigs);
+#ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
     set_status(kTickProcessing);
@@ -100,10 +103,12 @@ void AnimationSystem::kick_in_jobs()
             pose->getFloatSlotValues().begin() );
     }
 #endif
+#endif
 }
 
 void AnimationSystem::tick_finished_jobs()
 {
+#ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
     uint32_t num = id_array::size(m_rigs);
     if(!num) return;
@@ -113,6 +118,7 @@ void AnimationSystem::tick_finished_jobs()
         m_animJobs[i].destroy();
     }
     set_status(kTickFinishedJobs);
+#endif
 #endif
 }
 

@@ -1,7 +1,7 @@
 #include "AnimRaycast.h"
 #include "PhysicsAutoLock.h"
 #include "PhysicsWorld.h"
-//==========================================================
+#ifdef HAVOK_COMPILE
 #include <Physics2012/Dynamics/World/hkpWorld.h>
 #include <Physics2012/Collide/Filter/Group/hkpGroupFilter.h>
 #include <Physics2012/Collide/Query/CastUtil/hkpWorldRayCastInput.h>
@@ -10,8 +10,6 @@
 #include <Physics2012/Collide/Shape/Convex/ConvexTranslate/hkpConvexTranslateShape.h>
 #include <Physics2012/Collide/Query/Collector/RayCollector/hkpClosestRayHitCollector.h>
 #include <Common/Visualize/hkDebugDisplay.h>
-//==========================================================
-
 
 AnimRaycastInterface::AnimRaycastInterface()
     :m_type(0)
@@ -37,7 +35,7 @@ AnimRaycastInterface::castRay ( const hkVector4& fromWS,
 {
     if(m_type == 0)
     {
-        return castPhysicsRay(fromWS, 
+        return castPhysicsRay(fromWS,
                               toWS,
                               collisionFilterInfo,
                               hitFractionOut,
@@ -45,7 +43,7 @@ AnimRaycastInterface::castRay ( const hkVector4& fromWS,
     }
     else if(m_type == 1)
     {
-        return castGraphicsRay(fromWS, 
+        return castGraphicsRay(fromWS,
                                toWS,
                                collisionFilterInfo,
                                hitFractionOut,
@@ -54,11 +52,11 @@ AnimRaycastInterface::castRay ( const hkVector4& fromWS,
     return false;
 }
 
-hkBool 
-AnimRaycastInterface::castPhysicsRay(const hkVector4& fromWS, 
-                                     const hkVector4& toWS, 
-                                     hkUint32 collisionFilterInfo, 
-                                     hkReal& hitFractionOut, 
+hkBool
+AnimRaycastInterface::castPhysicsRay(const hkVector4& fromWS,
+                                     const hkVector4& toWS,
+                                     hkUint32 collisionFilterInfo,
+                                     hkReal& hitFractionOut,
                                      hkVector4& normalWSOut )
 {
     HK_TIMER_BEGIN("Raycast", HK_NULL);
@@ -77,14 +75,14 @@ AnimRaycastInterface::castPhysicsRay(const hkVector4& fromWS,
         PHYSICS_LOCKREAD(world);
         world->castRay( raycastIn, rayCollector );
     }
-    
+
     const hkBool didHit = rayCollector.hasHit();
 
     if (didHit)
     {
         const hkpWorldRayCastOutput& raycastOut = rayCollector.getHit();
 
-        #if 1   
+        #if 1
         hkVector4 intersectionPointWorld;
         intersectionPointWorld.setInterpolate4( raycastIn.m_from, raycastIn.m_to, raycastOut.m_hitFraction );
         HK_DISPLAY_LINE( raycastIn.m_from, intersectionPointWorld, hkColor::YELLOW);
@@ -118,12 +116,14 @@ AnimRaycastInterface::castPhysicsRay(const hkVector4& fromWS,
     return didHit;
 }
 
-hkBool 
-AnimRaycastInterface::castGraphicsRay(const hkVector4& fromWS, 
-                                      const hkVector4& toWS, 
-                                      hkUint32 collisionFilterInfo, 
-                                      hkReal& hitFractionOut, 
+hkBool
+AnimRaycastInterface::castGraphicsRay(const hkVector4& fromWS,
+                                      const hkVector4& toWS,
+                                      hkUint32 collisionFilterInfo,
+                                      hkReal& hitFractionOut,
                                       hkVector4& normalWSOut )
 {
     return false;
 }
+
+#endif

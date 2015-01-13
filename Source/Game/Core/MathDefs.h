@@ -4,16 +4,11 @@
 
 #define MAX_FLOAT (3.402823466e+38F)
 
-/// Update a hash with the given 8-bit value using the SDBM algorithm.
-inline unsigned SDBMHash(unsigned hash, unsigned char c) 
-{ 
-    return c + (hash << 6) + (hash << 16) - hash; 
-}
-
 inline bool isPower2(unsigned int v) { return (v & (v - 1)) == 0; }
 
 double fast_atof (const char *p);
 
+#ifdef HAVOK_COMPILE
 inline void transform_matrix(float* m, const hkQsTransform& t)
 {
     HK_ALIGN16(hkReal s_m[4][4]);
@@ -95,6 +90,7 @@ inline void transform_vec4(float* outVec4, const hkVector4& inVec4)
     outVec4[2] = inVec4.getSimdAt(2);
     outVec4[3] = inVec4.getSimdAt(3);
 }
+#endif
 
 struct Vec3
 {
@@ -132,21 +128,6 @@ struct Plane
 {
     float m_data[4];
 };
-
-inline int ftoi_r( double val )
-{
-    // Fast round (banker's round) using Sree Kotay's method
-    // This function is much faster than a naive cast from float to int
-
-    union
-    {
-        double dval;
-        int ival[2];
-    } u;
-
-    u.dval = val + 6755399441055744.0;  // Magic number: 2^52 * 1.5;
-    return u.ival[0];         // Needs to be [1] for big-endian
-}
 
 float neareast_to_aabb( const float* pos, const float* min, const float* max );
 bool ray_aabb_intersection( const float* rayOrig, const float* rayDir, const float* min, const float* max );

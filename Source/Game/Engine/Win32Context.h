@@ -1,8 +1,9 @@
 #pragma once
 #include "Prerequisites.h"
+#ifdef HAVOK_COMPILE
 #include <Windows.h>
 #include <Windowsx.h>
-
+#endif
 
 enum MouseButton
 {
@@ -20,7 +21,7 @@ struct Win32Context
     HWND            m_parentHwnd;
 
     RECT            m_rect;
-    DWORD           m_style;
+    uint32_t        m_style;
     uint32_t        m_width;
     uint32_t        m_height;
     uint32_t        m_oldWidth;

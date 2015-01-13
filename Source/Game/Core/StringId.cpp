@@ -1,8 +1,9 @@
 #include "StringId.h"
 #include "MathDefs.h"
-#include "EngineAssert.h"
 #include "Log.h"
 #include <ctype.h>
+#include "Prerequisites.h"
+#include <bx/hash.h>
 
 #ifndef _RETAIL
 #include "MemorySystem.h"
@@ -10,14 +11,15 @@
 #include <tinystl/unordered_map.h>
 #include <stdio.h>
 #include <fstream>
-#include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
+#include <bx/mutex.h>
+#include <bx/string.h>
 typedef tinystl::unordered_map<uint32_t, const char*> StringTable;
 static StringTable              g_stringTable;
-static hkCriticalSection        g_stringTableCS;
+static bx::LwMutex              g_stringLock;
 void insert_string_id(uint32_t key, const char* value)
 {
     if(value[0] == '\0') return;
-    hkCriticalSectionLock _l(&g_stringTableCS);
+    bx::LwMutexScope _l(g_stringLock);
     StringTable::iterator iter = g_stringTable.find(key);
     if(iter == g_stringTable.end())
     {
@@ -28,13 +30,13 @@ void insert_string_id(uint32_t key, const char* value)
         g_stringTable[key] = mem;
     }
     else {
-        ENGINE_ASSERT(!hkString::strCasecmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
+        ENGINE_ASSERT_ARGS(!bx::stricmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
     }
 }
 const char* stringid_lookup(const StringId& id)
 {
     if(!id) return "";
-    hkCriticalSectionLock _l(&g_stringTableCS);
+    bx::LwMutexScope _l(g_stringLock);
     StringTable::iterator iter = g_stringTable.find(id.value());
     if(iter == g_stringTable.end()) return  0;
     return iter->second;
@@ -51,7 +53,7 @@ void load_string_table(const char* fName)
     char buf[256];
     uint32_t key1, key2 = 0;
     while(!feof(fp))
-    {    
+    {
         int argNum = fscanf(fp, STRING_TABLE_FMT, &key1, &key2, buf);
         if(argNum != 3) break;
         if(key1 != key2) break;
@@ -80,7 +82,7 @@ static char g_buffer[32];
 const char* stringid_lookup(const StringId& id)
 {
     if(!id) return "";
-    sprintf_s(g_buffer, "%x", id.value());
+    bx::snprintf(g_buffer, sizeof(g_buffer), "%x", id.value());
     return g_buffer;
 }
 #endif
@@ -88,25 +90,11 @@ const char* stringid_lookup(const StringId& id)
 uint32_t StringId::calculate(const char* str)
 {
     uint32_t hash = 0;
-    if (!str)
-        return hash;
-
+    if (!str) return hash;
+    hash = bx::hashMurmur2A(str, strlen(str));
 #ifndef _RETAIL
-    const char* p = str;
+    insert_string_id(hash, str);
 #endif
-
-    while (*str)
-    {
-        // Perform the actual hashing as case-insensitive
-        char c = *str;
-        hash = SDBMHash(hash, tolower(c));
-        ++str;
-    }
-
-#ifndef _RETAIL
-    insert_string_id(hash, p);
-#endif   
-    
     return hash;
 }
 

@@ -16,10 +16,11 @@
 #include "PlayerState.h"
 #include "RenderCamera.h"
 //==================================================
-#include <Windows.h>
-#include <tchar.h>
 #include <bx/bx.h>
 #include <bx/commandline.h>
+#ifdef HAVOK_COMPILE
+#include <Windows.h>
+#endif
 
 void showHelp()
 {
@@ -37,10 +38,11 @@ void showHelp()
             "--headless no graphics & no window\n");
 }
 
-#define MUTEX_NAME     _T("Global//NAGA_ENGINE_GAME_SINGLE_MUTEX")
+#ifdef HAVOK_COMPILE
+#define MUTEX_NAME     ("Global//NAGA_ENGINE_GAME_SINGLE_MUTEX")
 BOOL checkSingleProcess()
 {
-    HANDLE hMutex = CreateMutex(NULL, FALSE, MUTEX_NAME);
+    HANDLE hMutex = CreateMutexA(NULL, FALSE, MUTEX_NAME);
     if (GetLastError() == ERROR_ALREADY_EXISTS)
     {
         ::CloseHandle(hMutex);
@@ -48,9 +50,12 @@ BOOL checkSingleProcess()
     }
     else return TRUE;
 }
+#else
+bool checkSingleProcess() {return false;};
+#endif
 
 ActorId32 g_actor;
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
     // Flush all denormal/subnormal numbers (2^-1074 to 2^-1022) to zero.
@@ -75,7 +80,7 @@ int _tmain(int argc, _TCHAR* argv[])
     cfg.m_fixedFPS = 60;
 
     bx::CommandLine cmdline(argc, argv);
-    
+
     const char* name = cmdline.findOption('w');
     if(name) cfg.m_windowWidth = atoi(name);
     name = cmdline.findOption('h');

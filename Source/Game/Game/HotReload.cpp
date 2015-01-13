@@ -13,7 +13,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Light.h"
-#include "Mesh.h"       
+#include "Mesh.h"
 #include "IK.h"
 #include "Texture.h"
 #include "Ragdoll.h"
@@ -22,12 +22,12 @@
 #include "Level.h"
 #include "RenderCamera.h"
 #include "DebugDraw.h"
-#include <bx/bx.h>
-//==========================================================================================
+
+#ifdef HAVOK_COMPILE
 #include <Animation/Animation/Animation/hkaAnimation.h>
 #include <Animation/Animation/Animation/Mirrored/hkaMirroredSkeleton.h>
 #include <Animation/Animation/Animation/Mirrored/hkaMirroredAnimation.h>
-//==========================================================================================
+#endif
 
 static void* g_tmpResourceArray[1024*10];
 const uint32_t resourceMax = BX_COUNTOF(g_tmpResourceArray);
@@ -132,6 +132,8 @@ void reload_animation_resource(void* oldResource, void* newResource)
     {
         Animation* anim = (Animation*)result[i]->m_ptr;
         if(!anim->m_mirroredFrom) continue;
+
+#ifdef HAVOK_COMPILE
         hkaMirroredAnimation* mirrorAnim = (hkaMirroredAnimation*)anim->m_animation;
         const hkaAnimationBinding* binding = mirrorAnim->getOriginalBinding();
         if(oldAnimation->m_binding == binding)
@@ -139,6 +141,7 @@ void reload_animation_resource(void* oldResource, void* newResource)
             anim->destroy();
             anim->create_mirrored_animation(newAnimation);
         }
+#endif
     }
 }
 
@@ -195,7 +198,7 @@ void reload_material_resource(void* oldResource, void* newResource)
 #endif
 }
 void reload_texture_resource(void* oldResource, void* newResource)
-{   
+{
     Texture* oldTex = (Texture*)oldResource;
     Texture* newTex = (Texture*)newResource;
 
@@ -248,7 +251,7 @@ void reload_mesh_resource(void* oldResource, void* newResource)
 void reload_program_resource(void* oldResource, void* newResource)
 {
 #define CHECK_SHADER_HANDLE(shader)  if(shader.idx == oldHandle.idx) shader.idx = newHandle.idx;
-    
+
     ShaderProgram* oldProgram = (ShaderProgram*)oldResource;
     ShaderProgram* newProgram = (ShaderProgram*)newResource;
 
@@ -259,7 +262,7 @@ void reload_program_resource(void* oldResource, void* newResource)
     CHECK_SHADER_HANDLE(g_postProcess.m_brightShader);
     CHECK_SHADER_HANDLE(g_postProcess.m_blurShader);
     CHECK_SHADER_HANDLE(g_postProcess.m_combineShader);
-    
+
     uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::get_type(), result, resourceMax);
     LOGD("total num of materials = %d", numOfMaterials);
     for(uint32_t i=0; i<numOfMaterials; ++i)
@@ -279,7 +282,7 @@ void reload_shader_resource(void* oldResource, void* newResource)
     extern PostProcess          g_postProcess;
     Shader* oldShader = (Shader*)oldResource;
     Shader* newShader = (Shader*)newResource;
-    
+
     uint32_t numOfPrograms = g_resourceMgr.find_resources_type_of(ShaderProgram::get_type(), result, resourceMax);
     LOGD("total num of programs = %d", numOfPrograms);
     for(uint32_t i=0; i<numOfPrograms; ++i)
@@ -293,7 +296,7 @@ void reload_shader_resource(void* oldResource, void* newResource)
             if(program->m_ps == oldShader) program->m_ps = newShader;
             program->bringin();
             bgfx::ProgramHandle newHandle = program->m_handle;
-            
+
             CHECK_PROGRAM_HANDLE(g_postProcess.m_brightShader);
             CHECK_PROGRAM_HANDLE(g_postProcess.m_blurShader);
             CHECK_PROGRAM_HANDLE(g_postProcess.m_combineShader);

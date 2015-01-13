@@ -11,7 +11,6 @@
 #include "Resource.h"
 #include "id_array.h"
 #include "GameConfig.h"
-#include "EngineAssert.h"
 #include "Event.h"
 //===========================================
 //          COMPONENTS
@@ -22,7 +21,7 @@
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
 
-//========================================================================================
+#ifdef HAVOK_COMPILE
 #include <Physics2012/Dynamics/World/Listener/hkpWorldPostSimulationListener.h>
 #include <Physics2012/Collide/Query/CastUtil/hkpLinearCastInput.h>
 #include <Physics2012/Dynamics/World/hkpSimulationIsland.h>
@@ -44,7 +43,7 @@
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #include <Physics2012/Collide/Query/Multithreaded/RayCastQuery/hkpRayCastQueryJobs.h>
 #include <Physics2012/Collide/Query/Multithreaded/RayCastQuery/hkpRayCastQueryJobQueueUtils.h>
-//========================================================================================
+#endif
 
 static int  m_status = 0;
 static void check_status()
@@ -60,6 +59,7 @@ static void set_status(int newStatus)
 /// It responds to collision callbacks, collects the collision information and sends messages to the
 /// collider objects.
 ///
+#ifdef HAVOK_COMPILE
 class HavokContactListener : public hkpContactListener, public hkpEntityListener
 {
     //called in havok thread.
@@ -90,11 +90,11 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
         //TODO
     }
 };
+#endif
 
 PhysicsWorld                g_physicsWorld;
 typedef tinystl::unordered_map<uint64_t, CollisionEvent*> CollisionEventMap;
 static CollisionEventMap                        g_collisionEvtMap;
-static hkCriticalSection                        g_eventCS;
 static IdArray<MAX_PHYSICS, PhysicsInstance>    m_objects;
 static IdArray<MAX_PROXY, ProxyInstance>        m_proxies;
 
@@ -106,13 +106,17 @@ void PhysicsWorld::init()
     m_world = 0;
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
+#ifdef HAVOK_COMPILE
     m_raycastSem = new hkSemaphoreBusyWait(0, 1000);
     hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
+#endif
 }
 
 void PhysicsWorld::shutdown()
 {
-    delete m_raycastSem;
+#ifdef HAVOK_COMPILE
+    SAFE_DELETE(m_raycastSem);
+#endif
     destroy_world();
 }
 
@@ -129,15 +133,18 @@ void PhysicsWorld::frame_start()
 
 void PhysicsWorld::clear_world()
 {
+#ifdef HAVOK_COMPILE
     if(!m_world)
         return;
     PHYSICS_LOCKWRITE(m_world);
     m_world->removeAll();
     SAFE_DELETE(m_contactListener);
+#endif
 }
 
 void PhysicsWorld::create_world(PhysicsConfig* config)
 {
+#ifdef HAVOK_COMPILE
     if(m_world) return;
     m_config = config;
     // The world cinfo contains global simulation parameters, including gravity, solver settings etc.
@@ -175,10 +182,12 @@ void PhysicsWorld::create_world(PhysicsConfig* config)
     m_contactListener = new HavokContactListener();
     m_world->addContactListener( m_contactListener );
     m_world->addEntityListener( m_contactListener );
+#endif
 }
 
 void PhysicsWorld::create_plane(float size)
 {
+#ifdef HAVOK_COMPILE
     ENGINE_ASSERT(m_world, "physics is not created!");
     PHYSICS_LOCKWRITE(m_world);
     hkVector4 planeSize(size, 2.0f, size);
@@ -194,11 +203,14 @@ void PhysicsWorld::create_plane(float size)
     cube->removeReference();
     m_world->addEntity(boxRigidBody);
     boxRigidBody->removeReference();
+#endif
 }
 
 void PhysicsWorld::post_simulation()
 {
     PROFILE(Physics_PostCallback);
+
+#ifdef HAVOK_COMPILE
     PHYSICS_LOCKREAD(m_world);
     const hkArray<hkpSimulationIsland*>& activeIslands = m_world->getActiveSimulationIslands();
     int num = activeIslands.getSize();
@@ -220,22 +232,26 @@ void PhysicsWorld::post_simulation()
             phy->post_simulation(rigidBody);
         }
     }
+#endif
 }
 
 void PhysicsWorld::destroy_world()
 {
     check_status();
 
+#ifdef HAVOK_COMPILE
     if(!m_world) return;
     m_world->markForWrite();
     g_threadMgr.vdb_remove_world(m_world);
     SAFE_DELETE(m_world);
+#endif
 }
 
 int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen)
 {
     check_status();
 
+#ifdef HAVOK_COMPILE
     PHYSICS_LOCKREAD(m_world);
     int retNum = 0;
     const hkArray<hkpLinkedCollidable::CollisionEntry>& collisionEntries = \
@@ -263,6 +279,9 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
         }
     }
     return retNum;
+#else
+    return 0;
+#endif
 }
 
 
@@ -272,7 +291,9 @@ void PhysicsWorld::kick_in_jobs( float timeStep )
     PROFILE(Physics_KickInJobs);
     set_status(kTickProcessing);
     kickin_raycast_jobs();
+#ifdef HAVOK_COMPILE
     m_world->initMtStep( g_threadMgr.get_jobqueue(),timeStep );
+#endif
 }
 
 void PhysicsWorld::tick_finished_jobs()
@@ -280,8 +301,11 @@ void PhysicsWorld::tick_finished_jobs()
     if(!m_world) return;
     PROFILE(Physics_TickFinishJobs);
     set_status(kTickFinishedJobs);
+
+#ifdef HAVOK_COMPILE
     m_world->finishMtStep(g_threadMgr.get_jobqueue(), g_threadMgr.get_threadpool());
     if(m_numRaycasts) m_raycastSem->acquire();
+#endif
     post_simulation();
 }
 
@@ -293,6 +317,7 @@ void PhysicsWorld::add_to_world(PhysicsInstance* instance)
     check_status();
     PHYSICS_LOCKWRITE(m_world);
 
+#ifdef HAVOK_COMPILE
     switch(instance->m_systemType)
     {
     case kSystemRigidBody: m_world->addEntity(instance->m_rigidBody); break;
@@ -303,7 +328,7 @@ void PhysicsWorld::add_to_world(PhysicsInstance* instance)
     default:
         break;
     }
-
+#endif
 }
 
 void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
@@ -312,6 +337,8 @@ void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
 
     check_status();
     PHYSICS_LOCKWRITE(m_world);
+
+#ifdef HAVOK_COMPILE
     switch(instance->m_systemType)
     {
     case kSystemRigidBody: m_world->removeEntity(instance->m_rigidBody); break;
@@ -322,6 +349,7 @@ void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
     default:
         break;
     }
+#endif
 }
 
 void PhysicsWorld::add_collision_event(uint64_t key, const CollisionEvent& evt)
@@ -359,6 +387,7 @@ void PhysicsWorld::kickin_raycast_jobs()
     uint32_t num = m_numRaycasts;
     if(!num) return;
 
+#ifdef HAVOK_COMPILE
     hkpCollisionQueryJobHeader* jobHeader = FRAME_ALLOC(hkpCollisionQueryJobHeader, num);
     hkpWorldRayCastCommand* commands = FRAME_ALLOC(hkpWorldRayCastCommand, num);
     hkpWorldRayCastOutput* outputs = FRAME_ALLOC(hkpWorldRayCastOutput, num);
@@ -398,6 +427,7 @@ void PhysicsWorld::kickin_raycast_jobs()
     m_world->unmarkForRead();
 
     g_threadMgr.get_jobqueue()->addJob(*worldRayCastJob, hkJobQueue::JOB_LOW_PRIORITY);
+#endif
 }
 
 

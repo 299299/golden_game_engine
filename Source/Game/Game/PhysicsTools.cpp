@@ -3,17 +3,17 @@
 #include "RenderCamera.h"
 #include "Log.h"
 #include "Win32Context.h"
-//===================================================
+
+#ifdef HAVOK_COMPILE
 #include <Physics2012/Collide/Query/CastUtil/hkpWorldRayCastInput.h>
 #include <Physics2012/Collide/Query/CastUtil/hkpWorldRayCastOutput.h>
 #include <Physics2012/Utilities/Actions/MouseSpring/hkpMouseSpringAction.h>
 #include <Physics2012/Dynamics/World/hkpWorld.h>
 #include <Physics2012/Dynamics/Entity/hkpRigidBody.h>
 #include <Common/Visualize/hkDebugDisplay.h>
-//===================================================
+#endif
 
-
-static hkpMouseSpringAction*        g_mouseSpring = 0;
+static class hkpMouseSpringAction*  g_mouseSpring = 0;
 static float                        g_lastMouseDist = 0;
 static float                        g_cameraRayDist = 100;
 
@@ -24,11 +24,13 @@ void getCameraRay(hkVector4& outFrom, hkVector4& outTo, hkVector4& outDir)
     float pos2d[3] = {(float)x, (float)y, g_cameraRayDist};
     float camTo[3] = {0, 0, 0};
     g_camera.project_2d_to_3d(camTo, pos2d);
+#ifdef HAVOK_COMPILE
     transform_vec3(outFrom, g_camera.m_eye);
     transform_vec3(outTo, camTo);
     outDir.setSub(outTo, outFrom);
     outDir.normalize3();
     HK_DISPLAY_LINE(outFrom, outTo, hkColor::RED);
+#endif
 }
 
 void destroyMouseSpring()
@@ -36,19 +38,19 @@ void destroyMouseSpring()
     if(!g_mouseSpring)
         return;
 
-    if(g_mouseSpring)
-    {
-        hkpWorld* world = g_physicsWorld.world();
-        PHYSICS_LOCKWRITE(world);
-        world->removeAction(g_mouseSpring);
-        g_mouseSpring = HK_NULL;
-    }
+#ifdef HAVOK_COMPILE
+    hkpWorld* world = g_physicsWorld.world();
+    PHYSICS_LOCKWRITE(world);
+    world->removeAction(g_mouseSpring);
+    g_mouseSpring = HK_NULL;
+#endif
 }
 
 void createMouseSpring()
 {
     destroyMouseSpring();
 
+#ifdef HAVOK_COMPILE
     hkVector4 rayOrigin, rayTo, rayDirection;
     getCameraRay(rayOrigin, rayTo, rayDirection);
 
@@ -84,15 +86,16 @@ void createMouseSpring()
     const hkReal mouseSpringMaxRelativeForce = 1000;
 
     PHYSICS_LOCKWRITE(world);
-    g_mouseSpring = new hkpMouseSpringAction(posInRBLS, 
-        mousePositionInWorld, 
-        springDamping, 
-        springElasticity, 
-        objectDamping, 
+    g_mouseSpring = new hkpMouseSpringAction(posInRBLS,
+        mousePositionInWorld,
+        springDamping,
+        springElasticity,
+        objectDamping,
         rb);
     g_mouseSpring->setMaxRelativeForce(mouseSpringMaxRelativeForce * 0.1f);
     world->addAction(g_mouseSpring);
     g_mouseSpring->removeReference();
+#endif
 }
 
 
@@ -100,6 +103,8 @@ void moveMouseSpring()
 {
     if(!g_mouseSpring)
         return;
+
+#ifdef HAVOK_COMPILE
     hkVector4 rayOrigin, rayTo, rayDirection;
     getCameraRay(rayOrigin, rayTo, rayDirection);
     hkVector4 pos;
@@ -110,4 +115,5 @@ void moveMouseSpring()
         g_mouseSpring->setMousePosition(pos);
     }
     HK_DISPLAY_STAR(pos, 1.0f, hkColor::RED);
+#endif
 }

@@ -10,10 +10,12 @@ static int g_baseHeight = 720;
 
 Win32Context g_win32Context;
 
+#ifdef HAVOK_COMPILE
 LRESULT CALLBACK win32_wndProc(HWND _hwnd, UINT _id, WPARAM _wparam, LPARAM _lparam)
 {
     return g_win32Context.process(_hwnd, _id, _wparam, _lparam);
 }
+#endif
 
 Win32Context::Win32Context()
 {
@@ -23,11 +25,10 @@ Win32Context::Win32Context()
 
 void Win32Context::create_window(const char* title, uint32_t w, uint32_t h)
 {
-    SetDllDirectory(".");
-
     g_baseWidth = w;
     g_baseHeight = h;
 
+#ifdef HAVOK_COMPILE
     HINSTANCE instance = (HINSTANCE)GetModuleHandle(NULL);
 
     WNDCLASSEX wnd;
@@ -78,6 +79,7 @@ void Win32Context::create_window(const char* title, uint32_t w, uint32_t h)
         , instance
         , 0
         );
+#endif
 
     adjust(w, h, true);
     m_width = w;
@@ -90,8 +92,10 @@ void Win32Context::create_window(const char* title, uint32_t w, uint32_t h)
 
 void Win32Context::destroy_window()
 {
+#ifdef HAVOK_COMPILE
     DestroyWindow(m_hwnd);
     DestroyWindow(m_parentHwnd);
+#endif
 }
 
 void Win32Context::reset()
@@ -112,13 +116,15 @@ void Win32Context::frame_start()
 
     reset();
 
+#ifdef HAVOK_COMPILE
 	MSG msg;
     while (0 != PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE) )
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    
+#endif
+
     if(m_lastWidth != m_width || m_lastHeight != m_height)
         m_sizeChanged = true;
 
@@ -129,8 +135,12 @@ void Win32Context::frame_start()
 
 bool Win32Context::is_window_active() const
 {
+#ifdef HAVOK_COMPILE
     HWND hwnd = GetForegroundWindow();
     return (hwnd == m_hwnd) || (hwnd == m_parentHwnd);
+#else
+    return true;
+#endif
 }
 
 void Win32Context::adjust(uint32_t _width, uint32_t _height, bool _windowFrame)
@@ -139,6 +149,7 @@ void Win32Context::adjust(uint32_t _width, uint32_t _height, bool _windowFrame)
     m_height = _height;
     m_aspectRatio = float(_width)/float(_height);
 
+#ifdef HAVOK_COMPILE
     ShowWindow(m_hwnd, SW_SHOWNORMAL);
     RECT rect;
     RECT newrect = {0, 0, (LONG)_width, (LONG)_height};
@@ -232,29 +243,38 @@ void Win32Context::adjust(uint32_t _width, uint32_t _height, bool _windowFrame)
         );
 
     ShowWindow(m_hwnd, SW_RESTORE);
+#endif
 
     m_frame = _windowFrame;
 }
 
 void Win32Context::set_mouse_pos(int32_t _mx, int32_t _my)
 {
+#ifdef HAVOK_COMPILE
     POINT pt = { _mx, _my };
     ClientToScreen(m_hwnd, &pt);
-    SetCursorPos(pt.x, pt.y);   
+    SetCursorPos(pt.x, pt.y);
+#endif
 }
 
 void Win32Context::set_window_size(uint32_t _width, uint32_t _height)
 {
+#ifdef HAVOK_COMPILE
     PostMessage(m_hwnd, WM_USER_SET_WINDOW_SIZE, 0, (_height<<16) | (_width&0xffff) );
+#endif
 }
 
 void Win32Context::toggle_window_frame()
 {
+#ifdef HAVOK_COMPILE
     PostMessage(m_hwnd, WM_USER_TOGGLE_WINDOW_FRAME, 0, 0);
+#endif
 }
+
 
 LRESULT Win32Context::process(HWND _hwnd, UINT _id, WPARAM _wparam, LPARAM _lparam)
 {
+#ifdef HAVOK_COMPILE
 switch (_id)
     {
     case WM_USER_SET_WINDOW_SIZE:
@@ -326,7 +346,7 @@ switch (_id)
                 rect.bottom = rect.top + height + m_frameHeight;
                 break;
             }
-            
+
         }
         return 0;
 
@@ -380,7 +400,7 @@ switch (_id)
             m_mx = GET_X_LPARAM(_lparam);
             m_my = GET_Y_LPARAM(_lparam);
             m_mouseStatus[kMouseMiddle] = _id == WM_MBUTTONDOWN;
-            m_mouseJustPressed[kMouseMiddle] = m_mouseStatus[kMouseMiddle];      
+            m_mouseJustPressed[kMouseMiddle] = m_mouseStatus[kMouseMiddle];
         }
         break;
 
@@ -410,4 +430,7 @@ switch (_id)
     }
 
     return DefWindowProc(_hwnd, _id, _wparam, _lparam);
+#else
+    return -1;
+#endif
 }

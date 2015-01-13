@@ -1,11 +1,13 @@
 #include "Prerequisites.h"
 
+
+#ifdef HAVOK_COMPILE
 //=======================================================================
 //  HAVOK LIBS
 //=======================================================================
 #define HK_EXCLUDE_FEATURE_MemoryTracker
 #define HK_EXCLUDE_FEATURE_SerializeDeprecatedPre700
-#define HK_EXCLUDE_FEATURE_RegisterVersionPatches 
+#define HK_EXCLUDE_FEATURE_RegisterVersionPatches
 #define HK_EXCLUDE_LIBRARY_hkGeometryUtilities
 #define HK_EXCLUDE_FEATURE_hkndAssetProcessing
 #define HK_EXCLUDE_FEATURE_hkndDebrisFracture_execute
@@ -54,3 +56,5 @@
 //=======================================================================
 //  HAVOK LIBS
 //=======================================================================
+
+#endif

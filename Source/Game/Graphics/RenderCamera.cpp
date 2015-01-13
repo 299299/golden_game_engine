@@ -3,7 +3,10 @@
 #include "XBoxInput.h"
 #include <string.h>
 #include <stdio.h>
+
+#ifdef HAVOK_COMPILE
 #include <Common/Visualize/hkDebugDisplay.h>
+#endif
 
 Camera              g_camera;
 DebugFPSCamera      g_fpsCamera;
@@ -74,8 +77,8 @@ void Camera::project_2d_to_3d(float* out3DPos, const float* in2DPosWithDepth)
     float nwy = ((float)g_win32Context.m_height-in2DPosWithDepth[1])/(float)g_win32Context.m_height;
 
     float cx( 2.0f * nwx - 1.0f );
-    float cy( 2.0f * nwy - 1.0f );   
-        
+    float cy( 2.0f * nwy - 1.0f );
+
     // Create inverse view-projection matrix for unprojection
     float pxv[16];
     bx::mtxMul(pxv, m_view, m_proj);
@@ -91,8 +94,8 @@ void Camera::project_2d_to_3d(float* out3DPos, const float* in2DPosWithDepth)
     bx::vec4MulMtx(p1, p3, invpxv);
     p0[0] /= p0[3]; p0[1] /= p0[3]; p0[2] /= p0[3];
     p1[0] /= p1[3]; p1[1] /= p1[3]; p1[2] /= p1[3];
-        
-    float dir[3]; 
+
+    float dir[3];
     float normdir[3];
     bx::vec3Sub(dir, p1, p0);
     bx::vec3Norm(normdir, dir);
@@ -120,7 +123,7 @@ void DebugFPSCamera::update(float dt)
     float* eye = m_eye;
     float* at = m_at;
     float* up = g_camera.m_up;
-    
+
     //rotate
     int32_t x = g_win32Context.m_mx;
     int32_t y = g_win32Context.m_my;
@@ -158,8 +161,10 @@ void DebugFPSCamera::update(float dt)
 
     //translate
     float curVel = m_velocity * dt;
+#ifdef HAVOK_COMPILE
     if(GetKeyState(VK_LSHIFT) < 0)
         curVel *= 5;   // LShift
+#endif
 
     bool bMoveFlags[4] = {false, false, false, false};
     if(bGamePad)
@@ -246,12 +251,14 @@ void DebugFPSCamera::set( const float* eye, const float* at )
 
 void debug_update_vdb_camera(const char* name)
 {
+#ifdef HAVOK_COMPILE
     hkVector4 from, to, up;
     transform_vec3(from, g_camera.m_eye);
     transform_vec3(to, g_camera.m_at);
     transform_vec3(up, g_camera.m_up);
     HK_DISPLAY_STAR(from, 1.0f, hkColor::RED);
     HK_UPDATE_CAMERA(from, to, up, g_camera.m_near, g_camera.m_far, g_camera.m_fov, name);
+#endif
 }
 
 

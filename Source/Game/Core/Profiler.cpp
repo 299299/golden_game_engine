@@ -1,10 +1,17 @@
 #include "Profiler.h"
 #include "MemorySystem.h"
 #include "Gui.h"
-#include "EngineAssert.h"
+#include "Prerequisites.h"
 #include <cstdio>
 #include <cstring>
 #include <bx/timer.h>
+
+#ifndef max
+#define max(a,b)    (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b)    (((a) < (b)) ? (a) : (b))
+#endif
 
 int64_t HiresTimer::frequency = 0;
 static const int LINE_MAX_LENGTH = 256;
@@ -50,8 +57,7 @@ Profiler::Profiler() :
     totalFrames_(0),
     numBlocks_(0)
 {
-    root_ = alloc_block("Root");
-    current_ = root_;
+
 }
 
 Profiler::~Profiler()
@@ -275,6 +281,8 @@ void Profiler::dump_block_to_file(  void* fp_,
 void Profiler::init()
 {
     blocks_ = COMMON_ALLOC(ProfilerBlock, TOTAL_BLOCK_NUM);
+    root_ = alloc_block("Root");
+    current_ = root_;
 }
 
 void Profiler::shutdown()

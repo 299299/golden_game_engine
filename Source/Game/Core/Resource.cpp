@@ -4,11 +4,9 @@
 #include "linear_allocator.h"
 #include "DataDef.h"
 #include "Utils.h"
-#include "EngineAssert.h"
 #include "GameConfig.h"
-//=====================================================
 #include <bx/readerwriter.h>
-//=====================================================
+#include <bx/mutex.h>
 #ifdef HAVOK_COMPILE
 #include <Common/Base/Thread/Thread/hkThread.h>
 #include <Common/Base/Thread/Semaphore/hkSemaphore.h>
@@ -17,16 +15,13 @@
 #include <Common/Base/System/hkBaseSystem.h>
 #include <Common/Base/Thread/Thread/hkWorkerThreadContext.h>
 #include <Common/Serialize/Util/hkLoader.h>
-#include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #include <Common/Base/Container/PointerMap/hkPointerMap.h>
 #endif
 
 ResourceManager                 g_resourceMgr;
-static hkCriticalSection        g_runningCS;
-static hkCriticalSection        g_queueCS;
-static hkCriticalSection        g_resourceCS;
-static hkCriticalSection        g_statusCS;
-static volatile bool            g_running = true;
+static bx::LwMutex              g_queueLock;
+static bx::LwMutex              g_resourceLock;
+static volatile int             g_running = 1;
 
 #define RESOURCE_WORKER_THREAD_ID                   (1)
 #ifdef HAVOK_COMPILE
@@ -36,12 +31,10 @@ static  ResourceMap*            g_resourceMap = 0;
 
 static bool is_running()
 {
-    hkCriticalSectionLock _l(&g_runningCS);
-    return g_running;
+    return g_running != 0;
 }
-static void set_running(bool bRunning)
+static void set_running(int bRunning)
 {
-    hkCriticalSectionLock _l(&g_runningCS);
     g_running = bRunning;
 }
 inline hkUint64 packId(const StringId& type, const StringId& name)
@@ -109,7 +102,7 @@ void ResourcePackage::load_group(int index)
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
     ResourceFactory* fac = g_resourceMgr.find_factory(type);
-    ENGINE_ASSERT(fac, "ResourceFactory %s not found.", stringid_lookup(type));
+    ENGINE_ASSERT_ARGS(fac, "ResourceFactory %s not found.", stringid_lookup(type));
 
     char* pThis = (char*)this;
     group.m_factory = fac;
@@ -314,13 +307,11 @@ void ResourcePackage::bringout_all_resources()
 
 int ResourcePackage::get_status() const
 {
-    hkCriticalSectionLock _l(&g_statusCS);
     return m_status;
 }
 
 void ResourcePackage::set_status( int status )
 {
-    hkCriticalSectionLock _l(&g_statusCS);
     m_status = status;
 }
 
@@ -450,7 +441,7 @@ void ResourceManager::register_factory(const ResourceFactory& factory)
 void* ResourceManager::find_resource( const StringId& type, const StringId& name )
 {
     if(!name) return 0;
-    hkCriticalSectionLock _l(&g_resourceCS);
+    bx::LwMutexScope _l(g_resourceLock);
 #ifdef HAVOK_COMPILE
     ResourceMap::Iterator it = g_resourceMap->findKey(packId(type, name));
     if(!g_resourceMap->isValid(it))
@@ -466,7 +457,7 @@ void* ResourceManager::find_resource( const StringId& type, const StringId& name
 
 void ResourceManager::insert_resource( const StringId& type, const StringId& name, void* resource )
 {
-    hkCriticalSectionLock _l(&g_resourceCS);
+    bx::LwMutexScope _l(g_resourceLock);
 #ifdef HAVOK_COMPILE
     g_resourceMap->insert(packId(type, name), resource);
 #endif
@@ -474,7 +465,7 @@ void ResourceManager::insert_resource( const StringId& type, const StringId& nam
 
 void ResourceManager::remove_resource( const StringId& type, const ResourceInfo& info )
 {
-    hkCriticalSectionLock _l(&g_resourceCS);
+    bx::LwMutexScope _l(g_resourceLock);
 #ifdef HAVOK_COMPILE
     g_resourceMap->remove(packId(type, info.m_name));
 #endif
@@ -574,12 +565,10 @@ void ResourceManager::process_request()
     while(is_running())
     {
         if(!m_requestListHead)
-        {
             break;
-        }
         ResourceRequest* request;
         {
-            hkCriticalSectionLock _l(&g_queueCS);
+            bx::LwMutexScope _l(g_queueLock);
             request = m_requestListHead;
             m_requestListHead = request->m_next;
         }
@@ -610,7 +599,7 @@ void ResourceManager::process_request()
 
 void ResourceManager::push_request( ResourceRequest* request )
 {
-    hkCriticalSectionLock _l(&g_queueCS);
+    bx::LwMutexScope _l(g_queueLock);
     if(!m_requestListHead)
     {
         m_requestListHead = request;

@@ -1,7 +1,7 @@
 #include "GameState.h"
-#include "EngineAssert.h"
 #include "Log.h"
 #include "Profiler.h"
+#include "Prerequisites.h"
 
 GameState::GameState()
 {
@@ -15,22 +15,22 @@ GameState::~GameState()
 
 void GameState::pre_step( float dt )
 {
-    
+
 }
 
 void GameState::step( float dt )
 {
-    
+
 }
 
 void GameState::post_step( float dt )
 {
-    
+
 }
 
 void GameState::render()
 {
-    
+
 }
 
 GameFSM g_gameFSM;
@@ -83,7 +83,7 @@ void GameFSM::change_state( GameState* state )
     LOGI("change_state from %s to %s.", cur_state ? cur_state->get_name() : "(null)",  next_state->get_name());
     if(cur_state) cur_state->on_exit(next_state);
     next_state->on_enter(cur_state);
-    m_state = next_state;    
+    m_state = next_state;
 }
 
 GameState* GameFSM::find_state(const char* name)

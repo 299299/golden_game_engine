@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include "jsmn.h"
-#include "EngineAssert.h"
 
 #ifdef JSMN_NEXT_LINKS
 #   ifndef JSMN_PARENT_LINKS
 #       error "Cannot parse without parent links"
 #   endif
 #endif
-
 
 /**
  * Allocates a fresh unused token from the token pull.
@@ -19,7 +17,7 @@ static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser, jsmntok_t *tokens, size_
     // this assert will fail if you are trying to parse huge file without JSMN_HUGE_FILES define!
     ENGINE_ASSERT(parser->toknext + 1 < JSMN_INVALID_VALUE, "huge file toknext error!");
 #endif
-    
+
     tok = &tokens[parser->toknext++];
     tok->start = tok->end = JSMN_INVALID_VALUE;
     tok->size = 0;
@@ -36,7 +34,7 @@ static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser, jsmntok_t *tokens, size_
 /**
  * Fills token type and boundaries.
  */
-static void jsmn_fill_token(jsmntok_t *token, jsmntype_t type, 
+static void jsmn_fill_token(jsmntok_t *token, jsmntype_t type,
                             unsigned int start, unsigned int end) {
     token->type = type;
     token->start = (jsmn_uint_t)start;
@@ -241,7 +239,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, unsigned strSize, jsmn
     char expects_key_token = 1;
     char opened_array = 0;
     char opened_object = 0;
-    
+
     const int has_root = jsmn_string_has_root(parser, js);
 
     if (!has_root)
@@ -260,7 +258,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, unsigned strSize, jsmn
         char c = js[parser->pos];
 
         switch (c) {
-            case '{': 
+            case '{':
                 expects_key_token = 1;
                 ++opened_object;
             case '[':
@@ -352,7 +350,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, unsigned strSize, jsmn
 
                 if (expects_key_token && (parser->toksuper == JSMN_INVALID_VALUE || tokens[parser->toksuper].type != JSMN_ARRAY))
                     tokens[parser->toknext - 1].is_key = expects_key_token;
-                
+
 #ifdef JSMN_NEXT_LINKS
                 if (parser->toksuper == JSMN_INVALID_VALUE || tokens[parser->toksuper].type == JSMN_OBJECT) {
                     if (tokens[parser->toknext - 1].is_key) {
@@ -377,7 +375,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, unsigned strSize, jsmn
                 break;
             case ':' :
                 expects_key_token = 0;
-            case '\t' : case '\r' : case '\n' : case ' ': 
+            case '\t' : case '\r' : case '\n' : case ' ':
                 break;
 #ifdef JSMN_STRICT
             /* In strict mode primitives are: numbers and booleans */
@@ -421,7 +419,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, unsigned strSize, jsmn
 }
 
 /**
- * Creates a new parser based over a given  buffer with an array of tokens 
+ * Creates a new parser based over a given  buffer with an array of tokens
  * available.
  */
 void jsmn_init(jsmn_parser *parser) {

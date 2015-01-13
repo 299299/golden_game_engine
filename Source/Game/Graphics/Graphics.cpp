@@ -3,7 +3,6 @@
 #include "DataDef.h"
 #include "MemorySystem.h"
 #include "Profiler.h"
-#include "EngineAssert.h"
 //============================================
 #include "RenderCamera.h"
 #include "DebugDraw.h"
@@ -23,6 +22,7 @@
 #include <bx/bx.h>
 #include <bx/allocator.h>
 #include <bx/uint32_t.h>
+#include <bx/string.h>
 
 
 #define BGFX_COLOR 0x303030ff
@@ -113,8 +113,8 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, ui
     fb->create();
     return fb;
 }
-FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, 
-                               bgfx::TextureFormat::Enum format, 
+FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
+                               bgfx::TextureFormat::Enum format,
                                uint32_t texFlags = BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP)
 {
     texFlags |= texFlags & BGFX_TEXTURE_RT_MSAA_MASK ? 0 : BGFX_TEXTURE_RT;
@@ -164,7 +164,9 @@ void createUniforms()
 void Graphics::init(void* hwnd, bool bFullScreen)
 {
     TIMELOG("Graphics::Init");
+#ifdef HAVOK_COMPILE
     bgfx::winSetHwnd((HWND)hwnd);
+#endif
     bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null, &g_bgfxCallback);
     const bgfx::Caps* caps = bgfx::getCaps();
     bool shadowSamplerSupported = 0 != (caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);
@@ -194,9 +196,9 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     for (int i = 0; i < N_PASSES; ++i)
     {
         char buf[32];
-        sprintf_s(buf, "h-blur-%d", i+1);
+        bx::snprintf(buf, sizeof(buf), "h-blur-%d", i+1);
         bgfx::setViewName(kHDRBlurViewIdStart + i * 2 + 0, buf);
-        sprintf_s(buf, "v-blur-%d", i+1);
+        bx::snprintf(buf, sizeof(buf), "v-blur-%d", i+1);
         bgfx::setViewName(kHDRBlurViewIdStart + i * 2 + 1, buf);
     }
     bgfx::setViewName(kCombineViewId, "combine");
@@ -217,7 +219,7 @@ void postProcessInit()
 {
     int width = g_win32Context.m_width;
     int height = g_win32Context.m_height;
-    
+
     int smSize = SHADOWMAP_SIZE;
     g_shadowMap.m_shadowMapSize = smSize;
     g_shadowMap.m_shadowMapFB = createFrameBuffer(smSize, smSize, 1, 1, false, bgfx::TextureFormat::D16, BGFX_TEXTURE_COMPARE_LEQUAL);
@@ -225,9 +227,9 @@ void postProcessInit()
     uint32_t msaa = (g_resetFlag & BGFX_RESET_MSAA_MASK)>>BGFX_RESET_MSAA_SHIFT;
     uint32_t msaaMask = (msaa+1)<<BGFX_TEXTURE_RT_MSAA_SHIFT;
     bgfx::TextureFormat::Enum fboFmt = bgfx::TextureFormat::RGBA16F;
-    FrameBufferTexture mainRtTextures[] = 
+    FrameBufferTexture mainRtTextures[] =
     {
-        {fboFmt, msaaMask|BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP},    
+        {fboFmt, msaaMask|BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP},
         {bgfx::TextureFormat::D16, BGFX_TEXTURE_RT_BUFFER_ONLY|msaaMask}
     };
     g_postProcess.m_colorFB = createFrameBuffer(width, height, 1, 1, true, BX_COUNTOF(mainRtTextures), mainRtTextures);
@@ -376,7 +378,7 @@ void postProcessSubmit(ShadingEnviroment* env)
         uint32_t vViewId = kHDRBlurViewIdStart + i*2 + 1;
         bgfx::setViewTransform(hViewId, view, proj);
         bgfx::setViewTransform(vViewId, view, proj);
-        
+
         // horizontalBlur
         hfb->begin(hViewId);
         Graphics::set_texture(TEX_COLOR_SLOT, current->m_handle);

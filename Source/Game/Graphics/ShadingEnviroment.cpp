@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "Win32Context.h"
 #include "DataDef.h"
-#include "EngineAssert.h"
+#include "Prerequisites.h"
 #include <bx/fpumath.h>
 #include <stdio.h>
 
@@ -22,10 +22,10 @@ void ShadingEnviroment::submit()
     bgfx::setUniform(g_uniformPerFrame.m_ambientSkyColor, m_ambientSkyColor);
     bgfx::setUniform(g_uniformPerFrame.m_ambientGroundColor, m_ambientGroundColor);
     bgfx::setUniform(g_uniformPerFrame.m_fogParams, m_fogParams);
-    
+
     bgfx::setUniform(g_postProcess.m_ppUniform, m_ppParams);
     bgfx::setUniform(g_postProcess.m_bloomUniform, m_bloomParams);
-    
+
 }
 
 void ShadingEnviroment::lookup()

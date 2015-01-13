@@ -1,5 +1,5 @@
 #include "pool_allocator.h"
-#include "EngineAssert.h"
+#include "Prerequisites.h"
 
 //-----------------------------------------------------------------------------
 PoolAllocator::PoolAllocator(Allocator& backing, size_t num_blocks, size_t block_size, size_t block_align)

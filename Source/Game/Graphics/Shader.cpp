@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "Resource.h"
 #include "Log.h"
+#include <bx/string.h>
 
 void Shader::bringin()
 {
@@ -81,6 +82,6 @@ void bringout_resource_shader_program(void* resource)
 ShaderProgram* find_shader( const char* name )
 {
     char buf[256];
-    sprintf_s(buf, PROGRAM_PATH"%s", name);
+    bx::snprintf(buf, sizeof(buf), PROGRAM_PATH"%s", name);
     return FIND_RESOURCE_NAMED(ShaderProgram, buf);
 }

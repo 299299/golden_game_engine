@@ -10,6 +10,7 @@ class hkaAnimatedSkeleton;
 class hkaSkeleton;
 class hkaPose;
 class hkRootLevelContainer;
+class hkpRigidBody;
 
 enum RagdollState
 {

@@ -2,8 +2,9 @@
 #include "Resource.h"
 #include "MathDefs.h"
 #include "Log.h"
-#include "EngineAssert.h"
+#include "Prerequisites.h"
 
+#ifdef HAVOK_COMPILE
 void transform_object(hkQsTransform& m, const float* t, const float* r, const float* s)
 {
     m.setIdentity();
@@ -12,6 +13,7 @@ void transform_object(hkQsTransform& m, const float* t, const float* r, const fl
     m.m_rotation.set(r[0], r[1], r[2], r[3]);
     ENGINE_ASSERT(m.isOk(), "m should ok!");
 }
+#endif
 
 void Level::load()
 {

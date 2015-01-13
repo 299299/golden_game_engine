@@ -1,6 +1,5 @@
 #include "Engine.h"
 #include "Prerequisites.h"
-//sub systems
 #include "MemorySystem.h"
 #include "Thread.h"
 #include "Resource.h"
@@ -9,18 +8,14 @@
 #include "XBoxInput.h"
 #include "Graphics.h"
 #include "Profiler.h"
-#include "RenderCamera.h"
 #include "Utils.h"
 #include "GameConfig.h"
 #include "GameState.h"
 #include "DebugDraw.h"
-//=================================================================
 #include "Log.h"
 #include "DataDef.h"
 #include "Win32Context.h"
-//=================================================================
 #include <bx/timer.h>
-#include <windows.h>
 
 float     g_totalSeconds = 0.0;
 double    g_frameTimeMS = 0.0;
@@ -132,7 +127,6 @@ void Engine::frame(float timeStep)
         PROFILE(Engine_FrameEnd);
         m_state = kFrameEnd;
         Graphics::frame_end();
-        debug_update_vdb_camera();
         g_threadMgr.vdb_update(timeStep);
     }
 }
@@ -141,7 +135,7 @@ void Engine::apply_framelimit(double timeMS)
 {
     PROFILE(FrameLimit);
     if(timeMS < 1.0) return;
-    accurate_sleep((DWORD)timeMS);
+    accurate_sleep((uint32_t)timeMS);
 }
 
 void Engine::core_init()

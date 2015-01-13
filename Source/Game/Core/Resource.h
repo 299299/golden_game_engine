@@ -68,7 +68,7 @@ ENGINE_NATIVE_ALIGN struct ResourcePackage
     LinearAllocator*                    m_allocator;
     char                                m_allocator_buffer[32];
 
-    uint32_t                            m_status;
+    volatile uint32_t                   m_status;
     bool                                m_bundled;
 
     void  init();

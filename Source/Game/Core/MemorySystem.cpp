@@ -13,16 +13,17 @@
 #include <Common/Base/Memory/System/hkMemorySystem.h>
 #include <Common/Base/System/Io/OStream/hkOStream.h>
 #include <Common/Base/Monitor/hkMonitorStream.h>
-#include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 #endif
 //=================================================================
 
 #define STRING_TABLE_FILE                           ("string_table.txt")
 
+#ifdef HAVOK_COMPILE
 static void errorReport(const char* msg, void* userArgGivenToInit)
 {
     LOGHAVOK(msg);
 }
+#endif
 
 MemorySystem    g_memoryMgr;
 #ifndef _RETAIL

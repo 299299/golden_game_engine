@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseTypes.h"
-#include "EngineAssert.h"
 #include "allocator.h"
+#include "Prerequisites.h"
 
 /// Packed array of objects with lookup table.
 ///
@@ -96,7 +96,7 @@ namespace id_array
     template <uint32_t MAX, typename T>
     inline void destroy(IdArray<MAX, T>& a, Id id)
     {
-        ENGINE_ASSERT(has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT_ARGS(has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
         a.m_sparse[id.index].id = INVALID_ID;
         a.m_sparse[id.index].index = a.m_freelist;
@@ -119,7 +119,7 @@ namespace id_array
     template <uint32_t MAX, typename T>
     inline T& get(IdArray<MAX, T>& a, const Id& id)
     {
-        ENGINE_ASSERT(has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT_ARGS(has(a, id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
         return a.m_objects[a.m_sparse_to_dense[id.index]];
     }
@@ -290,7 +290,7 @@ struct DynamicIdArray
 
     void destroy(Id id)
     {
-        ENGINE_ASSERT(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
         m_sparse[id.index].id = INVALID_ID;
         m_sparse[id.index].index = m_freelist;
@@ -311,7 +311,7 @@ struct DynamicIdArray
 
     T& get(Id id)
     {
-        ENGINE_ASSERT(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
         return m_objects[m_sparse_to_dense[id.index]];
     }
 

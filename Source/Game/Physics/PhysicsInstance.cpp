@@ -3,19 +3,19 @@
 #include "Utils.h"
 #include "Log.h"
 #include "PhysicsAutoLock.h"
-#include "EngineAssert.h"
-//==================================================================
+#ifdef HAVOK_COMPILE
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
 #include <Physics2012/Dynamics/World/hkpWorld.h>
 #include <Physics2012/Dynamics/Entity/hkpRigidBody.h>
 #include <Physics2012/Dynamics/World/hkpPhysicsSystem.h>
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
-//==================================================================
+#endif
 
 void PhysicsInstance::init(const void* resource)
 {
     m_resource = (const PhysicsResource*)resource;
     m_inWorld = false;
+#ifdef HAVOK_COMPILE
     const hkpPhysicsData* phyData = m_resource->m_data;
     m_systemType = m_resource->m_systemType;
     switch(m_systemType)
@@ -28,36 +28,41 @@ void PhysicsInstance::init(const void* resource)
         }
     case kSystemTrigger: break;
     case kSystemRagdoll:
-    case kSystemComplex: 
+    case kSystemComplex:
         m_system = phyData->getPhysicsSystems()[0]->clone(); break;
     default: break;
     }
+#endif
     add_to_simulation();
 }
 
 void PhysicsInstance::set_transform(const hkTransform& t)
 {
+#ifdef HAVOK_COMPILE
     PHYSICS_LOCKWRITE(g_physicsWorld.world());
     switch(m_systemType)
-    { 
+    {
     case kSystemRigidBody: m_rigidBody->setTransform(t); break;
     default: break;
     }
+#endif
 }
-    
+
 void PhysicsInstance::destroy()
-{   
+{
     remove_from_simulation();
+#ifdef HAVOK_COMPILE
     switch(m_systemType)
     {
     case kSystemRigidBody: SAFE_REMOVEREF(m_rigidBody); break;
     case kSystemTrigger: break;
     case kSystemComplex:
-    case kSystemRagdoll: 
+    case kSystemRagdoll:
         SAFE_REMOVEREF(m_system); break;
     default:
         break;
     }
+#endif
 }
 
 
@@ -83,11 +88,13 @@ void PhysicsInstance::post_simulation(hkpRigidBody* rb)
 
 void PhysicsInstance::fetch_transform(int index, hkTransform& outT)
 {
+#ifdef HAVOK_COMPILE
     switch(m_systemType)
     {
     case kSystemRigidBody: m_rigidBody->approxCurrentTransform(outT); break;
     default: break;
     }
+#endif
 }
 
 

@@ -5,8 +5,8 @@
 #include "Log.h"
 #include "Resource.h"
 #include "Utils.h"
-#include "EngineAssert.h"
-//==================================================================
+
+#ifdef HAVOK_COMPILE
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
 #include <Animation/Physics2012Bridge/Instance/hkaRagdollInstance.h>
 #include <Animation/Physics2012Bridge/Controller/PoweredConstraint/hkaRagdollPoweredConstraintController.h>
@@ -26,7 +26,6 @@
 #include <Physics/Constraint/Data/LimitedHinge/hkpLimitedHingeConstraintData.h>
 #include <Physics2012/Utilities/Constraint/Bilateral/hkpConstraintUtils.h>
 #include <Physics2012/Collide/Filter/Group/hkpGroupFilter.h>
-//==================================================================
 
 static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneName)
 {
@@ -40,7 +39,7 @@ static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneNam
     }
     return -1;
 }
-bool bone_in_array(hkInt16 boneId, const hkInt16* bones, uint8_t num)
+bool bone_in_array(hkInt16 boneId, const hkInt16* bones, uint32_t num)
 {
     uint32_t n = (uint32_t)num;
     for(uint32_t i=0; i<n; ++i)
@@ -57,6 +56,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
 {
     m_ragdoll = LOAD_OBJECT(container, hkaRagdollInstance);
     ENGINE_ASSERT(m_ragdoll, "can not load hkaRagdollInstance");
+
     const hkaSkeleton* ragdollSkeleton = m_ragdoll->getSkeleton();
     void *objectFound = LOAD_OBJECT(container, hkaSkeletonMapper);
     while (objectFound)
@@ -69,7 +69,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
         }
         else
         {
-            ENGINE_ASSERT(mapperFound->m_mapping.m_skeletonB == ragdollSkeleton, 
+            ENGINE_ASSERT(mapperFound->m_mapping.m_skeletonB == ragdollSkeleton,
                          "mapperFound->m_mapping.m_skeletonB == ragdollSkeleton");
             m_highResToRagdollMapper = mapperFound;
         }
@@ -109,7 +109,6 @@ void RagdollResource::load(hkRootLevelContainer* container)
 
         LOGD("num of lower body bones = %d.", m_numLowerBodyBones);
         ENGINE_ASSERT(m_numLowerBodyBones <= MAX_LOWER_BODY_BONE, "lower body bone num overflow.");
-    }
 }
 
 //=====================================================================
@@ -126,7 +125,7 @@ void RagdollInstance::init(const void* resource)
     m_initFeedback = false;
     m_resource = (const RagdollResource*)resource;
     m_ragdoll = m_resource->m_ragdoll->clone(hkpConstraintInstance::CLONE_DATAS_WITH_MOTORS);
-    
+
     int dynamicLayer = g_physicsWorld.get_layer(m_resource->m_dynamicLayer);
 
     // Initialize collision/motion settings for the rigidbody ragdoll parts
@@ -162,8 +161,8 @@ void RagdollInstance::init(const void* resource)
     // This routine iterates through the bodies pointed to by the constraints and stabilizes their inertias.
     // This makes both ragdoll controllers lees sensitive to angular effects and hence more effective
     const hkArray<hkpConstraintInstance*>& constraints = m_ragdoll->getConstraintArray();
-    hkpInertiaTensorComputer::optimizeInertiasOfConstraintTree( constraints.begin(), 
-                                                                constraints.getSize(), 
+    hkpInertiaTensorComputer::optimizeInertiasOfConstraintTree( constraints.begin(),
+                                                                constraints.getSize(),
                                                                 m_ragdoll->getRigidBodyOfBone(0) );
 
     // Construct the ragdoll rigidbody controller
@@ -199,31 +198,31 @@ void RagdollInstance::remove_from_simulation()
 }
 
 // doRagdoll() : drives the ragdoll to the incoming pose and modifies that pose to reflect the ragdoll
-hkVector4 RagdollInstance::do_ragdoll( const hkQsTransform& worldFromModel, 
-                                      hkaPose& thePose,  
+hkVector4 RagdollInstance::do_ragdoll( const hkQsTransform& worldFromModel,
+                                      hkaPose& thePose,
                                       float timeStep )
 {
     // Get the ragdoll's reference pose in model space
     // We use this pose as the in+out pose to the mapper below
     const hkaSkeleton* rSkel = m_ragdoll->getSkeleton();
     hkLocalBuffer<hkQsTransform> ragdollModelSpace( rSkel->m_bones.getSize() );
-    hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(), 
-                                                     rSkel->m_parentIndices.begin(), 
-                                                     rSkel->m_referencePose.begin(), 
+    hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(),
+                                                     rSkel->m_parentIndices.begin(),
+                                                     rSkel->m_referencePose.begin(),
                                                      ragdollModelSpace.begin() );
 
     // Map the pose from the animation (highres) to ragdoll (lowres)
-    m_resource->m_highResToRagdollMapper->mapPose( thePose.getSyncedPoseModelSpace().begin(), 
-                                       rSkel->m_referencePose.begin(), 
-                                       ragdollModelSpace.begin(), 
+    m_resource->m_highResToRagdollMapper->mapPose( thePose.getSyncedPoseModelSpace().begin(),
+                                       rSkel->m_referencePose.begin(),
+                                       ragdollModelSpace.begin(),
                                        hkaSkeletonMapper::CURRENT_POSE );
 
     // Drive the powered constraints to this ragdoll pose using a controller
     {
         hkLocalBuffer<hkQsTransform> ragdollLocalSpace( rSkel->m_bones.getSize() );
-        hkaSkeletonUtils::transformModelPoseToLocalPose( rSkel->m_bones.getSize(), 
-                                                         rSkel->m_parentIndices.begin(), 
-                                                         ragdollModelSpace.begin(), 
+        hkaSkeletonUtils::transformModelPoseToLocalPose( rSkel->m_bones.getSize(),
+                                                         rSkel->m_parentIndices.begin(),
+                                                         ragdollModelSpace.begin(),
                                                          ragdollLocalSpace.begin() );
 
         hkaRagdollPoweredConstraintController::startMotors(m_ragdoll);
@@ -254,7 +253,7 @@ hkVector4 RagdollInstance::do_ragdoll( const hkQsTransform& worldFromModel,
     }
 
     m_dynamicTime += timeStep;
-    // For this demo, we force the proxy to follow the root - 
+    // For this demo, we force the proxy to follow the root -
     // we just do this to simplify shadow calcs which are relative to the proxy
     // In general, you don't need to do this
     //m_characterProxy->setPosition( ragdollInstance_->getRigidBodyOfBone(0)->getPosition() );
@@ -265,8 +264,8 @@ hkVector4 RagdollInstance::do_ragdoll( const hkQsTransform& worldFromModel,
 // doRagdollFeedback() drives the rigid bodies that make up the ragdoll during non-death states. This is used for get hit effects, and
 // for bone collisions.
 // By default, the lower body is keyframed - it doesn't react, while the upper body is dynamic - it reacts.
-void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel, 
-                                         hkaPose &thePose, 
+void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel,
+                                         hkaPose &thePose,
                                          float timeStep)
 {
     const RagdollResource* res = m_resource;
@@ -274,22 +273,22 @@ void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel,
     // Start with the reference pose (in+out parameter to mapper)
     const hkaSkeleton* rSkel = m_ragdoll->getSkeleton();
     hkLocalBuffer<hkQsTransform> lowResModelSpace( rSkel->m_bones.getSize() );
-    hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(), 
-                                                     rSkel->m_parentIndices.begin(), 
-                                                     rSkel->m_referencePose.begin(), 
+    hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(),
+                                                     rSkel->m_parentIndices.begin(),
+                                                     rSkel->m_referencePose.begin(),
                                                      lowResModelSpace.begin() );
 
     // Map from animation to ragdoll
-    res->m_highResToRagdollMapper->mapPose( thePose.getSyncedPoseModelSpace().begin(), 
-                                       rSkel->m_referencePose.begin(), 
-                                       lowResModelSpace.begin(), 
+    res->m_highResToRagdollMapper->mapPose( thePose.getSyncedPoseModelSpace().begin(),
+                                       rSkel->m_referencePose.begin(),
+                                       lowResModelSpace.begin(),
                                        hkaSkeletonMapper::CURRENT_POSE );
 
     // Convert the output to local space (required by the controller
     hkLocalBuffer<hkQsTransform> lowResLocalSpace( rSkel->m_bones.getSize() );
-    hkaSkeletonUtils::transformModelPoseToLocalPose( rSkel->m_bones.getSize(), 
-                                                     rSkel->m_parentIndices.begin(), 
-                                                     lowResModelSpace.begin(), 
+    hkaSkeletonUtils::transformModelPoseToLocalPose( rSkel->m_bones.getSize(),
+                                                     rSkel->m_parentIndices.begin(),
+                                                     lowResModelSpace.begin(),
                                                      lowResLocalSpace.begin() );
 
     // If we weren't doing this before...
@@ -345,7 +344,7 @@ void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel,
     controlData.m_snapMaxLinearDistance =  res->m_snapMaxLinearDistance;
     controlData.m_snapMaxAngularDistance = res->m_snapMaxAngularDistance;
     hkLocalBuffer<hkaKeyFrameHierarchyUtility::Output> output(numBodies);
-    m_rigidBodyController->driveToPose( timeStep, lowResLocalSpace.begin(), 
+    m_rigidBodyController->driveToPose( timeStep, lowResLocalSpace.begin(),
                                         worldFromModel, output.begin());
 
     HK_TIMER_END();
@@ -356,15 +355,15 @@ void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel,
         m_ragdoll->getPoseModelSpace(ragdollModelSpace.begin(), worldFromModel);
 
         hkLocalBuffer<hkQsTransform> ragdollLocalSpace( rSkel->m_bones.getSize() );
-        hkaSkeletonUtils::transformModelPoseToLocalPose( rSkel->m_bones.getSize(), 
-                                                         rSkel->m_parentIndices.begin(), 
-                                                         ragdollModelSpace.begin(), 
+        hkaSkeletonUtils::transformModelPoseToLocalPose( rSkel->m_bones.getSize(),
+                                                         rSkel->m_parentIndices.begin(),
+                                                         ragdollModelSpace.begin(),
                                                          ragdollLocalSpace.begin() );
 
         float ragdollFeedBack = m_resource->m_ragdollFeedback;
         for (int i =0; i < numBodies; i++ )
         {
-            // Show stress : we set the color of rigid bodies based on 
+            // Show stress : we set the color of rigid bodies based on
             //the output of the controller (the stress)
     #ifndef _RETAIL
             {
@@ -384,10 +383,10 @@ void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel,
             }
     #endif
 
-            // Here we do the interpolation  between the animation-based pose and 
+            // Here we do the interpolation  between the animation-based pose and
             // the ragdoll-based pose, based on the stress
-            lowResLocalSpace[i].setInterpolate4( lowResLocalSpace[i], 
-                                                 ragdollLocalSpace[i], 
+            lowResLocalSpace[i].setInterpolate4( lowResLocalSpace[i],
+                                                 ragdollLocalSpace[i],
                                                  ragdollFeedBack);
         }
     }
@@ -395,16 +394,16 @@ void RagdollInstance::do_ragdoll_feedback(const hkQsTransform& worldFromModel,
     // We now map the blended pose to the high res skeleton
     {
         // Need to recalculate the model space version of the blended pose
-        hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(), 
-                                                         rSkel->m_parentIndices.begin(), 
-                                                         lowResLocalSpace.begin(), 
+        hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(),
+                                                         rSkel->m_parentIndices.begin(),
+                                                         lowResLocalSpace.begin(),
                                                          lowResModelSpace.begin() );
 
         // Do the mapping
         const hkQsTransform* localBIn  = thePose.getSyncedPoseLocalSpace().begin();
         hkQsTransform*       modelBOut = thePose.accessSyncedPoseModelSpace().begin();
-        res->m_ragdollToHighResMapper->mapPose(  lowResModelSpace.begin(), 
-                                                        localBIn, modelBOut, 
+        res->m_ragdollToHighResMapper->mapPose(  lowResModelSpace.begin(),
+                                                        localBIn, modelBOut,
                                                         hkaSkeletonMapper::CURRENT_POSE );
     }
 }
@@ -483,22 +482,22 @@ void RagdollInstance::set_transform( const hkQsTransform& t )
         const hkaSkeleton* skel = m_animSkeleton->getSkeleton();
         hkLocalBuffer< hkQsTransform > animPose( skel->m_bones.getSize() );
         m_animSkeleton->sampleAndCombineAnimations( animPose.begin(), HK_NULL );
-        hkaSkeletonUtils::transformLocalPoseToModelPose( skel->m_bones.getSize(), 
-            skel->m_parentIndices.begin(), 
-            animPose.begin(), 
+        hkaSkeletonUtils::transformLocalPoseToModelPose( skel->m_bones.getSize(),
+            skel->m_parentIndices.begin(),
+            animPose.begin(),
             animPose.begin() );
 
         // Now, map the animation pose into a low-res pose we can use for the ragdoll
         // We start with the reference pose (in model space)
         const hkaSkeleton* rSkel = m_ragdoll->getSkeleton();
         hkLocalBuffer<hkQsTransform> ragdollModelSpace( rSkel->m_bones.getSize() );
-        hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(), 
-            rSkel->m_parentIndices.begin(), 
-            rSkel->m_referencePose.begin(), 
+        hkaSkeletonUtils::transformLocalPoseToModelPose( rSkel->m_bones.getSize(),
+            rSkel->m_parentIndices.begin(),
+            rSkel->m_referencePose.begin(),
             ragdollModelSpace.begin() );
-        m_resource->m_highResToRagdollMapper->mapPose( animPose.begin(), 
-            rSkel->m_referencePose.begin(), 
-            ragdollModelSpace.begin(), 
+        m_resource->m_highResToRagdollMapper->mapPose( animPose.begin(),
+            rSkel->m_referencePose.begin(),
+            ragdollModelSpace.begin(),
             hkaSkeletonMapper::CURRENT_POSE );
 
         // Set the resulting pose to the ragdoll
@@ -577,12 +576,16 @@ static void set_keyframe_without_collisions(hkpRigidBody* rb, int layerId)
     }
 }
 
+#endif
+
 void* load_resource_ragdoll( const char* data, uint32_t size )
 {
     RagdollResource* ragdoll = (RagdollResource*)data;
     char* havokData = (char*)data + ragdoll->m_havokDataOffset;
+#ifdef HAVOK_COMPILE
     hkRootLevelContainer* container = (hkRootLevelContainer*)load_havok_inplace(havokData, ragdoll->m_havokDataSize);
     ragdoll->load(container);
+#endif
     return ragdoll;
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
+
+#ifdef HAVOK_COMPILE
 #include <Animation/Animation/Ik/FootPlacement/hkaFootPlacementIkSolver.h>
 
 enum AnimRaycastType
@@ -40,4 +42,11 @@ private:
 public:
     int             m_type;
 };
+#else
+class AnimRaycastInterface
+{
+public:
+    int m_type;
+};
+#endif
 

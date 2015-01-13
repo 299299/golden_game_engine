@@ -201,6 +201,7 @@ void DebugDrawManager::add_aabb( const float* min, const float* max, uint32_t co
 
 void DebugDrawManager::add_axis( const hkQsTransform& t, float size , bool bDepth)
 {
+#ifdef HAVOK_COMPILE
     const hkVector4& start_pos = t.m_translation;
     hkVector4 x_end;
     x_end.setTransformedPos(t, hkVector4(size,0,0));
@@ -216,6 +217,7 @@ void DebugDrawManager::add_axis( const hkQsTransform& t, float size , bool bDept
     add_line(pos, xPos, RGBA(255,0,0,255), bDepth);
     add_line(pos, yPos, RGBA(0,255,0,255), bDepth);
     add_line(pos, zPos, RGBA(0,0,255,255), bDepth);
+#endif
 }
 
 void DebugDrawManager::add_cross( const float* pos, float size, uint32_t color, bool bDepth)
@@ -282,6 +284,7 @@ void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t c
 
 void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uint32_t color, bool bDepth)
 {
+#ifdef HAVOK_COMPILE
     hkQuaternion	orientation;
     hkVector4		normal;
     transform_vec3(normal, d);
@@ -313,6 +316,7 @@ void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uin
     p.setAddMul4(o, normal, r/4.0f);
     transform_vec3(start, p);
     add_line(pos, start, color, bDepth);
+#endif
 }
 
 void DebugDrawManager::add_triangle( const float* v0, const float* v1, const float* v2, uint32_t color, bool bDepth)
@@ -384,6 +388,7 @@ void DebugDrawManager::add_grid( int gridsNum, float gridWidth, uint32_t color, 
 
 void DebugDrawManager::add_direction( const hkQsTransform& t, float len, uint32_t color, bool bDepth )
 {
+#ifdef HAVOK_COMPILE
 	float triangle_len = len;
 	float quad_width = triangle_len/2, quad_height = quad_width*4;
 	hkVector4 v0, v1, v2, v3;
@@ -422,6 +427,7 @@ void DebugDrawManager::add_direction( const hkQsTransform& t, float len, uint32_
 	add_line(s_v1, s_v2, color, bDepth);
 	add_line(s_v2, s_v3, color, bDepth);
 	add_line(s_v3, s_v0, color, bDepth);
+#endif
 }
 
 

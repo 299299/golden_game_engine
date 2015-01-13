@@ -1,5 +1,5 @@
 #pragma once
-#include "Prerequisites.h"
+#include "BaseTypes.h"
 
 class hkJobQueue;
 class hkThreadPool;
@@ -14,7 +14,7 @@ public:
     ~ThreadSystem();
     void init(bool bCreateVDB);
     void quit();
-    
+
     hkJobQueue* get_jobqueue() const { return m_jobQueue;};
     hkThreadPool* get_threadpool() const { return m_threadPool;};
     uint32_t get_main_threadid() const { return m_mainThreadId; };
@@ -31,7 +31,7 @@ private:
     hkThreadPool*                                   m_threadPool;
     hkpPhysicsContext*                              m_physicsCtx;
     hkVisualDebugger*                               m_vdb;
-    uint32_t                                        m_mainThreadId;
+    volatile uint32_t                               m_mainThreadId;
 };
 
 extern ThreadSystem g_threadMgr;

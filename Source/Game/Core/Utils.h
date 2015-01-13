@@ -64,7 +64,7 @@ struct CommandMachine
 {
     void init(int max_commands, int max_callbacks);
     static uint32_t caculate_memory(int max_commands, int max_callbacks);
-    
+
     /// Adds a command to the queue
     void addCommand( const Command& command );
     /// Advance machine to the given time.
@@ -75,7 +75,7 @@ struct CommandMachine
     float getCurrentTime() const;
     /// Reset the internal clock
     void resetTime(float newTime = 0.0f);
-    
+
     _command_callback_*     m_callbacks;
     Command*                m_commands;
     float                   m_currentTime;

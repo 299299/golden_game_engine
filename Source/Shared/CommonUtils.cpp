@@ -10,7 +10,6 @@
 #include "StringId.h"
 #include "Log.h"
 #include "Prerequisites.h"
-#include "EngineAssert.h"
 #include "Profiler.h"
 #include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
 
@@ -120,7 +119,7 @@ std::string getCurDir()
 bool isFileExist( const std::string& fileName )
 {
     return _access(fileName.c_str(), 0) != -1;
-} 
+}
 bool isFolderExist(const std::string& folderName)
 {
     WIN32_FIND_DATA  wfd;
@@ -128,7 +127,7 @@ bool isFolderExist(const std::string& folderName)
     HANDLE hFind = FindFirstFileA(folderName.c_str(), &wfd);
     if ((hFind != INVALID_HANDLE_VALUE) && (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-        rValue = true;   
+        rValue = true;
     }
     FindClose(hFind);
     return rValue;
@@ -149,20 +148,20 @@ void string_replace( std::string &strBig, const std::string &strsrc, const std::
     std::string::size_type pos = 0;
     std::string::size_type srclen = strsrc.size();
     std::string::size_type dstlen = strdst.size();
-     
+
     while( (pos=strBig.find(strsrc, pos)) != std::string::npos )
     {
         strBig.replace( pos, srclen, strdst );
         pos += dstlen;
     }
-} 
+}
 
 bool fileSystemCopy(const std::string& src, const std::string& destFolder)
 {
     LOGD("file system copy from %s to %s", src.c_str(), destFolder.c_str());
     //PROFILE(file_system_copy);
-    SHFILEOPSTRUCT sfo; 
-    ZeroMemory(&sfo, sizeof(sfo)); 
+    SHFILEOPSTRUCT sfo;
+    ZeroMemory(&sfo, sizeof(sfo));
     sfo.wFunc = FO_COPY;
     char szSrc[MAX_PATH];
     char szDest[MAX_PATH];
@@ -177,19 +176,19 @@ bool fileSystemCopy(const std::string& src, const std::string& destFolder)
     szDest[dstLen] = '\0';
     szDest[dstLen+1] = '\0';
     sfo.pFrom = szSrc;
-    sfo.pTo = szDest; 
-    sfo.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOCONFIRMMKDIR; 
-    int ret = SHFileOperationA(&sfo); 
+    sfo.pTo = szDest;
+    sfo.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOCONFIRMMKDIR;
+    int ret = SHFileOperationA(&sfo);
     if(sfo.fAnyOperationsAborted)
     {
         addError("file copy aborted!");
     }
-    if (!ret) 
+    if (!ret)
         return true;
     else
     {
         LOGE("file system copy failed = %d, 0x%X!", ret, ret);
-        return false; 
+        return false;
     }
 }
 
@@ -223,8 +222,8 @@ void runProcess(const std::string& process, const std::string& workingDir, const
     if(workingDir.length() > 0)
         workDir = tempWorkDir;
 
-    BOOL result = ::CreateProcess(process.c_str(), tempCmdLine, NULL, NULL, FALSE, 
-                                  NORMAL_PRIORITY_CLASS, NULL, workDir, 
+    BOOL result = ::CreateProcess(process.c_str(), tempCmdLine, NULL, NULL, FALSE,
+                                  NORMAL_PRIORITY_CLASS, NULL, workDir,
                                   &startupInfo, &processInformation);
     if (result == 0)
     {
@@ -244,26 +243,26 @@ void findFiles(const std::string& folder, const std::string& ext, bool bRecursiv
     std::string findPath = folder + "*." + ext;
 
     WIN32_FIND_DATA wfd;
-    HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);  
-    if (hFind == INVALID_HANDLE_VALUE) 
-        return;  
+    HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);
+    if (hFind == INVALID_HANDLE_VALUE)
+        return;
 
-    do 
-    {  
+    do
+    {
         if (wfd.cFileName[0] == '.')
             continue;
-        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  
-        {  
+        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
             std::string filePathName = folder + wfd.cFileName + "/";
             if(bRecursive) findFiles(filePathName, ext, bRecursive, outFiles);
-        }  
+        }
         else
-        {  
+        {
             std::string filePathName = folder + wfd.cFileName;
             outFiles.push_back(filePathName);
-        }  
-    } 
-    while (FindNextFile(hFind, &wfd));  
+        }
+    }
+    while (FindNextFile(hFind, &wfd));
     FindClose(hFind);
 }
 void findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders)
@@ -272,23 +271,23 @@ void findFolders(const std::string& folder, bool bRecursive, std::vector<std::st
 
     WIN32_FIND_DATA wfd;
     memset(&wfd, 0, sizeof(wfd));
-    HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);  
-    if (hFind == INVALID_HANDLE_VALUE) 
-        return;  
+    HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);
+    if (hFind == INVALID_HANDLE_VALUE)
+        return;
 
-    do 
-    {  
+    do
+    {
         if (wfd.cFileName[0] == '.')
             continue;
-        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  
-        {  
+        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
             std::string filePathName = folder + wfd.cFileName + "/";
             if(bRecursive)
                 findFolders(filePathName, bRecursive, outFolders);
             outFolders.push_back(folder + wfd.cFileName);
-        }  
-    } 
-    while (FindNextFile(hFind, &wfd));  
+        }
+    }
+    while (FindNextFile(hFind, &wfd));
     FindClose(hFind);
 }
 
@@ -356,7 +355,7 @@ uint64_t get_file_size(const std::string& fileName)
 {
     WIN32_FIND_DATA wfd;
     memset(&wfd, 0, sizeof(wfd));
-    HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);  
+    HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);
     if (hFind == INVALID_HANDLE_VALUE) return 0;
     return MAKE_U64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
 }
@@ -395,13 +394,13 @@ void shell_exec(const std::string& exe, const std::string& args, const std::stri
     ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
     ShExecInfo.hwnd = NULL;
     ShExecInfo.lpVerb = NULL;
-    ShExecInfo.lpFile = exe.c_str();        
-    ShExecInfo.lpParameters = args.c_str();   
+    ShExecInfo.lpFile = exe.c_str();
+    ShExecInfo.lpParameters = args.c_str();
     ShExecInfo.lpDirectory = workDir.length() ? workDir.c_str() : 0;
     ShExecInfo.nShow = bHide ? SW_HIDE : SW_SHOW;
-    ShExecInfo.hInstApp = NULL; 
+    ShExecInfo.hInstApp = NULL;
     BOOL bRet = ShellExecuteEx(&ShExecInfo);
-    if(!bRet) 
+    if(!bRet)
     {
         LOGE("ShellExecuteEx error ");
         return;
@@ -518,7 +517,7 @@ void ResourceFileDataBase::load(const char* fileName)
     uint64_t modifyTime = 0;
     uint32_t fileHash = 0;
     while(!feof(fp))
-    {    
+    {
         int argNum = fscanf(fp, RESOURCE_FILE_FMT, &modifyTime, &fileHash);
         if(argNum != 2) break;
         m_files[fileHash] = modifyTime;
@@ -549,7 +548,7 @@ bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint64_t& 
     //hkCriticalSectionLock _l(&g_dbCS);
     WIN32_FIND_DATA wfd;
     memset(&wfd, 0, sizeof(wfd));
-    HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);  
+    HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);
     if (hFind == INVALID_HANDLE_VALUE) return true;
     FILETIME ftWriteTime = wfd.ftLastWriteTime;
     modifyTime = MAKE_U64(ftWriteTime.dwHighDateTime, ftWriteTime.dwLowDateTime);

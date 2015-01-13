@@ -7,7 +7,8 @@
 #include "Utils.h"
 #include "Profiler.h"
 #include "Event.h"
-//==========================================================================================
+
+#ifdef HAVOK_COMPILE
 #include <Animation/Animation/Animation/hkaAnimation.h>
 #include <Animation/Animation/Animation/Mirrored/hkaMirroredSkeleton.h>
 #include <Animation/Animation/Animation/Mirrored/hkaMirroredAnimation.h>
@@ -22,13 +23,15 @@
 #include <Animation/Animation/Rig/hkaPose.h>
 #include <Animation/Animation/hkaAnimationContainer.h>
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
-//==========================================================================================
+#endif
 
 void Animation::destroy()
 {
+#ifdef HAVOK_COMPILE
     if(!m_mirroredFrom) return;
     if(m_binding) hkaMirroredAnimation::destroyMirroredBinding(m_binding);
     SAFE_REMOVEREF(m_animation);
+#endif
 }
 
 void Animation::lookup()
@@ -39,12 +42,14 @@ void Animation::lookup()
 
 void Animation::create_mirrored_animation(const Animation* orginalAnim)
 {
+#ifdef HAVOK_COMPILE
     destroy();
     AnimRig* rig = FIND_RESOURCE(AnimRig, m_rigName);
     orginalAnim->m_animation->addReference();
     hkaMirroredAnimation* anim = new hkaMirroredAnimation(orginalAnim->m_animation, orginalAnim->m_binding, rig->m_mirroredSkeleton);
     m_binding = anim->createMirroredBinding();
     m_animation = anim;
+#endif
 }
 
 int Animation::find_first_beat( uint32_t type ) const
@@ -73,12 +78,20 @@ int Animation::find_next_closest_beat(float time, bool bLoop) const
 
 int Animation::get_frames() const
 {
+#ifdef HAVOK_COMPILE
     return m_animation->getNumOriginalFrames();
+#else
+    return 0;
+#endif
 }
 
 float Animation::get_length() const
 {
+#ifdef HAVOK_COMPILE
     return m_animation->m_duration;
+#else
+    return 2.0f;
+#endif
 }
 
 uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* events ) const
@@ -107,9 +120,11 @@ void* load_resource_animation( const char* data, uint32_t size)
     anim->m_triggers = (AnimationTrigger*)(data + sizeof(Animation));
     anim->m_beats = (AnimationBeat*)(data + sizeof(Animation) + sizeof(AnimationTrigger) * anim->m_numTriggers);
     char* p = (char*)data + anim->m_havokDataOffset;
+#ifdef HAVOK_COMPILE
     hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havokDataSize);
     anim->m_animation = ac->m_animations[0];
     anim->m_binding = ac->m_bindings[0];
+#endif
     return anim;
 }
 
@@ -130,21 +145,26 @@ void lookup_resource_animation( void * resource )
 //======================================================================
 hkReal caculate_motion_velocity(hkaDefaultAnimationControl* ac)
 {
+#ifdef HAVOK_COMPILE
     hkaAnimation* animation = ac->getAnimationBinding()->m_animation;
     hkQsTransform animMotion;
     animation->getExtractedMotionReferenceFrame(animation->m_duration, animMotion );
     return hkReal(animMotion.m_translation.length3()) / animation->m_duration;
+#else
+    return 0.0f;
+#endif
 }
 
 
 void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
 {
+#ifdef HAVOK_COMPILE
     const hkaSkeleton* skeleton = pose.getSkeleton();
 
-    HK_DISPLAY_MODEL_SPACE_POSE( skeleton->m_bones.getSize(), 
-                                 skeleton->m_parentIndices.begin(), 
-                                 pose.getSyncedPoseModelSpace().begin(), 
-                                 worldFromModel, 
+    HK_DISPLAY_MODEL_SPACE_POSE( skeleton->m_bones.getSize(),
+                                 skeleton->m_parentIndices.begin(),
+                                 pose.getSyncedPoseModelSpace().begin(),
+                                 worldFromModel,
                                  color );
 
     if (!showLabels) return;
@@ -169,10 +189,12 @@ void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int
         s.printf("%d", i);
         d.display3dText(s.cString(), bonemid, color, 0, 0);
     }
+#endif
 }
 
 void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int color, hkBool showLabels)
 {
+#ifdef HAVOK_COMPILE
     const hkaSkeleton* skeleton = pose.getSkeleton();
     const hkInt16* parentIndices = skeleton->m_parentIndices.begin();
     const hkQsTransform* poseMS = pose.getSyncedPoseModelSpace().begin();
@@ -204,5 +226,6 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
             g_debugDrawMgr.add_text_3d(start, skeleton->m_bones[i].m_name.cString(), RGBCOLOR(70,125,200));
         }
     }
+#endif
 }
 

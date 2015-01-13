@@ -2,7 +2,7 @@
 #include "Resource.h"
 #include "MemorySystem.h"
 #include "ShaderInc.h"
-#include "EngineAssert.h"
+#include "Prerequisites.h"
 
 void Texture::bringin(uint32_t flags, uint8_t skip)
 {
@@ -14,7 +14,7 @@ void Texture::bringin(uint32_t flags, uint8_t skip)
 
 void Texture::bringout()
 {
-    if(!bgfx::isValid(m_handle)) 
+    if(!bgfx::isValid(m_handle))
         return;
     bgfx::destroyTexture(m_handle);
     m_handle.idx = bgfx::invalidHandle;
@@ -22,7 +22,7 @@ void Texture::bringout()
 
 void Raw2DTexture::bringin()
 {
-    if(bgfx::isValid(m_handle)) 
+    if(bgfx::isValid(m_handle))
         return;
     const bgfx::Memory* memory = bgfx::makeRef(m_blob, m_size);
     m_handle = bgfx::createTexture2D(m_width, m_height, m_numMips, (bgfx::TextureFormat::Enum)m_format,m_flags, memory);
@@ -31,7 +31,7 @@ void Raw2DTexture::bringin()
 
 void Raw2DTexture::bringout()
 {
-    if(!bgfx::isValid(m_handle)) 
+    if(!bgfx::isValid(m_handle))
         return;
     bgfx::destroyTexture(m_handle);
     m_handle.idx = bgfx::invalidHandle;
@@ -47,7 +47,7 @@ void Raw3DTexture::bringin()
 
 void Raw3DTexture::bringout()
 {
-    if(!bgfx::isValid(m_handle)) 
+    if(!bgfx::isValid(m_handle))
         return;
     bgfx::destroyTexture(m_handle);
     m_handle.idx = bgfx::invalidHandle;

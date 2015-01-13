@@ -13,7 +13,7 @@ StackAllocator::StackAllocator(void* start, size_t size)
 //-----------------------------------------------------------------------------
 StackAllocator::~StackAllocator()
 {
-    ENGINE_ASSERT(m_allocation_count == 0 && allocated_size() == 0,
+    ENGINE_ASSERT_ARGS(m_allocation_count == 0 && allocated_size() == 0,
         "Missing %d deallocations causing a leak of %ld bytes", m_allocation_count, allocated_size());
 }
 

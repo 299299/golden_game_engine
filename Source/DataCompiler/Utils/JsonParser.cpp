@@ -2,7 +2,6 @@
 #include "Log.h"
 #include "MathDefs.h"
 #include "Utils.h"
-#include "EngineAssert.h"
 
 JsonValue JsonValue::JSON_INVALID_VALUE(JSMN_INVALID_VALUE, 0);
 
@@ -56,7 +55,7 @@ unsigned JsonValue::GetElementsCount() const
     if (kToken->type == JSMN_OBJECT)
     {
         // both keys and values are counted as an elements of Object token
-        return kToken->size / 2;    
+        return kToken->size / 2;
     }
     return kToken->size;
 }
@@ -68,7 +67,7 @@ JsonValue JsonValue::operator[](unsigned index) const
                  index, GetElementsCount());
     ENGINE_ASSERT(m_internalTokenIndex != JSMN_INVALID_VALUE, "m_internalTokenIndex != JSMN_INVALID_VALUE");
     ENGINE_ASSERT(m_pParser, "m_pParser");
-    ENGINE_ASSERT(m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_OBJECT || 
+    ENGINE_ASSERT(m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_OBJECT ||
                  m_pParser->InternalGetToken(m_internalTokenIndex)->type == JSMN_ARRAY,
                  "type [%d] not object or array", m_pParser->InternalGetToken(m_internalTokenIndex)->type);
 
@@ -105,7 +104,7 @@ bool JSON_GetBool(const JsonValue& jsValue, bool defaultValue)
     CHECK_VALID();
     return jsValue.AsBool();
 }
-uint32_t JSON_GetString(const JsonValue& jsValue, 
+uint32_t JSON_GetString(const JsonValue& jsValue,
                         char* outString,
                         uint32_t maxLen,
                         const char* defaultValue)

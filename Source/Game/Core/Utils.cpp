@@ -1,12 +1,11 @@
 #include "Utils.h"
 #include "Log.h"
-#include <Windows.h>
-#include <io.h>
 #include "Prerequisites.h"
-#include "EngineAssert.h"
 #include "MemorySystem.h"
 #include "Profiler.h"
-//================================================================
+#include <bx/timer.h>
+#include <bx/fpumath.h>
+#ifdef HAVOK_COMPILE
 #include <Common/Base/System/Io/Reader/hkStreamReader.h>
 #include <Common/Base/System/Io/IStream/hkIStream.h>
 #include <Common/Serialize/Util/hkNativePackfileUtils.h>
@@ -15,7 +14,8 @@
 #include <Common/Serialize/Util/hkSerializeUtil.h>
 #include <Animation/Animation/hkaAnimationContainer.h>
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
-//================================================================
+#include <Windows.h>
+#endif
 
 int find_enum_index(const char* name, const char** enum_names)
 {
@@ -37,19 +37,26 @@ int find_enum_index(const char* name, const char** enum_names)
 
 void* load_havok_inplace(void* data, uint32_t size)
 {
+#ifdef HAVOK_COMPILE
     const char* loadError = 0;
     void* ret = hkNativePackfileUtils::loadInPlace(data, size, 0, &loadError);
     if(!ret) LOGE(loadError);
     return ret;
+#else
+    return 0;
+#endif
 }
 
 void unload_havok_inplace(void* data, uint32_t size)
 {
+#ifdef HAVOK_COMPILE
     hkNativePackfileUtils::unloadInPlace(data, size);
+#endif
 }
 
 void accurate_sleep(uint32_t milliSeconds)
 {
+#ifdef HAVOK_COMPILE
     static LARGE_INTEGER s_freq = {0,0};
     if (s_freq.QuadPart == 0)
         QueryPerformanceFrequency(&s_freq);
@@ -73,16 +80,20 @@ void accurate_sleep(uint32_t milliSeconds)
         if (!done)
         {
             if (ticks_left > (int)s_freq.QuadPart*2/1000)
-                Sleep(1);
-            else                        
-                for (int i=0; i<10; i++) 
-                    Sleep(0); 
+                bx::sleep(1);
+            else {
+                for (int i=0; i<10; i++)
+                    bx::sleep(0);
+            }
         }
     }
-    while (!done);            
+    while (!done);
+#else
+    bx::sleep(milliSeconds);
+#endif
 }
 
-const char* g_fact_keynames[] = 
+const char* g_fact_keynames[] =
 {
     "int", "float", "string", "float4", 0
 };
@@ -93,7 +104,9 @@ uint32_t g_fact_valuesizes[] =
 
 void msg_box( const char* text, const char* title )
 {
+#ifdef HAVOK_COMPILE
     ::MessageBoxA(NULL, text, title, MB_TOPMOST);
+#endif
 }
 
 uint32_t Fact::value_type(const StringId& k) const
@@ -122,7 +135,7 @@ bool Fact::get_key(const StringId& k, Key& out_k) const
     {
         if(head[i].m_name == k)
         {
-            out_k = head[i]; 
+            out_k = head[i];
             return true;
         }
     }
@@ -277,7 +290,7 @@ void CommandMachine::update( float timestep )
         if(cmdTime > endTime) break;
         _command_callback_ func = m_callbacks[cmd.m_command];
         func(cmd);
-        m_currentTime = hkMath::max2(m_currentTime, cmd.m_time);
+        m_currentTime = bx::fmax(m_currentTime, cmd.m_time);
     }
     m_currentTime = endTime;
     if(idx == 0) return;

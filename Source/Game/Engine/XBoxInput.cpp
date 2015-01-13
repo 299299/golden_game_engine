@@ -1,9 +1,14 @@
 #include "XBoxInput.h"
 #include "Prerequisites.h"
 #include "Log.h"
+#include "Profiler.h"
+#include <bx/fpumath.h>
+#ifdef HAVOK_COMPILE
 #include <Windows.h>
 #include <XInput.h>
-#include "Profiler.h"
+#else
+struct XINPUT_STATE{};
+#endif
 
 #define VIBRATION_MAX               (65535.0f)
 #define XINPUT_DEVICE_TIMER         (2.0f)
@@ -27,10 +32,13 @@ XInput::XInput()
     memset(m_LSSmooth, 0x00, sizeof(m_LSSmooth));
     memset(m_RSSmooth, 0x00, sizeof(m_RSSmooth));
     memset(m_vibrateTime, 0x00, sizeof(m_vibrateTime));
+
+#ifdef HAVOK_COMPILE
     for (unsigned i=0; i<XUSER_MAX_COUNT; ++i)
     {
         m_deviceStatus[i] = (XInputGetState(i, &g_states[i]) == ERROR_SUCCESS);
     }
+#endif
 }
 
 XInput::~XInput()
@@ -42,19 +50,25 @@ void XInput::vibrate( int index, float leftVal, float rightVal, float fTime )
 {
     if(!is_connected(index)) return;
     if(fTime <= 0.0f) return;
-    leftVal = hkMath::clamp<float>(leftVal, 0.0f, 1.0f);
-    rightVal = hkMath::clamp<float>(rightVal, 0.0f, 1.0f);
+    leftVal = bx::fclamp(leftVal, 0.0f, 1.0f);
+    rightVal = bx::fclamp(rightVal, 0.0f, 1.0f);
+#ifdef HAVOK_COMPILE
     XINPUT_VIBRATION tmpVibration;
     tmpVibration.wLeftMotorSpeed = (WORD)(leftVal * VIBRATION_MAX);
     tmpVibration.wRightMotorSpeed = (WORD)(rightVal * VIBRATION_MAX);
     m_vibrateTime[index] = fTime;
     XInputSetState(index, &tmpVibration);
+#endif
 }
 
 bool XInput::is_button_down(int index, int button ) const
 {
     if(!is_connected(index)) return false;
+#ifdef HAVOK_COMPILE
     return (g_states[index].Gamepad.wButtons & button) != 0;
+#else
+    return false;
+#endif
 }
 
 bool XInput::is_button_just_pressed(int index, int button) const
@@ -72,6 +86,8 @@ bool XInput::check_devices(float timeStep)
         return bRet;
 
     m_deviceTimer = 0.0f;
+
+#ifdef HAVOK_COMPILE
     for (unsigned i=0; i<XUSER_MAX_COUNT; ++i)
     {
         g_status[i] = (XInputGetState(i, &g_states[i]) == ERROR_SUCCESS);
@@ -82,6 +98,7 @@ bool XInput::check_devices(float timeStep)
             m_deviceStatus[i] = g_status[i];
         }
     }
+#endif
     return bRet;
 }
 
@@ -109,17 +126,25 @@ int XInput::get_connected_num() const
 float XInput::get_left_trigger( int index ) const
 {
     if(!is_connected(index)) return 0.0f;
+#ifdef HAVOK_COMPILE
     float t = (float)g_states[index].Gamepad.bLeftTrigger;
     if(t <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD) return 0.0f;
     return (t - XINPUT_GAMEPAD_TRIGGER_THRESHOLD) / (255.0f - XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+#else
+    return 0.0f;
+#endif
 }
 
 float XInput::get_right_trigger( int index ) const
 {
     if(!is_connected(index)) return 0.0f;
+#ifdef HAVOK_COMPILE
     float t = (float)g_states[index].Gamepad.bRightTrigger;
     if(t <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD) return 0.0f;
     return (t - XINPUT_GAMEPAD_TRIGGER_THRESHOLD) / (255.0f - XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+#else
+    return 0.0f;
+#endif
 }
 
 void caculate_value(short tx, short ty, float deadZone, float* outValue)
@@ -155,7 +180,7 @@ void caculate_value(short tx, short ty, float deadZone, float* outValue)
         magnitude = 0.0f;
         normalizedMagnitude = 0.0f;
 
-        if(abs(tx) < deadZone) 
+        if(abs(tx) < deadZone)
             normalizedLX = 0.0f;
         if(abs(ty) < deadZone)
             normalizedLY = 0.0f;
@@ -166,6 +191,7 @@ void caculate_value(short tx, short ty, float deadZone, float* outValue)
 
 void XInput::update_stick( int index, float timeStep )
 {
+#ifdef HAVOK_COMPILE
     const XINPUT_GAMEPAD& xGamePad = g_states[index].Gamepad;
     caculate_value(xGamePad.sThumbLX,  xGamePad.sThumbLY,  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, m_LSSmooth[index]);
     caculate_value(xGamePad.sThumbRX, xGamePad.sThumbRY,  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE, m_RSSmooth[index]);
@@ -187,6 +213,7 @@ void XInput::update_stick( int index, float timeStep )
         ZeroMemory(&tmpVibration, sizeof(tmpVibration));
         XInputSetState((DWORD)index, &tmpVibration);
     }
+#endif
 }
 
 

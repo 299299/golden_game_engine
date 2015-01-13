@@ -1,4 +1,5 @@
 #include "Thread.h"
+#include "Prerequisites.h"
 #include "Profiler.h"
 #ifdef HAVOK_COMPILE
 #include <Common/Base/System/hkBaseSystem.h>
@@ -26,9 +27,8 @@ ThreadSystem::~ThreadSystem()
 
 void ThreadSystem::init(bool bCreateVDB)
 {
+    m_mainThreadId = bx::getTid();
 #ifdef HAVOK_COMPILE
-    m_mainThreadId = ::GetCurrentThreadId();
-
     // Get the number of physical threads available on the system
     int totalNumThreadsUsed = hkHardwareInfo::getNumHardwareThreads();
 
@@ -115,9 +115,5 @@ void ThreadSystem::vdb_update( float timeStep )
 
 bool ThreadSystem::check_main_thread() const
 {
-#ifdef HAVOK_COMPILE
-    return m_mainThreadId == ::GetCurrentThreadId();
-#else
-    return true;
-#endif
+    return m_mainThreadId == bx::getTid();
 }
