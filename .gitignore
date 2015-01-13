@@ -68,3 +68,4 @@ ipch/
 *.suo
 .build/
 gameDebug.exe
+gameDebug
