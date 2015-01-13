@@ -185,6 +185,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     g_camera.init();
     g_debugDrawMgr.init();
     g_guiMgr.init();
+    g_modelWorld.init();
+    g_lightWorld.init();
 
     //----------------------------------------------
     // view name for debug.
@@ -256,7 +258,9 @@ void Graphics::shutdown()
     {
         bgfx::destroyUniform(g_engineUniforms[i]);
     }
-    g_guiMgr.destroy();
+    g_guiMgr.shutdown();
+    g_modelWorld.shutdown();
+    g_lightWorld.shutdown();
     bgfx::shutdown();
 }
 

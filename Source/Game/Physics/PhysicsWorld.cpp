@@ -9,7 +9,7 @@
 #include "MathDefs.h"
 #include "DebugDraw.h"
 #include "Resource.h"
-#include "id_array.h"
+#include "IdArray.h"
 #include "GameConfig.h"
 #include "Event.h"
 //===========================================
@@ -95,8 +95,8 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
 PhysicsWorld                g_physicsWorld;
 typedef tinystl::unordered_map<uint64_t, CollisionEvent*> CollisionEventMap;
 static CollisionEventMap                        g_collisionEvtMap;
-static IdArray<MAX_PHYSICS, PhysicsInstance>    m_objects;
-static IdArray<MAX_PROXY, ProxyInstance>        m_proxies;
+static IdArray<PhysicsInstance>                 m_objects;
+static IdArray<ProxyInstance>                   m_proxies;
 
 #define MAX_RAYCAST_PERFRAME    (1000)
 
@@ -106,6 +106,8 @@ void PhysicsWorld::init()
     m_world = 0;
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
+    m_objects.init(MAX_PHYSICS, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_proxies.init(MAX_PROXY, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 #ifdef HAVOK_COMPILE
     m_raycastSem = new hkSemaphoreBusyWait(0, 1000);
     hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
@@ -117,6 +119,8 @@ void PhysicsWorld::shutdown()
 #ifdef HAVOK_COMPILE
     SAFE_DELETE(m_raycastSem);
 #endif
+    m_objects.destroy();
+    m_proxies.destroy();
     destroy_world();
 }
 
@@ -126,7 +130,7 @@ void PhysicsWorld::frame_start()
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
     g_collisionEvtMap.clear();
-    m_collisionEvents = FRAME_ALLOC(CollisionEvent*, id_array::size(m_objects));
+    m_collisionEvents = FRAME_ALLOC(CollisionEvent*, m_objects.size());
     m_raycasts = FRAME_ALLOC(RaycastJob, MAX_RAYCAST_PERFRAME);
 }
 
@@ -491,8 +495,8 @@ void PhysicsWorld::update_character_proxies(float timeStep)
 {
     PROFILE(update_character_proxies);
     check_status();
-    uint32_t num = id_array::size(m_proxies);
-    ProxyInstance* proxies = id_array::begin(m_proxies);
+    uint32_t num = m_proxies.size();
+    ProxyInstance* proxies = m_proxies.begin();
     PHYSICS_LOCK(m_world);
     for (uint32_t i=0; i<num; ++i)
     {
@@ -506,71 +510,67 @@ void PhysicsWorld::update_character_proxies(float timeStep)
 Id create_physics_object(const void* resource, ActorId32 id)
 {
     check_status();
-    PhysicsInstance inst;
-    memset(&inst, 0x00, sizeof(inst));
-    inst.init(resource);
-    inst.m_actor = id;
-    return id_array::create(m_objects, inst);
+    PhysicsInstance* inst;
+    Id phyId = m_objects.create(&inst);
+    inst->init(resource, id);
+    return phyId;
 }
 
 void destroy_physics_object(Id id)
 {
     check_status();
-    if(!id_array::has(m_objects, id)) return;
-    PhysicsInstance& inst = id_array::get(m_objects, id);
-    inst.destroy();
-    id_array::destroy(m_objects, id);
+    if(!m_objects.has(id)) return;
+    m_objects.get(id)->destroy();
+    m_objects.destroy(id);
 }
 
 void* get_physics_object(Id id)
 {
-    if(!id_array::has(m_objects, id))
-        return 0;
-    return &id_array::get(m_objects, id);
+    if(!m_objects.has(id)) return 0;
+    return m_objects.get(id);
 }
 
 uint32_t num_physics_objects()
 {
-    return id_array::size(m_objects);
+    return m_objects.size();
 }
 
 void* get_physics_objects()
 {
-    return id_array::begin(m_objects);
+    return m_objects.begin();
 }
 
-Id create_physics_proxy(const void* resource, ActorId32 )
+Id create_physics_proxy(const void* resource, ActorId32 id)
 {
     check_status();
-    ProxyInstance inst;
-    memset(&inst, 0x00, sizeof(inst));
-    inst.init(resource);
-    return id_array::create(m_proxies, inst);
+    ProxyInstance* inst;
+    Id proxyId = m_proxies.create(&inst);
+    inst->init(resource);
+    return proxyId;
 }
 
 void destroy_physics_proxy(Id id)
 {
     check_status();
-    if(!id_array::has(m_proxies, id)) return;
-    ProxyInstance& inst = id_array::get(m_proxies, id);
-    inst.destroy();
-    id_array::destroy(m_proxies, id);
+    if(!m_proxies.has(id)) return;
+    m_proxies.get(id)->destroy();
+    m_proxies.destroy(id);
 }
 
 void* get_physics_proxy(Id id)
 {
-    if(!id_array::has(m_proxies, id)) return 0;
-    return &id_array::get(m_proxies, id);
+    if(!m_proxies.has(id)) return 0;
+    return m_proxies.get(id);
 }
 
 uint32_t num_physics_proxies()
 {
-    return id_array::size(m_proxies);
+    return m_proxies.size();
 }
 
 void* get_physics_proxies()
 {
-    return id_array::begin(m_proxies);
+    return m_proxies.begin();
 }
 //-----------------------------------------------------------------
 //

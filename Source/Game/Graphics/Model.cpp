@@ -8,7 +8,7 @@
 #include "DataDef.h"
 #include "MathDefs.h"
 #include "Graphics.h"
-#include "id_array.h"
+#include "IdArray.h"
 #include "GameConfig.h"
 
 void ModelInstance::init(const void* resource)
@@ -162,11 +162,17 @@ void lookup_resource_model( void * resource )
 }
 
 ModelWorld g_modelWorld;
-static IdArray<MAX_MODELS, ModelInstance>      m_models;
+static IdArray<ModelInstance>      m_models;
 
 void ModelWorld::init()
 {
+    m_models.init(MAX_MODELS, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     reset();
+}
+
+void ModelWorld::shutdown()
+{
+    m_models.destroy();
 }
 
 void ModelWorld::reset()
@@ -179,8 +185,8 @@ void ModelWorld::reset()
 
 void ModelWorld::update(float dt)
 {
-    uint32_t num = id_array::size(m_models);
-    ModelInstance* begin = id_array::begin(m_models);
+    uint32_t num = m_models.size();
+    ModelInstance* begin = m_models.begin();
     for(uint32_t i=0; i<num; ++i)
     {
         begin[i].update();
@@ -211,10 +217,10 @@ void ModelWorld::submit_shadows()
 
 void ModelWorld::cull_models(const Frustum& frust)
 {
-    uint32_t numModels = id_array::size(m_models);
+    uint32_t numModels = m_models.size();
     m_modelsToDraw = FRAME_ALLOC(ModelInstance*, numModels);
 
-    ModelInstance* begin = id_array::begin(m_models);
+    ModelInstance* begin = m_models.begin();
     ModelInstance** head = m_modelsToDraw;
     uint32_t num = 0;
 
@@ -232,10 +238,10 @@ void ModelWorld::cull_models(const Frustum& frust)
 
 void ModelWorld::cull_shadows(const Frustum& lightFrust)
 {
-    uint32_t numModels = id_array::size(m_models);
+    uint32_t numModels = m_models.size();
     m_shadowsToDraw = FRAME_ALLOC(ModelInstance*, numModels);
 
-    ModelInstance* begin = id_array::begin(m_models);
+    ModelInstance* begin = m_models.begin();
     ModelInstance** head = m_shadowsToDraw;
     uint32_t num = 0;
 
@@ -258,32 +264,32 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
 //-----------------------------------------------------------------
 Id create_render_model(const void* modelResource, ActorId32)
 {
-    ModelInstance inst;
-    memset(&inst, 0x00, sizeof(inst));
-    inst.init(modelResource);
-    return id_array::create(m_models, inst);
+    ModelInstance* inst;
+    Id modelId = m_models.create(&inst);
+    inst->init(modelResource);
+    return modelId;
 }
 
 void destroy_render_model(Id id)
 {
-    if(!id_array::has(m_models, id)) return;
-    id_array::destroy(m_models, id);
+    if(!m_models.has(id)) return;
+    m_models.destroy(id);
 }
 
 void* get_render_model(Id id)
 {
-    if(!id_array::has(m_models, id)) return 0;
-    return &id_array::get(m_models, id);
+    if(!m_models.has(id)) return 0;
+    return m_models.get(id);
 }
 
 uint32_t num_render_models()
 {
-    return id_array::size(m_models);
+    return m_models.size();
 }
 
 void* get_render_models()
 {
-    return id_array::begin(m_models);
+    return m_models.begin();
 }
 
 //-----------------------------------------------------------------
@@ -293,8 +299,8 @@ void* get_render_models()
 void draw_debug_models()
 {
     PROFILE(draw_debug_models);
-    uint32_t num = id_array::size(m_models);
-    ModelInstance* models = id_array::begin(m_models);
+    uint32_t num = m_models.size();
+    ModelInstance* models = m_models.begin();
     for (uint32_t i=0; i<num; ++i)
     {
         const Aabb& aabb = models[i].m_aabb;

@@ -85,7 +85,8 @@ function exeProject(_name, _incdirs, _files)
             "DelayImp",
         }
         defines {
-            "HAVOK_COMPILE"
+            "HAVOK_COMPILE",
+            "BGFX_CONFIG_RENDERER_DIRECT3D11"
         }
         removeflags {
             "StaticRuntime"

@@ -1,4 +1,5 @@
 #pragma once
+#include "BaseTypes.h"
 
 #define MAX_PHYSICS             1024
 #define MAX_PROXY               32
@@ -36,3 +37,8 @@
 #define MAX_ENGINE_CALLBACKS    32
 
 #define MAX_MOVEMENT_INSTNACE   64
+
+#define DEBUG_MEMORY_SIZE       SIZE_MB(2)
+
+#define HAVOK_FRAMEMEMORY_SIZE  SIZE_MB(4)
+#define HAVOK_MONITOR_MEM_SIZE  SIZE_MB(2)

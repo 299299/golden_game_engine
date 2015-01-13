@@ -11,9 +11,10 @@
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
 #endif
 
-void PhysicsInstance::init(const void* resource)
+void PhysicsInstance::init(const void* resource, ActorId32 id)
 {
     m_resource = (const PhysicsResource*)resource;
+    m_actor = id;
     m_inWorld = false;
 #ifdef HAVOK_COMPILE
     const hkpPhysicsData* phyData = m_resource->m_data;

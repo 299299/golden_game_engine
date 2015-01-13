@@ -1,8 +1,6 @@
 #pragma once
 #include "BaseTypes.h"
 
-#define NATIVE_MEMORY_ALIGN (16)
-
 enum MemoryAllocCategory
 {
     kMemoryCategoryCommon,
@@ -21,8 +19,8 @@ struct MemorySystem
     MemorySystem();
     ~MemorySystem();
 
-    void            init(int havok_frame_size, int monitor_size, bool init_havok, bool havok_check_mem);
-    void            quit();
+    void            init(bool havok_check_mem);
+    void            shutdown();
     void            frame_start();
 
     void*           allocate(uint32_t category, uint32_t size, uint32_t alignment = 16);

@@ -56,7 +56,7 @@ void ThreadSystem::init(bool bCreateVDB)
 #endif
 }
 
-void ThreadSystem::quit()
+void ThreadSystem::shutdown()
 {
 #ifdef HAVOK_COMPILE
     if(m_vdb)

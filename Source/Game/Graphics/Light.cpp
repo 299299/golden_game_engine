@@ -6,17 +6,23 @@
 #include "ShadingEnviroment.h"
 #include "MathDefs.h"
 #include "MemorySystem.h"
-#include "id_array.h"
+#include "IdArray.h"
 #include "GameConfig.h"
 
 LightWorld g_lightWorld;
-static IdArray<MAX_LIGHTS, LightInstance>  m_lights;
+static IdArray<LightInstance>  m_lights;
 
 void LightWorld::init()
 {
     reset();
     bx::mtxIdentity(m_shadowView);
     bx::mtxIdentity(m_shadowProj);
+    m_lights.init(MAX_LIGHTS, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+}
+
+void LightWorld::shutdown()
+{
+    m_lights.destroy();
 }
 
 void LightWorld::reset()
@@ -30,9 +36,9 @@ void LightWorld::update( float dt )
 {
     reset();
 
-    uint32_t numLights = id_array::size(m_lights);
+    uint32_t numLights = m_lights.size();
     m_drawLights = FRAME_ALLOC(LightInstance*, numLights);
-    LightInstance* lights = id_array::begin(m_lights);
+    LightInstance* lights = m_lights.begin();
     for (uint32_t i=0; i<numLights; ++i)
     {
         LightInstance& l = lights[i];
@@ -131,52 +137,50 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
     m_shadowFrustum.build_view_frustum(m_shadowView, m_shadowProj);
 }
 
-
-
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
 Id create_render_light(const void* res, ActorId32)
 {
-    LightInstance inst;
-    memset(&inst, 0x00, sizeof(inst));
+    LightInstance* inst;
+    Id lightId = m_lights.create(&inst);
     const LightResource* lightResource = (const LightResource*)res;
-    inst.m_resource = lightResource;
-    memcpy(inst.m_color, lightResource->m_color, sizeof(inst.m_color));
-    memcpy(inst.m_dir, lightResource->m_dir, sizeof(inst.m_dir));
-    ADD_BITS(inst.m_flag, kNodeTransformDirty);
-    return id_array::create(m_lights, inst);
+    inst->m_resource = lightResource;
+    memcpy(inst->m_color, lightResource->m_color, sizeof(inst->m_color));
+    memcpy(inst->m_dir, lightResource->m_dir, sizeof(inst->m_dir));
+    ADD_BITS(inst->m_flag, kNodeTransformDirty);
+    return lightId;
 }
 
 void destroy_render_light(Id id)
 {
-    if(!id_array::has(m_lights, id)) return;
-    id_array::destroy(m_lights, id);
+    if(!m_lights.has(id)) return;
+    m_lights.destroy(id);
 }
 
 
 void*  get_render_light(Id id)
 {
-    if(!id_array::has(m_lights, id)) return 0;
-    return &id_array::get(m_lights, id);
+    if(!m_lights.has(id)) return 0;
+    return m_lights.get(id);
 }
 
 uint32_t num_render_lights()
 {
-    return id_array::size(m_lights);
+    return m_lights.size();
 }
 
 void* get_render_lights()
 {
-    return id_array::begin(m_lights);
+    return m_lights.begin();
 }
 
 
 #include "DebugDraw.h"
 void draw_debug_lights()
 {
-    uint32_t num = id_array::size(m_lights);
-    LightInstance* lights = id_array::begin(m_lights);
+    uint32_t num = m_lights.size();
+    LightInstance* lights = m_lights.begin();
     bool bShadow = false;
 
     for (uint32_t i=0; i<num; ++i)

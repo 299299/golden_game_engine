@@ -16,21 +16,21 @@
 typedef tinystl::unordered_map<uint32_t, const char*> StringTable;
 static StringTable              g_stringTable;
 static bx::LwMutex              g_stringLock;
-void insert_string_id(uint32_t key, const char* value)
+void insert_string_id(uint32_t key, const char* value, uint32_t len)
 {
     if(value[0] == '\0') return;
     bx::LwMutexScope _l(g_stringLock);
     StringTable::iterator iter = g_stringTable.find(key);
     if(iter == g_stringTable.end())
     {
-        uint32_t strLen = strlen(value);
-        char* mem = DEBUG_ALLOC(char, strLen+1);
-        memcpy(mem, value, strLen);
-        mem[strLen+1] = '\0';
+        char* mem = DEBUG_ALLOC(char, len+1);
+        memcpy(mem, value, len);
+        mem[len] = '\0';
         g_stringTable[key] = mem;
     }
     else {
-        ENGINE_ASSERT_ARGS(!bx::stricmp(value, iter->second), "hash collision [%s] != [%s]", value, iter->second);
+        const char* second = iter->second;
+        ENGINE_ASSERT_ARGS(!bx::stricmp(value, second), "hash collision [%s] != [%s]", value, second);
     }
 }
 const char* stringid_lookup(const StringId& id)
@@ -56,8 +56,7 @@ void load_string_table(const char* fName)
     {
         int argNum = fscanf(fp, STRING_TABLE_FMT, &key1, &key2, buf);
         if(argNum != 3) break;
-        if(key1 != key2) break;
-        insert_string_id(key1, buf);
+        insert_string_id(key1, buf, key2);
     }
     fclose(fp);
 }
@@ -72,7 +71,7 @@ void save_string_table(const char* fName)
     StringTable::const_iterator iter = g_stringTable.begin();
     for(; iter != g_stringTable.end(); ++iter)
     {
-        fprintf(fp, STRING_TABLE_FMT, iter->first, iter->first, iter->second);
+        fprintf(fp, STRING_TABLE_FMT, iter->first, strlen(iter->second), iter->second);
     }
     fclose(fp);
     g_stringTable.clear();
@@ -91,9 +90,10 @@ uint32_t StringId::calculate(const char* str)
 {
     uint32_t hash = 0;
     if (!str) return hash;
-    hash = bx::hashMurmur2A(str, strlen(str));
+    uint32_t len = strlen(str);
+    hash = bx::hashMurmur2A(str, len);
 #ifndef _RETAIL
-    insert_string_id(hash, str);
+    insert_string_id(hash, str, len);
 #endif
     return hash;
 }

@@ -34,6 +34,8 @@ struct ShadingEnviroment;
 struct LightWorld
 {
     void                    init();
+    void                    shutdown();
+
     void                    update(float dt);
     void                    submit_lights(ShadingEnviroment* env);
     void                    update_shadow(float shadowArea, 

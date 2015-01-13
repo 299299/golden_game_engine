@@ -187,7 +187,7 @@ void ResourcePackage::flush(int maxNum)
     if(m_status == kResourceOnline)
         return;
 #ifdef HAVOK_COMPILE
-    hkCriticalSection::waitForValueEqual(&m_status, kResourceOffline);
+    hkCriticalSection::waitForValueEqual((hkUint32*)&m_status, kResourceOffline);
 #endif
     bringin_all_resources(maxNum);
 }

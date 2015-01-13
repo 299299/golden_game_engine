@@ -141,7 +141,7 @@ void Engine::apply_framelimit(double timeMS)
 void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
-    g_memoryMgr.init(SIZE_MB(4), SIZE_MB(2), true, m_cfg.m_checkMemory);
+    g_memoryMgr.init(m_cfg.m_checkMemory);
     g_threadMgr.init(true);
     g_profiler.init();
     g_resourceMgr.init();
@@ -165,8 +165,8 @@ void Engine::core_shutdown()
 {
     TIMELOG("Engine Core Shutdown");
     g_profiler.shutdown();
-    g_threadMgr.quit();
-    g_memoryMgr.quit();
+    g_threadMgr.shutdown();
+    g_memoryMgr.shutdown();
     g_win32Context.destroy_window();
 }
 

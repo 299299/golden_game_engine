@@ -13,7 +13,7 @@ public:
     ThreadSystem();
     ~ThreadSystem();
     void init(bool bCreateVDB);
-    void quit();
+    void shutdown();
 
     hkJobQueue* get_jobqueue() const { return m_jobQueue;};
     hkThreadPool* get_threadpool() const { return m_threadPool;};

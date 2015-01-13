@@ -43,7 +43,7 @@ ENGINE_NATIVE_ALIGN struct PhysicsInstance
     bool                        m_dirty;
     bool                        m_inWorld;
 
-    void init(const void* resource);
+    void init(const void* resource, ActorId32 id);
     void destroy();
     void set_transform(const hkTransform& t);
     void add_to_simulation();

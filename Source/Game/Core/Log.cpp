@@ -145,12 +145,7 @@ void Log::log( int logLevel, const char* msg, ...)
     m_stream << "<tr>\n";
     m_stream << "<td width=\"50\">";
 
-    struct   tm   *tmNow;
-    time_t   long_time;
-    time(&long_time);
-    tmNow = localtime(&long_time);
-
-    m_stream << asctime(tmNow);
+    m_stream << GetTickCount();
     m_stream << "</td>\n";
     m_stream << "<td class=\"";
     m_stream << tag;

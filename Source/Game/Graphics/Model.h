@@ -51,6 +51,8 @@ struct ModelInstance
 struct ModelWorld
 {
     void                    init();
+    void                    shutdown();
+
     void                    update(float dt);
     void                    submit_models();
     void                    submit_shadows();

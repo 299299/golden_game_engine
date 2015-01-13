@@ -4,7 +4,7 @@
 #include "DataDef.h"
 #include "Profiler.h"
 #include "Log.h"
-#include "id_array.h"
+#include "IdArray.h"
 #include "GameConfig.h"
 #include "Event.h"
 //=======================================================================================
@@ -37,7 +37,7 @@
 #endif
 
 AnimationSystem g_animMgr;
-static IdArray<MAX_ANIM_RIG, AnimRigInstance>      m_rigs;
+static IdArray<AnimRigInstance>                    m_rigs;
 static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
 
@@ -56,6 +56,7 @@ void AnimationSystem::init()
 {
     m_status = 0;
     m_events = COMMON_ALLOC(AnimationEvent, MAX_ANIM_EVENTS);
+    m_rigs.init(MAX_ANIM_RIG, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif
@@ -63,6 +64,7 @@ void AnimationSystem::init()
 
 void AnimationSystem::shutdown()
 {
+    m_rigs.destroy();
     COMMON_DEALLOC(m_events);
 }
 
@@ -73,9 +75,9 @@ void AnimationSystem::frame_start()
 
 void AnimationSystem::kick_in_jobs()
 {
-    uint32_t num = id_array::size(m_rigs);
+    uint32_t num = m_rigs.size();
     if(num == 0) return;
-    AnimRigInstance* rigs = id_array::begin(m_rigs);
+    AnimRigInstance* rigs = m_rigs.begin(); 
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
@@ -110,7 +112,7 @@ void AnimationSystem::tick_finished_jobs()
 {
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
-    uint32_t num = id_array::size(m_rigs);
+    uint32_t num = m_rigs.size();
     if(!num) return;
     PROFILE(AnimationFinishJobs);
     for(uint32_t i=0; i<num; ++i)
@@ -182,10 +184,10 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
 void AnimationSystem::update_animations(float dt)
 {
-    uint32_t num = id_array::size(m_rigs);
+    uint32_t num = m_rigs.size();
     if(!num) return;
     PROFILE(Animation_Update);
-    AnimRigInstance* rigs = id_array::begin(m_rigs);
+    AnimRigInstance* rigs = m_rigs.begin();
     for(uint32_t i=0; i<num;++i)
     {
         rigs[i].update(dt);
@@ -215,34 +217,34 @@ void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 Id create_anim_rig( const void* resource, ActorId32 id)
 {
     check_status();
-    AnimRigInstance inst;
-    inst.init(resource, id);
-    return id_array::create(m_rigs, inst);
+    AnimRigInstance* inst;
+    Id animId = m_rigs.create(&inst);
+    inst->init(resource, id);
+    return animId;
 }
 
 void destroy_anim_rig( Id id )
 {
     check_status();
-    if(!id_array::has(m_rigs, id)) return;
-    AnimRigInstance& inst = id_array::get(m_rigs, id);
-    inst.destroy();
-    id_array::destroy(m_rigs, id);
+    if(!m_rigs.has(id)) return;
+    m_rigs.get(id)->destroy();
+    m_rigs.destroy(id);
 }
 
 void* get_anim_rig( Id id )
 {
-    if(!id_array::has(m_rigs, id)) return 0;
-    return &id_array::get(m_rigs, id);
+    if(!m_rigs.has(id)) return 0;
+    return m_rigs.get(id);
 }
 
 uint32_t num_anim_rigs()
 {
-    return id_array::size(m_rigs);
+    return m_rigs.size();
 }
 
 void* get_anim_rigs()
 {
-    return id_array::begin(m_rigs);
+    return m_rigs.begin();
 }
 //-----------------------------------------------------------------
 //

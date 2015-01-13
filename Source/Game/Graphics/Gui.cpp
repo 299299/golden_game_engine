@@ -43,7 +43,7 @@ void Gui::draw()
 
 }
 
-void Gui::destroy()
+void Gui::shutdown()
 {
     imguiDestroy();
 }

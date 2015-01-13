@@ -33,8 +33,7 @@ static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneNam
     const hkaBone* head = skeleton->m_bones.begin();
     for(int i=0;i<num;++i)
     {
-        const hkaBone& bone = head[i];
-        if(boneName == StringId(bone.m_name.cString()))
+        if(boneName == StringId(head[i].m_name.cString()))
             return i;
     }
     return -1;
@@ -109,6 +108,7 @@ void RagdollResource::load(hkRootLevelContainer* container)
 
         LOGD("num of lower body bones = %d.", m_numLowerBodyBones);
         ENGINE_ASSERT(m_numLowerBodyBones <= MAX_LOWER_BODY_BONE, "lower body bone num overflow.");
+    }
 }
 
 //=====================================================================

@@ -4,11 +4,12 @@
 struct Gui
 {
     void init();
+    void shutdown();
+
     void frame_start();
     void frame_end();
     void update(float dt);
     void draw();
-    void destroy();
 };
 
 extern Gui g_guiMgr;
