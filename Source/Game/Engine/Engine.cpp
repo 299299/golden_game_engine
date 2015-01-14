@@ -41,7 +41,6 @@ void Engine::quit()
     g_gameFSM.quit();
     subsystem_shutdown();
     core_shutdown();
-    ::free(m_cmd_machine);
     LOG_TERM();
 }
 
@@ -95,7 +94,6 @@ void Engine::frame(float timeStep)
     {
         PROFILE(Engine_PreStep);
         m_state = kFramePreStepping;
-        m_cmd_machine->update(timeStep);
         g_gameFSM.pre_step(timeStep);
     }
     {
