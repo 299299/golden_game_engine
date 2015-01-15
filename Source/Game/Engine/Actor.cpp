@@ -79,10 +79,36 @@ void lookup_resource_actor(void* resource)
     }
 }
 
-void Actor::teleport_transform( const hkQsTransform& t )
+void Actor::set_transform( const hkQsTransform& t )
 {
     m_transform = t;
-    transform_renders(t);
+    
+    const ActorResource* resource = m_resource;
+    uint32_t num = resource->m_numComponents;
+    Id* id = m_components;
+    ComponentFactory** facs = resource->m_factories;
+
+    for (uint32_t i=0; i<num; ++i)
+    {
+        facs[i]->transform_component(id[i], t);
+    }
+}
+
+void Actor::set_transform_ignore_type( const hkQsTransform& t, const StringId& type )
+{
+    m_transform = t;
+
+    const ActorResource* resource = m_resource;
+    uint32_t num = resource->m_numComponents;
+    Id* id = m_components;
+    ComponentFactory** facs = resource->m_factories;
+    StringId* types = resource->m_resourceTypes;
+
+    for (uint32_t i=0; i<num; ++i)
+    {
+        if(type != types[i])
+            facs[i]->transform_component(id[i], t);
+    }
 }
 
 void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId32 id)
@@ -109,7 +135,7 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId
         memcpy(m_values, fact.m_values, fact.m_value_size);
     }
 
-    teleport_transform(t);
+    set_transform(t);
 }
 
 void Actor::destroy()
@@ -122,28 +148,6 @@ void Actor::destroy()
         facs[i]->destroy_component(comps[i]);
     }
     COMMON_DEALLOC(m_values);
-}
-
-void Actor::transform_renders( const hkQsTransform& t )
-{
-    m_transform = t;
-    ModelInstance* model = (ModelInstance*)get_first_component_of(ModelResource::get_type());
-    if(model)
-    {
-#ifdef HAVOK_COMPILE
-        transform_matrix(model->m_transform, t);
-#endif
-        ADD_BITS(model->m_flag, kNodeTransformDirty);
-    }
-
-    LightInstance* light = (LightInstance*)get_first_component_of(LightResource::get_type());
-    if(light)
-    {
-#ifdef HAVOK_COMPILE
-        transform_matrix(light->m_transform, t);
-#endif
-        ADD_BITS(light->m_flag, kNodeTransformDirty);
-    }
 }
 
 void* Actor::get_first_component_of( const StringId& type )
@@ -253,6 +257,8 @@ bool Actor::set_key(const StringId& k, const float* v)
 {
     return m_resource->m_fact.set_key(m_values, k, v);
 }
+
+
 
 
 ActorWorld g_actorWorld;

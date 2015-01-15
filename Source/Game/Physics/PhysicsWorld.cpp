@@ -12,11 +12,9 @@
 #include "IdArray.h"
 #include "GameConfig.h"
 #include "Event.h"
-//===========================================
-//          COMPONENTS
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
-//===========================================
+#include "Actor.h"
 
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
@@ -453,42 +451,41 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 {
     PROFILE(sync_rigidbody_actors);
     check_status();
-    /*
     hkQsTransform t;
     hkTransform t1;
+    StringId physics_type = PhysicsResource::get_type();
     for (uint32_t i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
-        PhysicsInstance* physics_object = (PhysicsInstance*)actor.get_component(kComponentPhysics);
+        PhysicsInstance* physics_object = (PhysicsInstance*)actor.get_first_component_of(physics_type);
         if(!physics_object->m_dirty) continue;
         physics_object->fetch_transform(0, t1);
         t.setFromTransformNoScale(t1);
-        actor.transform_renders(t);
+        actor.set_transform_ignore_type(t, physics_type);
         physics_object->m_dirty = false;
     }
-    */
 }
 
 void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
 {
     PROFILE(sync_proxy_actors);
     check_status();
-    /*
+    
+    StringId physics_type = ProxyResource::get_type();
+
     float pos[3];
     hkQsTransform t;
     t.setIdentity();
     for (uint32_t i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
-        ProxyInstance* proxy = (ProxyInstance*)actor.get_component(kComponentProxy);
-        //ModelInstance* model = (ModelInstance*)actor.get_component(kComponentModel);
+        ProxyInstance* proxy = (ProxyInstance*)actor.get_first_component_of(physics_type);
         if(!proxy) continue;
         transform_vec3(pos, proxy->m_transform.m_translation);
         pos[1] += proxy->m_resource->m_offset;
         transform_vec3(t.m_translation, pos);
-        actor.transform_renders(t);
+        actor.set_transform_ignore_type(t, physics_type);
     }
-    */
 }
 
 void PhysicsWorld::update_character_proxies(float timeStep)
@@ -530,12 +527,12 @@ void* get_physics_object(Id id)
     return m_objects.get(id);
 }
 
-uint32_t num_physics_objects()
+uint32_t num_all_physics_object()
 {
     return m_objects.size();
 }
 
-void* get_physics_objects()
+void* get_all_physics_object()
 {
     return m_objects.begin();
 }
@@ -563,14 +560,28 @@ void* get_physics_proxy(Id id)
     return m_proxies.get(id);
 }
 
-uint32_t num_physics_proxies()
+uint32_t num_all_physics_proxy()
 {
     return m_proxies.size();
 }
 
-void* get_physics_proxies()
+void* get_all_physics_proxy()
 {
     return m_proxies.begin();
+}
+
+void transform_physics_object(Id id, const hkQsTransform& t)
+{
+    if(!m_objects.has(id)) return;
+    hkTransform t1;
+    t.copyToTransformNoScale(t1);
+    m_objects.get(id)->set_transform(t1);
+}
+
+void transform_physics_proxy(Id id, const hkQsTransform& t)
+{
+    if(!m_proxies.has(id)) return;
+    m_proxies.get(id)->setTransform(t);
 }
 //-----------------------------------------------------------------
 //

@@ -236,7 +236,7 @@ extern void* load_resource_level(const char*, uint32_t);
 extern void  lookup_resource_level(void*);
 //-----------------------------------------------------------------
 
-static ResourceFactory g_resourceFactories[] =
+ResourceFactory g_resourceFactories[] =
 {
     {load_resource_texture, 0, 0, 0, bringout_resource_texture, Texture::get_name()},
     {load_resource_texture2d, 0, 0, bringin_resource_texture2d, bringout_resource_texture2d, Raw2DTexture::get_name()},
@@ -276,4 +276,60 @@ int get_resource_order(const StringId& type)
             return i;
     }
     return -1;
+}
+//--------------------------------------------------------------------------
+#define EXTERN_COMP_FUNCS_(comp_name)\
+    extern Id       create_##comp_name(const void*, ActorId32);\
+    extern void     destroy_##comp_name(Id);\
+    extern void*    get_##comp_name(Id);\
+    extern uint32_t num_all_##comp_name();\
+    extern void*    get_all_##comp_name();
+
+#define EXTERN_COMP_FUNCS_T(comp_name)\
+    EXTERN_COMP_FUNCS_(comp_name)\
+    extern void     transform_##comp_name(Id, const hkQsTransform&);
+
+EXTERN_COMP_FUNCS_T(model);
+EXTERN_COMP_FUNCS_T(light);
+EXTERN_COMP_FUNCS_(anim_rig);
+EXTERN_COMP_FUNCS_T(physics_object);
+EXTERN_COMP_FUNCS_T(physics_proxy);
+
+#define DECLARE_COMP_FUNCS_(comp_name, t_func)\
+        {create_##comp_name, destroy_##comp_name, get_##comp_name, num_all_##comp_name, get_all_##comp_name, t_func, }
+
+#define DECLARE_COMP_FUNCS_T(comp_name)\
+        DECLARE_COMP_FUNCS_(comp_name, transform_##comp_name)
+
+#define DECLARE_COMP_FUNCS(comp_name)\
+        DECLARE_COMP_FUNCS_(comp_name, 0)
+
+#include "Component.h"
+
+void register_components()
+{
+    ComponentFactory g_compFactories[] = 
+    {
+        DECLARE_COMP_FUNCS_T(model),
+        DECLARE_COMP_FUNCS_T(light),
+        DECLARE_COMP_FUNCS(anim_rig),
+        DECLARE_COMP_FUNCS_T(physics_object),
+        DECLARE_COMP_FUNCS_T(physics_proxy),
+    };
+
+    StringId g_compNames[] = 
+    {
+        ModelResource::get_type(),
+        LightResource::get_type(),
+        AnimRig::get_type(),
+        PhysicsResource::get_type(),
+        ProxyResource::get_type(),
+    };
+
+    ENGINE_ASSERT(BX_COUNTOF(g_compFactories) == BX_COUNTOF(g_compNames), "COMPONENT REGISTER ERR");
+    uint32_t num = BX_COUNTOF(g_compFactories);
+    for (uint32_t i=0; i<num; ++i)
+    {
+        g_componentMgr.register_factory(g_compFactories[i], g_compNames[i]);
+    }
 }

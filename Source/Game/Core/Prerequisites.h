@@ -13,8 +13,11 @@
 #define ENGINE_ASSERT(expr, msg) assert(expr)
 
 struct hkQsTransform{};
+struct hkQsTransformf{};
 struct hkTransform{};
+struct hkTransformf{};
 struct hkVector4{};
+struct hkVector4f{};
 struct hkaSampleBlendJob{};
 typedef uint64_t hkUint64;
 typedef float    hkReal;

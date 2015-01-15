@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "Log.h"
 #include "PhysicsAutoLock.h"
+#include "Prerequisites.h"
 #ifdef HAVOK_COMPILE
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
 #include <Physics2012/Dynamics/World/hkpWorld.h>

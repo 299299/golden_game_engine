@@ -134,6 +134,7 @@ function exeProject(_name, _incdirs, _files)
     end
 end
 
+-- game project
 game_inc_dirs = {
     BX_DIR .. "include",
     BGFX_DIR .. "include",
@@ -158,16 +159,23 @@ bgfx_files = {
 }
 
 game_files = {
-    GAME_SRC_DIR .. "Core/*",
-    GAME_SRC_DIR .. "Animation/*",
-    GAME_SRC_DIR .. "Engine/*",
-    GAME_SRC_DIR .. "Game/*",
-    GAME_SRC_DIR .. "Graphics/*",
-    GAME_SRC_DIR .. "Physics/*",
+    GAME_SRC_DIR .. "**",
     bgfx_files,
     GAME_SRC_DIR .. "linkopt.cpp",
 }
 exeProject("game", game_inc_dirs, game_files)
+
+HC_SRC_DIR = (NAGA_SRC_DIR .. "HavokConverter/")
+hc_inc_dirs = {
+    BX_DIR .. "include",
+    BGFX_DIR .. "include",
+    BGFX_DIR .. "src",
+    BGFX_DIR .. "examples/common",
+    BGFX_DIR .. "3rdparty",
+    HAVOK_DIR,
+    HC_SRC_DIR .. "**"
+}
+
 
 
 

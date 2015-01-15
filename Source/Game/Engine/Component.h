@@ -7,6 +7,8 @@ typedef void    (*func_destroy_component)(Id);
 typedef void*   (*func_get_component)(Id);
 typedef uint32_t(*func_num_components)();
 typedef void*   (*func_get_components)();
+class hkQsTransformf;
+typedef void    (*func_transform_component)(Id, const hkQsTransformf&);
 
 struct ComponentFactory
 {
@@ -15,6 +17,7 @@ struct ComponentFactory
     func_get_component          m_get_component;
     func_num_components         m_num_conmponents;
     func_get_components         m_get_components;
+    func_transform_component    m_transform_component;
 
     Id create_component(const void* res, ActorId32 id)
     {
@@ -23,6 +26,11 @@ struct ComponentFactory
     void  destroy_component(Id id)
     {
         m_destroy_component(id);
+    }
+    void transform_component(Id id, const hkQsTransformf& t)
+    {
+        if(m_transform_component)
+            m_transform_component(id, t);
     }
     void* get_component(Id id)
     {

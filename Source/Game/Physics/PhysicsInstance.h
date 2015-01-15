@@ -1,11 +1,11 @@
 #pragma once
-#include "Prerequisites.h"
 #include "StringId.h"
 
 class hkLoader;
 class hkpPhysicsData;
 class hkpPhysicsSystem;
 class hkpRigidBody;
+class hkTransformf;
 
 ENGINE_NATIVE_ALIGN struct PhysicsResource
 {
@@ -45,9 +45,9 @@ ENGINE_NATIVE_ALIGN struct PhysicsInstance
 
     void init(const void* resource, ActorId32 id);
     void destroy();
-    void set_transform(const hkTransform& t);
+    void set_transform(const hkTransformf& t);
     void add_to_simulation();
     void remove_from_simulation();
     void post_simulation(hkpRigidBody* rb);
-    void fetch_transform(int index, hkTransform& outT);
+    void fetch_transform(int index, hkTransformf& outT);
 };

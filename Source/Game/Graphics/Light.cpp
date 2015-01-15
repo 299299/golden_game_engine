@@ -140,7 +140,7 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_render_light(const void* res, ActorId32)
+Id create_light(const void* res, ActorId32 actorId)
 {
     LightInstance* inst;
     Id lightId = m_lights.create(&inst);
@@ -152,29 +152,38 @@ Id create_render_light(const void* res, ActorId32)
     return lightId;
 }
 
-void destroy_render_light(Id id)
+void destroy_light(Id id)
 {
     if(!m_lights.has(id)) return;
     m_lights.destroy(id);
 }
 
 
-void*  get_render_light(Id id)
+void*  get_light(Id id)
 {
     if(!m_lights.has(id)) return 0;
     return m_lights.get(id);
 }
 
-uint32_t num_render_lights()
+uint32_t num_all_light()
 {
     return m_lights.size();
 }
 
-void* get_render_lights()
+void* get_all_light()
 {
     return m_lights.begin();
 }
 
+void transform_light(Id id, const hkQsTransform& t)
+{
+    if(!m_lights.has(id)) return;
+    LightInstance* light = m_lights.get(id);
+#ifdef HAVOK_COMPILE
+    transform_matrix(light->m_transform, t);
+    ADD_BITS(light->m_flag, kNodeTransformDirty);
+#endif
+}
 
 #include "DebugDraw.h"
 void draw_debug_lights()

@@ -28,8 +28,8 @@ ENGINE_NATIVE_ALIGN struct Actor
 
     void    init(const ActorResource* resource, const hkQsTransform& t, ActorId32 id);
     void    destroy();
-    void    teleport_transform(const hkQsTransform& t);
-    void    transform_renders(const hkQsTransform& t);
+    void    set_transform(const hkQsTransform& t);
+    void    set_transform_ignore_type(const hkQsTransform& t, const StringId& type);
     void*   get_first_component_of(const StringId& type);
     int     get_first_component_index_of(const StringId& type);
     uint32_t    get_components_of(const StringId& type, void** comps, uint32_t buflen);

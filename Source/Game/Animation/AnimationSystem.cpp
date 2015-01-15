@@ -7,8 +7,6 @@
 #include "IdArray.h"
 #include "GameConfig.h"
 #include "Event.h"
-//=======================================================================================
-// RESOURCES
 #include "Resource.h"
 #include "Model.h"
 #include "Mesh.h"
@@ -17,7 +15,7 @@
 #include "Ragdoll.h"
 #include "AnimRig.h"
 #include "ProxyInstance.h"
-//=======================================================================================
+#include "Actor.h"
 #ifdef HAVOK_COMPILE
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Container/LocalArray/hkLocalArray.h>
@@ -126,17 +124,15 @@ void AnimationSystem::tick_finished_jobs()
 
 void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 {
-#if 0
     PROFILE(Animation_SkinActors);
-    extern void* get_anim_rig(Id);
-    extern void* get_render_model(Id);
+
+    StringId anim_type = AnimRig::get_type();
+    StringId model_type = ModelResource::get_type();
     for (uint32_t i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
-        Id rigId = actor.m_components[kComponentAnimRig];
-        Id modelId = actor.m_components[kComponentModel];
-        AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
-        ModelInstance* model = (ModelInstance*)get_render_model(modelId);
+        AnimRigInstance* rig = (AnimRigInstance*)actor.get_first_component_of(anim_type);
+        ModelInstance* model = (ModelInstance*)actor.get_first_component_of(model_type);
 
         if(!model) continue;
         bool bVisibleThisFrame = model->m_visibleThisFrame;
@@ -148,6 +144,8 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
         const hkQsTransform& t = actor.m_transform;
         const Matrix* invMats = model->m_resource->m_mesh->m_jointMatrix;
+
+#ifdef HAVOK_COMPILE
         const hkQsTransform* poseMS = pose->getSyncedPoseModelSpace().begin();
         int num_of_pose = pose->getSyncedPoseModelSpace().getSize();
 
@@ -178,8 +176,8 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             REMOVE_BITS(model->m_flag, kNodeTransformDirty);
         }
 #endif
-    }
 #endif
+    }
 }
 
 void AnimationSystem::update_animations(float dt)
@@ -237,27 +235,25 @@ void* get_anim_rig( Id id )
     return m_rigs.get(id);
 }
 
-uint32_t num_anim_rigs()
+uint32_t num_all_anim_rig()
 {
     return m_rigs.size();
 }
 
-void* get_anim_rigs()
+void* get_all_anim_rig()
 {
     return m_rigs.begin();
 }
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-#if 0
 #include "DebugDraw.h"
-#include "Actor.h"
 void draw_debug_animation()
 {
     PROFILE(draw_debug_animation);
     extern int g_engineMode;
-    uint32_t num = id_array::size(m_rigs);
-    AnimRigInstance* rigs = id_array::begin(m_rigs);
+    uint32_t num = m_rigs.size();
+    AnimRigInstance* rigs = m_rigs.begin();
     for (uint32_t i=0; i<num; ++i)
     {
         AnimRigInstance& rig = rigs[i];
@@ -290,7 +286,6 @@ void draw_debug_animation()
         g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
     }
 }
-#endif
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------

@@ -262,7 +262,7 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_render_model(const void* modelResource, ActorId32)
+Id create_model(const void* modelResource, ActorId32)
 {
     ModelInstance* inst;
     Id modelId = m_models.create(&inst);
@@ -270,28 +270,37 @@ Id create_render_model(const void* modelResource, ActorId32)
     return modelId;
 }
 
-void destroy_render_model(Id id)
+void destroy_model(Id id)
 {
     if(!m_models.has(id)) return;
     m_models.destroy(id);
 }
 
-void* get_render_model(Id id)
+void* get_model(Id id)
 {
     if(!m_models.has(id)) return 0;
     return m_models.get(id);
 }
 
-uint32_t num_render_models()
+uint32_t num_all_model()
 {
     return m_models.size();
 }
 
-void* get_render_models()
+void* get_all_model()
 {
     return m_models.begin();
 }
 
+void transform_model(Id id, const hkQsTransform& t)
+{
+    if(!m_models.has(id)) return;
+    ModelInstance* model = m_models.get(id);
+#ifdef HAVOK_COMPILE
+    transform_matrix(model->m_transform, t);
+    ADD_BITS(model->m_flag, kNodeTransformDirty);
+#endif
+}
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
