@@ -76,6 +76,10 @@ function exeProject(_name, _incdirs, _files)
     files {
         _files
     }
+    excludes {
+        GAME_SRC_DIR .. "**.bin.h",
+        GAME_SRC_DIR .. "**.ttf.h",
+    }
 
     configuration { "vs*" }
         linkoptions {
@@ -153,6 +157,8 @@ bgfx_files = {
     BGFX_DIR .. "src/renderer_d3d11.cpp",
     BGFX_DIR .. "src/renderer_null.cpp",
     BGFX_DIR .. "src/vertexdecl.cpp",
+    BGFX_DIR .. "3rdparty/forsyth-too/forsythtriangleorderoptimizer.cpp",
+    BGFX_DIR .. "examples/common/bounds.cpp",
     BGFX_DIR .. "examples/common/imgui/imgui.cpp",
     BGFX_DIR .. "examples/common/nanovg/nanovg.cpp",
     BGFX_DIR .. "examples/common/nanovg/nanovg_bgfx.cpp",
@@ -164,18 +170,6 @@ game_files = {
     GAME_SRC_DIR .. "linkopt.cpp",
 }
 exeProject("game", game_inc_dirs, game_files)
-
-HC_SRC_DIR = (NAGA_SRC_DIR .. "HavokConverter/")
-hc_inc_dirs = {
-    BX_DIR .. "include",
-    BGFX_DIR .. "include",
-    BGFX_DIR .. "src",
-    BGFX_DIR .. "examples/common",
-    BGFX_DIR .. "3rdparty",
-    HAVOK_DIR,
-    HC_SRC_DIR .. "**"
-}
-
 
 
 

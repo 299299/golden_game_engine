@@ -5,6 +5,10 @@
 #include <vector>
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
+#include "SharedInc.h"
+
+
+class hkxNode;
 
 #define MAKE_U64(dwordHigh, dwordLow) (((uint64_t)(dwordHigh) << 32) | (uint64_t)(dwordLow))
 #define COMMON_RESOURCE_PATH    ("core/common/")
@@ -59,6 +63,24 @@ void        msgBox(const char* text, const char* title);
 std::string get_last_string(const std::string& input, char c, int count);
 bool        str_begin_with(const std::string& str1, const std::string& str2);
 bool        str_end_with(const std::string& str1, const std::string& str2);
+
+void        dumpNodeRec(hkxNode* theNode);
+void        findNodesRec(hkxNode* theNode, const hkClass* theClass, std::vector<hkxNode*>& outNodes);
+void        findNodesRec(hkxNode* theNode, const std::string& preFix, std::vector<hkxNode*>& outNodes);
+Actor_Config* createConfig(const std::string& input, const std::string& outputFolder);
+void fill_object_attributes(jsonxx::Object& object, const hkxAttributeGroup* group);
+
+void        nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt);
+void        texconv_compress(const std::string& src, const std::string& folder, const std::string& fmt);
+void        lut2d_to_3d(const uint8_t* inData, uint8_t* outData);
+bool        parse_json(const std::string& fileName, JsonParser& parser);
+std::string input_to_output(const std::string& inputName);
+std::string get_package_name(const std::string& input);
+std::string get_resource_name(const std::string& input);
+void        addChildCompiler(class BaseCompiler* compiler);
+void        saveCompileResult(const std::string& fileName);
+bool        is_common_package(const std::string& pack_name);
+
 
 typedef tinystl::unordered_map<uint32_t, uint64_t> ResourceFileMap;
 struct ResourceFileDataBase

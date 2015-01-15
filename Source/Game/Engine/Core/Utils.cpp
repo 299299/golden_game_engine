@@ -106,6 +106,9 @@ void msg_box( const char* text, const char* title )
 {
 #ifdef HAVOK_COMPILE
     ::MessageBoxA(NULL, text, title, MB_TOPMOST);
+#else
+    printf("console msg-box [%s][%s]\n", test, title);
+    getchar();
 #endif
 }
 

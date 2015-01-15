@@ -1,5 +1,5 @@
 #pragma once
-//tons of havok header
+#ifdef HAVOK_COMPILE
 #include <Common/Base/hkBase.h>
 #include <Common/Base/Ext/hkBaseExt.h>
 #include <Common/Base/Math/hkMath.h>
@@ -155,12 +155,24 @@
 #include <Common/SceneData/Light/hkxLight.h>
 #include <Common/SceneData/Spline/hkxSpline.h>
 #include <Common/SceneData/Environment/hkxEnvironment.h>
+#include <Common/Base/Container/Array/hkArray.h>
+#include <Common/Base/Algorithm/Sort/hkSort.h>
+#endif
 
 //engine header
 #include "Log.h"
 #include "MemorySystem.h"
 #include "MathDefs.h"
 #include <stdio.h>
+
+#include <ShlObj.h>
+#include <algorithm>
+#include <io.h>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <tchar.h>
+#include <direct.h>
 
 //std header
 #include <vector>
@@ -177,9 +189,11 @@
 #include <bx/bx.h>
 #include <bx/platform.h>
 #include <bx/commandline.h>
+#include <bx/mutex.h>
 
 //components
 #include "jsonxx.h"
 #include "DataDef.h"
 #include "ShaderInc.h"
 #include "Utils.h"
+#include "Profile.h"

@@ -22,7 +22,7 @@ void lut2d_to_3d(const uint8_t* inData, uint8_t* outData)
             uint8_t* out = &outData[z * COLOR_LUT_SIZE * COLOR_LUT_SIZE * 4 + y * COLOR_LUT_SIZE * 4];
             for (int x = 0; x < COLOR_LUT_SIZE * 4; x += 4)
             {
-                out[x] = in[x+2]; 
+                out[x] = in[x+2];
                 out[x+1] = in[x+1];
                 out[x+2] = in[x];
                 out[x+3] = in[x+3];
@@ -128,7 +128,7 @@ bool parse_json(const std::string& fileName, JsonParser& parser)
         CloseHandle(hFile);
         return 0;
     }
-    
+
     size_t jsonBufferSize = 0;
     jsmnerr_t result = JsonParser::CalcSpaceRequired(buffer->m_ioBuffer, fileSize, jsonBufferSize);
     if (result != JSMN_SUCCESS)
@@ -150,117 +150,3 @@ bool parse_json(const std::string& fileName, JsonParser& parser)
     return true;
 }
 
-std::string input_to_output(const std::string& inputName)
-{
-    std::string output = inputName;
-    string_replace(output, g_config.m_topFolder, ROOT_DATA);
-    return output;
-}
-
-std::string get_package_name( const std::string& input )
-{
-    std::string inputName = input;
-    string_replace(inputName, INTERMEDIATE_PATH, "");
-    size_t nPos = inputName.find_first_of("/");
-    return inputName.substr(0, nPos);
-}
-
-std::string get_resource_name( const std::string& input )
-{
-    std::string inputName = input;
-    string_replace(inputName, ROOT_DATA_PATH, "");
-    removeExtension(inputName);
-    return inputName;
-}
-
-void addChildCompiler( BaseCompiler* compiler )
-{
-    extern std::vector<class BaseCompiler*> g_childCompilers;
-    hkCriticalSectionLock _l(&g_childCS);
-    g_childCompilers.push_back(compiler);
-}
-
-static bool compare_filename_less(const std::string& fileName1, const std::string& fileName2)
-{
-    extern int get_resource_order(const StringId& type);
-    std::string ext1 = getFileExt(fileName1);
-    std::string ext2 = getFileExt(fileName2);
-    StringId ext1Id(ext1.c_str());
-    StringId ext2Id(ext2.c_str());
-    int ext1index = get_resource_order(ext1Id);
-    int ext2index = get_resource_order(ext2Id);
-    return ext1index < ext2index;
-}
-
-void saveCompileResult(const std::string& fileName)
-{
-    extern std::vector<class BaseCompiler*>        g_compilers;
-    extern std::vector<class LevelCompiler*>       g_levels;
-    extern std::vector<class BaseCompiler*>        g_childCompilers;
-
-    std::vector<std::string> resultfiles;
-    for(size_t i=0; i<g_compilers.size(); ++i)
-    {
-        BaseCompiler* compiler = g_compilers[i];
-        const std::string& output = compiler->m_output;
-        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
-        resultfiles.push_back(output);
-    }
-    for(size_t i=0; i<g_childCompilers.size(); ++i)
-    {
-        BaseCompiler* compiler = g_childCompilers[i];
-        const std::string& output = compiler->m_output;
-        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
-        resultfiles.push_back(output);
-    }
-    for(size_t i=0; i<g_levels.size(); ++i)
-    {
-        const std::string& output = g_levels[i]->m_output;
-        if(output.length() == 0 || g_levels[i]->m_skipped) continue;
-        resultfiles.push_back(output);
-    }
-    if(resultfiles.empty()) return;
-
-    FILE* fp = fopen(fileName.c_str(), "w");
-    if(!fp)
-    {
-        LOGE(__FUNCTION__" open file [%s] error.", fileName.c_str());
-        return;
-    }
-    hkSort(&resultfiles[0], resultfiles.size(), compare_filename_less);
-    for(size_t i=0; i<resultfiles.size(); ++i)
-    {
-        const std::string& fileName = resultfiles[i];
-        //std::string output = remove_top_folder(fileName);
-        fprintf(fp, "%s\n", fileName.c_str());
-    }
-    fclose(fp);
-}
-
-void nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt)
-{
-    //PROFILE(nvtt_compress);
-    std::string args = "-" + fmt + " ";
-    if(fmt == DDS_NM_FORMAT) args += "-normal ";
-    args += src;
-    args += " ";
-    args += dst;
-    shell_exec(NVTT_PATH, args);
-}
-
-void texconv_compress( const std::string& src, const std::string& folder, const std::string& fmt )
-{
-    //PROFILE(texconv_compress);
-    std::string srcFile = src;
-    string_replace(srcFile, "/", "\\");
-    std::string dstDir = folder;
-    string_replace(dstDir, "/", "\\");
-    std::string args = srcFile + " -ft DDS " + " -f " + fmt + " -o " + dstDir;
-    shell_exec(TEXCONV_PATH, args);
-}
-
-bool is_common_package( const std::string& pack_name )
-{
-	//return pack_name == "core" || pack_name == "preview" || pack_name == "boot";
-	return !str_begin_with(pack_name, "world");
-}

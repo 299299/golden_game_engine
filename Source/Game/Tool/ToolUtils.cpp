@@ -1,21 +1,7 @@
-#include "CommonUtils.h"
-#include <ShlObj.h>
-#include <algorithm>
-#include <io.h>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <tchar.h>
-#include <direct.h>
-#include "StringId.h"
-#include "Log.h"
-#include "Prerequisites.h"
-#include "Profiler.h"
-#include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
+#include "ToolUtils.h"
 
-static hkCriticalSection g_errorCS;
-//static hkCriticalSection g_dbCS;
-
+static bx::LwMutex          g_errorLock;
+static bx::LwMutex          g_childLock;
 //=======================================================
 //  ERROR processing code.
 //
@@ -34,11 +20,11 @@ void showErrorMessage(const char* title, const char* error_file, bool bSlient)
     std::string error_msg = ss.str();
     write_file(error_file, error_msg.c_str(), error_msg.length());
     if(bSlient) return;
-    msgBox(error_msg.c_str(), title);
+    msg_box(error_msg.c_str(), title);
 }
 void addError(const char* fmt, ...)
 {
-    hkCriticalSectionLock _l(&g_errorCS);
+    bx::LwMutexScope _l(g_errorLock);
     ++g_errorNum;
     if(g_errorMsg.size() >= MAX_ERROR_TO_SHOW) return;
     va_list args;
@@ -159,7 +145,8 @@ void string_replace( std::string &strBig, const std::string &strsrc, const std::
 bool fileSystemCopy(const std::string& src, const std::string& destFolder)
 {
     LOGD("file system copy from %s to %s", src.c_str(), destFolder.c_str());
-    //PROFILE(file_system_copy);
+
+#ifdef HAVOK_COMPILE
     SHFILEOPSTRUCT sfo;
     ZeroMemory(&sfo, sizeof(sfo));
     sfo.wFunc = FO_COPY;
@@ -190,6 +177,9 @@ bool fileSystemCopy(const std::string& src, const std::string& destFolder)
         LOGE("file system copy failed = %d, 0x%X!", ret, ret);
         return false;
     }
+#else
+    return false;
+#endif
 }
 
 std::string getWorkingDir()
@@ -202,6 +192,7 @@ std::string getWorkingDir()
 
 void runProcess(const std::string& process, const std::string& workingDir, const std::string& args)
 {
+#ifdef HAVOK_COMPILE
     PROCESS_INFORMATION processInformation;
     STARTUPINFO startupInfo;
     memset(&processInformation, 0, sizeof(processInformation));
@@ -236,12 +227,14 @@ void runProcess(const std::string& process, const std::string& workingDir, const
         CloseHandle( processInformation.hProcess );
         CloseHandle( processInformation.hThread );
     }
+#endif
 }
 
 void findFiles(const std::string& folder, const std::string& ext, bool bRecursive, std::vector<std::string>& outFiles)
 {
     std::string findPath = folder + "*." + ext;
 
+#ifdef HAVOK_COMPILE
     WIN32_FIND_DATA wfd;
     HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);
     if (hFind == INVALID_HANDLE_VALUE)
@@ -264,11 +257,13 @@ void findFiles(const std::string& folder, const std::string& ext, bool bRecursiv
     }
     while (FindNextFile(hFind, &wfd));
     FindClose(hFind);
+#endif
 }
 void findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders)
 {
     std::string findPath = folder + "*.*";
 
+#ifdef HAVOK_COMPILE
     WIN32_FIND_DATA wfd;
     memset(&wfd, 0, sizeof(wfd));
     HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);
@@ -289,12 +284,15 @@ void findFolders(const std::string& folder, bool bRecursive, std::vector<std::st
     }
     while (FindNextFile(hFind, &wfd));
     FindClose(hFind);
+#endif
 }
 
 
 uint32_t read_file(const std::string& fileName, char** outBuf)
 {
     //PROFILE(read_file);
+
+#ifdef HAVOK_COMPILE
     HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
     if(hFile == INVALID_HANDLE_VALUE)
     {
@@ -317,11 +315,15 @@ uint32_t read_file(const std::string& fileName, char** outBuf)
     CloseHandle(hFile);
     *outBuf = p;
     return fileSize;
+#else
+    return false;
+#endif
 }
 
 bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
 {
     //PROFILE(write_file);
+#ifdef HAVOK_COMPILE
     HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     if(hFile == INVALID_HANDLE_VALUE)
     {
@@ -338,6 +340,9 @@ bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
     }
     CloseHandle(hFile);
     return true;
+#else
+    return false;
+#endif
 }
 
 void delete_file_buffer( char* ptr )
@@ -353,11 +358,15 @@ void addBackSlash( std::string& outStr )
 
 uint64_t get_file_size(const std::string& fileName)
 {
+#ifdef HAVOK_COMPILE
     WIN32_FIND_DATA wfd;
     memset(&wfd, 0, sizeof(wfd));
     HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);
     if (hFind == INVALID_HANDLE_VALUE) return 0;
     return MAKE_U64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+#else
+    return 0;
+#endif
 }
 
 std::string remove_top_folder(const std::string& fileName)
@@ -389,6 +398,7 @@ std::string relative_to_full_path( const std::string input )
 
 void shell_exec(const std::string& exe, const std::string& args, const std::string& workDir, bool bHide)
 {
+#ifdef HAVOK_COMPILE
     SHELLEXECUTEINFO ShExecInfo = {0};
     ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
     ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
@@ -406,6 +416,7 @@ void shell_exec(const std::string& exe, const std::string& args, const std::stri
         return;
     }
     WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
+#endif
 }
 
 std::string name_to_file_path( const std::string& resourceName, const std::string& ext )
@@ -415,19 +426,23 @@ std::string name_to_file_path( const std::string& resourceName, const std::strin
 
 void delete_file(const std::string& fileName)
 {
+#ifdef HAVOK_COMPILE
     if(!isFileExist(fileName)) return;
     int nRet = ::DeleteFile(fileName.c_str());
     if(nRet != 0) return;
     LOGE(__FUNCTION__" failed, GetLastError() = %d", GetLastError());
+#endif
 }
 
 bool delete_folder(const std::string& folderName)
 {
+#ifdef HAVOK_COMPILE
     std::string pathName = folderName;
     string_replace(pathName, "/", "\\");
     std::string cmd = "rmdir /s /q ";
     cmd += pathName;
     ::system(cmd.c_str());
+#endif
     return true;
 }
 
@@ -452,11 +467,6 @@ int find_char(const char* data, uint32_t size, char c)
             return (int)i;
     }
     return -1;
-}
-
-void msgBox(const char* text, const char* title)
-{
-    ::MessageBoxA(NULL, text, title, MB_TOPMOST);
 }
 
 std::string get_last_string( const std::string& input, char c, int count )
@@ -494,11 +504,286 @@ void fixPathSlash( std::string& inout )
 }
 
 
+void dumpNodeRec(hkxNode* theNode)
+{
+#ifdef HAVOK_COMPILE
+    hkVariant va = theNode->m_object;
+    const char* className = "$No Class";
+    if(va.m_class)
+    {
+        className = va.m_class->getName();
+    }
+
+    LOGD("node name=%s, object class=%s, properties=%s", theNode->m_name.cString(), className, theNode->m_userProperties.cString());
+    LOGD("keyFrameSize=%d, childrenSize=%d, annotationSize=%d, linearKeyFrameSize=%d, selected=%s",
+                        theNode->m_keyFrames.getSize(),
+                        theNode->m_children.getSize(),
+                        theNode->m_annotations.getSize(),
+                        theNode->m_linearKeyFrameHints.getSize(),
+                        theNode->m_selected ? "true" : "false");
+
+    for (int i=0; i<theNode->m_annotations.getSize(); ++i)
+    {
+        const hkxNode::AnnotationData& annotation = theNode->m_annotations[i];
+        LOGD("annotation[%d], time=%f, text=%s", i, annotation.m_time, annotation.m_description.cString());
+    }
+
+    for(int i=0; i<theNode->m_attributeGroups.getSize(); ++i)
+    {
+        const hkxAttributeGroup& attrGrp = theNode->m_attributeGroups[i];
+        LOGD("attribute group name = %s, attributes = %d",
+                            attrGrp.m_name.cString(),
+                            attrGrp.m_attributes.getSize());
+        for(int j=0; j<attrGrp.m_attributes.getSize(); ++j)
+        {
+            const hkxAttribute& attr = attrGrp.m_attributes[j];
+            const hkClass* pClass = attr.m_value.getClass();
+            LOGD("attribute = %s, class = %s",
+                                attr.m_name.cString(),
+                                pClass->getName());
+        }
+    }
+
+    for(int i=0; i<theNode->m_children.getSize(); ++i)
+    {
+        dumpNodeRec(theNode->m_children[i]);
+    }
+#endif
+}
+
+void findNodesRec(  hkxNode* theNode,
+                    const hkClass* theClass,
+                    std::vector<hkxNode*>& outNodes)
+{
+#ifdef HAVOK_COMPILE
+    hkVariant va = theNode->m_object;
+    if (va.m_class == theClass) outNodes.push_back(theNode);
+    for(int i=0; i<theNode->m_children.getSize(); ++i)
+    {
+        findNodesRec(theNode->m_children[i], theClass, outNodes);
+    }
+#endif
+}
+
+void findNodesRec(  hkxNode* theNode,
+                    const std::string& preFix,
+                    std::vector<hkxNode*>& outNodes)
+{
+#ifdef HAVOK_COMPILE
+    if (theNode->m_name.startsWith(preFix.c_str()))
+        outNodes.push_back(theNode);
+
+    for(int i=0; i<theNode->m_children.getSize(); ++i)
+    {
+        findNodesRec(theNode->m_children[i], preFix, outNodes);
+    }
+#endif
+}
 
 
+void fill_object_attributes(jsonxx::Object& object, const hkxAttributeGroup* group)
+{
+#ifdef HAVOK_COMPILE
+    if(!group) return;
+    //TODO Animated Attributes
+    for (int i=0; i<group->m_attributes.getSize(); ++i)
+    {
+        const hkxAttribute& attrib = group->m_attributes[i];
+        std::string attrName(attrib.m_name.cString());
+        hkVariant variant(attrib.m_value);
+        if(variant.m_class == &hkxSparselyAnimatedStringClass)
+        {
+            hkxSparselyAnimatedString* hString = (hkxSparselyAnimatedString*)variant.m_object;
+            object << attrName << std::string(hString->m_strings[0].cString());
+        }
+        else if(variant.m_class == &hkxAnimatedFloatClass)
+        {
+            hkxAnimatedFloat* hFloat = (hkxAnimatedFloat*)variant.m_object;
+            object << attrName << hFloat->m_floats[0];
+        }
+        else if(variant.m_class == &hkxAnimatedVectorClass)
+        {
+            hkxAnimatedVector* hVector = (hkxAnimatedVector*)variant.m_object;
+            jsonxx::Array vectorArray;
+            for(int i=0; i<hVector->m_vectors.getSize(); ++i)
+            {
+                vectorArray << hVector->m_vectors[i];
+            }
+            object << attrName << vectorArray;
+        }
+        else if(variant.m_class == &hkxSparselyAnimatedBoolClass)
+        {
+            hkxSparselyAnimatedBool* hBool = (hkxSparselyAnimatedBool*)variant.m_object;
+            object << attrName << (bool)hBool->m_bools[0];
+        }
+        else if(variant.m_class == &hkxSparselyAnimatedIntClass)
+        {
+            hkxSparselyAnimatedInt* hInt = (hkxSparselyAnimatedInt*)variant.m_object;
+            object << attrName << (int)hInt->m_ints[0];
+        }
+        else if(variant.m_class == &hkxAnimatedQuaternionClass)
+        {
+            hkxAnimatedQuaternion* hQuat = (hkxAnimatedQuaternion*)variant.m_object;
+            jsonxx::Array vectorArray;
+            for(int i=0; i<hQuat->m_quaternions.getSize(); ++i)
+            {
+                vectorArray << hQuat->m_quaternions[i];
+            }
+            object << attrName << vectorArray;
+        }
+        else if(variant.m_class == &hkxAnimatedMatrixClass)
+        {
+            hkxAnimatedMatrix* hMatrix = (hkxAnimatedMatrix*)variant.m_object;
+            jsonxx::Array vectorArray;
+            for(int i=0; i<hMatrix->m_matrices.getSize(); ++i)
+            {
+                vectorArray << hMatrix->m_matrices[i];
+            }
+            object << attrName << vectorArray;
+        }
+    }
+#endif
+}
 
 
+void lut2d_to_3d(const uint8_t* inData, uint8_t* outData)
+{
+    //PROFILE(lut2d_to_3d);
+    for (int z = 0; z < COLOR_LUT_SIZE; ++z)
+    {
+        for (int y = 0; y < COLOR_LUT_SIZE; ++y)
+        {
+            const uint8_t* in = &inData[z * COLOR_LUT_SIZE * 4 + y * COLOR_LUT_SIZE * COLOR_LUT_SIZE * 4];
+            uint8_t* out = &outData[z * COLOR_LUT_SIZE * COLOR_LUT_SIZE * 4 + y * COLOR_LUT_SIZE * 4];
+            for (int x = 0; x < COLOR_LUT_SIZE * 4; x += 4)
+            {
+                out[x] = in[x+2];
+                out[x+1] = in[x+1];
+                out[x+2] = in[x];
+                out[x+3] = in[x+3];
+            }
+        }
+    }
+}
 
+std::string input_to_output(const std::string& inputName)
+{
+    std::string output = inputName;
+    string_replace(output, g_config.m_topFolder, ROOT_DATA);
+    return output;
+}
+
+std::string get_package_name( const std::string& input )
+{
+    std::string inputName = input;
+    string_replace(inputName, INTERMEDIATE_PATH, "");
+    size_t nPos = inputName.find_first_of("/");
+    return inputName.substr(0, nPos);
+}
+
+std::string get_resource_name( const std::string& input )
+{
+    std::string inputName = input;
+    string_replace(inputName, ROOT_DATA_PATH, "");
+    removeExtension(inputName);
+    return inputName;
+}
+
+void addChildCompiler( BaseCompiler* compiler )
+{
+    extern std::vector<class BaseCompiler*> g_childCompilers;
+    bx::LwMutexScope _l(g_childLock);
+    g_childCompilers.push_back(compiler);
+}
+
+static bool compare_filename_less(const std::string& fileName1, const std::string& fileName2)
+{
+    extern int get_resource_order(const StringId& type);
+    std::string ext1 = getFileExt(fileName1);
+    std::string ext2 = getFileExt(fileName2);
+    StringId ext1Id(ext1.c_str());
+    StringId ext2Id(ext2.c_str());
+    int ext1index = get_resource_order(ext1Id);
+    int ext2index = get_resource_order(ext2Id);
+    return ext1index < ext2index;
+}
+
+void saveCompileResult(const std::string& fileName)
+{
+    extern std::vector<class BaseCompiler*>        g_compilers;
+    extern std::vector<class LevelCompiler*>       g_levels;
+    extern std::vector<class BaseCompiler*>        g_childCompilers;
+
+    std::vector<std::string> resultfiles;
+    for(size_t i=0; i<g_compilers.size(); ++i)
+    {
+        BaseCompiler* compiler = g_compilers[i];
+        const std::string& output = compiler->m_output;
+        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
+        resultfiles.push_back(output);
+    }
+    for(size_t i=0; i<g_childCompilers.size(); ++i)
+    {
+        BaseCompiler* compiler = g_childCompilers[i];
+        const std::string& output = compiler->m_output;
+        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
+        resultfiles.push_back(output);
+    }
+    for(size_t i=0; i<g_levels.size(); ++i)
+    {
+        const std::string& output = g_levels[i]->m_output;
+        if(output.length() == 0 || g_levels[i]->m_skipped) continue;
+        resultfiles.push_back(output);
+    }
+    if(resultfiles.empty()) return;
+
+    FILE* fp = fopen(fileName.c_str(), "w");
+    if(!fp)
+    {
+        LOGE(__FUNCTION__" open file [%s] error.", fileName.c_str());
+        return;
+    }
+#ifdef HAVOK_COMPILE
+    hkSort(&resultfiles[0], resultfiles.size(), compare_filename_less);
+#else
+    std::sort(&resultfiles[0], resultfiles.size(), compare_filename_less);
+#endif
+    for(size_t i=0; i<resultfiles.size(); ++i)
+    {
+        const std::string& fileName = resultfiles[i];
+        //std::string output = remove_top_folder(fileName);
+        fprintf(fp, "%s\n", fileName.c_str());
+    }
+    fclose(fp);
+}
+
+void nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt)
+{
+    //PROFILE(nvtt_compress);
+    std::string args = "-" + fmt + " ";
+    if(fmt == DDS_NM_FORMAT) args += "-normal ";
+    args += src;
+    args += " ";
+    args += dst;
+    shell_exec(NVTT_PATH, args);
+}
+
+void texconv_compress( const std::string& src, const std::string& folder, const std::string& fmt )
+{
+    //PROFILE(texconv_compress);
+    std::string srcFile = src;
+    string_replace(srcFile, "/", "\\");
+    std::string dstDir = folder;
+    string_replace(dstDir, "/", "\\");
+    std::string args = srcFile + " -ft DDS " + " -f " + fmt + " -o " + dstDir;
+    shell_exec(TEXCONV_PATH, args);
+}
+
+bool is_common_package( const std::string& pack_name )
+{
+    //return pack_name == "core" || pack_name == "preview" || pack_name == "boot";
+    return !str_begin_with(pack_name, "world");
+}
 
 
 //========================================================================
