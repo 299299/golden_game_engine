@@ -88,7 +88,9 @@ void Actor::teleport_transform( const hkQsTransform& t )
 void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId32 id)
 {
     m_resource = resource;
+#ifdef HAVOK_COMPILE
     m_transform.setIdentity();
+#endif
     m_values = 0;
     m_id = id;
     uint32_t num = resource->m_numComponents;
@@ -106,7 +108,7 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId
         m_values = COMMON_ALLOC(char, fact.m_value_size);
         memcpy(m_values, fact.m_values, fact.m_value_size);
     }
-    
+
     teleport_transform(t);
 }
 
@@ -126,16 +128,20 @@ void Actor::transform_renders( const hkQsTransform& t )
 {
     m_transform = t;
     ModelInstance* model = (ModelInstance*)get_first_component_of(ModelResource::get_type());
-    if(model) 
+    if(model)
     {
+#ifdef HAVOK_COMPILE
         transform_matrix(model->m_transform, t);
+#endif
         ADD_BITS(model->m_flag, kNodeTransformDirty);
     }
 
     LightInstance* light = (LightInstance*)get_first_component_of(LightResource::get_type());
     if(light)
     {
+#ifdef HAVOK_COMPILE
         transform_matrix(light->m_transform, t);
+#endif
         ADD_BITS(light->m_flag, kNodeTransformDirty);
     }
 }
