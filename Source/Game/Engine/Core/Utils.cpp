@@ -112,6 +112,22 @@ void msg_box( const char* text, const char* title )
 #endif
 }
 
+bool check_unique_process()
+{
+#ifdef HAVOK_COMPILE
+    #define MUTEX_NAME     ("Global//NAGA_ENGINE_GAME_SINGLE_MUTEX")
+    HANDLE hMutex = CreateMutexA(NULL, FALSE, MUTEX_NAME);
+    if (GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        ::CloseHandle(hMutex);
+        return false;
+    }
+    else 
+#else
+        return true;
+#endif
+}
+
 uint32_t Fact::value_type(const StringId& k) const
 {
     Key key;

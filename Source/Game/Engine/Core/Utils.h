@@ -9,6 +9,7 @@ void* load_havok_inplace(void* data, uint32_t size);
 void unload_havok_inplace(void* data, uint32_t size);
 void msg_box(const char* text, const char* title);
 void accurate_sleep(uint32_t milliSeconds);
+bool check_unique_process();
 
 struct ValueType
 {

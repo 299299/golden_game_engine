@@ -38,22 +38,6 @@ void showHelp()
             "--headless no graphics & no window\n");
 }
 
-#ifdef HAVOK_COMPILE
-#define MUTEX_NAME     ("Global//NAGA_ENGINE_GAME_SINGLE_MUTEX")
-BOOL checkSingleProcess()
-{
-    HANDLE hMutex = CreateMutexA(NULL, FALSE, MUTEX_NAME);
-    if (GetLastError() == ERROR_ALREADY_EXISTS)
-    {
-        ::CloseHandle(hMutex);
-        return FALSE;
-    }
-    else return TRUE;
-}
-#else
-bool checkSingleProcess() {return false;};
-#endif
-
 ActorId32 g_actor;
 int main(int argc, char* argv[])
 {
@@ -98,9 +82,6 @@ int main(int argc, char* argv[])
 
     if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.", "ENGINE");
 
-    extern void register_memory_allocators();
-    register_memory_allocators();
-
     g_engine.init(cfg);
     g_gameFSM.add_state(new PreviewState);
     g_gameFSM.add_state(new PlayerState);
@@ -138,13 +119,4 @@ err:
     //------------------------------------------------------------
     g_profiler.dump_to_file("game_profile.txt", true, true);
     return 0;
-}
-
-//===========================================================
-static char             g_frameBuf[1024*1024*5];//5M Frame Mem
-static LinearAllocator  g_frameAllocator(g_frameBuf, sizeof(g_frameBuf));
-
-void register_memory_allocators()
-{
-    g_memoryMgr.register_allocator(kMemoryCategoryFrame, &g_frameAllocator);
 }

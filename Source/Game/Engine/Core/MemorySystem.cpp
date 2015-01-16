@@ -51,8 +51,10 @@ void MemorySystem::init(bool havok_check_mem)
     m_havokInited = true;
     memory_globals::init();
     register_allocator(kMemoryCategoryCommon, &default_allocator());
+    LinearAllocator* allocator = new LinearAllocator(default_allocator().allocate(FRAME_MEMORY_SIZE), FRAME_MEMORY_SIZE);
+    register_allocator(kMemoryCategoryFrame, allocator);
 #ifndef _RETAIL
-    LinearAllocator* allocator = new LinearAllocator(default_allocator().allocate(DEBUG_MEMORY_SIZE), DEBUG_MEMORY_SIZE);
+    allocator = new LinearAllocator(default_allocator().allocate(DEBUG_MEMORY_SIZE), DEBUG_MEMORY_SIZE);
     register_allocator(kMemoryCategoryDebug, allocator);
     load_string_table(STRING_TABLE_FILE);
 #endif
@@ -60,9 +62,12 @@ void MemorySystem::init(bool havok_check_mem)
 
 void MemorySystem::shutdown()
 {
+    LinearAllocator* allocator = (LinearAllocator*)m_allocators[kMemoryCategoryFrame];
+    default_allocator().deallocate(allocator->get_start());
+    delete allocator;
 #ifndef _RETAIL
     save_string_table(STRING_TABLE_FILE);
-    LinearAllocator* allocator = (LinearAllocator*)m_allocators[kMemoryCategoryDebug];
+    allocator = (LinearAllocator*)m_allocators[kMemoryCategoryDebug];
     default_allocator().deallocate(allocator->get_start());
     delete allocator;
 #endif
