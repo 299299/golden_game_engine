@@ -139,7 +139,14 @@ void Engine::apply_framelimit(double timeMS)
 void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
-    g_memoryMgr.init(m_cfg.m_checkMemory);
+    MemoryConfig cfg;
+    cfg.m_checkHavokMem = m_cfg.m_checkMemory;
+    cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
+    cfg.m_frameMemSize = FRAME_MEMORY_SIZE;
+    cfg.m_havokFrameMemSize = HAVOK_FRAMEMEMORY_SIZE;
+    cfg.m_havokMonitorMemSize = HAVOK_MONITOR_MEM_SIZE;
+    cfg.m_initHavok = true;
+    g_memoryMgr.init(cfg);
     g_threadMgr.init(true);
     g_profiler.init();
     g_resourceMgr.init();

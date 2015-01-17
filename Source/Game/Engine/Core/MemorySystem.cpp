@@ -3,7 +3,6 @@
 #include "linear_allocator.h"
 #include "Log.h"
 #include "StringId.h"
-#include "GameConfig.h"
 #include "Prerequisites.h"
 //=================================================================
 #include <string.h>
@@ -38,38 +37,56 @@ MemorySystem::~MemorySystem()
 
 }
 
-void MemorySystem::init(bool havok_check_mem)
+void MemorySystem::init(const MemoryConfig& cfg)
 {
+    if(cfg.m_initHavok)
+    {
 #ifdef HAVOK_COMPILE
-    if(havok_check_mem) m_memRouter = hkMemoryInitUtil::initChecking( hkMallocAllocator::m_defaultMallocAllocator,
-        hkMemorySystem::FrameInfo( HAVOK_FRAMEMEMORY_SIZE ) );
-    else m_memRouter = hkMemoryInitUtil::initDefault( hkMallocAllocator::m_defaultMallocAllocator,
-        hkMemorySystem::FrameInfo( HAVOK_FRAMEMEMORY_SIZE ) );
-    hkBaseSystem::init( m_memRouter, errorReport );
-    hkMonitorStream::getInstance().resize(HAVOK_MONITOR_MEM_SIZE);
+        if(cfg.m_checkHavokMem) m_memRouter = hkMemoryInitUtil::initChecking( 
+            hkMallocAllocator::m_defaultMallocAllocator,
+            hkMemorySystem::FrameInfo( cfg.m_havokFrameMemSize ) );
+        else m_memRouter = hkMemoryInitUtil::initDefault( 
+            hkMallocAllocator::m_defaultMallocAllocator,
+            hkMemorySystem::FrameInfo( cfg.m_havokFrameMemSize ) );
+        hkBaseSystem::init( m_memRouter, errorReport );
+        if(cfg.m_havokMonitorMemSize)
+            hkMonitorStream::getInstance().resize(cfg.m_havokMonitorMemSize);
 #endif
-    m_havokInited = true;
+        m_havokInited = true;
+    }
     memory_globals::init();
     register_allocator(kMemoryCategoryCommon, &default_allocator());
-    LinearAllocator* allocator = new LinearAllocator(default_allocator().allocate(FRAME_MEMORY_SIZE), FRAME_MEMORY_SIZE);
-    register_allocator(kMemoryCategoryFrame, allocator);
+    if(cfg.m_frameMemSize)
+    {
+        LinearAllocator* allocator = new LinearAllocator(default_allocator().allocate(cfg.m_frameMemSize), cfg.m_frameMemSize);
+        register_allocator(kMemoryCategoryFrame, allocator);
+    }
 #ifndef _RETAIL
-    allocator = new LinearAllocator(default_allocator().allocate(DEBUG_MEMORY_SIZE), DEBUG_MEMORY_SIZE);
-    register_allocator(kMemoryCategoryDebug, allocator);
-    load_string_table(STRING_TABLE_FILE);
+    if(cfg.m_debugMemSize)
+    {
+        LinearAllocator* allocator = new LinearAllocator(default_allocator().allocate(cfg.m_debugMemSize), cfg.m_debugMemSize);
+        register_allocator(kMemoryCategoryDebug, allocator);
+        load_string_table(STRING_TABLE_FILE);
+    }
 #endif
 }
 
 void MemorySystem::shutdown()
 {
     LinearAllocator* allocator = (LinearAllocator*)m_allocators[kMemoryCategoryFrame];
-    default_allocator().deallocate(allocator->get_start());
-    delete allocator;
+    if(allocator)
+    {
+        default_allocator().deallocate(allocator->get_start());
+        delete allocator;
+    }
 #ifndef _RETAIL
-    save_string_table(STRING_TABLE_FILE);
     allocator = (LinearAllocator*)m_allocators[kMemoryCategoryDebug];
-    default_allocator().deallocate(allocator->get_start());
-    delete allocator;
+    if(allocator)
+    {
+        save_string_table(STRING_TABLE_FILE);
+        default_allocator().deallocate(allocator->get_start());
+        delete allocator;
+    }
 #endif
 #ifdef HAVOK_COMPILE
     if(m_havokInited)

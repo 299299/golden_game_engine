@@ -9,15 +9,7 @@
 #define     MSG_TITLE           ("HAVOK CONVERTER")
 #define     PROXY_NAME          ("Proxy_")
 #define     LEVEL_NAME          ("Level")
-#define     HAVOK_ERROR         ("havok_convert_error.txt")
 #define     ENGINE_ATTRIBUTES   ("engine_attributes")
-
-enum HCExitCode
-{
-    kExitHavokLoadError = 1,
-    kExitErrorArg       = 2,
-    kExitOutError       = 3,
-};
 
 struct HAVOK_Config
 {
@@ -51,7 +43,6 @@ struct Actor_Config
         ,m_rlc(0)
         ,m_animation(0)
         ,m_physics(0)
-        ,m_time(0)
     {
     }
 
@@ -65,7 +56,6 @@ struct Actor_Config
     std::string                 m_exportMode;
     std::string                 m_input;
     std::string                 m_output;
-    uint64_t                    m_time;
 
     hkLoader*                   m_loader;
     hkRootLevelContainer*       m_rlc;

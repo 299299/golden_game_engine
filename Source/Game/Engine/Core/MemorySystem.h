@@ -14,12 +14,23 @@ enum MemoryAllocCategory
 class hkMemoryRouter;
 class Allocator;
 
+struct MemoryConfig
+{
+    int             m_frameMemSize;
+    int             m_debugMemSize;
+    int             m_havokFrameMemSize;
+    int             m_havokMonitorMemSize;
+    bool            m_initHavok;
+    bool            m_checkHavokMem;
+    char            m_padding[2];
+};
+
 struct MemorySystem
 {
     MemorySystem();
     ~MemorySystem();
 
-    void            init(bool havok_check_mem);
+    void            init(const MemoryConfig& cfg);
     void            shutdown();
     void            frame_start();
 

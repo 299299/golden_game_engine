@@ -191,7 +191,7 @@
 #include <bx/commandline.h>
 #include <bx/mutex.h>
 
-//components
+#include "Prerequisites.h"
 #include "jsonxx.h"
 #include "DataDef.h"
 #include "ShaderInc.h"

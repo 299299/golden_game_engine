@@ -57,3 +57,10 @@ enum LightType
     kLightCount
 };
 
+enum AppErrorCode
+{
+    kErrorSuccess   = 0,
+    kErrorAction    = -1,
+    kErrorArg       = -2,
+    KErrorLoadHavok = -3,
+};

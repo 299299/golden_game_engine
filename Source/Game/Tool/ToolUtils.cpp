@@ -18,7 +18,7 @@ void showErrorMessage(const char* title, const char* error_file, bool bSlient)
         ss << g_errorMsg[i] << "\n";
     }
     std::string error_msg = ss.str();
-    write_file(error_file, error_msg.c_str(), error_msg.length());
+    if(error_file) write_file(error_file, error_msg.c_str(), error_msg.length());
     if(bSlient) return;
     msg_box(error_msg.c_str(), title);
 }
