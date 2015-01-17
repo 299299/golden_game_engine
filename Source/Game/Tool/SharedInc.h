@@ -1,4 +1,40 @@
 #pragma once
+#include "Prerequisites.h"
+#include "Log.h"
+#include "MemorySystem.h"
+#include "MathDefs.h"
+
+#include <stdio.h>
+#include <ShlObj.h>
+#include <algorithm>
+#include <io.h>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <tchar.h>
+#include <direct.h>
+#include <vector>
+#include <string>
+#include <map>
+#include <unordered_map>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <io.h>
+
+#include <bgfx.h>
+#include <bx/fpumath.h>
+#include <bx/bx.h>
+#include <bx/platform.h>
+#include <bx/commandline.h>
+#include <bx/mutex.h>
+
+#include "jsonxx.h"
+#include "DataDef.h"
+#include "ShaderInc.h"
+#include "Utils.h"
+#include "Profiler.h"
+
 #ifdef HAVOK_COMPILE
 #include <Common/Base/hkBase.h>
 #include <Common/Base/Ext/hkBaseExt.h>
@@ -157,43 +193,7 @@
 #include <Common/SceneData/Environment/hkxEnvironment.h>
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Algorithm/Sort/hkSort.h>
+#include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
+#include <Common/Serialize/Util/hkNativePackfileUtils.h>
+#include <Common/Base/Math/Matrix/hkMatrixDecomposition.h>
 #endif
-
-//engine header
-#include "Log.h"
-#include "MemorySystem.h"
-#include "MathDefs.h"
-#include <stdio.h>
-
-#include <ShlObj.h>
-#include <algorithm>
-#include <io.h>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <tchar.h>
-#include <direct.h>
-
-//std header
-#include <vector>
-#include <string>
-#include <map>
-#include <unordered_map>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <io.h>
-#include <algorithm>
-#include <bgfx.h>
-#include <bx/fpumath.h>
-#include <bx/bx.h>
-#include <bx/platform.h>
-#include <bx/commandline.h>
-#include <bx/mutex.h>
-
-#include "Prerequisites.h"
-#include "jsonxx.h"
-#include "DataDef.h"
-#include "ShaderInc.h"
-#include "Utils.h"
-#include "Profile.h"

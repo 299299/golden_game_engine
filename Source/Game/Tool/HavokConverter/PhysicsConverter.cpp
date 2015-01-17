@@ -1,8 +1,6 @@
 #include "PhysicsConverter.h"
 #include "ActorConverter.h"
-#include "Utils.h"
-#include "HC_Utils.h"
-#include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
+#include "ToolUtils.h"
 
 PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

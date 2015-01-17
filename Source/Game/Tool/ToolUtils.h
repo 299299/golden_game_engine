@@ -40,7 +40,7 @@ void        createFolder(const std::string& folderName);
 void        string_replace(std::string& strBig, const std::string & strsrc, const std::string &strdst);
 void        addBackSlash(std::string& outStr);
 void        fixPathSlash(std::string& inout);
-void        showErrorMessage(const char* title, const char* error_file, bool bSlient);
+void        showErrorMessage(const char* error_file, bool bSlient);
 bool        fileSystemCopy(const std::string& src, const std::string& destFolder);
 std::string getWorkingDir();
 void        runProcess(const std::string& process, const std::string& workingDir, const std::string& args);
@@ -72,7 +72,6 @@ void        fill_object_attributes(jsonxx::Object& object, const hkxAttributeGro
 void        nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt);
 void        texconv_compress(const std::string& src, const std::string& folder, const std::string& fmt);
 void        lut2d_to_3d(const uint8_t* inData, uint8_t* outData);
-bool        parse_json(const std::string& fileName, JsonParser& parser);
 std::string input_to_output(const std::string& inputName);
 std::string get_package_name(const std::string& input);
 std::string get_resource_name(const std::string& input);

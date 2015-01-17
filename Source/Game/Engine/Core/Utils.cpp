@@ -5,6 +5,7 @@
 #include "Profiler.h"
 #include <bx/timer.h>
 #include <bx/fpumath.h>
+#include <bx/string.h>
 #ifdef HAVOK_COMPILE
 #include <Common/Base/System/Io/Reader/hkStreamReader.h>
 #include <Common/Base/System/Io/IStream/hkIStream.h>
@@ -102,12 +103,17 @@ uint32_t g_fact_valuesizes[] =
     sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4, 0
 };
 
-void msg_box( const char* text, const char* title )
+void msg_box( const char* text, ... )
 {
+    char buf[256];
+    va_list argp;
+    va_start(argp, msg);
+    vsnprintf(buf, sizeof(buf), text, argp);
+    va_end(argp);
 #ifdef HAVOK_COMPILE
-    ::MessageBoxA(NULL, text, title, MB_TOPMOST);
+    ::MessageBoxA(NULL, buf, "NagaGAME", MB_TOPMOST);
 #else
-    printf("console msg-box [%s][%s]\n", test, title);
+    printf("console msg-box [%s][%s]\n", buf, "NagaGAME");
     getchar();
 #endif
 }

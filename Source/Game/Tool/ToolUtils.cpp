@@ -9,7 +9,7 @@ static bx::LwMutex          g_childLock;
 static char msgBuffer[2048];
 static std::vector<std::string> g_errorMsg;
 int g_errorNum = 0;
-void showErrorMessage(const char* title, const char* error_file, bool bSlient)
+void showErrorMessage(const char* error_file, bool bSlient)
 {
     if(!g_errorNum) return;
     std::stringstream ss;
@@ -20,7 +20,7 @@ void showErrorMessage(const char* title, const char* error_file, bool bSlient)
     std::string error_msg = ss.str();
     if(error_file) write_file(error_file, error_msg.c_str(), error_msg.length());
     if(bSlient) return;
-    msg_box(error_msg.c_str(), title);
+    msg_box(error_msg.c_str());
 }
 void addError(const char* fmt, ...)
 {

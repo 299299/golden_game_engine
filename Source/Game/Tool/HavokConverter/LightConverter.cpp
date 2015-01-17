@@ -1,5 +1,5 @@
 #include "LightConverter.h"
-#include "HC_Utils.h"
+#include "ToolUtils.h"
 
 LightConverter::LightConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

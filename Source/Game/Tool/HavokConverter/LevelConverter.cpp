@@ -1,10 +1,8 @@
 #include "LevelConverter.h"
-#include "HC_Utils.h"
 #include "ModelConverter.h"
 #include "LightConverter.h"
 #include "StaticModelConverter.h"
-#include "HC_Utils.h"
-#include <Common/Base/Math/Matrix/hkMatrixDecomposition.h>
+#include "ToolUtils.h"
 
 void matrix_to_transform(const hkMatrix4& m, hkQsTransform& t)
 {

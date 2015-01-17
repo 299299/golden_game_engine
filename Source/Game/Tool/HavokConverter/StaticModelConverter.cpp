@@ -2,7 +2,7 @@
 #include "PhysicsConverter.h"
 #include "ModelConverter.h"
 #include "LightConverter.h"
-#include "HC_Utils.h"
+#include "ToolUtils.h"
 
 StaticModelConverter::StaticModelConverter()
 :m_scene(0)
@@ -25,7 +25,6 @@ void StaticModelConverter::process(hkxScene* scene)
 {
     m_scene = scene;
     processNode(m_scene->m_rootNode);
-    processComponentNodes();
 }
 
 void StaticModelConverter::processNode( hkxNode* node )

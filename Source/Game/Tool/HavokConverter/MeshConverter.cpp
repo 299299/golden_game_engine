@@ -1,11 +1,11 @@
 #include <windows.h>
 #include "MeshConverter.h"
 #include "MaterialConverter.h"
-#include "forsythtriangleorderoptimizer.h"
 #include "ActorConverter.h"
-#include "HC_Utils.h"
-#include "bounds.h"
-#include <bgfx/vertexdecl.h>
+#include "ToolUtils.h"
+#include <bounds.h>
+#include <forsyth-too/forsythtriangleorderoptimizer.h>
+#include <vertexdecl.h>
 
 //#define FLOAT_WEIGHT
 

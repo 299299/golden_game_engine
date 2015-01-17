@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafx.h"
+#include "HC_Config.h"
 #include "Actor.h"
 
 class ComponentConverter;
@@ -26,7 +26,6 @@ public:
     void setClass(const std::string& cls) { m_class = cls; };
 
     hkxNode* findNode(const char* name);
-    virtual void processComponentNodes();
 
     Actor_Config*                           m_config;
     std::vector<ComponentConverter*>        m_components;

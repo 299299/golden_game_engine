@@ -1,8 +1,7 @@
 #include "AnimRigConverter.h"
 #include "ModelConverter.h"
 #include "ActorConverter.h"
-#include "HC_Utils.h"
-#include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
+#include "ToolUtils.h"
 
 const char* g_body_names_0[] = 
 {

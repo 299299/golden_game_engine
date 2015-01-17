@@ -1,6 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
 #include <bx/fpumath.h>
+#include <bounds.h>
 
 #define MAX_FLOAT (3.402823466e+38F)
 
@@ -100,23 +101,6 @@ struct Vec3
 struct Vec4
 {
     float m_vec[4];
-};
-
-struct Aabb
-{
-    float m_min[3];
-    float m_max[3];
-};
-
-struct Obb
-{
-    float m_mtx[16];
-};
-
-struct Sphere
-{
-    float m_center[3];
-    float m_radius;
 };
 
 struct Matrix

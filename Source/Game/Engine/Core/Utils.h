@@ -7,7 +7,7 @@ class hkRootLevelContainer;
 int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
 void unload_havok_inplace(void* data, uint32_t size);
-void msg_box(const char* text, const char* title);
+void msg_box(const char* text, ...);
 void accurate_sleep(uint32_t milliSeconds);
 bool check_unique_process();
 

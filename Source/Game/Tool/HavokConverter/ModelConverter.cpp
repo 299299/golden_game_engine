@@ -2,9 +2,8 @@
 #include "MaterialConverter.h"
 #include "MeshConverter.h"
 #include "ActorConverter.h"
-#include "HC_Utils.h"
 #include "MathDefs.h"
-#include "bounds.h"
+#include "ToolUtils.h"
 
 ModelConverter::ModelConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
@@ -65,7 +64,7 @@ void ModelConverter::process(RigSkinData* skinData)
         transform_matrix(m_joints[i].m_x, invT);
     }
 
-    ENGINE_ASSERT(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
+    ENGINE_ASSERT_ARGS(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
 }
 
 void ModelConverter::loadMeshes(const std::vector<hkxMeshSection*>& meshes)

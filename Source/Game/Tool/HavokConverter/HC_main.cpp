@@ -1,11 +1,10 @@
-#include "stdafx.h"
+#include "ToolUtils.h"
 #include "Profiler.h"
 #include "CharacterConverter.h"
 #include "StaticModelConverter.h"
 #include "LevelConverter.h"
 #include "AnimationConverter.h"
 #include "linear_allocator.h"
-#include "HC_Utils.h"
 
 HAVOK_Config g_config;
 
@@ -30,20 +29,22 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     cfg.m_havokMonitorMemSize = 0;
     g_memoryMgr.init(cfg);
 
-    g_config.m_packNormal = cmdline.hasArg("packnormal");
-    g_config.m_packUV = cmdline.hasArg("packuv");
-    g_config.m_slient = cmdline.hasArg("slient"); 
+    g_config.m_packNormal = cmdline->hasArg("packnormal");
+    g_config.m_packUV = cmdline->hasArg("packuv");
+    g_config.m_slient = cmdline->hasArg("slient");
 
     Actor_Config config;
-    const char* input = cmdline.findOption('f');
-    const char* output = cmdline.findOption('o');
+    config.m_exportMode = cmdline->findOption("mode");
+    const char* input = cmdline->findOption('f');
+    const char* output = cmdline->findOption('o');
     if(input && output) 
     {
         LOGI("havok convert %s ---> %s", input, output);
         config.m_input = input;
         config.m_exportName = getFileName(input);
         config.m_exportFolder = output;
-        config.m_output = outputFile;
+        config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
+
         std::string path = config.m_exportFolder;
         string_replace(path, INTERMEDIATE_PATH, "");
         config.m_rootPath = path;
@@ -58,7 +59,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         }
 
         config.m_rlc = rlc;
-        if(!isFolderExist(config.m_exportFolder)) createFolder(config->m_exportFolder);
+        if(!isFolderExist(config.m_exportFolder)) createFolder(config.m_exportFolder);
         hkxEnvironment* env = LOAD_OBJECT(rlc, hkxEnvironment);
         if(env)
         {
@@ -88,11 +89,11 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         {
             if(!scene || !scene->m_rootNode)
             {
-                SAFE_REMOVEREF(config->m_loader);
-                return;
+                SAFE_REMOVEREF(config.m_loader);
+                goto error_exit;
             }
             converter = new StaticModelConverter;
-            converter->setClass(config->m_exportClass);
+            converter->setClass(config.m_exportClass);
         }
         else if(config.m_exportMode == "skinning")
         {
@@ -102,6 +103,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         else if(config.m_exportMode == "level")
         {
             converter = new LevelConverter;
+            config.m_output = config.m_exportFolder + config.m_exportName + "." + Level::get_name();
         }
         else if(config.m_exportMode == "animation")
         {
@@ -111,7 +113,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         if(!converter)
         {
             SAFE_REMOVEREF(config.m_loader);
-            return;
+            goto error_exit;
         }
 
         converter->m_config = &config;
@@ -143,7 +145,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
 
 
 error_exit:
-    showErrorMessage(MSG_TITLE, 0, g_config.m_slient);
+    showErrorMessage(0, g_config.m_slient);
     g_memoryMgr.shutdown();
     
 

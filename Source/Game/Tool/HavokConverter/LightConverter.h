@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 #include "ComponentConverter.h"
 #include "Light.h"
 

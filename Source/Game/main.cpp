@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     const char* action = cmdline.findOption("action");
     if(cmdline.hasArg("debug"))
     {
-        msg_box("wait for visual studio attach process.", action);
+        msg_box("wait for visual studio attach process.");
     }
 
     int num = BX_COUNTOF(g_apps);

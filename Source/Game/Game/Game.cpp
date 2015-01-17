@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     package_name = cmdline.findOption("package");
     state_name = cmdline.findOption("state");
 
-    if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.", "ENGINE");
+    if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.");
 
     g_engine.init(cfg);
     g_gameFSM.add_state(new PreviewState);
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
     if(!g_resourceMgr.load_package_and_wait("data/core.package"))
     {
-        msg_box("data/core.package load failed", "game");
+        msg_box("data/core.package load failed");
         goto err;
     }
 

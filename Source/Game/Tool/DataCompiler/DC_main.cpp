@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "Profiler.h"
 #include "DC_Utils.h"
+#include "DC_Config.h"
 #include "Mesh.h"
 //=================================================================
 #include "AnimationCompiler.h"
@@ -34,23 +34,6 @@ typedef BaseCompiler* (*__create_compiler__)();
 template <class T> BaseCompiler* create_compiler() { return new T; };
 typedef tinystl::unordered_map<uint32_t, __create_compiler__> CompilerBuildMap;
 CompilerBuildMap                        g_compilerBuilder;
-
-void showHelp()
-{
-    printf("Usage: DataCompiler input-file [options]\n"
-            "it will compile all intermediate asset to data folder.\n"
-            "Options:\n"
-            "-i input dir (batch mode)\n"
-            "-f input file\n"
-            "-o output folder\n"
-            "-m compile mode default 0\n"
-            "-t set num of threads to compile\n"
-            "--bundle bundle all resource to package file\n"
-            "--slient do not show error msg box\n"
-            "--ignore_texture to ignore converting all dds \n"
-            "--debug wait for vs debug attach when lunch\n");
-}
-
 
 static const char* g_resourceTypeNames[] = 
 {
@@ -478,7 +461,7 @@ int _tmain(int argc, _TCHAR* argv[])
     
     extern int g_errorNum;
     g_config.m_exitCode = -g_errorNum;
-    showErrorMessage(MSG_TITLE, DC_ERROR, g_config.m_slient);
+    showErrorMessage(DC_ERROR, g_config.m_slient);
 
     if(g_compilers.size() < 20) saveCompileResult(DC_RESULT);
     g_database.save(DC_DATABASE);

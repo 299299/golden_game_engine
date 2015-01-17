@@ -1,7 +1,7 @@
 #include "CharacterConverter.h"
-#include "HC_Utils.h"
 #include "ModelConverter.h"
 #include "AnimRigConverter.h"
+#include "ToolUtils.h"
 
 CharacterConverter::CharacterConverter()
     :m_ac(0)
@@ -40,8 +40,6 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     anic->setName(m_name);
     anic->process((void*)m_skin);
     m_components.push_back(anic);
-
-    processComponentNodes();
 }
 
 void CharacterConverter::collectRigSkinData(hkaSkeleton* rig)

@@ -2,7 +2,7 @@
 #include "SamplerConverter.h"
 #include "ActorConverter.h"
 #include "ModelConverter.h"
-#include "HC_Utils.h"
+#include "ToolUtils.h"
 
 MaterialConverter::MaterialConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
