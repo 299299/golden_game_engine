@@ -22,33 +22,9 @@
 #include <Windows.h>
 #endif
 
-void showHelp()
-{
-    printf("Usage: Game [options]\n"
-            "Options:\n"
-            "-w set window width\n"
-            "-h set window height\n"
-            "-t set window title\n"
-            "--package --> package to load\n"
-            "--state --> game state to run\n"
-            "--actor --> actor name\n"
-            "--level --> level name\n"
-            "--animation --> animation name\n"
-            "--debug wait for debug attach when launched.\n"
-            "--headless no graphics & no window\n");
-}
-
 ActorId32 g_actor;
-int main(int argc, char* argv[])
+int datacompiler_main(int argc, bx::CommandLine* cmdline)
 {
-#if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
-    // Flush all denormal/subnormal numbers (2^-1074 to 2^-1022) to zero.
-    // Typically operations on denormals are very slow, up to 100 times slower than normal numbers.
-    _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-#endif
-
-    showHelp();
-
     const char* actor_name = 0;
     const char* level_name = 0;
     const char* package_name = 0;
@@ -63,24 +39,20 @@ int main(int argc, char* argv[])
     cfg.m_windowHeight = 720;
     cfg.m_fixedFPS = 60;
 
-    bx::CommandLine cmdline(argc, argv);
-
-    const char* name = cmdline.findOption('w');
+    const char* name = cmdline->findOption('w');
     if(name) cfg.m_windowWidth = atoi(name);
-    name = cmdline.findOption('h');
+    name = cmdline->findOption('h');
     if(name) cfg.m_windowHeight = atoi(name);
-    cfg.m_headless = cmdline.hasArg("headless");
-    name = cmdline.findOption("actor");
+    cfg.m_headless = cmdline->hasArg("headless");
+    name = cmdline->findOption("actor");
     if(name) actor_name = name;
-    name = cmdline.findOption("level");
+    name = cmdline->findOption("level");
     if(name) level_name = name;
-    name = cmdline.findOption('t');
+    name = cmdline->findOption('t');
     if(name) cfg.m_windowTitle = name;
-    script = cmdline.findOption("script");
-    package_name = cmdline.findOption("package");
-    state_name = cmdline.findOption("state");
-
-    if(cmdline.hasArg("debug")) msg_box("wait for visual studio attach process.");
+    script = cmdline->findOption("script");
+    package_name = cmdline->findOption("package");
+    state_name = cmdline->findOption("state");
 
     g_engine.init(cfg);
     g_gameFSM.add_state(new PreviewState);

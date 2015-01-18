@@ -15,9 +15,7 @@ public:
 
     virtual std::string getFormatExt() const { return Level::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
-    bool isResourceInLevel(const std::string& resourceName) const;
-    virtual bool checkInLevel() const { return false; };
+    virtual bool readJSON(const jsonxx::Object& root);
 
     ResourceKeyMap           m_resourceKeys;
 };

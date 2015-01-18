@@ -28,6 +28,8 @@
 #include <bx/platform.h>
 #include <bx/commandline.h>
 #include <bx/mutex.h>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 
 #include "jsonxx.h"
 #include "DataDef.h"

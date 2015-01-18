@@ -1,41 +1,5 @@
 #include "ToolUtils.h"
 
-static bx::LwMutex          g_errorLock;
-static bx::LwMutex          g_childLock;
-//=======================================================
-//  ERROR processing code.
-//
-#define MAX_ERROR_TO_SHOW (20)
-static char msgBuffer[2048];
-static std::vector<std::string> g_errorMsg;
-int g_errorNum = 0;
-void showErrorMessage(const char* error_file, bool bSlient)
-{
-    if(!g_errorNum) return;
-    std::stringstream ss;
-    for(size_t i=0; i<g_errorMsg.size(); ++i)
-    {
-        ss << g_errorMsg[i] << "\n";
-    }
-    std::string error_msg = ss.str();
-    if(error_file) write_file(error_file, error_msg.c_str(), error_msg.length());
-    if(bSlient) return;
-    msg_box(error_msg.c_str());
-}
-void addError(const char* fmt, ...)
-{
-    bx::LwMutexScope _l(g_errorLock);
-    ++g_errorNum;
-    if(g_errorMsg.size() >= MAX_ERROR_TO_SHOW) return;
-    va_list args;
-    va_start(args, fmt);
-    vsprintf_s(msgBuffer, fmt, args);
-    va_end(args);
-    LOGE(msgBuffer);
-    g_errorMsg.push_back(msgBuffer);
-}
-//=======================================================
-
 std::string getFileNameAndExtension( const std::string& fileName )
 {
     size_t pos = fileName.find_last_of('\\');
@@ -126,7 +90,7 @@ void createFolder(const std::string& folderName)
     int ret = SHCreateDirectoryEx(0, folder.c_str(), 0);
     if(ret != ERROR_SUCCESS && ret != ERROR_ALREADY_EXISTS)
     {
-        addError("SHCreateDirectoryEx = %d", ret);
+        LOGE("SHCreateDirectoryEx = %d", ret);
     }
 }
 void string_replace( std::string &strBig, const std::string &strsrc, const std::string &strdst )
@@ -168,7 +132,7 @@ bool fileSystemCopy(const std::string& src, const std::string& destFolder)
     int ret = SHFileOperationA(&sfo);
     if(sfo.fAnyOperationsAborted)
     {
-        addError("file copy aborted!");
+        LOGE("file copy aborted!");
     }
     if (!ret)
         return true;
@@ -218,7 +182,7 @@ void runProcess(const std::string& process, const std::string& workingDir, const
                                   &startupInfo, &processInformation);
     if (result == 0)
     {
-        addError("ERROR: CreateProcess failed!");
+        LOGE("ERROR: CreateProcess failed!");
         return;
     }
     else
@@ -297,7 +261,7 @@ uint32_t read_file(const std::string& fileName, char** outBuf)
     if(hFile == INVALID_HANDLE_VALUE)
     {
         DWORD code = GetLastError();
-        addError(__FUNCTION__" can not open file = %s, code = %d.",fileName.c_str(), code);
+        LOGE(__FUNCTION__" can not open file = %s, code = %d.",fileName.c_str(), code);
         return 0;
     }
     LARGE_INTEGER nFileLen;
@@ -328,7 +292,7 @@ bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
     if(hFile == INVALID_HANDLE_VALUE)
     {
         DWORD code = GetLastError();
-        addError(__FUNCTION__" can not open file = %s, code = %d.",fileName.c_str(), code);
+        LOGE(__FUNCTION__" can not open file = %s, code = %d.",fileName.c_str(), code);
         return false;
     }
     DWORD nBufWritten = 0;
@@ -666,13 +630,6 @@ void lut2d_to_3d(const uint8_t* inData, uint8_t* outData)
     }
 }
 
-std::string input_to_output(const std::string& inputName)
-{
-    std::string output = inputName;
-    string_replace(output, g_config.m_topFolder, ROOT_DATA);
-    return output;
-}
-
 std::string get_package_name( const std::string& input )
 {
     std::string inputName = input;
@@ -689,13 +646,6 @@ std::string get_resource_name( const std::string& input )
     return inputName;
 }
 
-void addChildCompiler( BaseCompiler* compiler )
-{
-    extern std::vector<class BaseCompiler*> g_childCompilers;
-    bx::LwMutexScope _l(g_childLock);
-    g_childCompilers.push_back(compiler);
-}
-
 static bool compare_filename_less(const std::string& fileName1, const std::string& fileName2)
 {
     extern int get_resource_order(const StringId& type);
@@ -706,55 +656,6 @@ static bool compare_filename_less(const std::string& fileName1, const std::strin
     int ext1index = get_resource_order(ext1Id);
     int ext2index = get_resource_order(ext2Id);
     return ext1index < ext2index;
-}
-
-void saveCompileResult(const std::string& fileName)
-{
-    extern std::vector<class BaseCompiler*>        g_compilers;
-    extern std::vector<class LevelCompiler*>       g_levels;
-    extern std::vector<class BaseCompiler*>        g_childCompilers;
-
-    std::vector<std::string> resultfiles;
-    for(size_t i=0; i<g_compilers.size(); ++i)
-    {
-        BaseCompiler* compiler = g_compilers[i];
-        const std::string& output = compiler->m_output;
-        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
-        resultfiles.push_back(output);
-    }
-    for(size_t i=0; i<g_childCompilers.size(); ++i)
-    {
-        BaseCompiler* compiler = g_childCompilers[i];
-        const std::string& output = compiler->m_output;
-        if(output.length() == 0 || compiler->m_skipped || !compiler->addToResult()) continue;
-        resultfiles.push_back(output);
-    }
-    for(size_t i=0; i<g_levels.size(); ++i)
-    {
-        const std::string& output = g_levels[i]->m_output;
-        if(output.length() == 0 || g_levels[i]->m_skipped) continue;
-        resultfiles.push_back(output);
-    }
-    if(resultfiles.empty()) return;
-
-    FILE* fp = fopen(fileName.c_str(), "w");
-    if(!fp)
-    {
-        LOGE(__FUNCTION__" open file [%s] error.", fileName.c_str());
-        return;
-    }
-#ifdef HAVOK_COMPILE
-    hkSort(&resultfiles[0], resultfiles.size(), compare_filename_less);
-#else
-    std::sort(&resultfiles[0], resultfiles.size(), compare_filename_less);
-#endif
-    for(size_t i=0; i<resultfiles.size(); ++i)
-    {
-        const std::string& fileName = resultfiles[i];
-        //std::string output = remove_top_folder(fileName);
-        fprintf(fp, "%s\n", fileName.c_str());
-    }
-    fclose(fp);
 }
 
 void nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt)
@@ -779,12 +680,27 @@ void texconv_compress( const std::string& src, const std::string& folder, const 
     shell_exec(TEXCONV_PATH, args);
 }
 
-bool is_common_package( const std::string& pack_name )
+uint32_t json_to_floats( const jsonxx::Array& array, float* p, uint32_t max_size )
 {
-    //return pack_name == "core" || pack_name == "preview" || pack_name == "boot";
-    return !str_begin_with(pack_name, "world");
+    uint32_t copy_size = array.size() > max_size ? max_size : array.size();
+    for (uint32_t i=0; i<copy_size; ++i)
+    {
+        p[i] = array.get<float>(i);
+    }
+    return copy_size;
 }
 
+uint32_t json_to_flags( const jsonxx::Array& array, const char** enum_names )
+{
+    uint32_t flags = 0;
+    uint32_t num = array.size();
+    for (uint32_t i=0; i<num; ++i)
+    {
+        int index = find_enum_index(array.get<std::string>(i).c_str(), enum_names);
+        flags |= (1 << index);
+    }
+    return flags;
+}
 
 //========================================================================
 //  RESOURCE DB
@@ -876,4 +792,40 @@ MemoryBuffer::MemoryBuffer( uint32_t size )
 MemoryBuffer::~MemoryBuffer()
 {
     _aligned_free(m_buf);
+}
+
+//=======================================================
+//  ERROR processing code.
+//
+//=======================================================
+ToolError::ToolError()
+:m_num_error(0)
+{
+
+}
+
+void ToolError::add_error( const char* fmt, ... )
+{
+    bx::LwMutexScope _l(m_lock);
+    ++m_num_error;
+    if(m_error_msgs.size() >= 20) return;
+    char buffer[1024];
+    va_list args;
+    va_start(args, fmt);
+    vsprintf_s(buffer, fmt, args);
+    va_end(args);
+    LOGE(buffer);
+    m_error_msgs.push_back(buffer);
+}
+
+void ToolError::show_error()
+{
+    if(!m_num_error) return;
+    std::string str;
+    for(size_t i=0; i<m_error_msgs.size(); ++i)
+    {
+       str += m_error_msgs[i];
+       str += "\n";
+    }
+    msg_box(str.c_str());
 }

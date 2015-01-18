@@ -8,7 +8,7 @@ public:
     TextureCompiler();
     virtual std::string getFormatExt() const { return Texture::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
     virtual void postProcess();
     bool processImage(const std::string& input, const std::string& output);
     std::string         m_format;
@@ -26,7 +26,7 @@ class Texture3DCompiler : public BaseCompiler
 public:
     virtual std::string getFormatExt() const { return Raw3DTexture::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
 };
 
 class Texture2DCompiler : public BaseCompiler
@@ -34,5 +34,5 @@ class Texture2DCompiler : public BaseCompiler
 public:
     virtual std::string getFormatExt() const { return Raw2DTexture::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
 };

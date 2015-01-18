@@ -4,24 +4,25 @@
 #include "ActorCompiler.h"
 #include "Model.h"
 #include "Light.h"
-#include "DC_Utils.h"
+#include "ToolUtils.h"
 
-void json_transform(const JsonValue& jValue, float* t, float* r, float* s)
+void json_transform(const jsonxx::Object& jValue, float* t, float* r, float* s)
 {
     vec3_make(t, 0,0,0);
     vec3_make(r, 0,0,0);
     r[3] = 1;
     if(s) vec3_make(s, 1,1,1);
 
-    JSON_GetFloats(jValue.GetValue("translation"), t, 3);
-    int nRet = JSON_GetFloats(jValue.GetValue("rotation"), r, 4);
+    json_to_floats(jValue.get<jsonxx::Array>("translation"), t, 3);
+    int nRet = json_to_floats(jValue.get<jsonxx::Array>("rotation"), r, 4);
     if(nRet == 3)
     {
         hkQuaternion q;
         q.setFromEulerAngles(r[0], r[1],r[2]);
         transform_vec4(r, q.m_vec);
     }
-    if(s) JSON_GetFloats(jValue.GetValue("scale"), s, 3);
+    if(s) 
+        json_to_floats(jValue.get<jsonxx::Array>("scale"), s, 3);
 }
 
 LevelCompiler::LevelCompiler()
@@ -34,11 +35,11 @@ LevelCompiler::~LevelCompiler()
     
 }
 
-bool LevelCompiler::readJSON( const JsonValue& root )
+bool LevelCompiler::readJSON( const jsonxx::Object& root )
 {
     __super::readJSON(root);
-    JsonValue actorsValue = root.GetValue("actors");
-    uint32_t numOfActors = actorsValue.GetElementsCount();
+    const jsonxx::Array& actorsValue = root.get<jsonxx::Array>("actors");
+    uint32_t numOfActors = actorsValue.size();
         
     std::vector<uint32_t>   resourceNames;
     std::vector<int>        actorIndices;
@@ -49,14 +50,13 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     std::string typeName;
     for (uint32_t i = 0; i < numOfActors; ++i)
     {
-        JsonValue actorValue = actorsValue[i];
-        JsonValue typeValue = actorValue.GetValue("type");
-        typeName = JSON_GetString(typeValue);
-        std::string actorName = JSON_GetString(actorValue.GetValue("name"));
+        const jsonxx::Object& actorValue = actorsValue.get<jsonxx::Object>(i);
+        const std::string& typeName = actorValue.get<std::string>("type");
+        const std::string& actorName = actorValue.get<std::string>("name");
         uint32_t key = StringId::calculate(typeName.c_str());
         int index = -1;
         ResourceKeyMap::iterator iter = m_resourceKeys.find(key);
-        HK_ASSERT(0, typeName.length());
+        ENGINE_ASSERT(typeName.length(), "type name null");
         if(iter == m_resourceKeys.end())
         {
             resourceNames.push_back(key);
@@ -69,9 +69,8 @@ bool LevelCompiler::readJSON( const JsonValue& root )
             index = iter->second;
         }
         actorIndices[i] = index;
-
-        bool bpacked = JSON_GetBool(actorValue.GetValue("packed"), false);
-        if(!bpacked) continue;
+        if(!actorValue.get<bool>("packed" ,false)) 
+            continue;
         createChildCompiler(ActorResource::get_name(), actorValue);
     }
 
@@ -98,10 +97,10 @@ bool LevelCompiler::readJSON( const JsonValue& root )
 
     for (uint32_t i = 0; i < numOfActors; ++i)
     {
-        JsonValue actorValue = actorsValue[i];
+        const jsonxx::Object& actorValue = actorsValue.get<jsonxx::Object>(i);
         LevelObject& object = level->m_objects[i];
         object.m_resourceIndex = actorIndices[i];
-        object.m_name = JSON_GetStringId(actorValue.GetValue("name"));
+        object.m_name = StringId(actorValue.get<std::string>("name").c_str());
         json_transform(actorValue, object.m_translation, object.m_rotation, object.m_scale);
     }
 
@@ -111,10 +110,4 @@ bool LevelCompiler::readJSON( const JsonValue& root )
     }
 
     return write_file(m_output, mem.m_buf, memSize);
-}
-
-bool LevelCompiler::isResourceInLevel( const std::string& resourceName ) const
-{
-    uint32_t key = StringId::calculate(resourceName.c_str());
-    return m_resourceKeys.find(key) != m_resourceKeys.end();
 }

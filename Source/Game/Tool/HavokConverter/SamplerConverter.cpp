@@ -1,6 +1,5 @@
 #include "SamplerConverter.h"
 #include "ActorConverter.h"
-#include "ToolUtils.h"
 #include "Texture.h"
 
 SamplerConverter::SamplerConverter(ActorConverter* ownner)

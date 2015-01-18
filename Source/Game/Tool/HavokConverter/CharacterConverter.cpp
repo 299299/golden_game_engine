@@ -1,7 +1,6 @@
 #include "CharacterConverter.h"
 #include "ModelConverter.h"
 #include "AnimRigConverter.h"
-#include "ToolUtils.h"
 
 CharacterConverter::CharacterConverter()
     :m_ac(0)
@@ -25,7 +24,7 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     m_ac = ac;
     if(ac->m_skeletons.isEmpty())
     {
-        addError("skinning do not found skeleton!");
+        g_config->m_error.add_error("skinning do not found skeleton!");
         return;
     }
     collectRigSkinData(ac->m_skeletons[0]);

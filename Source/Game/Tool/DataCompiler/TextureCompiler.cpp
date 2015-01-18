@@ -1,7 +1,5 @@
 #include "TextureCompiler.h"
-#include "DC_Utils.h"
 #include <stb/stb_image.c>
-#include "stdafx.h"
 
 TextureCompiler::TextureCompiler()
 :m_format(DDS_FORMAT)
@@ -9,11 +7,11 @@ TextureCompiler::TextureCompiler()
 
 }
 
-bool TextureCompiler::readJSON(const JsonValue& root)
+bool TextureCompiler::readJSON(const jsonxx::Object& root)
 {
     __super::readJSON(root);
-    m_input = JSON_GetString(root.GetValue("input"));
-    m_format = JSON_GetString(root.GetValue("format"));
+    m_input = root.get<std::string>("input");
+    m_format = root.get<std::string>("format");
     m_processed = processImage(m_input, m_output);
     return m_processed;
 }
@@ -27,15 +25,14 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     }
 
     bool fileExist = isFileExist(output);
-    bool fileChanged = g_database.isFileChanged(input, m_modifyTime);
+    bool fileChanged = g_config->m_database.isFileChanged(input, m_modifyTime);
     if(fileExist && !fileChanged)
     {
         m_skipped = true;
         return true;
     }
 
-    extern DC_Config    g_config;
-    if(g_config.m_ignoreTextures)
+    if(g_config->m_ignoreTextures)
     {
         m_skipped = true;
         return true;
@@ -71,7 +68,7 @@ void TextureCompiler::postProcess()
 {
     checkDependency();
     if(!m_processed) return;
-    g_database.insertResourceFile(m_input, m_modifyTime);
+    g_config->m_database.insertResourceFile(m_input, m_modifyTime);
 }
 
 
@@ -89,24 +86,23 @@ bool DDSCompiler::process( const std::string& input, const std::string& output )
     return write_file(output, mem.m_buf, memSize);
 }
 
-bool Texture3DCompiler::readJSON(const JsonValue& root)
+bool Texture3DCompiler::readJSON(const jsonxx::Object& root)
 {
-    char inputName[256];
-    JSON_GetString(root.GetValue("input"), inputName, sizeof(inputName));
+    const std::string& inputName = root.get<std::string>("input");
     int w, h, comps;
-    stbi_uc* image = stbi_load(inputName, &w, &h, &comps, 4);
+    stbi_uc* image = stbi_load(inputName.c_str(), &w, &h, &comps, 4);
     if(!image) {
-        addError(__FUNCTION__" stbi_load failed");
+        g_config->m_error.add_error(__FUNCTION__" stbi_load failed");
         return false;
     }
     if(w != 256 || h != 16)
     {
-        addError(__FUNCTION__"lut input error (%d, %d)", w, h);
+        g_config->m_error.add_error(__FUNCTION__"lut input error (%d, %d)", w, h);
         return false;
     }
 
     uint32_t memSize = sizeof(Raw3DTexture) + COLOR_LUT_SIZE*COLOR_LUT_SIZE*COLOR_LUT_SIZE*4;
-   MemoryBuffer mem(memSize);
+    MemoryBuffer mem(memSize);
     Raw3DTexture* tex3d = (Raw3DTexture*)mem.m_buf;
     tex3d->m_blob = mem.m_buf + sizeof(Raw3DTexture);
     tex3d->m_width = 16;
@@ -124,7 +120,7 @@ bool Texture3DCompiler::readJSON(const JsonValue& root)
     return write_file(outputLut, mem.m_buf, memSize);
 }
 
-bool Texture2DCompiler::readJSON( const JsonValue& root )
+bool Texture2DCompiler::readJSON( const jsonxx::Object& root )
 {
     return false;
 }

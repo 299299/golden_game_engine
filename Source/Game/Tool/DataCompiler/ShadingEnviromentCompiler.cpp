@@ -1,5 +1,4 @@
 #include "ShadingEnviromentCompiler.h"
-#include "DC_Utils.h"
 #include "Texture.h"
 
 ShadingEnviromentCompiler::ShadingEnviromentCompiler()
@@ -12,7 +11,7 @@ ShadingEnviromentCompiler::~ShadingEnviromentCompiler()
     
 }
 
-bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
+bool ShadingEnviromentCompiler::readJSON(const jsonxx::Object& root)
 {
     __super::readJSON(root);
     ShadingEnviroment shading;
@@ -32,60 +31,60 @@ bool ShadingEnviromentCompiler::readJSON(const JsonValue& root)
     shading.m_shadowFar = 100;
     vec3_make(shading.m_shadowParams, 0.01f, 0.001f, 0.0f);
 
-    JsonValue fogValue = root.GetValue("fog");
-    if(fogValue.IsValid())
+    if(root.has<jsonxx::Object>("fog"))
     {
-        shading.m_fogParams[0] = JSON_GetFloat(fogValue.GetValue("near"), 10.0f);
-        shading.m_fogParams[1] = JSON_GetFloat(fogValue.GetValue("far"), 40.0f);
-        shading.m_fogParams[2] = JSON_GetFloat(fogValue.GetValue("density"), 0.0f);
-        shading.m_fogParams[3] = JSON_GetFloat(fogValue.GetValue("density"), 0.0f);
+        const jsonxx::Object& fogValue = root.get<jsonxx::Object>("fog");
+        shading.m_fogParams[0] = fogValue.get<float>("near", 10.0f);
+        shading.m_fogParams[1] = fogValue.get<float>("far", 40.0f);
+        shading.m_fogParams[2] = fogValue.get<float>("density", 0.0f);
+        shading.m_fogParams[3] = fogValue.get<float>("density", 0.0f);
     }
 
-    JsonValue bloomValue = root.GetValue("bloom");
-    if(bloomValue.IsValid())
+    if(root.has<jsonxx::Object>("bloom"))
     {
-        shading.m_bloomParams[0] = JSON_GetFloat(bloomValue.GetValue("expose"), 2.0f);
-        shading.m_bloomParams[1] = JSON_GetFloat(bloomValue.GetValue("bloomThreshold"), 0.63f);
-        shading.m_bloomParams[2] = JSON_GetFloat(bloomValue.GetValue("bloomWidth"), 1.0f);
-        shading.m_bloomParams[3] = JSON_GetFloat(bloomValue.GetValue("bloomIntensity"), 1.0f);
+        const jsonxx::Object& bloomValue = root.get<jsonxx::Object>("bloom");
+        shading.m_bloomParams[0] = bloomValue.get<float>("expose", 2.0f);
+        shading.m_bloomParams[1] = bloomValue.get<float>("bloomThreshold", 0.63f);
+        shading.m_bloomParams[2] = bloomValue.get<float>("bloomWidth", 1.0f);
+        shading.m_bloomParams[3] = bloomValue.get<float>("bloomIntensity", 1.0f);
     }
 
-    JsonValue dofValue = root.GetValue("dof");
-    if(dofValue.IsValid())
+    if(root.has<jsonxx::Object>("dof"))
     {
-        shading.m_dofParams[0] = JSON_GetFloat(dofValue.GetValue("focusDistance"), 1.0f);
-        shading.m_dofParams[1] = JSON_GetFloat(dofValue.GetValue("focusRange"), 2.0f);
-        shading.m_dofParams[2] = JSON_GetFloat(dofValue.GetValue("dof_blur_width"), 2.5f);
-        shading.m_dofParams[3] = JSON_GetFloat(dofValue.GetValue("focusFalloff"), 10.0f);
+        const jsonxx::Object& dofValue = root.get<jsonxx::Object>("dof");
+        shading.m_dofParams[0] = dofValue.get<float>("focusDistance", 1.0f);
+        shading.m_dofParams[1] = dofValue.get<float>("focusRange", 2.0f);
+        shading.m_dofParams[2] = dofValue.get<float>("dof-blur-width", 2.5f);
+        shading.m_dofParams[3] = dofValue.get<float>("focusFalloff", 10.0f);
     }
 
-    JSON_GetFloats(root.GetValue("ambient_sky_color"), shading.m_ambientSkyColor, 3);
-    JSON_GetFloats(root.GetValue("ambient_ground_color"), shading.m_ambientGroundColor, 3);
+    json_to_floats(root.get<jsonxx::Array>("ambient-sky-color"), shading.m_ambientSkyColor, 3);
+    json_to_floats(root.get<jsonxx::Array>("ambient-ground-color"), shading.m_ambientGroundColor, 3);
 
-    JsonValue shadowValue = root.GetValue("shadow");
-    if(shadowValue.IsValid())
+    if(root.has<jsonxx::Object>("shadow"))
     {
-        shading.m_shadowAreaSize = JSON_GetFloat(shadowValue.GetValue("area"), 1.0f);
-        shading.m_shadowFar = JSON_GetFloat(shadowValue.GetValue("far"), 1.0f);
-        shading.m_shadowParams[0] = JSON_GetFloat(shadowValue.GetValue("offset"), 1.0f);
-        shading.m_shadowParams[1] = JSON_GetFloat(shadowValue.GetValue("bias"), 1.0f);
+        const jsonxx::Object& shadowValue = root.get<jsonxx::Object>("shadow");
+        shading.m_shadowAreaSize = shadowValue.get<float>("area", 1.0f);
+        shading.m_shadowFar = shadowValue.get<float>("far", 1.0f);
+        shading.m_shadowParams[0] = shadowValue.get<float>("offset", 1.0f);
+        shading.m_shadowParams[1] = shadowValue.get<float>("bias", 1.0f);
     }
 
-    shading.m_ppParams[2] = JSON_GetFloat(root.GetValue("defocus"), 0.2f);
-    shading.m_ppParams[3] = JSON_GetFloat(root.GetValue("film_gain_noise"), 0.25f);
+    shading.m_ppParams[2] = root.get<float>("defocus", 0.2f);
+    shading.m_ppParams[3] = root.get<float>("film_gain_noise", 0.25f);
 
-    JsonValue colorGradingValue = root.GetValue("color_grading");
-    if(colorGradingValue.IsValid())
+    if(root.has<jsonxx::Object>("color-grading"))
     {
-        JsonValue texturesValue = colorGradingValue.GetValue("textures");
-        shading.m_numColorgradingTextures = texturesValue.GetElementsCount();
+        const jsonxx::Object& colorGradingValue = root.get<jsonxx::Object>("shadow");
+        const jsonxx::Array& texturesValue = colorGradingValue.get<jsonxx::Array>("textures");
+        shading.m_numColorgradingTextures = texturesValue.size();
         for (uint32_t i=0; i<shading.m_numColorgradingTextures; ++i)
         {
-            std::string lutTexture = JSON_GetString(texturesValue[i]);
+            const std::string& lutTexture = texturesValue.get<std::string>(i);
             shading.m_colorgradingTextureNames[i] = StringId(lutTexture.c_str());
             addDependency("color_grading_texture", name_to_file_path(lutTexture.c_str(), Raw3DTexture::get_name()));
         }
-        shading.m_colorGradingIndex = JSON_GetInt(colorGradingValue.GetValue("grading_index"));
+        shading.m_colorGradingIndex = colorGradingValue.get<int>("grading_index");
     }
 
     return write_file(m_output, &shading, sizeof(shading));

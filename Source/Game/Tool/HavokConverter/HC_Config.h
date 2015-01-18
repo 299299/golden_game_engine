@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <windows.h>
-#include "SharedInc.h"
+#include "ToolUtils.h"
 
 #define     COMMON_MAT_NAME     ("lambert1")
 #define     MSG_TITLE           ("HAVOK CONVERTER")
@@ -11,28 +11,23 @@
 #define     LEVEL_NAME          ("Level")
 #define     ENGINE_ATTRIBUTES   ("engine_attributes")
 
-struct HAVOK_Config
+struct HC_Config
 {
-    HAVOK_Config()
+    HC_Config()
     :m_numThreads(0)
-    ,m_exitCode(0)
     ,m_packNormal(false)
     ,m_packUV(false)
     ,m_slient(false)
-    ,m_batchMode(false)
     {
     }
     
+    ToolError                   m_error;
     std::string                 m_inputDir;
     int                         m_numThreads;
-    int                         m_exitCode;
     bool                        m_packNormal;
     bool                        m_packUV;
     bool                        m_slient;
-    bool                        m_batchMode;
 };
-
-extern HAVOK_Config             g_config;
 
 struct Actor_Config
 {
@@ -63,3 +58,6 @@ struct Actor_Config
     hkaAnimationContainer*      m_animation;
     hkpPhysicsData*             m_physics;
 };
+
+
+extern HC_Config* g_config;

@@ -6,7 +6,7 @@
 #include "AnimationConverter.h"
 #include "linear_allocator.h"
 
-HAVOK_Config g_config;
+HC_Config* g_config = 0;
 
 int havok_convert_main(int argc, bx::CommandLine* cmdline)
 {
@@ -19,7 +19,6 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     }
 
     int err = kErrorSuccess;
-
     LOG_INIT("HavokConverterLog.html", MSG_TITLE);
     MemoryConfig cfg;
     memset(&cfg, 0, sizeof(cfg));
@@ -29,14 +28,17 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     cfg.m_havokMonitorMemSize = 0;
     g_memoryMgr.init(cfg);
 
-    g_config.m_packNormal = cmdline->hasArg("packnormal");
-    g_config.m_packUV = cmdline->hasArg("packuv");
-    g_config.m_slient = cmdline->hasArg("slient");
+    g_config = new HC_Config;
+    g_config->m_packNormal = cmdline->hasArg("packnormal");
+    g_config->m_packUV = cmdline->hasArg("packuv");
+    g_config->m_slient = cmdline->hasArg("slient");
 
     Actor_Config config;
+    ActorConverter* converter = 0;
     config.m_exportMode = cmdline->findOption("mode");
     const char* input = cmdline->findOption('f');
     const char* output = cmdline->findOption('o');
+
     if(input && output) 
     {
         LOGI("havok convert %s ---> %s", input, output);
@@ -52,9 +54,8 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         hkRootLevelContainer* rlc = config.m_loader->load(config.m_input.c_str());
         if (!rlc)
         {
-            addError("can not load input havok file %s", config.m_input.c_str());
+            g_config->m_error.add_error("can not load input havok file %s", config.m_input.c_str());
             err = KErrorLoadHavok;
-            SAFE_REMOVEREF(config.m_loader);
             goto error_exit;
         }
 
@@ -84,12 +85,11 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         config.m_animation = ac;
         config.m_physics = data;
 
-        ActorConverter* converter = 0;
         if(config.m_exportMode == "model")
         {
             if(!scene || !scene->m_rootNode)
             {
-                SAFE_REMOVEREF(config.m_loader);
+                g_config->m_error.add_error("hkx file do not has root scene node.");
                 goto error_exit;
             }
             converter = new StaticModelConverter;
@@ -112,7 +112,8 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         }
         if(!converter)
         {
-            SAFE_REMOVEREF(config.m_loader);
+            g_config->m_error.add_error("havok converter export mode error.");
+            err = kErrorArg;
             goto error_exit;
         }
 
@@ -132,12 +133,10 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         }
         converter->postProcess();
         converter->serializeToFile(config.m_output.c_str());
-        SAFE_REMOVEREF(converter);
-        SAFE_REMOVEREF(config.m_loader);
     }
     else 
     {
-        addError("single havok convert must specific f & o args!");
+        g_config->m_error.add_error("single havok convert must specific f & o args!");
         err = kErrorArg;
         goto error_exit;
     }
@@ -145,10 +144,12 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
 
 
 error_exit:
-    showErrorMessage(0, g_config.m_slient);
+    SAFE_REMOVEREF(converter);
+    SAFE_REMOVEREF(config.m_loader);
+    if(!g_config->m_slient) g_config->m_error.show_error();
+    SAFE_DELETE(g_config);
     g_memoryMgr.shutdown();
     
-
     timeMS = GetTickCount() - timeMS;
     LOGD("******************************************************");
     LOGD("******************************************************");

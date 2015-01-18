@@ -2,7 +2,6 @@
 #include "SamplerConverter.h"
 #include "ActorConverter.h"
 #include "ModelConverter.h"
-#include "ToolUtils.h"
 
 MaterialConverter::MaterialConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
@@ -213,7 +212,7 @@ std::string MaterialConverter::getTextureFileName( hkRefVariant variant )
         LOGD("guess assert folder %s", imagePath.c_str());
         if(isFileExist(imagePath))
             return imagePath;
-        addError("texture %s not exist in hard drive.", fName.c_str());
+        g_config->m_error.add_error("texture %s not exist in hard drive.", fName.c_str());
         return fileName;
     }
     else 

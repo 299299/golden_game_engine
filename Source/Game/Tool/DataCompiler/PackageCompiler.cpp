@@ -1,7 +1,7 @@
 #include "PackageCompiler.h"
-#include "DC_Utils.h"
-#include "stdafx.h"
-#include <Common/Base/Algorithm/Sort/hkSort.h>
+#include "Resource.h"
+
+#define NATIVE_MEMORY_ALIGN 16
 
 PackageCompiler::PackageCompiler()
 {
@@ -31,20 +31,17 @@ int compare_less_group(PackageGroup* grpA, PackageGroup* grpB)
     return grpA->m_order < grpB->m_order;
 }
 
-static char g_temp_buf[1024];
 bool PackageCompiler::process(const std::string& input, const std::string& output)
 {
     std::vector<std::string> filesInFolder;
     findFiles(input, "*", true, filesInFolder);
-
     extern int get_resource_order(const StringId& type);
-    extern DC_Config    g_config;
-    
+
     size_t numResources = filesInFolder.size();
     uint32_t memSize = sizeof(ResourcePackage);
     memSize += sizeof(ResourceInfo) * numResources;
     uint32_t totalFileSize = 0;
-    bool bundled = g_config.m_bundled;
+    bool bundled = g_config->m_bundled;
     
     for(size_t i=0; i<numResources; ++i)
     {
@@ -176,9 +173,15 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
                 const std::string& fileName = *in_group->m_files[j];
                 FileReader reader(fileName);
                 uint32_t memSize = HK_NEXT_MULTIPLE_OF(16, reader.m_size);
-                ENGINE_ASSERT(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
+                ENGINE_ASSERT_ARGS(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
                 fwrite(reader.m_buf, 1, reader.m_size, fp);
-                if(memSize > reader.m_size) fwrite(g_temp_buf, 1, memSize - reader.m_size, fp);
+                if(memSize > reader.m_size) 
+                {
+                    uint32_t size = memSize - reader.m_size;
+                    char buf[1024];
+                    memset(buf, 0x00, sizeof(buf));
+                    fwrite(buf, 1, size, fp);
+                }
             }
         }
     }

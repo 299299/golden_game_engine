@@ -2,7 +2,6 @@
 #include "PhysicsConverter.h"
 #include "ModelConverter.h"
 #include "LightConverter.h"
-#include "ToolUtils.h"
 
 StaticModelConverter::StaticModelConverter()
 :m_scene(0)

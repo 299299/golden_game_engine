@@ -1,14 +1,10 @@
 #include "ShaderCompiler.h"
-#include "DC_Utils.h"
-#include <Common/Base/Thread/CriticalSection/hkCriticalSection.h>
-
-static std::vector<std::string> g_shaderProcessed;
 
 bool isShaderProcessed(const std::string& fileName)
 {
-    for(size_t i=0; i<g_shaderProcessed.size(); ++i)
+    for(size_t i=0; i<g_config->m_processedShader.size(); ++i)
     {
-        if(g_shaderProcessed[i] == fileName)
+        if(g_config->m_processedShader[i] == fileName)
             return true;
     }
     return false;
@@ -16,7 +12,7 @@ bool isShaderProcessed(const std::string& fileName)
 
 void ShaderCompiler::preProcess()
 {
-    g_shaderProcessed.push_back(getFileName(m_input));
+    g_config->m_processedShader.push_back(getFileName(m_input));
 }
 
 ShaderCompiler::ShaderCompiler()
@@ -85,16 +81,16 @@ ProgramCompiler::~ProgramCompiler()
 
 }
 
-bool ProgramCompiler::readJSON(const JsonValue& root)
+bool ProgramCompiler::readJSON(const jsonxx::Object& root)
 {
     __super::readJSON(root);
-    std::string vsName = JSON_GetString(root.GetValue("vs"));
-    std::string psName = JSON_GetString(root.GetValue("ps"));
+    const std::string& vsName = root.get<std::string>("vs");
+    const std::string& psName = root.get<std::string>("ps");
     
     char vs[256];
     char ps[256];
-    sprintf_s(vs, SHADER_PATH"%s", vsName.c_str());
-    sprintf_s(ps, SHADER_PATH"%s", psName.c_str());
+    bx::snprintf(vs, sizeof(vs), SHADER_PATH"%s", vsName.c_str());
+    bx::snprintf(ps, sizeof(ps), SHADER_PATH"%s", psName.c_str());
     LOGI("vs = %s, ps = %s, program=%s", vs, ps, m_output.c_str());
 
     ShaderProgram program;
@@ -137,7 +133,7 @@ bool ShaderIncludeCompiler::process(const std::string& input, const std::string&
         shader->checkModifyTime();
         shader->preProcess();
         shader->go();
-        addChildCompiler(shader);
+        g_config->add_child_compile(shader);
     }
 
     m_processed = true;
@@ -146,12 +142,10 @@ bool ShaderIncludeCompiler::process(const std::string& input, const std::string&
 
 bool ShaderIncludeCompiler::checkProcessing()
 {
-    if(!g_database.isFileChanged(m_input, m_modifyTime))
+    if(!g_config->m_database.isFileChanged(m_input, m_modifyTime))
     {
         LOGI("file [%s] not change, ignore.", m_input.c_str())
         return false;
     }
-    if(m_mode != 0) return true;
-    if(is_common_package(m_packageName)) return true;
     return true;
 }

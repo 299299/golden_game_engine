@@ -25,7 +25,6 @@ class hkxNode;
 #define SHADER_INCLUDE_EXT      ("sc")
 #define SHADER_SOURCE_PATH      INTERMEDIATE_PATH"core/shaders/"
 
-
 std::string getFileNameAndExtension(const std::string& fileName);
 std::string getFileName(const std::string& fileName);
 std::string getFilePath(const std::string& fileName);
@@ -33,14 +32,12 @@ std::string getFileExt(const std::string& fileName);
 std::string replaceExtension(const std::string& fileName, const std::string& ext);
 void        removeExtension(std::string& outStr);
 void        toLower(std::string& input);
-void        addError(const char* fmt, ...);
 bool        isFileExist(const std::string& fileName);
 bool        isFolderExist(const std::string& folderName);
 void        createFolder(const std::string& folderName);
 void        string_replace(std::string& strBig, const std::string & strsrc, const std::string &strdst);
 void        addBackSlash(std::string& outStr);
 void        fixPathSlash(std::string& inout);
-void        showErrorMessage(const char* error_file, bool bSlient);
 bool        fileSystemCopy(const std::string& src, const std::string& destFolder);
 std::string getWorkingDir();
 void        runProcess(const std::string& process, const std::string& workingDir, const std::string& args);
@@ -75,10 +72,9 @@ void        lut2d_to_3d(const uint8_t* inData, uint8_t* outData);
 std::string input_to_output(const std::string& inputName);
 std::string get_package_name(const std::string& input);
 std::string get_resource_name(const std::string& input);
-void        addChildCompiler(class BaseCompiler* compiler);
-void        saveCompileResult(const std::string& fileName);
-bool        is_common_package(const std::string& pack_name);
 
+uint32_t   json_to_floats(const jsonxx::Array& array, float* p, uint32_t max_size);
+uint32_t   json_to_flags(const jsonxx::Array& array, const char** enum_names);
 
 typedef tinystl::unordered_map<uint32_t, uint64_t> ResourceFileMap;
 struct ResourceFileDataBase
@@ -104,4 +100,15 @@ struct MemoryBuffer
     uint32_t        m_size;
     MemoryBuffer(uint32_t size);
     ~MemoryBuffer();
+};
+
+struct ToolError
+{
+    ToolError();
+    void add_error(const char* fmt, ...);
+    void show_error();
+
+    std::vector<std::string>        m_error_msgs;
+    bx::LwMutex                     m_lock;
+    int                             m_num_error;
 };

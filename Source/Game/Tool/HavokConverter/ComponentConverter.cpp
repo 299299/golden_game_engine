@@ -1,6 +1,5 @@
 #include "ComponentConverter.h"
 #include "ActorConverter.h"
-#include "ToolUtils.h"
 
 ComponentConverter::ComponentConverter(ActorConverter* ownner)
 :m_ownner(ownner)
@@ -9,13 +8,12 @@ ComponentConverter::ComponentConverter(ActorConverter* ownner)
 
 }
 
-
 void ComponentConverter::serializeToFile(const char* fileName)
 {
     std::ofstream s(fileName);
     if(!s.good())
     {
-        addError("%s serializeToFile to %s IO error.", getTypeName().c_str(), fileName);
+        g_config->m_error.add_error("%s serializeToFile to %s IO error.", getTypeName().c_str(), fileName);
         return;
     }
     s << serializeToJson().json();

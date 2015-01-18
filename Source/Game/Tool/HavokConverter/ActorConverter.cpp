@@ -1,6 +1,5 @@
 #include "ActorConverter.h"
 #include "ComponentConverter.h"
-#include "ToolUtils.h"
 
 ActorConverter::ActorConverter()
 :m_config(NULL)
@@ -60,7 +59,7 @@ void ActorConverter::serializeToFile(const char* fileName)
     std::ofstream s(fileName);
     if(!s.good())
     {
-        addError("serializeToFile to %s IO error.", fileName);
+        g_config->m_error.add_error("serializeToFile to %s IO error.", fileName);
         return;
     }
     s << serializeToJson().json();

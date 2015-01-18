@@ -1,4 +1,6 @@
 #include "Prerequisites.h"
+#include "Utils.h"
+#include "DataDef.h"
 #include <bx/commandline.h>
 
 void showHelp()
@@ -39,17 +41,21 @@ void showHelp()
         "--ignore_texture to ignore converting all dds \n");
 }
 
-typedef bool (*func_app_main)(int, bx::CommandLine*);
-extern bool havok_convert_main(int, bx::CommandLine*);
+typedef int (*func_app_main)(int, bx::CommandLine*);
+extern int havok_convert_main(int, bx::CommandLine*);
+extern int data_compiler_main(int, bx::CommandLine*);
+extern int game_main(int, bx::CommandLine*);
 
 struct game_app
 {
     const char*     name;
     func_app_main   func;
 };
-game_app g_apps = 
+game_app g_apps[] = 
 {
     { "havok-converter", havok_convert_main },
+    { "data-compiler", data_compiler_main },
+    { "game", game_main },
 };
 
 int main(int argc, char* argv[])

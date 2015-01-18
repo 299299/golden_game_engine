@@ -1,6 +1,5 @@
 #include "PhysicsConverter.h"
 #include "ActorConverter.h"
-#include "ToolUtils.h"
 
 PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
@@ -52,7 +51,7 @@ void PhysicsConverter::postProcess()
         hkBinaryPackfileWriter writer;
         writer.setContents(m_physics, hkpPhysicsData::staticClass());
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-            addError(__FUNCTION__" write error.");
+            g_config->m_error.add_error(__FUNCTION__" write error.");
     }
 }
 

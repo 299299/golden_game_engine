@@ -1,5 +1,4 @@
 #include "ActorCompiler.h"
-#include "DC_Utils.h"
 
 ActorCompiler::ActorCompiler()
 {
@@ -8,24 +7,30 @@ ActorCompiler::ActorCompiler()
 
 ActorCompiler::~ActorCompiler()
 {
-    
+
 }
 
-bool ActorCompiler::readJSON(const JsonValue& root)
+bool ActorCompiler::readJSON(const jsonxx::Object& root)
 {
     __super::readJSON(root);
-    JsonValue compsValue = root.GetValue("components");
-    if(!compsValue.IsValid())
+    if(!root.has<jsonxx::Array>("components"))
     {
-        addError(__FUNCTION__" no components in this actor resource json ");
+        g_config->m_error.add_error(" no components in this actor resource json ");
         return false;
     }
 
     uint32_t numOfData = 0;
-    JsonValue datasValue = root.GetValue("data");
-    if(datasValue.IsValid()) numOfData = datasValue.GetElementsCount();
+    uint32_t numComps = 0;
+    jsonxx::Array datasValue;
+    jsonxx::Array compsValue = root.get<jsonxx::Array>("components");
 
-    uint32_t numComps = compsValue.GetElementsCount();
+    if(root.has<jsonxx::Array>("data"))
+    {
+        datasValue = root.get<jsonxx::Array>("data");
+        numOfData = datasValue.size();
+    }
+
+    numComps = compsValue.size();
     uint32_t memSize = sizeof(ActorResource);
     memSize += (numOfData * sizeof(Key));
     uint32_t resSize = memSize;
@@ -33,40 +38,29 @@ bool ActorCompiler::readJSON(const JsonValue& root)
 
     MemoryBuffer mem(memSize);
     char* offset = mem.m_buf;
-    
+
     ActorResource* actor = (ActorResource*)mem.m_buf;
+    offset += sizeof(ActorResource);
     extern const char* g_actorClassNames[];
-    actor->m_class = JSON_GetEnum(root.GetValue("class"), g_actorClassNames);
-    
-    extern int find_component_type(const StringId&);
+    actor->m_class = find_enum_index(root.get<std::string>("name").c_str(), g_actorClassNames);
+    actor->m_numComponents = numComps;
+    actor->m_resourceNames = (StringId*)offset;
+    offset += sizeof(StringId) * numComps;
+    actor->m_resourceTypes = (StringId*)offset;
+    offset += sizeof(StringId) * numComps;
+    offset += sizeof(void*) * numComps;
+    offset += sizeof(void*) * numComps;
+
     for(size_t i=0; i<numComps; ++i)
     {
-        JsonValue compValue = compsValue[i];
-        bool bPacked = JSON_GetBool(compValue.GetValue("packed"));
-        std::string type = JSON_GetString(compValue.GetValue("type"));
-        std::string name = JSON_GetString(compValue.GetValue("name"));
-        int index = find_component_type(StringId(type.c_str()));
-        if(index < 0)
-        {
-            addError("actor[%s] error component type --> %s", m_input.c_str(), type.c_str());
-            continue;
-        }
-
-        if(name.empty())
-        {
-            addError("actor[%s] error component name is null.", m_input.c_str());
-            continue;
-        }
-
-        StringId& resourceName = actor->m_resourceNames[index];
-        if(resourceName)
-        {
-            addError("only one component one type !!!! %s", m_name.c_str());
-            continue;
-        }
-    
-        resourceName = StringId(name.c_str());
-        if(bPacked) createChildCompiler(type, compValue);
+        const jsonxx::Object& compValue = compsValue.get<jsonxx::Object>(i);
+        bool bPacked = compValue.get<bool>("packed");
+        const std::string& type = compValue.get<std::string>("type");
+        const std::string& name = compValue.get<std::string>("name");
+        actor->m_resourceNames[i] = StringId(name.c_str());
+        actor->m_resourceTypes[i] = StringId(type.c_str());
+        if(bPacked)
+            createChildCompiler(type, compValue);
         addDependency(type, name_to_file_path(name, type));
     }
 
@@ -76,6 +70,7 @@ bool ActorCompiler::readJSON(const JsonValue& root)
     fact.m_keys = (Key*)offset;
     offset += sizeof(Key) * numOfData;
     fact.m_values = offset;
+    fact.m_num_keys = numOfData;
     char* values = fact.m_values;
 
     extern const char* g_fact_keynames[];
@@ -83,19 +78,17 @@ bool ActorCompiler::readJSON(const JsonValue& root)
 
     for (size_t i=0; i<numOfData; ++i)
     {
-        JsonValue dataValue = datasValue[i];
+        jsonxx::Object dataValue = datasValue.get<jsonxx::Object>(i);
         Key& key = fact.m_keys[i];
-        key.m_type = JSON_GetEnum(dataValue.GetValue("type"), g_fact_keynames);
-        key.m_name = JSON_GetStringId(dataValue.GetValue("name"));
+        key.m_type = find_enum_index(dataValue.get<std::string>("type").c_str(), g_fact_keynames);
+        key.m_name = StringId(dataValue.get<std::string>("name").c_str());
         key.m_offset = (uint32_t)(values - mem.m_buf);
-
-        JsonValue jValue = dataValue.GetValue("value");
         switch(key.m_type)
         {
-        case ValueType::INT:*((int*)values) = JSON_GetInt(jValue);break;
-        case ValueType::FLOAT:*((float*)values) = JSON_GetFloat(jValue);break;
-        case ValueType::STRING:*((StringId*)values) = JSON_GetStringId(jValue);break;
-        case ValueType::FLOAT4:JSON_GetFloats(jValue, (float*)values, 4);break;
+        case ValueType::INT:*((int*)values) = dataValue.get<int>("value");break;
+        case ValueType::FLOAT:*((float*)values) = dataValue.get<float>("value");break;
+        case ValueType::STRING:*((StringId*)values) = StringId(dataValue.get<std::string>("value").c_str());break;
+        case ValueType::FLOAT4:json_to_floats(dataValue.get<jsonxx::Array>("value"), (float*)values, 4);break;
         default: --i; continue;
         }
         values += g_fact_valuesizes[key.m_type];

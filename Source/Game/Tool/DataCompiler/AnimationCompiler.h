@@ -10,6 +10,5 @@ public:
 
     virtual std::string getFormatExt() const { return Animation::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
-    virtual bool checkInLevel() const { return false; };
+    virtual bool readJSON(const jsonxx::Object& root);
 };

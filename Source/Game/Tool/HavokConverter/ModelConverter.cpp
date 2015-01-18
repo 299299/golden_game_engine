@@ -3,7 +3,6 @@
 #include "MeshConverter.h"
 #include "ActorConverter.h"
 #include "MathDefs.h"
-#include "ToolUtils.h"
 
 ModelConverter::ModelConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

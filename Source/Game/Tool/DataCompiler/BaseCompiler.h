@@ -1,8 +1,5 @@
 #pragma once
-#include "stdafx.h"
-#include <vector>
-#include <string>
-#include "JsonParser.h"
+#include "DC_Config.h"
 
 struct ResourceDependency
 {
@@ -25,16 +22,14 @@ public:
     virtual void preProcess() {};
     virtual void postProcess();
 
-    virtual bool readJSON(const JsonValue& root);
-    virtual BaseCompiler* createChildCompiler(const std::string& type, const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
+    virtual BaseCompiler* createChildCompiler(const std::string& type, const jsonxx::Object& root);
 
     void addDependency(const std::string& useage, const std::string& sourceFile);
 
     virtual bool checkProcessing();
     virtual bool parseWithJson() const { return false; };
     virtual void checkModifyTime();
-    virtual bool checkInLevel() const { return true;};
-    virtual bool addToResult() const { return true; };
 
     std::string                                     m_name;
     std::string                                     m_input;

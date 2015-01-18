@@ -9,7 +9,7 @@ class PhysicsCompiler : public BaseCompiler
 public:
     virtual std::string getFormatExt() const { return PhysicsResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
 };
 
 class ProxyCompiler : public BaseCompiler
@@ -17,7 +17,7 @@ class ProxyCompiler : public BaseCompiler
 public:
     virtual std::string getFormatExt() const { return ProxyResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
 };
 
 
@@ -26,7 +26,7 @@ class PhysicsConfigCompiler : public BaseCompiler
 public:
     virtual std::string getFormatExt() const { return PhysicsConfig::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& root);
+    virtual bool readJSON(const jsonxx::Object& root);
 
     int findFilterIndex(const std::string& name) const;
 private:

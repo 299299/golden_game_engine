@@ -1,5 +1,4 @@
 #include "LightConverter.h"
-#include "ToolUtils.h"
 
 LightConverter::LightConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

@@ -103,12 +103,12 @@ uint32_t g_fact_valuesizes[] =
     sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4, 0
 };
 
-void msg_box( const char* text, ... )
+void msg_box( const char* fmt, ... )
 {
     char buf[256];
     va_list argp;
-    va_start(argp, msg);
-    vsnprintf(buf, sizeof(buf), text, argp);
+    va_start(argp, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, argp);
     va_end(argp);
 #ifdef HAVOK_COMPILE
     ::MessageBoxA(NULL, buf, "NagaGAME", MB_TOPMOST);
@@ -128,9 +128,7 @@ bool check_unique_process()
         ::CloseHandle(hMutex);
         return false;
     }
-    else 
-#else
-        return true;
+    return true;
 #endif
 }
 

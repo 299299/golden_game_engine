@@ -2,7 +2,6 @@
 #include "MeshConverter.h"
 #include "MaterialConverter.h"
 #include "ActorConverter.h"
-#include "ToolUtils.h"
 #include <bounds.h>
 #include <forsyth-too/forsythtriangleorderoptimizer.h>
 #include <vertexdecl.h>
@@ -157,7 +156,7 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
                 }
             }
 
-            if(g_config.m_packUV)
+            if(g_config->m_packUV)
             {
                 LOGI("--> Pack UV <--");
                 type = bgfx::AttribType::Half;
@@ -165,7 +164,7 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
             }
         }
 
-        if(g_config.m_packNormal && attrib == bgfx::Attrib::Normal)
+        if(g_config->m_packNormal && attrib == bgfx::Attrib::Normal)
         {
             LOGI("--> Pack Normal <--");
             type = bgfx::AttribType::Uint8;
@@ -286,13 +285,13 @@ uint32_t MeshConverter::writeVertexBuffer(char* blob)
             uint8_t* vData = (uint8_t*)vb->getVertexDataPtr(decl)+decl.m_byteStride*i;
             uint8_t* outData = (uint8_t*)head + m_decl.getOffset(data.m_attrib);
 
-            if(g_config.m_packNormal && decl.m_usage == hkxVertexDescription::HKX_DU_NORMAL)
+            if(g_config->m_packNormal && decl.m_usage == hkxVertexDescription::HKX_DU_NORMAL)
             {
                 float* input = (float*)vData;
                 float norm[4] = {0,0,0,0}; norm[0] = input[0]; norm[1] = input[1]; norm[2] = input[2];
                 bgfx::vertexPack(norm, true, data.m_attrib, m_decl, head);
             }
-            else if(g_config.m_packUV && decl.m_usage == hkxVertexDescription::HKX_DU_TEXCOORD)
+            else if(g_config->m_packUV && decl.m_usage == hkxVertexDescription::HKX_DU_TEXCOORD)
             {
                 float* input = (float*)vData;
                 float uv[4] = {0,0,0,0}; uv[0] = input[0]; uv[1] = input[1];

@@ -2,7 +2,6 @@
 #include "ModelConverter.h"
 #include "LightConverter.h"
 #include "StaticModelConverter.h"
-#include "ToolUtils.h"
 
 void matrix_to_transform(const hkMatrix4& m, hkQsTransform& t)
 {

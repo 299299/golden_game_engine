@@ -1,5 +1,4 @@
 #include "AnimationConverter.h"
-#include "ToolUtils.h"
 
 AnimationConverter::AnimationConverter()
 :m_ac(0)
@@ -27,7 +26,7 @@ void AnimationConverter::postProcess()
         hkBinaryPackfileWriter writer;
         writer.setContents(m_ac, hkaAnimationContainerClass);
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-            addError(__FUNCTION__" write error.");
+            g_config->m_error.add_error(__FUNCTION__" write error.");
         LOGI("save havok animation %s", m_animationFile.c_str());
     }
 }

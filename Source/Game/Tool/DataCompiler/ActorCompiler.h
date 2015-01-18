@@ -10,5 +10,5 @@ public:
 
     virtual std::string getFormatExt() const { return ActorResource::get_name(); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const JsonValue& jvalue);
+    virtual bool readJSON(const jsonxx::Object& root);
 };

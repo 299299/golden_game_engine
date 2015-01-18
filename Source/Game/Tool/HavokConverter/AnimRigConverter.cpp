@@ -1,7 +1,6 @@
 #include "AnimRigConverter.h"
 #include "ModelConverter.h"
 #include "ActorConverter.h"
-#include "ToolUtils.h"
 
 const char* g_body_names_0[] = 
 {
@@ -80,7 +79,7 @@ void AnimRigConverter::postProcess()
         hkBinaryPackfileWriter writer;
         writer.setContents(skeleton, hkaSkeleton::staticClass());
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-            addError(__FUNCTION__" write error.");
+            g_config->m_error.add_error(__FUNCTION__" write error.");
     }
     
 }
@@ -168,7 +167,7 @@ void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
 	jsonxx::Value obj;
 	if(!obj.parse(reader.m_buf)) 
 	{
-		addError("anim-set %s json parse error.", animSetFile.c_str());
+		g_config->m_error.add_error("anim-set %s json parse error.", animSetFile.c_str());
 		return;
 	}
 	object<<"animation-set"<<obj;
