@@ -24,13 +24,6 @@ std::string ComponentConverter::getResourceName() const
     return m_ownner->m_config->m_rootPath + m_name;
 }
 
-bool ComponentConverter::isExistInCommonPackage() const
-{
-    std::string pathName = COMMON_ASSET_PATH;
-    pathName += combieFileName();
-    return isFileExist(pathName);
-}
-
 void ComponentConverter::fillAttributes(jsonxx::Object& object) const
 {
     if(!m_node) return;

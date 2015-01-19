@@ -18,17 +18,14 @@ public:
 
     virtual std::string getTypeName() const { return Material::get_name(); };
     virtual std::string getFormatExt() const { return Material::get_name(); };
-    virtual std::string getResourceName() const;
 
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
-    bool isUsingCommon() const { return m_existInCommonPackage; };
 
 private:
     void process(hkxMaterial* material);
     int  getTextureSlot( const hkxMaterial::TextureStage& stage);
     bool isTypeExist(int type) const;
-    virtual void serializeToFile(const char* fileName);
     std::string getTextureFileName(hkRefVariant variant);
 
 public:
@@ -37,6 +34,5 @@ public:
     std::string                             m_shadowShader;
     hkxMaterial*                            m_material;
     ModelConverter*                         m_model;
-    bool                                    m_existInCommonPackage;
 };
 

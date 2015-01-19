@@ -6,7 +6,6 @@
 MaterialConverter::MaterialConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 ,m_model(0)
-,m_existInCommonPackage(false)
 {
 
 }
@@ -61,11 +60,6 @@ int MaterialConverter::getTextureSlot( const hkxMaterial::TextureStage& stage )
 
 void MaterialConverter::process(void* pData, int hint)
 {
-    if(m_existInCommonPackage)
-    {
-        LOGI("ignore me --> %s, since already exist in common asset ", m_name.c_str());
-        return;
-    }
     process((hkxMaterial*)pData);
 }
 
@@ -77,7 +71,6 @@ void MaterialConverter::process(hkxMaterial* material)
     std::string materialName = material->m_name.cString();
     string_replace(materialName, ":", "_");
     setName(materialName);
-    m_existInCommonPackage = isExistInCommonPackage();
 
     extern const char*          g_textureNames[];
     for(int i=0; i<material->m_stages.getSize(); ++i)
@@ -85,7 +78,6 @@ void MaterialConverter::process(hkxMaterial* material)
         const hkxMaterial::TextureStage& stage = material->m_stages[i];
         std::string fileName = getTextureFileName(stage.m_texture);
         if(fileName == "ERROR") continue;
-        m_existInCommonPackage = false;
         SamplerConverter* sampler = new SamplerConverter(m_ownner);
         sampler->m_textureFileName = fileName;
         sampler->m_type = getTextureSlot(stage);
@@ -101,7 +93,6 @@ void MaterialConverter::process(hkxMaterial* material)
     if(m_samplers.size() == 0)
     {
         m_name = COMMON_MAT_NAME;
-        m_existInCommonPackage = true;
     }
     else
     {
@@ -177,18 +168,6 @@ bool MaterialConverter::isTypeExist(int type) const
             return true;
     }
     return false;
-}
-
-std::string MaterialConverter::getResourceName() const
-{
-    if(m_existInCommonPackage) return std::string(COMMON_RESOURCE_PATH) + m_name;
-    else return m_ownner->m_config->m_rootPath + m_name;
-}
-
-void MaterialConverter::serializeToFile(const char* fileName)
-{
-    if(m_existInCommonPackage) return;
-    ComponentConverter::serializeToFile(fileName);
 }
 
 std::string MaterialConverter::getTextureFileName( hkRefVariant variant )
