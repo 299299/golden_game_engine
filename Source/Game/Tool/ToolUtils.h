@@ -3,7 +3,7 @@
 
 class hkxNode;
 class hkClass;
-class hkxAttributeGroup;
+struct hkxAttributeGroup;
 
 #define MAKE_U64(dwordHigh, dwordLow) (((uint64_t)(dwordHigh) << 32) | (uint64_t)(dwordLow))
 #define COMMON_RESOURCE_PATH    ("core/common/")
@@ -38,7 +38,7 @@ void        runProcess(const std::string& process, const std::string& workingDir
 void        findFiles(const std::string& folder, const std::string& ext, bool bRecursive, std::vector<std::string>& outFiles);
 bool        write_file(const std::string& fileName, const void* buf, uint32_t bufSize);
 void        findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders);
-uint64_t    get_file_size(const std::string& fileName);
+uint32_t    get_file_size(const std::string& fileName);
 std::string remove_top_folder(const std::string& fileName);
 std::string get_top_folder(const std::string& dirName);
 void        shell_exec(const std::string& exe, const std::string& args, const std::string& workDir = "", bool bHide = true);

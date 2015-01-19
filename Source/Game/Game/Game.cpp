@@ -23,7 +23,7 @@
 #endif
 
 ActorId32 g_actor;
-int datacompiler_main(int argc, bx::CommandLine* cmdline)
+int game_main(int argc, bx::CommandLine* cmdline)
 {
     const char* actor_name = 0;
     const char* level_name = 0;

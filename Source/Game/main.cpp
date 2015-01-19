@@ -74,6 +74,9 @@ int main(int argc, char* argv[])
         msg_box("wait for visual studio attach process.");
     }
 
+    if(!action)
+        return kErrorAction;
+
     int num = BX_COUNTOF(g_apps);
     game_app* app = NULL;
     for (int i=0; i<num; ++i)

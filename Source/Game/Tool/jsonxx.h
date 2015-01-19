@@ -498,20 +498,20 @@ inline Object &Object::operator<<(const T &value) {
 template<>
 inline const float& Value::get<float>() const {
   JSONXX_ASSERT(is<Number>());
-  return (float)number_value_;
+  return (const float&)number_value_;
 }
 
 
 template<>
 inline const int& Value::get<int>() const {
   JSONXX_ASSERT(is<Number>());
-  return (int)number_value_;
+  return (const int&)number_value_;
 }
 
 template<>
 inline const unsigned& Value::get<unsigned>() const {
   JSONXX_ASSERT(is<Number>());
-  return (unsigned)number_value_;
+  return (const unsigned&)number_value_;
 }
 
 template<>

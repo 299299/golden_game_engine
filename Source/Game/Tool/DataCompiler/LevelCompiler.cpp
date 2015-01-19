@@ -71,6 +71,8 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
             index = iter->second;
         }
         actorIndices[i] = index;
+        if(!actorValue.get<bool>("packed" ,false))
+            continue;
         createChildCompiler(ActorResource::get_name(), actorValue);
     }
 

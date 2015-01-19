@@ -1,9 +1,6 @@
 #include "ToolUtils.h"
 
 #ifdef WIN32
-#ifndef _MSC_VER
-#define _WIN32_IE 0x501
-#endif
 #include <windows.h>
 #include <shellapi.h>
 #include <direct.h>
@@ -11,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/utime.h>
 #include <io.h>
+#include <sys/stat.h>
 #else
 #include <dirent.h>
 #include <errno.h>
@@ -83,7 +81,11 @@ void toLower(std::string& input)
 
 bool isFileExist( const std::string& fileName )
 {
+#ifdef WIN32
+    return _access(fileName.c_str(), 0) == 0;
+#else
     return access(fileName.c_str(), R_OK) == 0;
+#endif
 }
 bool createFolder(const std::string& inPath)
 {
@@ -191,17 +193,17 @@ void runProcess(const std::string& process, const std::string& workingDir, const
     startupInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
     startupInfo.dwFlags |= STARTF_USESTDHANDLES;
 
-    TCHAR tempCmdLine[MAX_PATH * 2];
-    _tcscpy_s(tempCmdLine, MAX_PATH *2, args.c_str());
+    char tempCmdLine[MAX_PATH * 2];
+    strncpy(tempCmdLine, args.c_str(), sizeof(tempCmdLine));
 
-    TCHAR tempWorkDir[MAX_PATH * 2];
-    _tcscpy_s(tempWorkDir, MAX_PATH *2, workingDir.c_str());
+    char tempWorkDir[MAX_PATH * 2];
+    strncpy(tempWorkDir, workingDir.c_str(), sizeof(tempCmdLine));
 
-    TCHAR* workDir = 0;
+    const char* workDir = 0;
     if(workingDir.length() > 0)
         workDir = tempWorkDir;
 
-    BOOL result = ::CreateProcess(process.c_str(), tempCmdLine, NULL, NULL, FALSE,
+    BOOL result = ::CreateProcessA(process.c_str(), tempCmdLine, NULL, NULL, FALSE,
                                   NORMAL_PRIORITY_CLASS, NULL, workDir,
                                   &startupInfo, &processInformation);
     if (result == 0)
@@ -289,17 +291,19 @@ void addBackSlash( std::string& outStr )
         outStr += "/";
 }
 
-uint64_t get_file_size(const std::string& fileName)
+uint32_t get_file_size(const std::string& fileName)
 {
-#ifdef HAVOK_COMPILE
-    WIN32_FIND_DATA wfd;
-    memset(&wfd, 0, sizeof(wfd));
-    HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);
-    if (hFind == INVALID_HANDLE_VALUE) return 0;
-    return MAKE_U64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+#ifdef WIN32
+    struct _stat st;
+    if (!_stat(fileName.c_str(), &st))
+        return (unsigned)st.st_size;
 #else
-    return 0;
+    struct stat st;
+    if (!stat(fileName.c_str(), &st))
+        return (unsigned)st.st_size;
 #endif
+    else
+        return 0;
 }
 
 std::string remove_top_folder(const std::string& fileName)
@@ -682,15 +686,24 @@ unsigned get_file_modified_time(const std::string& fileName)
     if (fileName.empty() || !isFileExist(fileName))
         return 0;
 
-    #ifdef WIN32
+#ifdef WIN32
     struct _stat st;
-    #else
+    if (!_stat(fileName.c_str(), &st))
+        return (unsigned)st.st_mtime;
+#else
     struct stat st;
-    #endif
     if (!stat(fileName.c_str(), &st))
         return (unsigned)st.st_mtime;
+#endif
     else
         return 0;
+}
+
+std::string input_to_output( const std::string& inputName )
+{
+    std::string ret = inputName;
+    string_replace(ret, INTERMEDIATE_PATH, ROOT_DATA_PATH);
+    return ret;
 }
 
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
@@ -719,7 +732,7 @@ FileReader::FileReader( const std::string& fileName )
 ,m_size(0)
 {
     m_file.open(fileName.c_str());
-    m_size = m_file.seek(0, bx::Whence::End);
+    m_size = (uint32_t)m_file.seek(0, bx::Whence::End);
     m_file.seek(0, bx::Whence::Begin);
     m_buf = COMMON_ALLOC(char, m_size);
     m_file.read(m_buf, m_size);

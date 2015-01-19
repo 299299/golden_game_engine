@@ -54,11 +54,13 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     for(size_t i=0; i<numComps; ++i)
     {
         const jsonxx::Object& compValue = compsValue.get<jsonxx::Object>(i);
+        bool bPacked = compValue.get<bool>("packed", false);
         const std::string& type = compValue.get<std::string>("type");
         const std::string& name = compValue.get<std::string>("name");
         actor->m_resourceNames[i] = StringId(name.c_str());
         actor->m_resourceTypes[i] = StringId(type.c_str());
-        createChildCompiler(type, compValue);
+        if(bPacked)
+            createChildCompiler(type, compValue);
         addDependency(type, name_to_file_path(name, type));
     }
 
