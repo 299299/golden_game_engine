@@ -17,7 +17,6 @@ public:
     virtual std::string combieFileName() const {
         return m_name + "." + getFormatExt();
     }
-    virtual std::string getOutputFileName() const;
     virtual std::string getResourceName() const;
 
     virtual void process(void* pData, int hint = 0) = 0;
@@ -27,7 +26,6 @@ public:
     virtual void setName(const std::string& name) { m_name = name; };
     const std::string& getName() const { return m_name; };
 
-    virtual void writeOutput();
     virtual bool isExistInCommonPackage() const;
     virtual void fillAttributes(jsonxx::Object& object) const;
 

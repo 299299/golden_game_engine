@@ -38,14 +38,13 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     ActorConverter* converter = 0;
     config.m_exportMode = cmdline->findOption("mode");
     const char* input = cmdline->findOption('f');
-    const char* output = cmdline->findOption('o');
 
     if(input && output)
     {
         LOGI("havok convert %s ---> %s", input, output);
         config.m_input = input;
         config.m_exportName = getFileName(input);
-        config.m_exportFolder = output;
+        config.m_exportFolder = "";
         config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
 
         std::string path = config.m_exportFolder;

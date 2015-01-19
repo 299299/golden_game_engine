@@ -19,16 +19,6 @@ void ComponentConverter::serializeToFile(const char* fileName)
     s << serializeToJson().json();
 }
 
-std::string ComponentConverter::getOutputFileName() const
-{
-    return m_ownner->m_config->m_exportFolder + combieFileName();
-}
-
-void ComponentConverter::writeOutput()
-{
-    serializeToFile(getOutputFileName().c_str());
-}
-
 std::string ComponentConverter::getResourceName() const
 {
     return m_ownner->m_config->m_rootPath + m_name;
