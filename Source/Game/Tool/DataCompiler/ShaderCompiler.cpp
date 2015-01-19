@@ -22,7 +22,7 @@ ShaderCompiler::ShaderCompiler()
 
 ShaderCompiler::~ShaderCompiler()
 {
-    
+
 }
 
 bool ShaderCompiler::process(const std::string& input, const std::string& output)
@@ -83,10 +83,10 @@ ProgramCompiler::~ProgramCompiler()
 
 bool ProgramCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     const std::string& vsName = root.get<std::string>("vs");
     const std::string& psName = root.get<std::string>("ps");
-    
+
     char vs[256];
     char ps[256];
     bx::snprintf(vs, sizeof(vs), SHADER_PATH"%s", vsName.c_str());
@@ -114,7 +114,7 @@ ShaderIncludeCompiler::ShaderIncludeCompiler()
 
 ShaderIncludeCompiler::~ShaderIncludeCompiler()
 {
-    
+
 }
 
 bool ShaderIncludeCompiler::process(const std::string& input, const std::string& output)

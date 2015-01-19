@@ -12,12 +12,12 @@
 #include <assert.h>
 #define ENGINE_ASSERT(expr, msg) assert(expr)
 
-struct hkQsTransform{};
 struct hkQsTransformf{};
-struct hkTransform{};
+typedef hkQsTransformf hkQsTransform;
 struct hkTransformf{};
-struct hkVector4{};
+typedef hkTransformf hkTransform;
 struct hkVector4f{};
+typedef hkVector4f hkVector4;
 struct hkaSampleBlendJob{};
 typedef uint64_t hkUint64;
 typedef float    hkReal;

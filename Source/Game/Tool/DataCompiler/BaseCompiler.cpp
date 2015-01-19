@@ -28,7 +28,7 @@ void BaseCompiler::checkDependency()
         const ResourceDependency& dep = m_dependencies[i];
         if(!isFileExist(dep.m_sourceFile))
         {
-            g_config->m_error.add_error("[%s]%s missing %s --> %s", 
+            g_config->m_error.add_error("[%s]%s missing %s --> %s",
                 getFormatExt().c_str(), m_input.c_str(), dep.m_useage.c_str(),  dep.m_sourceFile.c_str());
         }
     }
@@ -45,7 +45,7 @@ void BaseCompiler::addDependency( const std::string& useage, const std::string& 
 void BaseCompiler::go()
 {
     std::string outputDir = getFilePath(m_output);
-    if(!isFolderExist(outputDir)) createFolder(outputDir);
+    createFolder(outputDir);
     process(m_input, m_output);
 }
 
@@ -59,10 +59,9 @@ bool BaseCompiler::readJSON( const jsonxx::Object& root )
     return true;
 }
 
-extern BaseCompiler* createCompiler(const std::string& ext);
 BaseCompiler* BaseCompiler::createChildCompiler( const std::string& type, const jsonxx::Object& root )
 {
-    BaseCompiler* compiler = createCompiler(type);
+    BaseCompiler* compiler = g_config->create_compiler(type);
     compiler->m_mode = 1;
     compiler->m_outputFolder = getFilePath(m_output);
     if(!compiler->readJSON(root)) m_subCompilerError = true;

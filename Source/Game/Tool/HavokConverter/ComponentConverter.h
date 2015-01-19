@@ -4,12 +4,13 @@
 class hkxNode;
 class ActorConverter;
 
+
 class ComponentConverter : public hkReferencedObject
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
     ComponentConverter(ActorConverter* ownner);
-    ~ComponentConverter() =0 {};
+    virtual ~ComponentConverter() {};
 
     virtual std::string getTypeName() const = 0;
     virtual std::string getFormatExt() const = 0;

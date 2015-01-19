@@ -12,7 +12,7 @@ ActorCompiler::~ActorCompiler()
 
 bool ActorCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     if(!root.has<jsonxx::Array>("components"))
     {
         g_config->m_error.add_error(" no components in this actor resource json ");

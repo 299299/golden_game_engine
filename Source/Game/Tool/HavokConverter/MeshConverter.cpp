@@ -1,4 +1,3 @@
-#include <windows.h>
 #include "MeshConverter.h"
 #include "MaterialConverter.h"
 #include "ActorConverter.h"
@@ -8,7 +7,7 @@
 
 //#define FLOAT_WEIGHT
 
-static const char* s_attrName[bgfx::Attrib::Count] = 
+static const char* s_attrName[bgfx::Attrib::Count] =
 {
     "Attrib::Position",
     "Attrib::Normal",
@@ -28,7 +27,7 @@ static const char* s_attrName[bgfx::Attrib::Count] =
     "Attrib::TexCoord7",
 };
 
-static const char* s_dataName[] = 
+static const char* s_dataName[] =
 {
     "uint8",
     "int16",
@@ -36,11 +35,12 @@ static const char* s_dataName[] =
     "float"
 };
 
-static uint32_t bgfx_data_stride[bgfx::AttribType::Count] = 
+static uint32_t bgfx_data_stride[bgfx::AttribType::Count] =
 {
     sizeof(uint8_t), sizeof(int16_t), sizeof(uint16_t), sizeof(float)
 };
 
+#ifdef HAVOK_COMPILE
 static bgfx::Attrib::Enum havokAttribToBgfx(const hkxVertexDescription::DataUsage& usage)
 {
     switch(usage)
@@ -83,6 +83,7 @@ static bgfx::AttribType::Enum havokDataTypeToBgfx(const hkxVertexDescription::Da
         return bgfx::AttribType::Count;
     }
 }
+#endif
 
 MeshConverter::MeshConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
@@ -101,6 +102,7 @@ MeshConverter::~MeshConverter()
 void MeshConverter::process(void* pData, int hint)
 {
     m_mesh = (hkxMeshSection*)pData;
+#ifdef HAVOK_COMPILE
     processVertexBuffer(m_mesh->m_vertexBuffer);
     ENGINE_ASSERT(m_mesh->m_indexBuffers.getSize() < 2, "index buffer size >= 2!");
     processIndexBuffer(m_mesh->m_indexBuffers[0]);
@@ -114,6 +116,7 @@ void MeshConverter::process(void* pData, int hint)
     {
         LOGW("no material in current mesh [%s] !", m_ownner->m_name.c_str());
     }
+#endif
 }
 
 jsonxx::Object MeshConverter::serializeToJson() const
@@ -123,6 +126,7 @@ jsonxx::Object MeshConverter::serializeToJson() const
 
 void MeshConverter::processDesc(const hkxVertexDescription& desc)
 {
+#ifdef HAVOK_COMPILE
     m_decl.begin(bgfx::RendererType::Direct3D11);
     for(int i=0; i<desc.m_decls.getSize(); ++i)
     {
@@ -156,7 +160,7 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
                 }
             }
 
-            if(g_config->m_packUV)
+            if(g_hc_config->m_packUV)
             {
                 LOGI("--> Pack UV <--");
                 type = bgfx::AttribType::Half;
@@ -164,13 +168,13 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
             }
         }
 
-        if(g_config->m_packNormal && attrib == bgfx::Attrib::Normal)
+        if(g_hc_config->m_packNormal && attrib == bgfx::Attrib::Normal)
         {
             LOGI("--> Pack Normal <--");
             type = bgfx::AttribType::Uint8;
             bPacked= true;
         }
-        
+
         if(attrib == bgfx::Attrib::Tangent)
         {
             elementNum = 4;
@@ -190,9 +194,9 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
         data.m_stride = bgfx_data_stride[type] * elementNum;
         data.m_numElements = elementNum;
 
-        LOGI("attribute ---> %s, num=%d, stride=%d, data_type=%s", 
-            s_attrName[attrib], 
-            data.m_numElements, 
+        LOGI("attribute ---> %s, num=%d, stride=%d, data_type=%s",
+            s_attrName[attrib],
+            data.m_numElements,
             data.m_stride,
             s_dataName[type]);
 
@@ -206,17 +210,21 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
     }
     m_decl.end();
     bgfx::dump(m_decl);
+#endif
 }
 
 void MeshConverter::processVertexBuffer(hkxVertexBuffer* vb)
 {
+#ifdef HAVOK_COMPILE
     m_numVertices = vb->getNumVertices();
     processDesc(vb->getVertexDesc());
-    processTangent();   
+    processTangent();
+#endif
 }
 
 void MeshConverter::processTangent()
 {
+#ifdef HAVOK_COMPILE
     hkxVertexBuffer* vb = m_mesh->m_vertexBuffer;
     const hkxVertexDescription::ElementDecl* ed_normal = vb->getVertexDesc().getElementDecl(hkxVertexDescription::HKX_DU_NORMAL,0);
     const hkxVertexDescription::ElementDecl* ed_tang = vb->getVertexDesc().getElementDecl(hkxVertexDescription::HKX_DU_TANGENT,0);
@@ -245,10 +253,12 @@ void MeshConverter::processTangent()
             m_tangents[i] = tangent;
         }
     }
+#endif
 }
 
 void MeshConverter::processIndexBuffer(hkxIndexBuffer* ib)
 {
+#ifdef HAVOK_COMPILE
     ENGINE_ASSERT(ib->m_indexType == hkxIndexBuffer::INDEX_TYPE_TRI_LIST, "not tri list index buffer.");
     int numIndices = ib->m_indices16.getSize();
     ENGINE_ASSERT(numIndices > 0, "numIndices <= 0");
@@ -265,10 +275,12 @@ void MeshConverter::processIndexBuffer(hkxIndexBuffer* ib)
     newIndices.resize(m_numIndices);
     Forsyth::OptimizeFaces(&m_indices[0], m_numIndices, m_numVertices, &newIndices[0], 32);
     m_indices = newIndices;
+#endif
 }
 
 uint32_t MeshConverter::writeVertexBuffer(char* blob)
 {
+#ifdef HAVOK_COMPILE
     hkxVertexBuffer* vb = m_mesh->m_vertexBuffer;
     uint32_t ret = getVertexBufferSize();
     char* head = blob;
@@ -278,20 +290,20 @@ uint32_t MeshConverter::writeVertexBuffer(char* blob)
         for(uint32_t j=0; j<bgfx::Attrib::Count; ++j)
         {
             const VertexDeclData& data = m_declDatas[j];
-            if(!data.m_havokDecl) 
+            if(!data.m_havokDecl)
                 continue;
 
             const hkxVertexDescription::ElementDecl& decl = *data.m_havokDecl;
             uint8_t* vData = (uint8_t*)vb->getVertexDataPtr(decl)+decl.m_byteStride*i;
             uint8_t* outData = (uint8_t*)head + m_decl.getOffset(data.m_attrib);
 
-            if(g_config->m_packNormal && decl.m_usage == hkxVertexDescription::HKX_DU_NORMAL)
+            if(g_hc_config->m_packNormal && decl.m_usage == hkxVertexDescription::HKX_DU_NORMAL)
             {
                 float* input = (float*)vData;
                 float norm[4] = {0,0,0,0}; norm[0] = input[0]; norm[1] = input[1]; norm[2] = input[2];
                 bgfx::vertexPack(norm, true, data.m_attrib, m_decl, head);
             }
-            else if(g_config->m_packUV && decl.m_usage == hkxVertexDescription::HKX_DU_TEXCOORD)
+            else if(g_hc_config->m_packUV && decl.m_usage == hkxVertexDescription::HKX_DU_TEXCOORD)
             {
                 float* input = (float*)vData;
                 float uv[4] = {0,0,0,0}; uv[0] = input[0]; uv[1] = input[1];
@@ -321,6 +333,9 @@ uint32_t MeshConverter::writeVertexBuffer(char* blob)
         head += stride;
     }
     return ret;
+#else
+    return 0;
+#endif
 }
 
 uint32_t MeshConverter::writeIndexBuffer(char* blob)

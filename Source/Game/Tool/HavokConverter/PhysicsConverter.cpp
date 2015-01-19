@@ -6,7 +6,7 @@ PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 ,m_physics(0)
 ,m_type(0)
 {
-    
+
 }
 
 PhysicsConverter::~PhysicsConverter()
@@ -23,6 +23,7 @@ void PhysicsConverter::process(hkpPhysicsData* data)
 {
     m_physics = data;
     m_type = kSystemRigidBody;
+#ifdef HAVOK_COMPILE
     for(int i=0; i<m_physics->getPhysicsSystems().getSize(); ++i)
     {
         hkpPhysicsSystem* system = m_physics->getPhysicsSystems()[i];
@@ -38,11 +39,13 @@ void PhysicsConverter::process(hkpPhysicsData* data)
     {
         //
     }
+#endif
 }
 
 void PhysicsConverter::postProcess()
 {
     m_phyFileName = m_ownner->m_config->m_exportFolder + m_name + ".havok";
+#ifdef HAVOK_COMPILE
     {
         LOGD("Write physics file: %s.", m_phyFileName.c_str());
         hkPackfileWriter::Options options;
@@ -50,9 +53,10 @@ void PhysicsConverter::postProcess()
         hkOstream ostream(m_phyFileName.c_str());
         hkBinaryPackfileWriter writer;
         writer.setContents(m_physics, hkpPhysicsData::staticClass());
-        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-            g_config->m_error.add_error(__FUNCTION__" write error.");
+        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
+            g_hc_config->m_error.add_error(__FUNCTION__" write error.");
     }
+#endif
 }
 
 jsonxx::Object PhysicsConverter::serializeToJson() const

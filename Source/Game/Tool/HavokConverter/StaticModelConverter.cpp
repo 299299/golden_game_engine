@@ -7,12 +7,12 @@ StaticModelConverter::StaticModelConverter()
 :m_scene(0)
 ,m_type(kModelDefault)
 {
-    
+
 }
 
 StaticModelConverter::~StaticModelConverter()
 {
-    
+
 }
 
 void StaticModelConverter::process(void* pData)
@@ -23,14 +23,17 @@ void StaticModelConverter::process(void* pData)
 void StaticModelConverter::process(hkxScene* scene)
 {
     m_scene = scene;
+#ifdef HAVOK_COMPILE
     processNode(m_scene->m_rootNode);
+#endif
 }
 
 void StaticModelConverter::processNode( hkxNode* node )
 {
+#ifdef HAVOK_COMPILE
     std::vector<hkxNode*> meshNodes;
     findNodesRec(node, &hkxMeshClass, meshNodes);
-    
+
 #if 0
     for(size_t i=0; i<meshNodes.size(); ++i)
     {
@@ -40,9 +43,9 @@ void StaticModelConverter::processNode( hkxNode* node )
 
         char buf[128];
         if(i == 0)
-            sprintf_s(buf, "%s", m_name.c_str());
+            bx::vsnprintf(buf, sizeof(buf), "%s", m_name.c_str());
         else
-            sprintf_s(buf, "%s_%d", m_name.c_str(), i);
+            bx::vsnprintf(buf, sizeof(buf), "%s_%d", m_name.c_str(), i);
         mc->m_type = m_type;
         mc->setName(buf);
         mc->process(va.m_object, 0);
@@ -80,8 +83,10 @@ void StaticModelConverter::processNode( hkxNode* node )
         ModelConverter* mc = new ModelConverter(this);
 
         char buf[128];
-        if(i == 0) sprintf_s(buf, "%s", m_name.c_str());
-        else sprintf_s(buf, "%s_%d", m_name.c_str(), i);
+        if(i == 0)
+            bx::vsnprintf(buf, sizeof(buf), "%s", m_name.c_str());
+        else
+            bx::vsnprintf(buf, sizeof(buf), %s_%d", m_name.c_str(), i);
 
         mc->setName(buf);
         mc->process((void*)skin->m_mesh, 0);
@@ -134,6 +139,7 @@ void StaticModelConverter::processNode( hkxNode* node )
         physics->process((void*)m_config->m_physics);
         m_components.push_back(physics);
     }
+#endif
 }
 
 void StaticModelConverter::processPhysics( hkpPhysicsData* data )

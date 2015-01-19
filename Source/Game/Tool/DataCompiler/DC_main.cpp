@@ -32,7 +32,7 @@ DC_Config::DC_Config()
 ,m_slient(false)
 ,m_bundled(false)
 {
-    const char* g_resourceTypeNames[] = 
+    const char* g_resourceTypeNames[] =
     {
         Animation::get_name(),
         AnimRig::get_name(),
@@ -160,7 +160,7 @@ int32_t thread_compile(void* _userData)
 
 void level_processing()
 {
-    uint64_t modifyTime = 0;
+    uint32_t modifyTime = 0;
     std::vector<std::string> level_file_list;
     std::string folder = remove_top_folder(g_config->m_inputDir);
     bool bTop = folder.empty();
@@ -197,7 +197,6 @@ void level_processing()
         level->m_input = input;
         level->m_output = output;
         level->m_modifyTime = modifyTime;
-        level->m_packageName = get_package_name(input);
         level->preProcess();
         level->go();
     }
@@ -216,7 +215,7 @@ void resources_process()
         std::string ext = getFileExt(input);
         if(ext == Level::get_name()) continue;
         BaseCompiler* compiler = g_config->create_compiler(ext);
-        if(!compiler) 
+        if(!compiler)
         {
             LOGW("can not find any compiler for this resource %s.", input.c_str());
             continue;
@@ -225,7 +224,6 @@ void resources_process()
         if(ext == "dds") output = replaceExtension(output, Texture::get_name());
         compiler->m_input = input;
         compiler->m_output = output;
-        compiler->m_packageName = get_package_name(input);
         if(!compiler->checkProcessing())
         {
             delete compiler;
@@ -289,8 +287,8 @@ void package_processing()
 int data_compiler_main(int argc, bx::CommandLine* cmdline)
 {
     int err = kErrorSuccess;
-    DWORD timeMS = ::GetTickCount();
-    if(argc < 2) 
+    uint32_t timeMS = ::GetTickCount();
+    if(argc < 2)
     {
         printf("argument num < 3 !\n");
         return kErrorArg;
@@ -311,8 +309,8 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_config->m_ignoreTextures = cmdline->hasArg("ignore_texture");
     g_config->m_slient = cmdline->hasArg("slient");
     g_config->m_bundled = cmdline->hasArg("bundle");
-    
-    if (!isFolderExist("data")) createFolder("data");
+
+    createFolder("data");
     g_config->m_database.load(DC_DATABASE);
 
     g_config->m_inputDir = inputChar;
@@ -326,9 +324,9 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     addBackSlash(g_config->m_outputDir);
     std::string secondFolder = remove_top_folder(g_config->m_outputDir);
     if(secondFolder.length()) g_config->m_packageName = get_top_folder(secondFolder);
-    LOGI("input = %s, output = %s, top-folder = %s, package-name=%s", 
-        g_config->m_inputDir.c_str(), 
-        g_config->m_outputDir.c_str(), 
+    LOGI("input = %s, output = %s, top-folder = %s, package-name=%s",
+        g_config->m_inputDir.c_str(),
+        g_config->m_outputDir.c_str(),
         g_config->m_topFolder.c_str(),
         g_config->m_packageName.c_str());
 

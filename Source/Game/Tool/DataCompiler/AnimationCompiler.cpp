@@ -23,12 +23,12 @@ AnimationCompiler::AnimationCompiler()
 
 AnimationCompiler::~AnimationCompiler()
 {
-    
+
 }
 
 bool AnimationCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
 
     std::vector<AnimTriggerData>  trigger_data;
     uint32_t triggerNum = 0;
@@ -47,10 +47,10 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
             trigger_data.push_back(data);
         }
 
-        if(!trigger_data.empty()) 
+        if(!trigger_data.empty())
             std::sort(trigger_data.begin(), trigger_data.end(), compare_anim_trigger_less);
     }
-     
+
     std::vector<AnimTriggerData> beat_data;
     uint32_t beatNum = 0;
     if(root.has<jsonxx::Array>("beats"))
@@ -67,7 +67,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
             beat_data.push_back(data);
         }
 
-        if(!beat_data.empty()) 
+        if(!beat_data.empty())
             std::sort(beat_data.begin(), beat_data.end(), compare_anim_trigger_less);
     }
 
@@ -78,12 +78,12 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         g_config->m_error.add_error(__FUNCTION__ "can not find havok file [%s]", havokFile.c_str());
         return false;
     }
-    
+
     uint32_t havokOffset = sizeof(Animation) + beatNum * sizeof(AnimationBeat) + triggerNum * sizeof(triggerNum);
-    havokOffset = HK_NEXT_MULTIPLE_OF(16, havokOffset);
+    havokOffset = NEXT_MULTIPLE_OF(16, havokOffset);
     uint32_t memSize = havokOffset + havokReader.m_size;
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
-    
+
     MemoryBuffer mem(memSize);
     char* offset = mem.m_buf;
     memcpy(offset + havokOffset, havokReader.m_buf, havokReader.m_size);
@@ -108,19 +108,19 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     anim->m_beats = (AnimationBeat*)offset;
     anim->m_havokDataOffset = havokOffset;
     anim->m_havokDataSize = havokReader.m_size;
-    
+
     for (uint32_t i=0; i<anim->m_numTriggers; ++i)
     {
         anim->m_triggers[i].m_name = StringId(trigger_data[i].m_name.c_str());
         anim->m_triggers[i].m_time = trigger_data[i].m_time;
     }
-    
+
     extern const char* g_beatTypeNames[];
     for(uint32_t i=0; i<anim->m_numBeats; ++i)
     {
         anim->m_beats[i].m_type = find_enum_index(beat_data[i].m_name.c_str(), g_beatTypeNames);
         anim->m_beats[i].m_time = beat_data[i].m_time;
     }
-    
+
     return write_file(m_output, mem.m_buf, memSize);
 }

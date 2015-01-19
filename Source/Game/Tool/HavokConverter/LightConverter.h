@@ -2,7 +2,8 @@
 #include "ComponentConverter.h"
 #include "Light.h"
 
-class LightConverter   : public ComponentConverter
+class hkxLight;
+class LightConverter : public ComponentConverter
 {
 public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
@@ -14,7 +15,7 @@ public:
 
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
-    
+
 private:
     hkxLight*                   m_light;
     LightResource               m_resource;

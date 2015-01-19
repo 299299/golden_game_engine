@@ -62,7 +62,6 @@ void ResourcePackage::load()
     if(m_memBudget > 0)
     {
         char* p = (char*)COMMON_ALLOC(char, m_memBudget);
-        memset(p, 0x00, m_memBudget);
         m_allocator = new (m_allocator_buffer) LinearAllocator(p, m_memBudget);
     }
 
@@ -511,7 +510,6 @@ bool ResourceManager::load_package(const char* packageName)
     uint32_t packageNameLen = strlen(packageName) + 1;
     uint32_t memSize = packageNameLen + sizeof(ResourceRequest);
     char* blob = COMMON_ALLOC(char, memSize);
-    memset(blob, 0x00, memSize);
     ResourceRequest* request = (ResourceRequest*)blob;
     request->m_data = blob + sizeof(ResourceRequest);
     request->m_dataLen = packageNameLen;
@@ -589,7 +587,6 @@ void ResourceManager::process_request()
         uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
         reader.seek(0, bx::Whence::Begin);
         ResourcePackage* package = (ResourcePackage*)COMMON_ALLOC(char, fileSize);
-        memset(package, 0x00, fileSize);
         reader.read(package, fileSize);
         reader.close();
         m_packages[m_numPackages++] = package;
@@ -765,7 +762,6 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
     reader.seek(0, bx::Whence::Begin);
     newResource = COMMON_ALLOC(char, fileSize);
-    memset(newResource, 0x00, fileSize);
     reader.read(newResource, fileSize);
     reader.close();
 

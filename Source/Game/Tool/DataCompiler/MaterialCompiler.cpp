@@ -14,22 +14,22 @@ MaterialCompiler::~MaterialCompiler()
 
 bool MaterialCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     //Texture samplers
-    uint32_t samplerNum = 0;    
+    uint32_t samplerNum = 0;
     jsonxx::Array samplersValue;
-    if(root.has<jsonxx::Array>("samplers")) 
+    if(root.has<jsonxx::Array>("samplers"))
     {
         samplersValue = root.get<jsonxx::Array>("samplers");
         samplerNum = samplersValue.size();
     }
-    
+
     uint32_t memSize = sizeof(Material) + sizeof(MatSampler) * samplerNum;
     MemoryBuffer mem(memSize);
     Material* m = (Material*)mem.m_buf;
-    
+
     m->m_numSamplers = samplerNum;
-    
+
     vec3_make(m->m_diffuse, 255, 255, 255);
     vec3_make(m->m_specular, 255, 255, 255);
 
@@ -37,20 +37,20 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     std::string programFile = root.get<std::string>("shader");
     if(!programFile.empty())
     {
-        sprintf_s(programName, PROGRAM_PATH"%s", programFile.c_str());
+        bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
         m->m_shaderName = StringId(programName);
         addDependency("shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
-   
+
     programFile = root.get<std::string>("shadow-shader", "");
     if(!programFile.empty())
     {
-        sprintf_s(programName, PROGRAM_PATH"%s", programFile.c_str());
+        bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
         m->m_shadowShaderName = StringId(programName);
         addDependency("shadow shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
 
-    uint64_t renderState = BGFX_STATE_RGB_WRITE 
+    uint64_t renderState = BGFX_STATE_RGB_WRITE
                             | BGFX_STATE_ALPHA_WRITE \
                             | BGFX_STATE_DEPTH_TEST_LESS \
                             | BGFX_STATE_DEPTH_WRITE \
@@ -77,7 +77,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     m->m_offsetAndRepeat[1] = 0;
     m->m_offsetAndRepeat[2] = 1;
     m->m_offsetAndRepeat[3] = 1;
-    
+
     if(root.has<jsonxx::Array>("uv-offset"))
         json_to_floats(root.get<jsonxx::Array>("uv-offset"), m->m_offsetAndRepeat, 2);
     if(root.has<jsonxx::Array>("uv-repeat"))
@@ -115,12 +115,12 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             std::string textureFile;
             if(samplerValue.has<jsonxx::Object>("texture"))
             {
-                //if it is a object, this is special case come from 
+                //if it is a object, this is special case come from
                 //when group the texture resources to on json file.
                 TextureCompiler* compiler = new TextureCompiler;
                 compiler->m_mode = 1;
                 compiler->m_outputFolder = getFilePath(m_output);
-                if(!compiler->readJSON(samplerValue.get<jsonxx::Object>("texture"))) 
+                if(!compiler->readJSON(samplerValue.get<jsonxx::Object>("texture")))
                     m_subCompilerError = true;
                 textureFile = compiler->m_name;
                 g_config->add_child_compile(compiler);
@@ -202,7 +202,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             }
         }
     }
-    
+
     m->m_state = renderState;
     m->m_flags = flags;
     return write_file(m_output, mem.m_buf, memSize);

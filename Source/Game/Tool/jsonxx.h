@@ -382,7 +382,7 @@ const T& Object::get(const std::string& key, const typename identity<T>::type& d
     return default_value;
   }
 }
-    
+
 template<>
 inline bool Value::is<Value>() const {
     return true;
@@ -417,12 +417,12 @@ template<>
 inline bool Value::is<Object>() const {
   return type_ == OBJECT_;
 }
-    
+
 template<>
 inline Value& Value::get<Value>() {
     return *this;
 }
-    
+
 template<>
 inline const Value& Value::get<Value>() const {
     return *this;
@@ -492,6 +492,62 @@ template<typename T>
 inline Object &Object::operator<<(const T &value) {
   return *this << Value(value), *this;
 }
+
+#if 1
+// new add functions
+template<>
+inline const float& Value::get<float>() const {
+  JSONXX_ASSERT(is<Number>());
+  return (float)number_value_;
+}
+
+
+template<>
+inline const int& Value::get<int>() const {
+  JSONXX_ASSERT(is<Number>());
+  return (int)number_value_;
+}
+
+template<>
+inline const unsigned& Value::get<unsigned>() const {
+  JSONXX_ASSERT(is<Number>());
+  return (unsigned)number_value_;
+}
+
+template<>
+inline float& Value::get<float>() {
+  JSONXX_ASSERT(is<Number>());
+  return (float&)number_value_;
+}
+
+
+template<>
+inline int& Value::get<int>() {
+  JSONXX_ASSERT(is<Number>());
+  return (int&)number_value_;
+}
+
+template<>
+inline unsigned& Value::get<unsigned>() {
+  JSONXX_ASSERT(is<Number>());
+  return (unsigned&)number_value_;
+}
+
+template<>
+inline bool Value::is<int>() const {
+  return type_ == NUMBER_;
+}
+template<>
+inline bool Value::is<float>() const {
+  return type_ == NUMBER_;
+}
+template<>
+inline bool Value::is<unsigned>() const {
+  return type_ == NUMBER_;
+}
+
+#endif
+
 
 }  // namespace jsonxx
 

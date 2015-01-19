@@ -89,3 +89,7 @@ struct Id
 #ifndef __FUNCTION__
 #define __FUNCTION__ __FILE__
 #endif
+
+/// Note that ALIGNMENT must be a power of two for this to work.
+/// Note: to use this macro you must cast your pointer to a byte pointer or to an integer value.
+#define NEXT_MULTIPLE_OF(ALIGNMENT, VALUE)  ( ((VALUE) + ((ALIGNMENT)-1)) & (~((ALIGNMENT)-1)) )

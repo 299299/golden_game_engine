@@ -5,7 +5,7 @@
 
 PackageCompiler::PackageCompiler()
 {
-    
+
 }
 
 PackageCompiler::~PackageCompiler()
@@ -20,7 +20,7 @@ int PackageCompiler::findGroup(const std::string& ext) const
 {
     for(size_t i=0; i<m_groups.size(); ++i)
     {
-        if(m_groups[i]->m_ext == ext) 
+        if(m_groups[i]->m_ext == ext)
             return i;
     }
     return -1;
@@ -42,7 +42,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     memSize += sizeof(ResourceInfo) * numResources;
     uint32_t totalFileSize = 0;
     bool bundled = g_config->m_bundled;
-    
+
     for(size_t i=0; i<numResources; ++i)
     {
         const std::string& fileName = filesInFolder[i];
@@ -71,22 +71,22 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         }
 
         if(!bundled) memSize += fileName.length();
-        
+
         group->m_files.push_back(&fileName);
         uint32_t fileSize = (uint32_t)get_file_size(fileName);
-        fileSize = HK_NEXT_MULTIPLE_OF(4, fileSize);
+        fileSize = NEXT_MULTIPLE_OF(4, fileSize);
         fileSize += NATIVE_MEMORY_ALIGN;
         totalFileSize += fileSize;
     }
 
-    hkSort(&m_groups[0], m_groups.size(), compare_less_group);
+    std::sort(m_groups.begin(), m_groups.end(), compare_less_group);
     memSize += sizeof(ResourceGroup) * m_groups.size();
     LOGI(__FUNCTION__" resource package group num = %d, total mem len = %d, total file size = %d", m_groups.size(), memSize, totalFileSize);
 
     MemoryBuffer mem(memSize);
     ResourcePackage* package = (ResourcePackage*)mem.m_buf;
     package->m_bundled = bundled;
-    totalFileSize = HK_NEXT_MULTIPLE_OF(16, totalFileSize);
+    totalFileSize = NEXT_MULTIPLE_OF(16, totalFileSize);
     if(!bundled) package->m_memBudget = totalFileSize;
     package->m_name = StringId(output.c_str());
     package->m_numGroups = m_groups.size();
@@ -94,11 +94,11 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     char* offset = mem.m_buf + sizeof(ResourcePackage);
     package->m_groups = (ResourceGroup*)offset;
     offset += sizeof(ResourceGroup) * m_groups.size();
-    
+
     for(size_t i=0; i<m_groups.size(); ++i)
     {
         const PackageGroup* in_group = m_groups[i];
-        LOGI("group[%d] name=%s, num-of-resource=%d, order=%d", i, 
+        LOGI("group[%d] name=%s, num-of-resource=%d, order=%d", i,
             in_group->m_ext.c_str(), in_group->m_files.size(), in_group->m_order);
 
         ResourceGroup& out_group = package->m_groups[i];
@@ -107,23 +107,23 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         out_group.m_resources = (ResourceInfo*)offset;
         out_group.m_resourceInfoOffset = (offset - mem.m_buf);
         offset += sizeof(ResourceInfo) * out_group.m_numResources;
-        LOGI("group[%d] name = %s, num-resources = %d, type=%u, info-offset=%d", i, 
-            in_group->m_ext.c_str(), 
+        LOGI("group[%d] name = %s, num-resources = %d, type=%u, info-offset=%d", i,
+            in_group->m_ext.c_str(),
             in_group->m_files.size(),
             out_group.m_type.value(),
             out_group.m_resourceInfoOffset);
     }
-    
+
     FILE* fp = fopen(output.c_str(), "wb");
     //===================================================
     //  TRAPS HERE
-    // 
+    //
     //  NOTICE resource name id is not a file path
     //  it`s in a relative name root on intermediate.
-    //  
+    //
     //  so a file in runtime data folder like this:
     //  data/core/common/test.texture
-    //  
+    //
     //  the resource name should be:
     //  core/common/test.texture
     //
@@ -144,7 +144,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             if(bundled)
             {
                 info.m_size = get_file_size(fileName);
-                info.m_size = HK_NEXT_MULTIPLE_OF(16, info.m_size);
+                info.m_size = NEXT_MULTIPLE_OF(16, info.m_size);
                 info.m_offset = memOffset;
                 memOffset += info.m_size;
             }
@@ -172,10 +172,10 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             {
                 const std::string& fileName = *in_group->m_files[j];
                 FileReader reader(fileName);
-                uint32_t memSize = HK_NEXT_MULTIPLE_OF(16, reader.m_size);
+                uint32_t memSize = NEXT_MULTIPLE_OF(16, reader.m_size);
                 ENGINE_ASSERT_ARGS(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
                 fwrite(reader.m_buf, 1, reader.m_size, fp);
-                if(memSize > reader.m_size) 
+                if(memSize > reader.m_size)
                 {
                     uint32_t size = memSize - reader.m_size;
                     char buf[1024];
@@ -187,8 +187,6 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     }
 
     fclose(fp);
-
-    if(bundled) delete_folder(input);
 
     m_processed = true;
     return true;

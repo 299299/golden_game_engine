@@ -2,7 +2,7 @@
 #include "ModelConverter.h"
 #include "ActorConverter.h"
 
-const char* g_body_names_0[] = 
+const char* g_body_names_0[] =
 {
     "head",
     "neck",
@@ -35,7 +35,7 @@ AnimRigConverter::AnimRigConverter(ActorConverter* ownner)
 
 AnimRigConverter::~AnimRigConverter()
 {
-    
+
 }
 
 void AnimRigConverter::process(void* pData, int hint)
@@ -50,9 +50,11 @@ void AnimRigConverter::process(RigSkinData* skin)
 
 void AnimRigConverter::postProcess()
 {
-    __super::postProcess();
+    ComponentConverter::postProcess();
 
     m_rigFileName = m_ownner->m_config->m_exportFolder + m_name + "_rig.havok";
+
+#ifdef HAVOK_COMPILE
     extern const char* g_humanBodyNames[];
     //if we have a skin rig data
     //we should also write the rig data to a specific havok hkt file
@@ -78,10 +80,10 @@ void AnimRigConverter::postProcess()
         hkOstream ostream(m_rigFileName.c_str());
         hkBinaryPackfileWriter writer;
         writer.setContents(skeleton, hkaSkeleton::staticClass());
-        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-            g_config->m_error.add_error(__FUNCTION__" write error.");
+        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
+            g_hc_config->m_error.add_error(__FUNCTION__" write error.");
     }
-    
+#endif
 }
 
 jsonxx::Object AnimRigConverter::serializeToJson() const
@@ -113,6 +115,7 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
     }
     obj << "human_body" << body;
 
+#ifdef HAVOK_COMPILE
     jsonxx::Array attachments;
     float m[16];
     LOGI("attachment num = %d", m_skin->m_attachments.size());
@@ -132,6 +135,8 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
         attachments << attachment;
     }
     obj << "attachments" << attachments;
+#endif
+
     fillAttributes(obj);
     return obj;
 }
@@ -152,6 +157,8 @@ int AnimRigConverter::findBodyPart( const std::string& boneName, const char** ar
 void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
 {
 	if(!m_node) return;
+
+#ifdef HAVOK_COMPILE
 	const hkxAttributeGroup* group = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
 	if(!group) return;
 	fill_object_attributes(object, group);
@@ -165,10 +172,12 @@ void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
 	FileReader reader(animSetFile.c_str());
 	if (!reader.m_size) return;
 	jsonxx::Value obj;
-	if(!obj.parse(reader.m_buf)) 
+	if(!obj.parse(reader.m_buf))
 	{
-		g_config->m_error.add_error("anim-set %s json parse error.", animSetFile.c_str());
+		g_hc_config->m_error.add_error("anim-set %s json parse error.", animSetFile.c_str());
 		return;
 	}
 	object<<"animation-set"<<obj;
+#endif
+
 }

@@ -22,7 +22,7 @@ AnimRigCompiler::~AnimRigCompiler()
 
 bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     jsonxx::Array jointsValue = root.get<jsonxx::Array>("joints");
     uint32_t jointNum = jointsValue.size();
     uint32_t attachmentNum = 0;
@@ -36,10 +36,10 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
 	uint32_t animationsNum = 0;
 	if(animationsValue.IsValid()) animationsNum = animationsValue.GetElementsCount();
 #endif
-    
+
     uint32_t memSize = sizeof(AnimRig) + jointNum*sizeof(StringId) + attachmentNum*sizeof(BoneAttachment);
 	uint32_t headerSize = memSize;
-    memSize = HK_NEXT_MULTIPLE_OF(16, memSize);
+    memSize = NEXT_MULTIPLE_OF(16, memSize);
     uint32_t havokOffset = memSize;
 
     const std::string& havokFile = root.get<std::string>("havok_file");
@@ -86,7 +86,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
             rig->m_humanJointIndices[i] = find_joint_index(name, rig->m_jointNames, jointNum);
         }
     }
-    else 
+    else
     {
         for(int i=0; i<kBodyPartMax; ++i)
         {
@@ -94,7 +94,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
         }
     }
     offset += jointNum*sizeof(StringId);
-	
+
 	//-----------------------------------------------
 	//					animation-set names
 	//-----------------------------------------------
@@ -125,7 +125,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
             json_to_floats(attachmentValue.get<jsonxx::Array>("transform"), ba.m_boneFromAttachment, 16);
         }
     }
-    
+
 	offset += attachmentNum * sizeof(BoneAttachment);
 	ENGINE_ASSERT((offset-mem.m_buf == headerSize), "anim-rig mem offset error.");
     return write_file(m_output, mem.m_buf, memSize);

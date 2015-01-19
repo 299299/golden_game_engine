@@ -5,14 +5,10 @@
 #include "MathDefs.h"
 
 #include <stdio.h>
-#include <ShlObj.h>
 #include <algorithm>
-#include <io.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <tchar.h>
-#include <direct.h>
 #include <vector>
 #include <string>
 #include <map>
@@ -20,7 +16,6 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <io.h>
 
 #include <bgfx.h>
 #include <bx/fpumath.h>
@@ -28,6 +23,7 @@
 #include <bx/platform.h>
 #include <bx/commandline.h>
 #include <bx/mutex.h>
+#include <bx/readerwriter.h>
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
 

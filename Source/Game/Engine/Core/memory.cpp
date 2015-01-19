@@ -26,6 +26,9 @@ namespace memory
             size_t actual_size = actual_allocation_size(size, align);
 
             Header* h = (Header*)malloc(actual_size);
+#ifdef ZERO_MALLOC_MEM
+            memset(h, 0x00, actual_size);
+#endif
             h->size = actual_size;
 
             void* data = memory::align_top(h + 1, align);

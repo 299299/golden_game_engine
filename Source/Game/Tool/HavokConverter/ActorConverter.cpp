@@ -4,7 +4,7 @@
 ActorConverter::ActorConverter()
 :m_config(NULL)
 {
-    
+
 }
 
 ActorConverter::~ActorConverter()
@@ -23,7 +23,7 @@ void ActorConverter::postProcess()
     }
 }
 
-jsonxx::Object 
+jsonxx::Object
 ActorConverter::serializeToJson() const
 {
     jsonxx::Object rootObject;
@@ -45,7 +45,7 @@ ActorConverter::serializeToJson() const
         compsObject << obj;
     }
     rootObject << "components" << compsObject;
-    
+
     jsonxx::Array dataObject;
     {
         //todo
@@ -59,7 +59,7 @@ void ActorConverter::serializeToFile(const char* fileName)
     std::ofstream s(fileName);
     if(!s.good())
     {
-        g_config->m_error.add_error("serializeToFile to %s IO error.", fileName);
+        g_hc_config->m_error.add_error("serializeToFile to %s IO error.", fileName);
         return;
     }
     s << serializeToJson().json();
@@ -72,5 +72,9 @@ std::string ActorConverter::getResourceName() const
 
 hkxNode* ActorConverter::findNode(const char* name)
 {
+#ifdef HAVOK_COMPILE
     return m_config->m_scene->findNodeByName(name);
+#else
+    return 0;
+#endif
 }

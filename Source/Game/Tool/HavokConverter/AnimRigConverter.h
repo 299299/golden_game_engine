@@ -9,7 +9,7 @@ public:
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_USER);
     AnimRigConverter(ActorConverter* ownner);
     ~AnimRigConverter();
-    
+
     virtual std::string getTypeName() const { return AnimRig::get_name(); };
     virtual std::string getFormatExt() const { return AnimRig::get_name(); };
 

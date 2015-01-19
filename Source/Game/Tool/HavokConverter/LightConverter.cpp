@@ -3,7 +3,7 @@
 LightConverter::LightConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
 {
-    
+
 }
 
 LightConverter::~LightConverter()
@@ -20,8 +20,10 @@ void LightConverter::process(void* pData, int hint)
 jsonxx::Object LightConverter::serializeToJson() const
 {
     extern const char*          g_lightTypeNames[];
-    
+
     jsonxx::Object lightObject;
+
+#ifdef HAVOK_COMPILE
     unsigned wValue = m_light->m_color;
     unsigned R = wValue & 0xff;
     unsigned G = (wValue>>8)&0xff;
@@ -48,6 +50,7 @@ jsonxx::Object LightConverter::serializeToJson() const
     lightObject << "falloff" << m_light->m_range;
     lightObject << "name" << getResourceName();
     lightObject << "type" << getTypeName();
+#endif
 
     fillAttributes(lightObject);
 

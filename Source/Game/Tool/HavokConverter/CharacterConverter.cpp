@@ -6,7 +6,7 @@ CharacterConverter::CharacterConverter()
     :m_ac(0)
     ,m_skin(0)
 {
-    
+
 }
 
 CharacterConverter::~CharacterConverter()
@@ -22,9 +22,10 @@ void CharacterConverter::process(void* data)
 void CharacterConverter::process(hkaAnimationContainer* ac)
 {
     m_ac = ac;
+#ifdef HAVOK_COMPILE
     if(ac->m_skeletons.isEmpty())
     {
-        g_config->m_error.add_error("skinning do not found skeleton!");
+        g_hc_config->m_error.add_error("skinning do not found skeleton!");
         return;
     }
     collectRigSkinData(ac->m_skeletons[0]);
@@ -39,10 +40,12 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     anic->setName(m_name);
     anic->process((void*)m_skin);
     m_components.push_back(anic);
+#endif
 }
 
 void CharacterConverter::collectRigSkinData(hkaSkeleton* rig)
 {
+#ifdef HAVOK_COMPILE
     if(rig->m_bones.isEmpty())
     {
         LOGE("warning rig bones is empty.");
@@ -71,9 +74,10 @@ void CharacterConverter::collectRigSkinData(hkaSkeleton* rig)
             m_skin->m_attachments.push_back(attachment);
         }
     }
+#endif
 }
 
 jsonxx::Object CharacterConverter::serializeToJson() const
 {
-    return __super::serializeToJson();
+    return ActorConverter::serializeToJson();
 }

@@ -4,6 +4,8 @@
 #include "allocator.h"
 #include "Prerequisites.h"
 
+#define ZERO_MALLOC_MEM
+
 Allocator& default_allocator();
 
 /// @defgroup Memory Memory

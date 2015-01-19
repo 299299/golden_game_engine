@@ -13,7 +13,7 @@ void ComponentConverter::serializeToFile(const char* fileName)
     std::ofstream s(fileName);
     if(!s.good())
     {
-        g_config->m_error.add_error("%s serializeToFile to %s IO error.", getTypeName().c_str(), fileName);
+        g_hc_config->m_error.add_error("%s serializeToFile to %s IO error.", getTypeName().c_str(), fileName);
         return;
     }
     s << serializeToJson().json();
@@ -44,5 +44,7 @@ bool ComponentConverter::isExistInCommonPackage() const
 void ComponentConverter::fillAttributes(jsonxx::Object& object) const
 {
     if(!m_node) return;
+#ifdef HAOVK_COMPILE
     fill_object_attributes(object, m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
+#endif
 }

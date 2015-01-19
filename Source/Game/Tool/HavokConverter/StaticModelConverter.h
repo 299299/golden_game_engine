@@ -1,6 +1,9 @@
 #pragma once
 #include "ActorConverter.h"
 
+class hkxScene;
+class hkxNode;
+
 class StaticModelConverter : public ActorConverter
 {
 public:

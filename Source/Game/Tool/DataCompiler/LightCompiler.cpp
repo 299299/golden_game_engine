@@ -7,15 +7,15 @@ LightCompiler::LightCompiler()
 
 LightCompiler::~LightCompiler()
 {
-    
+
 }
 
 bool LightCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     LightResource light;
     memset(&light, 0x00, sizeof(light));
-    
+
     extern const char*  g_lightTypeNames[];
     vec3_make(light.m_color, 255, 255, 255);
     json_to_floats(root.get<jsonxx::Array>("color"), light.m_color, 3);

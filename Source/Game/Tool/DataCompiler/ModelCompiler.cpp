@@ -9,12 +9,12 @@ ModelCompiler::ModelCompiler()
 
 ModelCompiler::~ModelCompiler()
 {
-    
+
 }
 
 bool ModelCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     ModelResource model;
     memset(&model, 0x00, sizeof(model));
 
@@ -48,9 +48,9 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
                 compiler->m_outputFolder = getFilePath(m_output);
                 if(!compiler->readJSON(matValue)) m_subCompilerError = true;
                 materialFile = compiler->m_name;
-                g_config->add_child_compile(compiler); 
+                g_config->add_child_compile(compiler);
             }
-            else 
+            else
             {
                 materialFile = materialsValue.get<std::string>(i);
             }
@@ -58,6 +58,6 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
             addDependency("material", name_to_file_path(materialFile, Material::get_name()));
         }
     }
-    
+
     return write_file(m_output, &model, sizeof(model));
 }

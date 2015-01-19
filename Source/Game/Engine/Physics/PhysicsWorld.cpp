@@ -450,6 +450,7 @@ int PhysicsWorld::get_layer(const StringId& name) const
 void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 {
     PROFILE(sync_rigidbody_actors);
+#ifdef HAVOK_COMPILE
     check_status();
     hkQsTransform t;
     hkTransform t1;
@@ -464,13 +465,15 @@ void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
         actor.set_transform_ignore_type(t, physics_type);
         physics_object->m_dirty = false;
     }
+#endif
 }
 
 void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
 {
     PROFILE(sync_proxy_actors);
     check_status();
-    
+
+#ifdef HAVOK_COMPILE
     StringId physics_type = ProxyResource::get_type();
 
     float pos[3];
@@ -486,6 +489,7 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
         transform_vec3(t.m_translation, pos);
         actor.set_transform_ignore_type(t, physics_type);
     }
+#endif
 }
 
 void PhysicsWorld::update_character_proxies(float timeStep)
@@ -574,7 +578,9 @@ void transform_physics_object(Id id, const hkQsTransform& t)
 {
     if(!m_objects.has(id)) return;
     hkTransform t1;
+#ifdef HAVOK_COMPILE
     t.copyToTransformNoScale(t1);
+#endif
     m_objects.get(id)->set_transform(t1);
 }
 

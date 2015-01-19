@@ -2,6 +2,15 @@
 #include "ComponentConverter.h"
 #include "Mesh.h"
 
+class MaterialConverter;
+class ModelConverter;
+class hkxMeshSection;
+class hkxVertexBuffer;
+class hkxIndexBuffer;
+#ifndef HAVOK_COMPILE
+struct hkxVertexDescription { struct ElementDecl{}; };
+#endif
+
 struct VertexDeclData
 {
     const hkxVertexDescription::ElementDecl*    m_havokDecl;
@@ -10,9 +19,6 @@ struct VertexDeclData
     uint32_t                                    m_stride;
     uint32_t                                    m_numElements;
 };
-
-class MaterialConverter;
-class ModelConverter;
 
 class MeshConverter  : public ComponentConverter
 {
@@ -23,7 +29,7 @@ public:
 
     virtual std::string getTypeName() const { return Mesh::get_name(); };
     virtual std::string getFormatExt() const { return Mesh::get_name(); };
-    
+
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
 

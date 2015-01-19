@@ -13,10 +13,12 @@ ModelConverter::ModelConverter(ActorConverter* ownner)
 
 ModelConverter::~ModelConverter()
 {
+#ifdef HAVOK_COMPILE
     for(size_t i=0; i<m_meshes.size(); ++i)
     {
         m_meshes[i]->removeReference();
     }
+#endif
 }
 
 void ModelConverter::process(void* pData, int hint)
@@ -34,10 +36,12 @@ void ModelConverter::process(void* pData, int hint)
 void ModelConverter::process(hkxMesh* mesh)
 {
     std::vector<hkxMeshSection*> meshes;
+#ifdef HAVOK_COMPILE
     for(int i=0; i<mesh->m_sections.getSize(); ++i)
     {
         meshes.push_back(mesh->m_sections[i]);
     }
+#endif
     loadMeshes(meshes);
 }
 
@@ -45,6 +49,8 @@ void ModelConverter::process(RigSkinData* skinData)
 {
     m_skin  = skinData;
     std::vector<hkxMeshSection*> meshes;
+
+#ifdef HAVOK_COMPILE
     for(size_t i=0; i<skinData->m_skins.size(); ++i)
     {
         hkxMesh* mesh = skinData->m_skins[i]->m_mesh;
@@ -64,11 +70,30 @@ void ModelConverter::process(RigSkinData* skinData)
     }
 
     ENGINE_ASSERT_ARGS(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
+#endif
 }
+
+void ModelConverter::processMeshes( const std::vector<hkxMesh*>& meshes )
+{
+    std::vector<hkxMeshSection*> meshSections;
+#ifdef HAVOK_COMPILE
+    for (size_t i=0; i<meshes.size(); ++i)
+    {
+        hkxMesh* mesh = meshes[i];
+        for (int j=0; j<mesh->m_sections.getSize(); ++j)
+        {
+            meshSections.push_back(mesh->m_sections[j]);
+        }
+    }
+#endif
+    loadMeshes(meshSections);
+}
+
 
 void ModelConverter::loadMeshes(const std::vector<hkxMeshSection*>& meshes)
 {
     m_havokMeshes  = meshes;
+#ifdef HAVOK_COMPILE
     for(size_t i=0; i<meshes.size(); ++i)
     {
         hkxMeshSection* mesh = meshes[i];
@@ -77,10 +102,12 @@ void ModelConverter::loadMeshes(const std::vector<hkxMeshSection*>& meshes)
         meshConverter->process(mesh, 0);
         m_meshes.push_back(meshConverter);
     }
+#endif
 }
 
 void ModelConverter::writeMesh(const std::string& fileName)
 {
+#ifdef HAVOK_COMPILE
     uint32_t memorySize = sizeof(Mesh);
     memorySize += m_meshes.size() * sizeof(SubMesh);
     for(uint32_t i=0; i<m_meshes.size(); ++i)
@@ -112,11 +139,11 @@ void ModelConverter::writeMesh(const std::string& fileName)
         subMesh.m_vertexOffset = p - head;
         subMesh.m_vbh.idx = bgfx::invalidHandle;
         subMesh.m_ibh.idx = bgfx::invalidHandle;
-        
+
         //------------------------------------------------------------------------------
         uint32_t numVertices = mesh->getNumVertices();
         uint32_t vertexStride = mesh->getVertexStride();
-        
+
         mesh->writeVertexBuffer(p);
         calcMaxBoundingSphere(subMesh.m_sphere, p, numVertices, vertexStride);
         calcAabb(subMesh.m_aabb, p, numVertices, vertexStride);
@@ -154,6 +181,7 @@ void ModelConverter::writeMesh(const std::string& fileName)
 
     ENGINE_ASSERT((head + memorySize) == p, "error offset");
     write_file(fileName, head, memorySize);
+#endif
 }
 
 void ModelConverter::postProcess()
@@ -168,7 +196,7 @@ void ModelConverter::postProcess()
     }
 }
 
-jsonxx::Object 
+jsonxx::Object
 ModelConverter::serializeToJson() const
 {
     jsonxx::Object modelObject;
@@ -196,20 +224,7 @@ ModelConverter::serializeToJson() const
     }
 
     fillAttributes(modelObject);
-    
+
     return modelObject;
 }
 
-void ModelConverter::processMeshes( const std::vector<hkxMesh*>& meshes )
-{
-    std::vector<hkxMeshSection*> meshSections;
-    for (size_t i=0; i<meshes.size(); ++i)
-    {
-        hkxMesh* mesh = meshes[i];
-        for (int j=0; j<mesh->m_sections.getSize(); ++j)
-        {
-            meshSections.push_back(mesh->m_sections[j]);
-        }
-    }
-    loadMeshes(meshSections);
-}

@@ -11,7 +11,7 @@ class BaseCompiler
 {
 public:
     BaseCompiler();
-    virtual ~BaseCompiler() =0 {};
+    virtual ~BaseCompiler() {};
 
     virtual std::string getFormatExt() const = 0;
     virtual bool process(const std::string& input, const std::string& output);
@@ -35,9 +35,8 @@ public:
     std::string                                     m_input;
     std::string                                     m_output;
     std::string                                     m_outputFolder;
-    std::string                                     m_packageName;
     int                                             m_mode;
-    uint64_t                                        m_modifyTime;
+    uint32_t                                        m_modifyTime;
     std::vector<ResourceDependency>                 m_dependencies;
     bool                                            m_processed;
     bool                                            m_subCompilerError;

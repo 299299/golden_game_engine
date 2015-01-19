@@ -4,6 +4,10 @@
 
 class SamplerConverter;
 class ModelConverter;
+#ifndef HAVOK_COMPILE
+struct hkxMaterial { struct TextureStage{}; };
+struct hkRefVariant {};
+#endif
 
 class MaterialConverter  : public ComponentConverter
 {

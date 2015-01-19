@@ -9,7 +9,7 @@ TextureCompiler::TextureCompiler()
 
 bool TextureCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     m_input = root.get<std::string>("input");
     m_format = root.get<std::string>("format");
     m_processed = processImage(m_input, m_output);
@@ -45,7 +45,7 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     toLower(fileNameExt);
     texconv_compress(input, getFilePath(output), m_format);
     addDependency("texture", input);
-    
+
     //2. read the dds file back
     FileReader texutreReader(ddsFile);
     if(!texutreReader.m_size) return false;

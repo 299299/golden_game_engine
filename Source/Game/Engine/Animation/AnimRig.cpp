@@ -122,10 +122,9 @@ void AnimRigInstance::init( const void* resource , ActorId32 actor)
     ctrl_size *= numAnimations;
 	//uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(skeleton);
 	uint32_t pose_size = sizeof(hkaPose);
-	pose_size = HK_NEXT_MULTIPLE_OF(16, pose_size);
+	pose_size = NEXT_MULTIPLE_OF(16, pose_size);
     uint32_t mem_size = sizeof(hkaSkeleton) + pose_size + ctrl_size + sizeof(hk_anim_ctrl*) * numAnimations;
     m_blob = COMMON_ALLOC(char, mem_size);
-    memset(m_blob, 0x00, mem_size);
     char* offset = m_blob;
     m_skeleton = new(offset) hkaAnimatedSkeleton(skeleton);
     offset += sizeof(hkaAnimatedSkeleton);

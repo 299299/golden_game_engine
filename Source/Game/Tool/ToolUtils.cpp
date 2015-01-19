@@ -1,5 +1,27 @@
 #include "ToolUtils.h"
 
+#ifdef WIN32
+#ifndef _MSC_VER
+#define _WIN32_IE 0x501
+#endif
+#include <windows.h>
+#include <shellapi.h>
+#include <direct.h>
+#include <shlobj.h>
+#include <sys/types.h>
+#include <sys/utime.h>
+#include <io.h>
+#else
+#include <dirent.h>
+#include <errno.h>
+#include <unistd.h>
+#include <utime.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#define MAX_PATH 256
+#endif
+
 std::string getFileNameAndExtension( const std::string& fileName )
 {
     size_t pos = fileName.find_last_of('\\');
@@ -59,39 +81,35 @@ void toLower(std::string& input)
     std::transform(input.begin(), input.end(), input.begin(), tolower);
 }
 
-std::string getCurDir()
-{
-    char szPath[256];
-    GetCurrentDirectoryA(256,szPath);
-    std::string ret(szPath);
-    return ret;
-}
 bool isFileExist( const std::string& fileName )
 {
-    return _access(fileName.c_str(), 0) != -1;
+    return access(fileName.c_str(), R_OK) == 0;
 }
-bool isFolderExist(const std::string& folderName)
+bool createFolder(const std::string& inPath)
 {
-    WIN32_FIND_DATA  wfd;
-    bool rValue = false;
-    HANDLE hFind = FindFirstFileA(folderName.c_str(), &wfd);
-    if ((hFind != INVALID_HANDLE_VALUE) && (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+    if(isFileExist(inPath))
+        return true;
+
+    std::string pathName = inPath;
+    string_replace(pathName, "/", "\\");
+    if(pathName[pathName.length() - 1] == '/')
+        pathName[pathName.length() - 1] = '/';
+
+    #ifdef HAVOK_COMPILE
+    bool success = (CreateDirectoryA(pathName.c_str(), 0) == TRUE) || (GetLastError() == ERROR_ALREADY_EXISTS);
+    #else
+    bool success = mkdir(pathName.c_str(), S_IRWXU) == 0 || errno == EEXIST;
+    #endif
+
+    if(success)
     {
-        rValue = true;
+        LOGD("Create Directory %s", pathName.c_str());
     }
-    FindClose(hFind);
-    return rValue;
-}
-void createFolder(const std::string& folderName)
-{
-    std::string workDir = getWorkingDir();
-    std::string folder = workDir + folderName;
-    string_replace(folder, "/", "\\");
-    int ret = SHCreateDirectoryEx(0, folder.c_str(), 0);
-    if(ret != ERROR_SUCCESS && ret != ERROR_ALREADY_EXISTS)
+    else
     {
-        LOGE("SHCreateDirectoryEx = %d", ret);
+        LOGE("Create Directory %s", pathName.c_str());
     }
+    return success;
 }
 void string_replace( std::string &strBig, const std::string &strsrc, const std::string &strdst )
 {
@@ -148,10 +166,16 @@ bool fileSystemCopy(const std::string& src, const std::string& destFolder)
 
 std::string getWorkingDir()
 {
-    char szBuffer[MAX_PATH];
-    memset(szBuffer, 0x00, sizeof(szBuffer));
-    GetCurrentDirectoryA(MAX_PATH, szBuffer);
-    return std::string(szBuffer) + "\\";
+    char path[MAX_PATH];
+    path[0] = 0;
+#ifdef HAVOK_COMPILE
+    GetCurrentDirectoryA(MAX_PATH, path);
+#else
+    getcwd(path, MAX_PATH);
+#endif
+    std::string ret(path);
+    addBackSlash(ret);
+    return ret;
 }
 
 void runProcess(const std::string& process, const std::string& workingDir, const std::string& args)
@@ -251,67 +275,12 @@ void findFolders(const std::string& folder, bool bRecursive, std::vector<std::st
 #endif
 }
 
-
-uint32_t read_file(const std::string& fileName, char** outBuf)
-{
-    //PROFILE(read_file);
-
-#ifdef HAVOK_COMPILE
-    HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-    if(hFile == INVALID_HANDLE_VALUE)
-    {
-        DWORD code = GetLastError();
-        LOGE(__FUNCTION__" can not open file = %s, code = %d.",fileName.c_str(), code);
-        return 0;
-    }
-    LARGE_INTEGER nFileLen;
-    GetFileSizeEx(hFile, &nFileLen);
-    DWORD fileSize = (DWORD)nFileLen.QuadPart;
-    char* p = (char*)_aligned_malloc(fileSize + 1, 16);
-    memset(p, 0x00, fileSize + 1);
-    DWORD readLen = 0;
-    ReadFile(hFile, p, fileSize, &readLen, 0);
-    if(readLen != fileSize)
-    {
-        DWORD code = GetLastError();
-        LOGE("read error = %d.", code);
-    }
-    CloseHandle(hFile);
-    *outBuf = p;
-    return fileSize;
-#else
-    return false;
-#endif
-}
-
 bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
 {
-    //PROFILE(write_file);
-#ifdef HAVOK_COMPILE
-    HANDLE hFile = CreateFile(fileName.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-    if(hFile == INVALID_HANDLE_VALUE)
-    {
-        DWORD code = GetLastError();
-        LOGE(__FUNCTION__" can not open file = %s, code = %d.",fileName.c_str(), code);
+    bx::CrtFileWriter writer;
+    if(writer.open(fileName.c_str()))
         return false;
-    }
-    DWORD nBufWritten = 0;
-    WriteFile(hFile, buf, bufSize, &nBufWritten, 0);
-    if(nBufWritten != bufSize)
-    {
-        DWORD code = GetLastError();
-        LOGE("write error = %d.", code);
-    }
-    CloseHandle(hFile);
-    return true;
-#else
-    return false;
-#endif
-}
-
-void delete_file_buffer( char* ptr )
-{
-    _aligned_free(ptr);
+    return writer.write(buf, bufSize) != 0;
 }
 
 void addBackSlash( std::string& outStr )
@@ -351,15 +320,6 @@ std::string get_top_folder(const std::string& dirName)
     return ret.substr(0, npos);
 }
 
-std::string relative_to_full_path( const std::string input )
-{
-    std::string ret = getWorkingDir();
-    ret += input;
-    string_replace(ret, "/", "\\");
-    return ret;
-}
-
-
 void shell_exec(const std::string& exe, const std::string& args, const std::string& workDir, bool bHide)
 {
 #ifdef HAVOK_COMPILE
@@ -388,39 +348,27 @@ std::string name_to_file_path( const std::string& resourceName, const std::strin
     return std::string(ROOT_DATA_PATH) + resourceName + "." + ext;
 }
 
-void delete_file(const std::string& fileName)
+bool delete_file(const std::string& fileName)
 {
+    if(!isFileExist(fileName))
+        return false;
 #ifdef HAVOK_COMPILE
-    if(!isFileExist(fileName)) return;
-    int nRet = ::DeleteFile(fileName.c_str());
-    if(nRet != 0) return;
-    LOGE(__FUNCTION__" failed, GetLastError() = %d", GetLastError());
+    return ::DeleteFile(fileName.c_str()) != 0;
+#else
+    return remove(fileName.c_str()) == 0;
 #endif
-}
-
-bool delete_folder(const std::string& folderName)
-{
-#ifdef HAVOK_COMPILE
-    std::string pathName = folderName;
-    string_replace(pathName, "/", "\\");
-    std::string cmd = "rmdir /s /q ";
-    cmd += pathName;
-    ::system(cmd.c_str());
-#endif
-    return true;
 }
 
 void compile_shader(const std::string& src, const std::string& dst, const std::string& def, bool vs)
 {
-    //PROFILE(compile_shader);
     char buf[256];
     const char* type = vs ? "v" : "f";
     const char* target = vs ? "vs_5_0" : "ps_5_0";
-    sprintf_s(buf, "-f %s -o %s --type %s --platform windows --verbose -p %s --varyingdef %s",
-              src.c_str(), dst.c_str(), type, target, def.c_str());
+    bx::snprintf(buf, sizeof(buf),
+                "-f %s -o %s --type %s --platform windows --verbose -p %s --varyingdef %s",
+                src.c_str(), dst.c_str(), type, target, def.c_str());
     std::string folder = getFilePath(src);
     shell_exec(SHADERC_PATH, buf, "");
-    //runProcess(SHADERC_PATH, "", buf);
 }
 
 int find_char(const char* data, uint32_t size, char c)
@@ -433,40 +381,27 @@ int find_char(const char* data, uint32_t size, char c)
     return -1;
 }
 
-std::string get_last_string( const std::string& input, char c, int count )
-{
-    int cCount = 0;
-    int index = -1;
-    for (int i=input.length()-1; i>=0; --i)
-    {
-        if(input[i] == c)
-        {
-            cCount++;
-        }
-        if(cCount == count)
-        {
-            index = i + 1;
-            break;
-        }
-    }
-    if(index < 0) return input;
-    return input.substr(index, input.length() - index);
-}
-
 bool str_begin_with( const std::string& str1, const std::string& str2 )
 {
+#ifdef HAVOK_COMPILE
     return hkString::beginsWithCase(str1.c_str(), str2.c_str());
+#else
+    return false;
+#endif
 }
 bool str_end_with(const std::string& str1, const std::string& str2)
 {
+#ifdef HAVOK_COMPILE
     return hkString::endsWithCase(str1.c_str(), str2.c_str());
+#else
+    return false;
+#endif
 }
 
 void fixPathSlash( std::string& inout )
 {
     string_replace(inout, "\\", "/");
 }
-
 
 void dumpNodeRec(hkxNode* theNode)
 {
@@ -705,17 +640,16 @@ uint32_t json_to_flags( const jsonxx::Array& array, const char** enum_names )
 //========================================================================
 //  RESOURCE DB
 //
-#define RESOURCE_FILE_FMT "%llu,%u\n"
+#define RESOURCE_FILE_FMT "%u,%u\n"
 void ResourceFileDataBase::load(const char* fileName)
 {
-    //hkCriticalSectionLock _l(&g_dbCS);
     FILE* fp = fopen(fileName, "r");
     if(!fp) {
         LOGW(__FUNCTION__ " can not open file %s", fileName);
         return;
     }
     TIMELOG("load data compiler data base.");
-    uint64_t modifyTime = 0;
+    uint32_t modifyTime = 0;
     uint32_t fileHash = 0;
     while(!feof(fp))
     {
@@ -729,7 +663,6 @@ void ResourceFileDataBase::load(const char* fileName)
 
 void ResourceFileDataBase::save(const char* fileName)
 {
-    //hkCriticalSectionLock _l(&g_dbCS);
     FILE* fp = fopen(fileName, "w");
     if(!fp) {
         LOGE(__FUNCTION__ " can not open file %s", fileName);
@@ -744,25 +677,36 @@ void ResourceFileDataBase::save(const char* fileName)
     fclose(fp);
 }
 
-bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint64_t& modifyTime) const
+unsigned get_file_modified_time(const std::string& fileName)
 {
-    //hkCriticalSectionLock _l(&g_dbCS);
-    WIN32_FIND_DATA wfd;
-    memset(&wfd, 0, sizeof(wfd));
-    HANDLE hFind = FindFirstFile(fileName.c_str(), &wfd);
-    if (hFind == INVALID_HANDLE_VALUE) return true;
-    FILETIME ftWriteTime = wfd.ftLastWriteTime;
-    modifyTime = MAKE_U64(ftWriteTime.dwHighDateTime, ftWriteTime.dwLowDateTime);
+    if (fileName.empty() || !isFileExist(fileName))
+        return 0;
+
+    #ifdef WIN32
+    struct _stat st;
+    #else
+    struct stat st;
+    #endif
+    if (!stat(fileName.c_str(), &st))
+        return (unsigned)st.st_mtime;
+    else
+        return 0;
+}
+
+bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
+{
+    modifyTime = get_file_modified_time(fileName);
     ENGINE_ASSERT(modifyTime, "modifyTime");
     uint32_t key = StringId(fileName.c_str()).value();
     ResourceFileMap::const_iterator iter = m_files.find(key);
-    if(iter == m_files.end()) return true;
-    else return (iter->second != modifyTime);
+    if(iter == m_files.end())
+        return true;
+    else
+        return (iter->second != modifyTime);
 }
 
-void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  const uint64_t& modifyTime )
+void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  const uint32_t& modifyTime )
 {
-    //hkCriticalSectionLock _l(&g_dbCS);
     uint32_t key = StringId(fileName.c_str()).value();
     m_files[key] = modifyTime;
     ENGINE_ASSERT(key && modifyTime, "key && modifyTime");
@@ -774,24 +718,28 @@ FileReader::FileReader( const std::string& fileName )
 :m_buf(0)
 ,m_size(0)
 {
-    m_size = read_file(fileName, &m_buf);
+    m_file.open(fileName.c_str());
+    m_size = m_file.seek(0, bx::Whence::End);
+    m_file.seek(0, bx::Whence::Begin);
+    m_buf = COMMON_ALLOC(char, m_size);
+    m_file.read(m_buf, m_size);
 }
 
 FileReader::~FileReader()
 {
-    delete_file_buffer(m_buf);
+    COMMON_DEALLOC(m_buf);
+    m_file.close();
 }
 
 MemoryBuffer::MemoryBuffer( uint32_t size )
 :m_size(size)
 {
-    m_buf = (char*)_aligned_malloc(size, 16);
-    memset(m_buf, 0x00, size);
+    m_buf = COMMON_ALLOC(char, size);
 }
 
 MemoryBuffer::~MemoryBuffer()
 {
-    _aligned_free(m_buf);
+    COMMON_DEALLOC(m_buf);
 }
 
 //=======================================================
@@ -812,7 +760,7 @@ void ToolError::add_error( const char* fmt, ... )
     char buffer[1024];
     va_list args;
     va_start(args, fmt);
-    vsprintf_s(buffer, fmt, args);
+    bx::vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
     LOGE(buffer);
     m_error_msgs.push_back(buffer);

@@ -3,6 +3,7 @@
 #include "LightConverter.h"
 #include "StaticModelConverter.h"
 
+#ifdef HAVOK_COMPILE
 void matrix_to_transform(const hkMatrix4& m, hkQsTransform& t)
 {
     t.setIdentity();
@@ -41,6 +42,7 @@ void json_transform(jsonxx::Object& object, hkxNode* pNode, hkxScene* pScene)
     object << "rotation" << rot;
     object << "scale" << scale;
 }
+#endif
 
 void fixNodeName(std::string& nodeName)
 {
@@ -54,11 +56,12 @@ LevelConverter::LevelConverter()
 :m_scene(0)
 ,m_collisionActor(0)
 {
-    
+
 }
 
 LevelConverter::~LevelConverter()
 {
+#ifdef HAVOK_COMPILE
     for (size_t i=0; i<m_levelMeshes.size(); ++i)
     {
         SAFE_REMOVEREF(m_levelMeshes[i]);
@@ -72,6 +75,7 @@ LevelConverter::~LevelConverter()
         SAFE_DELETE(m_configs[i]);
     }
     SAFE_REMOVEREF(m_collisionActor);
+#endif
 }
 
 void LevelConverter::process(void* pData)
@@ -82,6 +86,7 @@ void LevelConverter::process(void* pData)
 void LevelConverter::process(hkxScene* scene)
 {
     m_scene = scene;
+#ifdef HAVOK_COMPILE
     findNodesRec(m_scene->m_rootNode, PROXY_NAME, m_sceneNodes);
     LOGI("scene proxy node num = %d.", m_sceneNodes.size());
     findNodesRec(m_scene->m_rootNode, &hkxMeshClass, m_meshNodes);
@@ -120,7 +125,7 @@ void LevelConverter::process(hkxScene* scene)
         StaticModelConverter* actor = new StaticModelConverter();
         std::string nodeName(node->m_name.cString());
         fixNodeName(nodeName);
-        LOGI("light node name = %s", nodeName.c_str());      
+        LOGI("light node name = %s", nodeName.c_str());
         Actor_Config* cfg = createConfig(nodeName);
         actor->m_config = cfg;
         actor->setName(cfg->m_exportName);
@@ -141,12 +146,14 @@ void LevelConverter::process(hkxScene* scene)
         actor->setClass(cfg->m_exportClass);
         actor->processPhysics(m_config->m_physics);
     }
+#endif
 }
 
 jsonxx::Object LevelConverter::serializeToJson() const
 {
     jsonxx::Object levelObject;
     jsonxx::Array actorList;
+#ifdef HAVOK_COMPILE
     for (size_t i = 0; i < m_sceneNodes.size(); ++i)
     {
         hkxNode* node = m_sceneNodes[i];
@@ -175,6 +182,7 @@ jsonxx::Object LevelConverter::serializeToJson() const
         actorObject << "type" << light->getResourceName();
         actorList << actorObject;
     }
+#endif
 
     if(m_collisionActor)
     {

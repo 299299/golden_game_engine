@@ -8,12 +8,12 @@ ShadingEnviromentCompiler::ShadingEnviromentCompiler()
 
 ShadingEnviromentCompiler::~ShadingEnviromentCompiler()
 {
-    
+
 }
 
 bool ShadingEnviromentCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     ShadingEnviroment shading;
     memset(&shading, 0x00, sizeof(shading));
 

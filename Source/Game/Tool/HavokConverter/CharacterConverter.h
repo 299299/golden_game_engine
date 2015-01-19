@@ -2,6 +2,8 @@
 #include "ActorConverter.h"
 
 struct RigSkinData;
+class  hkaSkeleton;
+
 class CharacterConverter : public ActorConverter
 {
 public:

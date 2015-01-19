@@ -3,10 +3,10 @@
 
 bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     uint32_t havokOffset = sizeof(PhysicsResource);
-    havokOffset = HK_NEXT_MULTIPLE_OF(16, havokOffset);
-    
+    havokOffset = NEXT_MULTIPLE_OF(16, havokOffset);
+
     const std::string& havokFile = root.get<std::string>("havok_file");
     FileReader havokReader(havokFile);
     if(havokReader.m_size < 16)
@@ -29,7 +29,7 @@ bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
 
 bool ProxyCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     ProxyResource proxy;
     memset(&proxy, 0x00, sizeof(proxy));
 
@@ -61,13 +61,13 @@ int PhysicsConfigCompiler::findFilterIndex(const std::string& name) const
 
 bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
-   
+    BaseCompiler::readJSON(root);
+
     const jsonxx::Array& filtersValue = root.get<jsonxx::Array>("collision-filters");
     uint32_t numOfFilters = filtersValue.size();
 
     ENGINE_ASSERT_ARGS(numOfFilters <= 32, "collsion filter num overflow = %d", numOfFilters);
-    
+
     PhysicsConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
     cfg.m_numFilterLayers = numOfFilters;

@@ -8,20 +8,23 @@ MaterialConverter::MaterialConverter(ActorConverter* ownner)
 ,m_model(0)
 ,m_existInCommonPackage(false)
 {
-    
+
 }
 
 MaterialConverter::~MaterialConverter()
 {
+#ifdef HAVOK_COMPILE
     for (size_t i=0; i<m_samplers.size();++i)
     {
         SAFE_REMOVEREF(m_samplers[i]);
     }
+#endif
 }
 
 int MaterialConverter::getTextureSlot( const hkxMaterial::TextureStage& stage )
 {
     int ret = TEX_COLOR_SLOT;
+ #ifdef HAVOK_COMPILE
     switch(stage.m_usageHint)
     {
     case hkxMaterial::TEX_DIFFUSE:
@@ -45,13 +48,14 @@ int MaterialConverter::getTextureSlot( const hkxMaterial::TextureStage& stage )
     case hkxMaterial::TEX_UNKNOWN:
         break;
     default:
-        break;  
+        break;
     }
 
     if(stage.m_tcoordChannel == 1)
     {
         ret = TEX_LIGHTMAP_SLOT;
     }
+#endif
     return ret;
 }
 
@@ -68,6 +72,8 @@ void MaterialConverter::process(void* pData, int hint)
 void MaterialConverter::process(hkxMaterial* material)
 {
     m_material = material;
+
+ #ifdef HAVOK_COMPILE
     std::string materialName = material->m_name.cString();
     string_replace(materialName, ":", "_");
     setName(materialName);
@@ -103,7 +109,7 @@ void MaterialConverter::process(hkxMaterial* material)
     }
 
     m_shadowShader = "shadow";
-    const char* shader_comb_names[] = 
+    const char* shader_comb_names[] =
     {
         "diff", "_norm", "_spec"
     };
@@ -131,6 +137,7 @@ void MaterialConverter::process(hkxMaterial* material)
         m_shader = "base";
         m_shadowShader = "";
     }
+#endif
 }
 
 jsonxx::Object MaterialConverter::serializeToJson() const
@@ -181,11 +188,12 @@ std::string MaterialConverter::getResourceName() const
 void MaterialConverter::serializeToFile(const char* fileName)
 {
     if(m_existInCommonPackage) return;
-    __super::serializeToFile(fileName);
+    ComponentConverter::serializeToFile(fileName);
 }
 
 std::string MaterialConverter::getTextureFileName( hkRefVariant variant )
 {
+ #ifdef HAVOK_COMPILE
     hkVariant va(variant);
     if(va.m_class == &hkxTextureFileClass)
     {
@@ -198,7 +206,7 @@ std::string MaterialConverter::getTextureFileName( hkRefVariant variant )
             return orginalFileName;
         if(isFileExist(fileName))
             return fileName;
-        LOGW("file or orignal file %s both do not exit, guesse a nice one.", 
+        LOGW("file or orignal file %s both do not exit, guesse a nice one.",
             orginalFileName.c_str());
         std::string fName = getFileNameAndExtension(fileName);
         std::string imagePath = m_ownner->m_config->m_workspaceFolder;
@@ -212,11 +220,14 @@ std::string MaterialConverter::getTextureFileName( hkRefVariant variant )
         LOGD("guess assert folder %s", imagePath.c_str());
         if(isFileExist(imagePath))
             return imagePath;
-        g_config->m_error.add_error("texture %s not exist in hard drive.", fName.c_str());
+        g_hc_config->m_error.add_error("texture %s not exist in hard drive.", fName.c_str());
         return fileName;
     }
-    else 
+    else
     {
         return "ERROR";
     }
+#else
+    return "ERROR";
+#endif
 }

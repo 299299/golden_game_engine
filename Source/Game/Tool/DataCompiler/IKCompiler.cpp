@@ -5,14 +5,14 @@ static const char* raycast_type_names[] =
 {
     "physics", "graphics", 0
 };
-static const char* left_right_names[] = 
+static const char* left_right_names[] =
 {
     "left", "right", 0
 };
 
 bool LookIKCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     LookAtResource lookat;
     memset(&lookat, 0x00, sizeof(lookat));
 
@@ -34,7 +34,7 @@ bool LookIKCompiler::readJSON( const jsonxx::Object& root )
 
 bool ReachIKCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     ReachResource reach;
     memset(&reach, 0x00, sizeof(reach));
 
@@ -67,7 +67,7 @@ bool ReachIKCompiler::readJSON( const jsonxx::Object& root )
 
 bool FootIKCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     FootResource foot;
     memset(&foot, 0x00, sizeof(foot));
 

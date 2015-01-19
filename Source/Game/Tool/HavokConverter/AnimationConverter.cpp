@@ -19,16 +19,18 @@ void AnimationConverter::process( void* pData )
 
 void AnimationConverter::postProcess()
 {
+#ifdef HAVOK_COMPILE
     m_ac->m_animations[0]->m_annotationTracks.clear();
     {
         hkPackfileWriter::Options options;
         hkOstream ostream(m_animationFile.c_str());
         hkBinaryPackfileWriter writer;
         writer.setContents(m_ac, hkaAnimationContainerClass);
-        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS) 
-            g_config->m_error.add_error(__FUNCTION__" write error.");
+        if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
+            g_hc_config->m_error.add_error(__FUNCTION__" write error.");
         LOGI("save havok animation %s", m_animationFile.c_str());
     }
+#endif
 }
 
 jsonxx::Object AnimationConverter::serializeToJson() const
@@ -38,6 +40,7 @@ jsonxx::Object AnimationConverter::serializeToJson() const
     jsonxx::Array triggers;
     jsonxx::Array beats;
 
+#ifdef HAVOK_COMPILE
     static const std::string trigger_prefix = "hk_trigger_";
     static const std::string beat_prefix = "hk_beat_";
 
@@ -81,11 +84,12 @@ jsonxx::Object AnimationConverter::serializeToJson() const
             beats << obj;
         }
     }
+#endif
 
     object << "triggers" << triggers;
     object << "beats" << beats;
     object << "havok_file" << m_animationFile;
-    
+
     return object;
 }
 

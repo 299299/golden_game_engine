@@ -1,8 +1,4 @@
 #pragma once
-#include <SDKDDKVer.h>
-#include <stdio.h>
-#include <tchar.h>
-#include <windows.h>
 #include "ToolUtils.h"
 
 #define     COMMON_MAT_NAME     ("lambert1")
@@ -20,7 +16,7 @@ struct HC_Config
     ,m_slient(false)
     {
     }
-    
+
     ToolError                   m_error;
     std::string                 m_inputDir;
     int                         m_numThreads;
@@ -29,19 +25,25 @@ struct HC_Config
     bool                        m_slient;
 };
 
+class hkpPhysicsData;
+class hkaAnimationContainer;
+class hkxScene;
+class hkRootLevelContainer;
+class hkLoader;
+
 struct Actor_Config
 {
     Actor_Config()
-        :m_loader(0)
-        ,m_exportClass("level_geometry")
+        :m_exportClass("level_geometry")
         ,m_exportMode("model")
+        ,m_loader(0)
         ,m_rlc(0)
         ,m_animation(0)
         ,m_physics(0)
     {
     }
 
-    std::string                 m_workspaceFolder; 
+    std::string                 m_workspaceFolder;
     std::string                 m_assetFolder;
     std::string                 m_exportFolder;
     std::string                 m_exportName;
@@ -60,4 +62,17 @@ struct Actor_Config
 };
 
 
-extern HC_Config* g_config;
+extern HC_Config* g_hc_config;
+
+
+#ifndef HAVOK_COMPILE
+#define HK_DECLARE_CLASS_ALLOCATOR(...)
+#define HK_MEMORY_CLASS_USER
+class hkReferencedObject
+{
+public:
+    virtual ~hkReferencedObject() {};
+    virtual void removeReference() {};
+};
+
+#endif

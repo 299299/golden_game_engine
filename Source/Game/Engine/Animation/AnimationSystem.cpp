@@ -75,7 +75,7 @@ void AnimationSystem::kick_in_jobs()
 {
     uint32_t num = m_rigs.size();
     if(num == 0) return;
-    AnimRigInstance* rigs = m_rigs.begin(); 
+    AnimRigInstance* rigs = m_rigs.begin();
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
@@ -250,6 +250,7 @@ void* get_all_anim_rig()
 #include "DebugDraw.h"
 void draw_debug_animation()
 {
+#ifdef HAVOK_COMPILE
     PROFILE(draw_debug_animation);
     extern int g_engineMode;
     uint32_t num = m_rigs.size();
@@ -285,6 +286,7 @@ void draw_debug_animation()
         t2.m_translation(1) = y;
         g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
     }
+#endif
 }
 //-----------------------------------------------------------------
 //

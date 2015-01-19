@@ -2,6 +2,14 @@
 #include "ComponentConverter.h"
 #include "Model.h"
 
+class MaterialConverter;
+class MeshConverter;
+class hkaMeshBinding;
+class hkxMesh;
+class hkaSkeleton;
+class hkaBoneAttachment;
+class hkxMeshSection;
+
 struct RigSkinData
 {
     const hkaSkeleton*                              m_rig;
@@ -17,9 +25,6 @@ enum ModelType
     kModelCollision,
     kModelTypeNum
 };
-
-class MaterialConverter;
-class MeshConverter;
 
 class ModelConverter   : public ComponentConverter
 {

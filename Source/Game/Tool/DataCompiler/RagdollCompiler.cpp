@@ -12,7 +12,7 @@ RagdollCompiler::~RagdollCompiler()
 
 bool RagdollCompiler::readJSON(const jsonxx::Object& root)
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     const std::string& havokFile = root.get<std::string>("havok_file");
     FileReader havokReader(havokFile);
     if(havokReader.m_size < 16)
@@ -20,7 +20,7 @@ bool RagdollCompiler::readJSON(const jsonxx::Object& root)
         g_config->m_error.add_error(__FUNCTION__ "can not find havok file [%s]", havokFile.c_str());
         return false;
     }
-    
+
     uint32_t havokOffset = sizeof(RagdollResource);
     uint32_t memSize = havokOffset + havokReader.m_size;
     MemoryBuffer mem(memSize);

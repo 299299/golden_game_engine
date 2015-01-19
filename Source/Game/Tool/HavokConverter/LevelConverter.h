@@ -2,6 +2,8 @@
 #include "ActorConverter.h"
 #include "Level.h"
 
+class hkxNode;
+class hkxScene;
 class LevelConverter : public ActorConverter
 {
 public:

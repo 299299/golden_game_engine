@@ -17,11 +17,13 @@ void json_transform(const jsonxx::Object& jValue, float* t, float* r, float* s)
     int nRet = json_to_floats(jValue.get<jsonxx::Array>("rotation"), r, 4);
     if(nRet == 3)
     {
+    #ifdef HAVOK_COMPILE
         hkQuaternion q;
         q.setFromEulerAngles(r[0], r[1],r[2]);
         transform_vec4(r, q.m_vec);
+    #endif
     }
-    if(s) 
+    if(s)
         json_to_floats(jValue.get<jsonxx::Array>("scale"), s, 3);
 }
 
@@ -32,15 +34,15 @@ LevelCompiler::LevelCompiler()
 
 LevelCompiler::~LevelCompiler()
 {
-    
+
 }
 
 bool LevelCompiler::readJSON( const jsonxx::Object& root )
 {
-    __super::readJSON(root);
+    BaseCompiler::readJSON(root);
     const jsonxx::Array& actorsValue = root.get<jsonxx::Array>("actors");
     uint32_t numOfActors = actorsValue.size();
-        
+
     std::vector<uint32_t>   resourceNames;
     std::vector<int>        actorIndices;
 
@@ -64,12 +66,12 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
             m_resourceKeys[key] = index;
             addDependency("actor resource", name_to_file_path(typeName, ActorResource::get_name()));
         }
-        else 
+        else
         {
             index = iter->second;
         }
         actorIndices[i] = index;
-        if(!actorValue.get<bool>("packed" ,false)) 
+        if(!actorValue.get<bool>("packed" ,false))
             continue;
         createChildCompiler(ActorResource::get_name(), actorValue);
     }

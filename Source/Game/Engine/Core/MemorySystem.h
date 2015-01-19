@@ -5,7 +5,7 @@ enum MemoryAllocCategory
 {
     kMemoryCategoryCommon,
     kMemoryCategoryFrame,
-#ifndef _RETAIL   
+#ifndef _RETAIL
     kMemoryCategoryDebug,
 #endif
     kMemoryCategoryMax
