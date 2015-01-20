@@ -278,9 +278,9 @@ void Profiler::dump_block_to_file(  void* fp_,
     }
 }
 
-void Profiler::init()
+void Profiler::init(int max_block_num)
 {
-    blocks_ = COMMON_ALLOC(ProfilerBlock, TOTAL_BLOCK_NUM);
+    blocks_ = COMMON_ALLOC(ProfilerBlock, max_block_num);
     root_ = alloc_block("Root");
     current_ = root_;
 }

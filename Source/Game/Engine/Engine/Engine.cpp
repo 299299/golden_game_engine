@@ -30,7 +30,6 @@ void Engine::init( const EngineConfig& cfg )
     m_cfg = cfg;
     m_state = kFrameStart;
     LOG_INIT("EngineLog.html", "ENGINE");
-    HiresTimer::init();
     core_init();
     subsystem_init();
     g_gameFSM.init();
@@ -148,7 +147,7 @@ void Engine::core_init()
     cfg.m_initHavok = true;
     g_memoryMgr.init(cfg);
     g_threadMgr.init(true);
-    g_profiler.init();
+    g_profiler.init(MAX_BLOCK_NUM);
     g_resourceMgr.init();
 }
 

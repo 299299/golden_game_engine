@@ -11,10 +11,6 @@ public:
     virtual ~ActorConverter();
 
     virtual std::string getTypeName() const { return ActorResource::get_name(); };
-    virtual std::string getFormatExt() const { return ActorResource::get_name(); };
-    virtual std::string combieFileName() const {
-        return m_name + "." + getFormatExt();
-    }
     virtual std::string getResourceName() const;
 
     virtual void process(void* pData) = 0;

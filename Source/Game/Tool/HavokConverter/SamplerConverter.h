@@ -9,11 +9,9 @@ public:
     ~SamplerConverter();
 
     virtual std::string getTypeName() const { return "texture"; };
-    virtual std::string getFormatExt() const { return "texture"; };
-
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
-    
+
     std::vector<std::string>        m_flags;
     std::string                     m_textureFileName;
     std::string                     m_textureSlotName;

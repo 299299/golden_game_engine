@@ -19,6 +19,7 @@ void AnimationConverter::process( void* pData )
 
 void AnimationConverter::postProcess()
 {
+    PROFILE(animation_post_process);
 #ifdef HAVOK_COMPILE
     m_ac->m_animations[0]->m_annotationTracks.clear();
     {
@@ -35,6 +36,8 @@ void AnimationConverter::postProcess()
 
 jsonxx::Object AnimationConverter::serializeToJson() const
 {
+    PROFILE(animation_serialize_to_json);
+
     jsonxx::Object object;
 
     jsonxx::Array triggers;

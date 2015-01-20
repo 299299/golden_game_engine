@@ -34,8 +34,6 @@ public:
     ~ModelConverter();
 
     virtual std::string getTypeName() const { return ModelResource::get_name(); };
-    virtual std::string getFormatExt() const { return ModelResource::get_name(); };
-
     virtual void process(void* pData, int hint = 0);
     void processMeshes(const std::vector<hkxMesh*>& meshes);
 

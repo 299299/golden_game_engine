@@ -8,12 +8,15 @@
 #define HK_EXCLUDE_FEATURE_MemoryTracker
 #define HK_EXCLUDE_FEATURE_SerializeDeprecatedPre700
 #define HK_EXCLUDE_FEATURE_RegisterVersionPatches
-#define HK_EXCLUDE_LIBRARY_hkGeometryUtilities
 #define HK_EXCLUDE_FEATURE_hkndAssetProcessing
 #define HK_EXCLUDE_FEATURE_hkndDebrisFracture_execute
 #define HK_EXCLUDE_FEATURE_hkndFxDebrisFracture_execute
 #define HK_EXCLUDE_LIBRARY_hkCompat
+
+#ifdef _RETAIL
 #define HK_EXCLUDE_LIBRARY_hkSceneData
+#define HK_EXCLUDE_LIBRARY_hkGeometryUtilities
+#endif
 
 // Register Havok classes.
 #include <Common/Base/KeyCode.h>
@@ -52,6 +55,10 @@
 #pragma comment(lib, HAVOK_LIB_PATH"hkaAnimation.lib")
 #pragma comment(lib, HAVOK_LIB_PATH"hkcdCollide.lib")
 #pragma comment(lib, HAVOK_LIB_PATH"hkpConstraint.lib")
+
+#ifndef _RETAIL
+#pragma comment(lib, HAVOK_LIB_PATH"hkImageUtilities.lib")
+#endif
 
 //=======================================================================
 //  HAVOK LIBS

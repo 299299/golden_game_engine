@@ -119,7 +119,7 @@ public:
     /// Destruct.
     ~Profiler();
 
-    void init();
+    void init(int max_block_num);
     void shutdown();
 
     /// Begin timing a profiling block.

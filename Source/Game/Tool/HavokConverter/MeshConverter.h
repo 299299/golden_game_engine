@@ -28,10 +28,7 @@ public:
     ~MeshConverter();
 
     virtual std::string getTypeName() const { return Mesh::get_name(); };
-    virtual std::string getFormatExt() const { return Mesh::get_name(); };
-
     virtual void process(void* pData, int hint = 0);
-    virtual jsonxx::Object serializeToJson() const;
 
     MaterialConverter* getMaterial() const { return m_material; };
     uint32_t getFlags() const { return m_flags; };

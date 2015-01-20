@@ -28,6 +28,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     cfg.m_havokFrameMemSize = 1024;
     cfg.m_havokMonitorMemSize = 0;
     g_memoryMgr.init(cfg);
+    g_profiler.init(64);
 
     g_hc_config = new HC_Config;
     g_hc_config->m_packNormal = cmdline->hasArg("packnormal");
@@ -36,105 +37,111 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
 
     Actor_Config config;
     ActorConverter* converter = 0;
-    config.m_exportMode = cmdline->findOption("mode");
-    const char* input = cmdline->findOption('f');
-    if(input)
+    const char* mode = cmdline->findOption('m');
+    if(!mode)
     {
-        config.m_input = input;
-        config.m_exportName = getFileName(input);
-        config.m_exportFolder = "";
-        config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
-        config.m_rootPath = "";
-        config.m_loader = new hkLoader;
-        hkRootLevelContainer* rlc = config.m_loader->load(config.m_input.c_str());
-        if (!rlc)
-        {
-            g_hc_config->m_error.add_error("can not load input havok file %s", config.m_input.c_str());
-            err = KErrorLoadHavok;
-            goto error_exit;
-        }
-
-        config.m_rlc = rlc;
-        createFolder(config.m_exportFolder);
-        hkxEnvironment* env = LOAD_OBJECT(rlc, hkxEnvironment);
-        if(env)
-        {
-            hkStringBuf env_str;
-            env->convertToString(env_str);
-            LOGI(env_str.cString());
-            for(int i=0; i<env->getNumVariables(); ++i)
-            {
-                const char* name = env->getVariableName(i);
-                if(!strcmp(name,"WORK_SPACE")) config.m_workspaceFolder = env->getVariableValue(i);
-                if(!strcmp(name,"EXPORT_MODE")) config.m_exportMode = env->getVariableValue(i);
-            }
-            config.m_assetFolder = env->getVariableValue("assetFolder");
-            config.m_assetPath = env->getVariableValue("assetPath");
-        }
-
-        hkaAnimationContainer* ac = LOAD_OBJECT(rlc, hkaAnimationContainer);
-        hkxScene* scene = LOAD_OBJECT(rlc,hkxScene);
-        hkpPhysicsData* data = LOAD_OBJECT(rlc, hkpPhysicsData);
-
-        config.m_scene = scene;
-        config.m_animation = ac;
-        config.m_physics = data;
-
-        if(config.m_exportMode == "model")
-        {
-            if(!scene || !scene->m_rootNode)
-            {
-                g_hc_config->m_error.add_error("hkx file do not has root scene node.");
-                goto error_exit;
-            }
-            converter = new StaticModelConverter;
-            converter->setClass(config.m_exportClass);
-        }
-        else if(config.m_exportMode == "skinning")
-        {
-            converter = new CharacterConverter;
-            converter->setClass("character");
-        }
-        else if(config.m_exportMode == "level")
-        {
-            converter = new LevelConverter;
-            config.m_output = config.m_exportFolder + config.m_exportName + "." + Level::get_name();
-        }
-        else if(config.m_exportMode == "animation")
-        {
-            converter = new AnimationConverter;
-            config.m_output = config.m_exportFolder + config.m_exportName + "." + Animation::get_name();
-        }
-        if(!converter)
-        {
-            g_hc_config->m_error.add_error("havok converter export mode error.");
-            err = kErrorArg;
-            goto error_exit;
-        }
-
-        converter->m_config = &config;
-        converter->setName(config.m_exportName);
-        if(config.m_exportMode == "skinning")
-        {
-            converter->process(ac);
-        }
-        else if(config.m_exportMode == "animation")
-        {
-            converter->process(ac);
-        }
-        else
-        {
-            converter->process(scene);
-        }
-        converter->postProcess();
-        converter->serializeToFile(config.m_output.c_str());
-    }
-    else
-    {
-        g_hc_config->m_error.add_error("single havok convert must specific f & o args!");
+        g_hc_config->m_error.add_error("havok convert must specific mode args!");
         err = kErrorArg;
         goto error_exit;
     }
+
+    const char* input = cmdline->findOption('f');
+    if(!input)
+    {
+        g_hc_config->m_error.add_error("havok convert must specific f args!");
+        err = kErrorArg;
+        goto error_exit;
+    }
+
+    config.m_exportMode = mode;
+    config.m_input = input;
+    config.m_exportName = getFileName(input);
+    config.m_exportFolder = "";
+    config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
+    config.m_rootPath = "";
+    config.m_loader = new hkLoader;
+    hkRootLevelContainer* rlc = config.m_loader->load(config.m_input.c_str());
+    if (!rlc)
+    {
+        g_hc_config->m_error.add_error("can not load input havok file %s", config.m_input.c_str());
+        err = KErrorLoadHavok;
+        goto error_exit;
+    }
+
+    config.m_rlc = rlc;
+    createFolder(config.m_exportFolder);
+    hkxEnvironment* env = LOAD_OBJECT(rlc, hkxEnvironment);
+    if(env)
+    {
+        hkStringBuf env_str;
+        env->convertToString(env_str);
+        LOGI(env_str.cString());
+        for(int i=0; i<env->getNumVariables(); ++i)
+        {
+            const char* name = env->getVariableName(i);
+            if(!strcmp(name,"WORK_SPACE")) config.m_workspaceFolder = env->getVariableValue(i);
+            if(!strcmp(name,"EXPORT_MODE")) config.m_exportMode = env->getVariableValue(i);
+        }
+        config.m_assetFolder = env->getVariableValue("assetFolder");
+        config.m_assetPath = env->getVariableValue("assetPath");
+    }
+
+    hkaAnimationContainer* ac = LOAD_OBJECT(rlc, hkaAnimationContainer);
+    hkxScene* scene = LOAD_OBJECT(rlc,hkxScene);
+    hkpPhysicsData* data = LOAD_OBJECT(rlc, hkpPhysicsData);
+
+    config.m_scene = scene;
+    config.m_animation = ac;
+    config.m_physics = data;
+
+    if(config.m_exportMode == "model")
+    {
+        if(!scene || !scene->m_rootNode)
+        {
+            g_hc_config->m_error.add_error("hkx file do not has root scene node.");
+            goto error_exit;
+        }
+        converter = new StaticModelConverter;
+        converter->setClass(config.m_exportClass);
+    }
+    else if(config.m_exportMode == "skinning")
+    {
+        converter = new CharacterConverter;
+        converter->setClass("character");
+    }
+    else if(config.m_exportMode == "level")
+    {
+        converter = new LevelConverter;
+        config.m_output = config.m_exportFolder + config.m_exportName + "." + Level::get_name();
+    }
+    else if(config.m_exportMode == "animation")
+    {
+        converter = new AnimationConverter;
+        config.m_output = config.m_exportFolder + config.m_exportName + "." + Animation::get_name();
+    }
+    if(!converter)
+    {
+        g_hc_config->m_error.add_error("havok converter export mode error.");
+        err = kErrorArg;
+        goto error_exit;
+    }
+
+    converter->m_config = &config;
+    converter->setName(config.m_exportName);
+    if(config.m_exportMode == "skinning")
+    {
+        converter->process(ac);
+    }
+    else if(config.m_exportMode == "animation")
+    {
+        converter->process(ac);
+    }
+    else
+    {
+        converter->process(scene);
+    }
+    converter->postProcess();
+    converter->serializeToFile(config.m_output.c_str());
     g_profiler.dump_to_file("havokconverter_profile.txt", true, true);
 
 
@@ -143,6 +150,8 @@ error_exit:
     SAFE_REMOVEREF(config.m_loader);
     if(!g_hc_config->m_slient) g_hc_config->m_error.show_error();
     SAFE_DELETE(g_hc_config);
+
+    g_profiler.shutdown();
     g_memoryMgr.shutdown();
 
     timeMS = GetTickCount() - timeMS;

@@ -1,11 +1,12 @@
 #include "Prerequisites.h"
 #include "Utils.h"
 #include "DataDef.h"
+#include "Profiler.h"
 #include <bx/commandline.h>
 
 void showHelp()
 {
-    printf("Usage: Game [action][options]\n"
+    printf("Usage: Game --action [action] [options]\n"
         "Game actions:\n"
         "-----------------------------------------\n"
         "Game, HavokConvert, DataCompile \n"
@@ -25,14 +26,13 @@ void showHelp()
         "--headless no graphics & no window\n"
         "-----------------------------------------\n"
         "Havok Converter options\n"
+        "-m specific convert mode\n"
         "-f specific input hkx file\n"
-        "-o output name\n"
         "--slient do not show error msg box\n"
         "--packnormal pack normal\n"
         "--packuv pack uv\n"
         "-----------------------------------------\n"
-        "-i input dir (batch mode)\n"
-        "-f input file\n"
+        "-i input dir \n"
         "-o output folder\n"
         "-m compile mode default 0\n"
         "-t set num of threads to compile\n"
@@ -53,9 +53,9 @@ struct game_app
 };
 game_app g_apps[] = 
 {
-    { "havok-converter", havok_convert_main },
-    { "data-compiler", data_compiler_main },
-    { "game", game_main },
+    { "HavokConvert", havok_convert_main },
+    { "DataCompile", data_compiler_main },
+    { "Game", game_main },
 };
 
 int main(int argc, char* argv[])
@@ -88,5 +88,6 @@ int main(int argc, char* argv[])
         }
     }
 
+    HiresTimer::init();
     return app ? app->func(argc, &cmdline) : kErrorAction;
 }

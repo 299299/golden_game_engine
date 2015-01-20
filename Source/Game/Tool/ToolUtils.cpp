@@ -89,7 +89,7 @@ bool isFileExist( const std::string& fileName )
 }
 bool createFolder(const std::string& inPath)
 {
-    if(isFileExist(inPath))
+    if(isFileExist(inPath) || inPath.empty())
         return true;
 
     std::string pathName = inPath;

@@ -47,6 +47,8 @@ void ModelConverter::process(hkxMesh* mesh)
 
 void ModelConverter::process(RigSkinData* skinData)
 {
+    PROFILE(model_skin_process);
+
     m_skin  = skinData;
     std::vector<hkxMeshSection*> meshes;
 
@@ -75,6 +77,8 @@ void ModelConverter::process(RigSkinData* skinData)
 
 void ModelConverter::processMeshes( const std::vector<hkxMesh*>& meshes )
 {
+    PROFILE(model_mesh_process);
+
     std::vector<hkxMeshSection*> meshSections;
 #ifdef HAVOK_COMPILE
     for (size_t i=0; i<meshes.size(); ++i)
@@ -107,6 +111,7 @@ void ModelConverter::loadMeshes(const std::vector<hkxMeshSection*>& meshes)
 
 void ModelConverter::writeMesh(const std::string& fileName)
 {
+    PROFILE(model_write_mesh);
 #ifdef HAVOK_COMPILE
     uint32_t memorySize = sizeof(Mesh);
     memorySize += m_meshes.size() * sizeof(SubMesh);

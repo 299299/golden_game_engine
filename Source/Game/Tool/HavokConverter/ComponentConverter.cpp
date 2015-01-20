@@ -8,17 +8,6 @@ ComponentConverter::ComponentConverter(ActorConverter* ownner)
 
 }
 
-void ComponentConverter::serializeToFile(const char* fileName)
-{
-    std::ofstream s(fileName);
-    if(!s.good())
-    {
-        g_hc_config->m_error.add_error("%s serializeToFile to %s IO error.", getTypeName().c_str(), fileName);
-        return;
-    }
-    s << serializeToJson().json();
-}
-
 std::string ComponentConverter::getResourceName() const
 {
     return m_ownner->m_config->m_rootPath + m_name;
