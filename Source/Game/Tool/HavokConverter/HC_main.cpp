@@ -20,12 +20,12 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     }
 
     int err = kErrorSuccess;
-    LOG_INIT("HavokConverterLog.html", MSG_TITLE);
+    LOG_INIT("HavokConverterLog.html", "Havok Converter");
     MemoryConfig cfg;
     memset(&cfg, 0, sizeof(cfg));
     cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
     cfg.m_initHavok = true;
-    cfg.m_havokFrameMemSize = 1024;
+    cfg.m_havokFrameMemSize = 0;
     cfg.m_havokMonitorMemSize = 0;
     g_memoryMgr.init(cfg);
     g_profiler.init(64);
@@ -46,6 +46,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     }
 
     const char* input = cmdline->findOption('f');
+    const char* output = cmdline->findOption('o');
     if(!input)
     {
         g_hc_config->m_error.add_error("havok convert must specific f args!");
@@ -57,8 +58,19 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     config.m_input = input;
     config.m_exportName = getFileName(input);
     config.m_exportFolder = "";
-    config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
     config.m_rootPath = "";
+    if(output)
+    {
+        bool has_itermediate = strstr(output, INTERMEDIATE_PATH) != 0;
+        if(!has_itermediate) config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output;
+        string_replace(config.m_exportFolder, "\\", "/");
+        addBackSlash(config.m_exportFolder);
+        std::string path = config.m_exportFolder;
+        string_replace(path, INTERMEDIATE_PATH, "");
+        config.m_rootPath = path;
+    }
+    config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
+
     config.m_loader = new hkLoader;
     hkRootLevelContainer* rlc = config.m_loader->load(config.m_input.c_str());
     if (!rlc)
@@ -76,12 +88,6 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         hkStringBuf env_str;
         env->convertToString(env_str);
         LOGI(env_str.cString());
-        for(int i=0; i<env->getNumVariables(); ++i)
-        {
-            const char* name = env->getVariableName(i);
-            if(!strcmp(name,"WORK_SPACE")) config.m_workspaceFolder = env->getVariableValue(i);
-            if(!strcmp(name,"EXPORT_MODE")) config.m_exportMode = env->getVariableValue(i);
-        }
         config.m_assetFolder = env->getVariableValue("assetFolder");
         config.m_assetPath = env->getVariableValue("assetPath");
     }

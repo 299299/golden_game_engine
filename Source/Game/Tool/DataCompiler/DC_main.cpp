@@ -294,13 +294,13 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
         return kErrorArg;
     }
 
-    g_config = new DC_Config;
+    LOG_INIT("DataCompilerLog.html", "Data Compiler");
     MemoryConfig cfg;
     memset(&cfg, 0, sizeof cfg);
+    cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
     g_memoryMgr.init(cfg);
 
-    LOG_INIT("DataCompilerLog.html", "DataCompiler");
-
+    g_config = new DC_Config;
     const char* inputChar = cmdline->findOption('i');
     const char* inputFileChar = cmdline->findOption('f');
     const char* outputFolderChar = cmdline->findOption('o');

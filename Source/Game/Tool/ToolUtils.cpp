@@ -597,17 +597,6 @@ static bool compare_filename_less(const std::string& fileName1, const std::strin
     return ext1index < ext2index;
 }
 
-void nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt)
-{
-    //PROFILE(nvtt_compress);
-    std::string args = "-" + fmt + " ";
-    if(fmt == DDS_NM_FORMAT) args += "-normal ";
-    args += src;
-    args += " ";
-    args += dst;
-    shell_exec(NVTT_PATH, args);
-}
-
 void texconv_compress( const std::string& src, const std::string& folder, const std::string& fmt )
 {
     //PROFILE(texconv_compress);

@@ -44,6 +44,7 @@ void BaseCompiler::addDependency( const std::string& useage, const std::string& 
 
 void BaseCompiler::go()
 {
+    LOGD("[%s] processing from %s to %s", getFormatExt().c_str(), m_input.c_str(), m_output.c_str());
     std::string outputDir = getFilePath(m_output);
     createFolder(outputDir);
     process(m_input, m_output);

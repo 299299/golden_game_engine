@@ -5,16 +5,14 @@ class hkxNode;
 class hkClass;
 struct hkxAttributeGroup;
 
-#define MAKE_U64(dwordHigh, dwordLow) (((uint64_t)(dwordHigh) << 32) | (uint64_t)(dwordLow))
 #define COMMON_RESOURCE_PATH    ("core/common/")
 #define INTERMEDIATE_PATH       "intermediate/"
 #define COMMON_ASSET_PATH       INTERMEDIATE_PATH"core/common/"
 #define ROOT_DATA               ("data")
 #define ROOT_DATA_PATH          ("data/")
-#define DDS_FORMAT              ("DXT1")
+#define DDS_FORMAT              ("DXT5")
 #define DDS_NM_FORMAT           ("DXT5")
 #define DDS_ALPHA_FORMAT        ("DXT5")
-#define NVTT_PATH               ("nvcompress.exe")
 #define TEXCONV_PATH            ("texconv.exe")
 #define SHADERC_PATH            ("shaderc.exe")
 #define SHADER_INCLUDE_EXT      ("sc")
@@ -55,7 +53,6 @@ void        findNodesRec(hkxNode* theNode, const hkClass* theClass, std::vector<
 void        findNodesRec(hkxNode* theNode, const std::string& preFix, std::vector<hkxNode*>& outNodes);
 void        fill_object_attributes(jsonxx::Object& object, const hkxAttributeGroup* group);
 
-void        nvtt_compress(const std::string& src, const std::string& dst, const std::string& fmt);
 void        texconv_compress(const std::string& src, const std::string& folder, const std::string& fmt);
 void        lut2d_to_3d(const uint8_t* inData, uint8_t* outData);
 std::string input_to_output(const std::string& inputName);
