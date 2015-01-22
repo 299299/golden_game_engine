@@ -12,6 +12,9 @@ ActorCompiler::~ActorCompiler()
 
 bool ActorCompiler::readJSON(const jsonxx::Object& root)
 {
+    extern const char* g_fact_keynames[];
+    extern uint32_t g_fact_valuesizes[];
+
     BaseCompiler::readJSON(root);
     if(!root.has<jsonxx::Array>("components"))
     {
@@ -32,9 +35,14 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     numComps = compsValue.size();
     uint32_t memSize = sizeof(ActorResource);
+    memSize += (numComps * (sizeof(StringId) + sizeof(void*)) * 2);
     memSize += (numOfData * sizeof(Key));
-    uint32_t resSize = memSize;
-    memSize += (numOfData * sizeof(float) * 4);
+    
+    for (size_t i=0; i<numOfData; ++i)
+    {
+        jsonxx::Object dataValue = datasValue.get<jsonxx::Object>(i);
+        memSize += g_fact_valuesizes[find_enum_index(dataValue.get<std::string>("type").c_str(), g_fact_keynames)];
+    }
 
     MemoryBuffer mem(memSize);
     char* offset = mem.m_buf;
@@ -42,7 +50,8 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     ActorResource* actor = (ActorResource*)mem.m_buf;
     offset += sizeof(ActorResource);
     extern const char* g_actorClassNames[];
-    actor->m_class = find_enum_index(root.get<std::string>("name").c_str(), g_actorClassNames);
+    if(root.has<std::string>("name"))
+        actor->m_class = find_enum_index(root.get<std::string>("name").c_str(), g_actorClassNames);
     actor->m_numComponents = numComps;
     actor->m_resourceNames = (StringId*)offset;
     offset += sizeof(StringId) * numComps;
@@ -65,16 +74,12 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     }
 
     Fact& fact = actor->m_fact;
-    offset += sizeof(ActorResource);
     uint32_t valueSize = 0;
     fact.m_keys = (Key*)offset;
     offset += sizeof(Key) * numOfData;
     fact.m_values = offset;
     fact.m_num_keys = numOfData;
     char* values = fact.m_values;
-
-    extern const char* g_fact_keynames[];
-    extern uint32_t g_fact_valuesizes[];
 
     for (size_t i=0; i<numOfData; ++i)
     {
@@ -88,11 +93,12 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         case ValueType::INT:*((int*)values) = dataValue.get<int>("value");break;
         case ValueType::FLOAT:*((float*)values) = dataValue.get<float>("value");break;
         case ValueType::STRING:*((StringId*)values) = StringId(dataValue.get<std::string>("value").c_str());break;
-        case ValueType::FLOAT4:json_to_floats(dataValue.get<jsonxx::Array>("value"), (float*)values, 4);break;
+        case ValueType::FLOAT4:json_to_floats(dataValue, "value", (float*)values, 4);break;
         default: --i; continue;
         }
         values += g_fact_valuesizes[key.m_type];
     }
-    ENGINE_ASSERT(values == mem.m_buf + resSize, "offset address");
+
+    ENGINE_ASSERT((values == (mem.m_buf + memSize)), "offset address");
     return write_file(m_output, mem.m_buf, memSize);
 }

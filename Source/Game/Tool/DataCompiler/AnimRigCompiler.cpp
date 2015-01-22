@@ -122,7 +122,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
             BoneAttachment& ba = rig->m_attachments[i];
             ba.m_name = StringId(attachmentValue.get<std::string>("name").c_str());
             ba.m_boneIndex = attachmentValue.get<int>("bone");
-            json_to_floats(attachmentValue.get<jsonxx::Array>("transform"), ba.m_boneFromAttachment, 16);
+            json_to_floats(attachmentValue, "transform", ba.m_boneFromAttachment, 16);
         }
     }
 

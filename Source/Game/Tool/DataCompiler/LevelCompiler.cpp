@@ -13,8 +13,8 @@ void json_transform(const jsonxx::Object& jValue, float* t, float* r, float* s)
     r[3] = 1;
     if(s) vec3_make(s, 1,1,1);
 
-    json_to_floats(jValue.get<jsonxx::Array>("translation"), t, 3);
-    int nRet = json_to_floats(jValue.get<jsonxx::Array>("rotation"), r, 4);
+    json_to_floats(jValue, "translation", t, 3);
+    int nRet = json_to_floats(jValue, "rotation", r, 4);
     if(nRet == 3)
     {
     #ifdef HAVOK_COMPILE
@@ -24,7 +24,7 @@ void json_transform(const jsonxx::Object& jValue, float* t, float* r, float* s)
     #endif
     }
     if(s)
-        json_to_floats(jValue.get<jsonxx::Array>("scale"), s, 3);
+        json_to_floats(jValue, "scale", s, 3);
 }
 
 LevelCompiler::LevelCompiler()

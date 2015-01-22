@@ -58,9 +58,9 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
                             | BGFX_STATE_MSAA;
 
 
-    json_to_floats(root.get<jsonxx::Array>("diffuse"), m->m_diffuse, 3);
+    json_to_floats(root, "diffuse", m->m_diffuse, 3);
     m->m_diffuse[3] = root.get<float>("diffuse-alpha", 1.0f);
-    json_to_floats(root.get<jsonxx::Array>("specular"), m->m_specular, 3);
+    json_to_floats(root, "specular", m->m_specular, 3);
     m->m_specular[3] = root.get<float>("specular-power", 20.0f);
 
     //convert all color 255 to 1 range.
@@ -78,10 +78,8 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     m->m_offsetAndRepeat[2] = 1;
     m->m_offsetAndRepeat[3] = 1;
 
-    if(root.has<jsonxx::Array>("uv-offset"))
-        json_to_floats(root.get<jsonxx::Array>("uv-offset"), m->m_offsetAndRepeat, 2);
-    if(root.has<jsonxx::Array>("uv-repeat"))
-        json_to_floats(root.get<jsonxx::Array>("uv-repeat"), m->m_offsetAndRepeat + 2, 2);
+    json_to_floats(root, "uv-offset", m->m_offsetAndRepeat, 2);
+    json_to_floats(root, "uv-repeat", m->m_offsetAndRepeat + 2, 2);
 
     m->m_params1[0] = root.get<float>("blend-normal", 0.4f);
     m->m_params1[1] = root.get<float>("normal-height", 1.0f);
@@ -101,7 +99,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             MatSampler& sampler = m->m_samplers[i];
             sampler.m_type = find_enum_index(samplerValue.get<std::string>("name").c_str(), g_textureNames);
             sampler.m_flags = 0;
-            uint32_t flags = json_to_flags(samplerValue.get<jsonxx::Array>("flags"), g_textureFlagNames);
+            uint32_t flags = json_to_flags(samplerValue, "flags", g_textureFlagNames);
             if(flags > 0)
             {
                 for(uint32_t i=0; i<g_textureFlagNum; ++i)
@@ -177,9 +175,9 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
                     vec3_make(translucency.m_rampOuterColor, 1.0f, 0.64f, 0.25f);
                     vec3_make(translucency.m_rampMediumColor, 1.0f, 0.21f, 0.14f);
                     vec3_make(translucency.m_rampInnerColor, 0.25f, 0.05f, 0.02f);
-                    json_to_floats(flagValue.get<jsonxx::Array>("ramp_outer_color"),translucency.m_rampOuterColor, 3);
-                    json_to_floats(flagValue.get<jsonxx::Array>("ramp_medium_color"),translucency.m_rampMediumColor, 3);
-                    json_to_floats(flagValue.get<jsonxx::Array>("ramp_inner_color"),translucency.m_rampInnerColor, 3);
+                    json_to_floats(flagValue, "ramp_outer_color",translucency.m_rampOuterColor, 3);
+                    json_to_floats(flagValue, "ramp_medium_color",translucency.m_rampMediumColor, 3);
+                    json_to_floats(flagValue, "ramp_inner_color",translucency.m_rampInnerColor, 3);
                     translucency.m_info[0] = flagValue.get<float>("distortion", 0.2f);
                     translucency.m_info[1] = flagValue.get<float>("power", 3.0f);
                     translucency.m_info[2] = flagValue.get<float>("scale", 1.0f);

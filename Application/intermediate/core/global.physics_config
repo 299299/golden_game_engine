@@ -1,46 +1,46 @@
 {
     "world_size":1000.0,
     "gravity":[0, -9.8, 0],
-    "collision_filters" : 
+    "collision-filters" :
     [
         {
             "name":"default"
         },
         {
-            "name":"non_collider",
-            "collides_with":[]
+            "name":"non-collider",
+            "collides-with":[]
         },
         {
             "name":"level_geometry",
-            "collides_with_all_except":["ragdoll_keyframe"]
+            "collides-with-all-except":["ragdoll_keyframe"]
         },
         {
             "name":"character_proxy",
-            "collides_with_all_except":
+            "collides-with-all-except":
             [
                 "debris", "ragdoll_keyframe", "raycast", "ragdoll_dynamic"
             ]
         },
         {
             "name":"debris",
-            "collides_with_all_except": [ "raycast" ]
+            "collides-with-all-except": [ "raycast" ]
         },
         {
             "name":"movable_enviroment",
-            "collides_with_all_except": [ "ragdoll_keyframe" ]
+            "collides-with-all-except": [ "ragdoll_keyframe" ]
         },
         {
             "name":"ragdoll_keyframe",
-            "collides_with_all_except": [ "raycast" ]
+            "collides-with-all-except": [ "raycast" ]
         },
         {
             "name":"raycast",
-            "collides_with_all_except": [ "ragdoll_dynamic" ]
+            "collides-with-all-except": [ "ragdoll_dynamic" ]
         },
         {
             "name":"picking",
-            "collides_with_all_except": 
-            [ 
+            "collides-with-all-except":
+            [
                 "level_geometry",
                 "character_proxy",
                 "ragdoll_keyframe"

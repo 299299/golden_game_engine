@@ -28,10 +28,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
         model.m_viewId = kSceneViewId;
 
     extern const char* g_modelFlagNames[];
-    if(root.has<jsonxx::Array>("flags"))
-        model.m_flag = json_to_flags(root.get<jsonxx::Array>("flags"), g_modelFlagNames);
-    else
-        model.m_flag = kNodeFlagNone;
+    model.m_flag = json_to_flags(root, "flags", g_modelFlagNames);
 
     if(root.has<jsonxx::Array>("materials"))
     {

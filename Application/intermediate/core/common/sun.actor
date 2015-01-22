@@ -1,12 +1,12 @@
 {
-    "class":"level_geometry",
+    "class":"level-geometry",
     "components":
     [
         {
             "type":"light",
             "name":"core/common/sun",
             "color":[255, 255, 255],
-            "type":"directional",
+            "light-type":"directional",
             "direction":[0, -1, -1],
             "shadow":true,
             "packed": true

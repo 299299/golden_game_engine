@@ -58,8 +58,8 @@ bool ShadingEnviromentCompiler::readJSON(const jsonxx::Object& root)
         shading.m_dofParams[3] = dofValue.get<float>("focusFalloff", 10.0f);
     }
 
-    json_to_floats(root.get<jsonxx::Array>("ambient-sky-color"), shading.m_ambientSkyColor, 3);
-    json_to_floats(root.get<jsonxx::Array>("ambient-ground-color"), shading.m_ambientGroundColor, 3);
+    json_to_floats(root, "ambient-sky-color", shading.m_ambientSkyColor, 3);
+    json_to_floats(root, "ambient-ground-color", shading.m_ambientGroundColor, 3);
 
     if(root.has<jsonxx::Object>("shadow"))
     {

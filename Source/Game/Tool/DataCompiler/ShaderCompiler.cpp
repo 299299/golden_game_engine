@@ -54,7 +54,7 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
     FileReader outputReader(output);
     if(!outputReader.m_size)
     {
-        LOGE("[%s] shader compile error!", input.c_str());
+        g_config->m_error.add_error("[%s] shader compile error!", input.c_str());
         return false;
     }
     //delete the temp file of shaderc compiled.

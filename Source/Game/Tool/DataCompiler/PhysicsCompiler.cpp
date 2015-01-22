@@ -45,7 +45,7 @@ bool ProxyCompiler::readJSON(const jsonxx::Object& root)
     proxy.m_offset = root.get<float>("offset", proxy.m_standHeight/2);
     proxy.m_layerName = StringId(root.get<std::string>("collision-layer", "character-proxy").c_str());
 
-    json_to_floats(root.get<jsonxx::Array>("gravity"), proxy.m_gravity, 3);
+    json_to_floats(root, "gravity", proxy.m_gravity, 3);
     return write_file(m_output, &proxy, sizeof(proxy));
 }
 
@@ -73,8 +73,7 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
     cfg.m_numFilterLayers = numOfFilters;
     cfg.m_worldSize = root.get<float>("world_size", 1000.0f);
     vec3_make(cfg.m_gravity, 0, -9.8f, 0);
-    if(root.has<jsonxx::Array>("gravity"))
-        json_to_floats(root.get<jsonxx::Array>("gravity"), cfg.m_gravity, 3);
+    json_to_floats(root, "gravity", cfg.m_gravity, 3);
 
     for(uint32_t i=0; i<numOfFilters; ++i)
     {

@@ -18,14 +18,14 @@ bool LightCompiler::readJSON( const jsonxx::Object& root )
 
     extern const char*  g_lightTypeNames[];
     vec3_make(light.m_color, 255, 255, 255);
-    json_to_floats(root.get<jsonxx::Array>("color"), light.m_color, 3);
+    json_to_floats(root, "color", light.m_color, 3);
     for(uint32_t i=0; i<3; ++i)
     {
         light.m_color[i] /= 255;
     }
 
-    json_to_floats(root.get<jsonxx::Array>("direction"), light.m_dir, 3);
-    light.m_type = find_enum_index(root.get<std::string>("type").c_str(), g_lightTypeNames);
+    json_to_floats(root, "direction", light.m_dir, 3);
+    light.m_type = find_enum_index(root.get<std::string>("light-type").c_str(), g_lightTypeNames);
     light.m_fallOff = root.get<float>("falloff", 0.7f);
     light.m_intensity = root.get<float>("intensity", 1.0f);
     light.m_coneAngle = root.get<float>("cone-angle", 0.46f);

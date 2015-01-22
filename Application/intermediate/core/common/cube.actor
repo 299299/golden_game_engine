@@ -1,5 +1,5 @@
 {
-    "class": "level_geometry",
+    "class": "level-geometry",
     "components": [
         {
             "name": "core/common/cube",
@@ -7,11 +7,11 @@
             "packed": true,
             "mesh": "core/common/cube",
             "materials": [
-                "core/common/blinn1" 
+                "core/common/blinn1"
             ]
         }
     ],
     "data": [
     ],
     "name": "cube"
-} 
+}

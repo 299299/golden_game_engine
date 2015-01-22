@@ -59,8 +59,8 @@ std::string input_to_output(const std::string& inputName);
 std::string get_package_name(const std::string& input);
 std::string get_resource_name(const std::string& input);
 
-uint32_t   json_to_floats(const jsonxx::Array& array, float* p, uint32_t max_size);
-uint32_t   json_to_flags(const jsonxx::Array& array, const char** enum_names);
+uint32_t   json_to_floats(const jsonxx::Object& o, const char* name, float* p, uint32_t max_size);
+uint32_t   json_to_flags(const jsonxx::Object& o, const char* name, const char** enum_names);
 
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase

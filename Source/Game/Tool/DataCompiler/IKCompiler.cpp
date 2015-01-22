@@ -17,10 +17,8 @@ bool LookIKCompiler::readJSON( const jsonxx::Object& root )
     memset(&lookat, 0x00, sizeof(lookat));
 
     vec3_make(lookat.m_fwdLS, 0, 0, 1);
-    if(root.has<jsonxx::Array>("forward-ls"))
-    {
-        json_to_floats(root.get<jsonxx::Array>("forward-ls"), lookat.m_fwdLS, 3);
-    }
+    json_to_floats(root, "forward-ls", lookat.m_fwdLS, 3);
+
     lookat.m_lookAtLimit = root.get<float>("lookat-limit", 3.1415926f/4.0f);
     lookat.m_gain = root.get<float>("gain", 0.05f);
     lookat.m_targetGain = root.get<float>("target-gain", 0.2f);
@@ -39,18 +37,12 @@ bool ReachIKCompiler::readJSON( const jsonxx::Object& root )
     memset(&reach, 0x00, sizeof(reach));
 
     vec3_make(reach.m_elbowAxis, 0, 1, 0);
-    if(root.has<jsonxx::Array>("elbow-axis"))
-    {
-        json_to_floats(root.get<jsonxx::Array>("elbow-axis"), reach.m_elbowAxis, 3);
-    }
+    json_to_floats(root, "elbow-axis", reach.m_elbowAxis, 3);
 
     reach.m_hingeLimitAngle[0] = 0;
     reach.m_hingeLimitAngle[1] = 180;
 
-    if(root.has<jsonxx::Array>("hinge-limit-angle"))
-    {
-        json_to_floats(root.get<jsonxx::Array>("hinge-limit-angle"), reach.m_hingeLimitAngle, 2);
-    }
+    json_to_floats(root, "hinge-limit-angle", reach.m_hingeLimitAngle, 2);
 
     reach.m_reachGain = root.get<float>("reach-gain", 0.3f);
     reach.m_leaveGain = root.get<float>("leave-gain", 0.19f);
@@ -75,18 +67,9 @@ bool FootIKCompiler::readJSON( const jsonxx::Object& root )
     vec3_make(foot.m_rightKneeAxisLS, 0, 0, 1);
     vec3_make(foot.m_footEndLS, 0, 0, 0.2f);
 
-    if(root.has<jsonxx::Array>("left-knee-axis"))
-    {
-        json_to_floats(root.get<jsonxx::Array>("left-knee-axis"), foot.m_leftKneeAxisLS, 3);
-    }
-    if(root.has<jsonxx::Array>("right-knee-axis"))
-    {
-        json_to_floats(root.get<jsonxx::Array>("right-knee-axis"), foot.m_rightKneeAxisLS, 3);
-    }
-    if(root.has<jsonxx::Array>("foot-end-ls"))
-    {
-        json_to_floats(root.get<jsonxx::Array>("foot-end-ls"), foot.m_footEndLS, 3);
-    }
+    json_to_floats(root, "left-knee-axis", foot.m_leftKneeAxisLS, 3);
+    json_to_floats(root, "right-knee-axis", foot.m_rightKneeAxisLS, 3);
+    json_to_floats(root, "foot-end-ls", foot.m_footEndLS, 3);
 
     foot.m_orignalGroundHeightMS = root.get<float>("orignal-ground-height-ms");
     foot.m_minAnkleHeightMS = root.get<float>("min-ankle-height-ms");

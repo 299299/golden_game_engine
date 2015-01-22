@@ -299,6 +299,7 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     memset(&cfg, 0, sizeof cfg);
     cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
     g_memoryMgr.init(cfg);
+    g_profiler.init(TOTAL_BLOCK_NUM);
 
     g_config = new DC_Config;
     const char* inputChar = cmdline->findOption('i');
@@ -379,9 +380,12 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_config->m_database.save(DC_DATABASE);
     g_config->m_database.m_files.clear();
     SAFE_DELETE(g_config);
-    g_memoryMgr.shutdown();
 
     g_profiler.dump_to_file("datacompiler_profile.txt", true, true);
+    g_profiler.shutdown();
+    g_memoryMgr.shutdown();
+
+    
 
     LOGD("******************************************************");
     LOGD("******************************************************");

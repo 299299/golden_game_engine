@@ -282,7 +282,9 @@ bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
     bx::CrtFileWriter writer;
     if(writer.open(fileName.c_str()))
         return false;
-    return writer.write(buf, bufSize) != 0;
+    int32_t ret = writer.write(buf, bufSize);
+    writer.close();
+    return ret != 0;
 }
 
 void addBackSlash( std::string& outStr )
@@ -373,6 +375,12 @@ void compile_shader(const std::string& src, const std::string& dst, const std::s
                 src.c_str(), dst.c_str(), type, target, def.c_str());
     std::string folder = getFilePath(src);
     shell_exec(SHADERC_PATH, buf, "");
+#if 1
+    if(!isFileExist(dst))
+    {
+        LOGE("shader err --> \n %s %s \n", SHADERC_PATH, buf);
+    }
+#endif
 }
 
 int find_char(const char* data, uint32_t size, char c)
@@ -608,7 +616,7 @@ void texconv_compress( const std::string& src, const std::string& folder, const 
     shell_exec(TEXCONV_PATH, args);
 }
 
-uint32_t json_to_floats( const jsonxx::Array& array, float* p, uint32_t max_size )
+static uint32_t json_to_floats( const jsonxx::Array& array, float* p, uint32_t max_size )
 {
     uint32_t copy_size = array.size() > max_size ? max_size : array.size();
     for (uint32_t i=0; i<copy_size; ++i)
@@ -617,8 +625,13 @@ uint32_t json_to_floats( const jsonxx::Array& array, float* p, uint32_t max_size
     }
     return copy_size;
 }
-
-uint32_t json_to_flags( const jsonxx::Array& array, const char** enum_names )
+uint32_t json_to_floats( const jsonxx::Object& o, const char* name, float* p, uint32_t max_size )
+{
+    if(!o.has<jsonxx::Array>(name))
+        return 0;
+    return json_to_floats(o.get<jsonxx::Array>(name), p, max_size);
+}
+static uint32_t json_to_flags( const jsonxx::Array& array, const char** enum_names )
 {
     uint32_t flags = 0;
     uint32_t num = array.size();
@@ -628,6 +641,12 @@ uint32_t json_to_flags( const jsonxx::Array& array, const char** enum_names )
         flags |= (1 << index);
     }
     return flags;
+}
+uint32_t json_to_flags( const jsonxx::Object& o, const char* name, const char** enum_names )
+{
+    if(!o.has<jsonxx::Array>(name))
+        return 0;
+    return json_to_flags(o.get<jsonxx::Array>(name), enum_names);
 }
 
 //========================================================================
@@ -720,7 +739,8 @@ FileReader::FileReader( const std::string& fileName )
 :m_buf(0)
 ,m_size(0)
 {
-    m_file.open(fileName.c_str());
+    if(m_file.open(fileName.c_str()))
+        return;
     m_size = (uint32_t)m_file.seek(0, bx::Whence::End);
     m_file.seek(0, bx::Whence::Begin);
     m_buf = COMMON_ALLOC(char, m_size);

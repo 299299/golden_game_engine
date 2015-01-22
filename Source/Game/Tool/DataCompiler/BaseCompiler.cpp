@@ -88,8 +88,13 @@ bool BaseCompiler::process( const std::string& input, const std::string& output 
 {
     std::ifstream ifs(input.c_str());
     if(!ifs.good()) return false;
+
+    std::string str((std::istreambuf_iterator<char>(ifs)),
+    std::istreambuf_iterator<char>());
+
+
     jsonxx::Object o;
-    if(o.parse(ifs)) return false;
+    if(!o.parse(str)) return false;
     readJSON(o);
     m_processed = true;
     return true;

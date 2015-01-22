@@ -121,7 +121,7 @@ uint8_t g_uniformNums[] =
 
 const char* g_actorClassNames[] =
 {
-    "level_geometry",
+    "level-geometry",
     "prop",
     "character",
     0

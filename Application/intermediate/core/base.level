@@ -15,7 +15,7 @@
 
         {
             "name":"box",
-            "type":"core/actor/cube",
+            "type":"core/common/cube",
             "translation":[0, 10, 0]
         }
     ]
