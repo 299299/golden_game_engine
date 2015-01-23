@@ -575,7 +575,9 @@ static void set_keyframe_without_collisions(hkpRigidBody* rb, int layerId)
         }
     }
 }
-
+#else
+void RagdollInstance::init(const void* resource) {}
+void RagdollInstance::destroy() {}
 #endif
 
 void* load_resource_ragdoll( const char* data, uint32_t size )

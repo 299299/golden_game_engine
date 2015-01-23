@@ -53,7 +53,7 @@ struct game_app
     const char*     name;
     func_app_main   func;
 };
-game_app g_apps[] = 
+game_app g_apps[] =
 {
     { "HavokConvert", havok_convert_main },
     { "DataCompile", data_compiler_main },
@@ -62,6 +62,8 @@ game_app g_apps[] =
 
 int main(int argc, char* argv[])
 {
+    showHelp();
+
 #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD == HK_CONFIG_SIMD_ENABLED
     // Flush all denormal/subnormal numbers (2^-1074 to 2^-1022) to zero.
     // Typically operations on denormals are very slow, up to 100 times slower than normal numbers.

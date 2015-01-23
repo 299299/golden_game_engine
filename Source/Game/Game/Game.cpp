@@ -28,13 +28,12 @@ int game_main(int argc, bx::CommandLine* cmdline)
     const char* actor_name = 0;
     const char* level_name = 0;
     const char* package_name = 0;
-    const char* script = 0;
     const char* state_name = 0;
 
     EngineConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
     cfg.m_checkMemory = true;
-    cfg.m_windowTitle = "naga_engine";
+    cfg.m_windowTitle = "game";
     cfg.m_windowWidth = 1280;
     cfg.m_windowHeight = 720;
     cfg.m_fixedFPS = 60;
@@ -50,7 +49,6 @@ int game_main(int argc, bx::CommandLine* cmdline)
     if(name) level_name = name;
     name = cmdline->findOption('t');
     if(name) cfg.m_windowTitle = name;
-    script = cmdline->findOption("script");
     package_name = cmdline->findOption("package");
     state_name = cmdline->findOption("state");
 
@@ -61,6 +59,7 @@ int game_main(int argc, bx::CommandLine* cmdline)
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
 
+    printf("goes here\n");
     if(!g_resourceMgr.load_package_and_wait("data/core.package"))
     {
         msg_box("data/core.package load failed");

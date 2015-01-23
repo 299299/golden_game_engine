@@ -166,8 +166,14 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     TIMELOG("Graphics::Init");
 #ifdef HAVOK_COMPILE
     bgfx::winSetHwnd((HWND)hwnd);
+#else
+    hwnd = 0;
 #endif
+
+    bx::debugOutput("bgfx init started ---\n");
     bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null, &g_bgfxCallback);
+    bx::debugOutput("bgfx init ended ---\n");
+
     const bgfx::Caps* caps = bgfx::getCaps();
     bool shadowSamplerSupported = 0 != (caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);
     LOGD("support shadow sampler = %d", shadowSamplerSupported);

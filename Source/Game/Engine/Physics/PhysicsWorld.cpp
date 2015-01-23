@@ -513,7 +513,7 @@ Id create_physics_object(const void* resource, ActorId32 id)
     check_status();
     PhysicsInstance* inst;
     Id phyId = m_objects.create(&inst);
-    inst->init(resource, id);
+    inst->init(resource);
     return phyId;
 }
 

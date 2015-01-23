@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "RenderCamera.h"
 #include "DebugDraw.h"
+#include "Log.h"
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;
@@ -63,6 +64,7 @@ void PreviewState::step( float dt )
 
 void PreviewState::on_enter( GameState* prev_state )
 {
+    LOGD("preview-state-enter");
     float eye[] = {-5,5,0};
     float at[] = {0,0,0};
     g_camera.update(eye, at);
