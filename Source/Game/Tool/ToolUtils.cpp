@@ -358,11 +358,7 @@ bool delete_file(const std::string& fileName)
 {
     if(!isFileExist(fileName))
         return false;
-#ifdef HAVOK_COMPILE
-    return ::DeleteFile(fileName.c_str()) != 0;
-#else
     return remove(fileName.c_str()) == 0;
-#endif
 }
 
 void compile_shader(const std::string& src, const std::string& dst, const std::string& def, bool vs)
@@ -716,6 +712,7 @@ std::string input_to_output( const std::string& inputName )
 
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
 {
+    //bx::LwMutexScope _l(&m_lock);
     modifyTime = get_file_modified_time(fileName);
     ENGINE_ASSERT(modifyTime, "modifyTime");
     uint32_t key = StringId(fileName.c_str()).value();
@@ -728,6 +725,7 @@ bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& 
 
 void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  const uint32_t& modifyTime )
 {
+    //bx::LwMutexScope _l(&m_lock);
     uint32_t key = StringId(fileName.c_str()).value();
     m_files[key] = modifyTime;
     ENGINE_ASSERT(key && modifyTime, "key && modifyTime");

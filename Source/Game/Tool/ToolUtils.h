@@ -65,7 +65,9 @@ uint32_t   json_to_flags(const jsonxx::Object& o, const char* name, const char**
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase
 {
-    ResourceFileMap       m_files;
+    ResourceFileMap     m_files;
+    bx::LwMutex         m_lock;
+
     void load(const char* fileName);
     void save(const char* fileName);
     bool isFileChanged(const std::string& fileName, uint32_t& modifyTime) const;

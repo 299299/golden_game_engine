@@ -508,12 +508,12 @@ void PhysicsWorld::update_character_proxies(float timeStep)
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_physics_object(const void* resource, ActorId32 id)
+Id create_physics_object(const void* resource, ActorId32 actor)
 {
     check_status();
     PhysicsInstance* inst;
     Id phyId = m_objects.create(&inst);
-    inst->init(resource);
+    inst->init(resource, actor);
     return phyId;
 }
 

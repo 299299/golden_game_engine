@@ -66,7 +66,7 @@ function exeProject(_name, _incdirs, _files)
 
     project (_name)
         uuid (os.uuid(_name))
-        kind "WindowedApp"
+        kind "ConsoleApp"
 
     configuration {}
 

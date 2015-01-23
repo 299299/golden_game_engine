@@ -47,19 +47,22 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     addDependency("texture", input);
 
     //2. read the dds file back
-    FileReader texutreReader(ddsFile);
-    if(!texutreReader.m_size) return false;
+    {
+        FileReader texutreReader(ddsFile);
+        if(!texutreReader.m_size) return false;
 
-    //3. back the whole file to one blob.
-    uint32_t memSize = texutreReader.m_size + sizeof(Texture);
-    MemoryBuffer mem(memSize);
-    Texture* tex = (Texture*)mem.m_buf;
-    tex->m_handle.idx = bgfx::invalidHandle;
-    tex->m_size = texutreReader.m_size;
-    memcpy(mem.m_buf + sizeof(Texture), texutreReader.m_buf, texutreReader.m_size);
-    write_file(output, mem.m_buf, memSize);
+        //3. back the whole file to one blob.
+        uint32_t memSize = texutreReader.m_size + sizeof(Texture);
+        MemoryBuffer mem(memSize);
+        Texture* tex = (Texture*)mem.m_buf;
+        tex->m_handle.idx = bgfx::invalidHandle;
+        tex->m_size = texutreReader.m_size;
+        memcpy(mem.m_buf + sizeof(Texture), texutreReader.m_buf, texutreReader.m_size);
+        write_file(output, mem.m_buf, memSize);
+    }
+    
 
-    //4. delete the temp dds file.
+    //3. delete the temp dds file.
     delete_file(ddsFile);
     return true;
 }

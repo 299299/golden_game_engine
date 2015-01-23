@@ -91,7 +91,23 @@ void reload_light_resource(void* oldResource, void* newResource)
     }
 }
 //===================================================================================================
-
+void reload_physics_resource(void* oldResource, void* newResource)
+{
+    PhysicsResource* oldBody = (PhysicsResource*)oldResource;
+    PhysicsResource* newBody = (PhysicsResource*)newResource;
+    ComponentFactory* fac = g_componentMgr.find_factory(PhysicsResource::get_type());
+    uint32_t num = fac->num_components();
+    PhysicsInstance* bodies = (PhysicsInstance*)fac->get_components();
+    for (uint32_t i=0; i<num; ++i)
+    {
+        PhysicsInstance& body = bodies[i];
+        if(body.m_resource == oldBody)
+        {
+            body.destroy();
+            body.init(newBody, body.m_actor);
+        }
+    }
+}
 
 //===============================================================================
 void reload_anim_rig_resource(void* oldResource, void* newResource)
@@ -336,6 +352,7 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(Animation::get_type(), reload_animation_resource);
     g_resourceMgr.register_reload_callback(LightResource::get_type(), reload_light_resource);
     g_resourceMgr.register_reload_callback(AnimRig::get_type(), reload_anim_rig_resource);
+    g_resourceMgr.register_reload_callback(PhysicsResource::get_type(), reload_physics_resource);
 
     register_component_resource_reload_callback<ModelResource, ModelInstance>();
     register_component_resource_reload_callback<LookAtResource, LookAtInstance>();
@@ -343,7 +360,6 @@ void resource_hot_reload_init()
 
     register_component_resource_reload_callback_<RagdollResource,RagdollInstance>();
     register_component_resource_reload_callback_<FootResource, FootInstance>();
-    register_component_resource_reload_callback_<PhysicsResource, PhysicsInstance>();
     register_component_resource_reload_callback_<ProxyResource, ProxyInstance>();
 }
 

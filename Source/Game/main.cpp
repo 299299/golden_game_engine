@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "DataDef.h"
 #include "Profiler.h"
+#include <iostream>
 #include <bx/commandline.h>
 
 void showHelp()
@@ -71,7 +72,6 @@ int main(int argc, char* argv[])
 #endif
 
     bx::CommandLine cmdline(argc, argv);
-
     const char* action = cmdline.findOption("action");
     if(cmdline.hasArg("debug"))
     {

@@ -35,7 +35,6 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
         return false;
     }
 
-
     FileReader shaderReader(input);
     if(!shaderReader.m_size) return false;
 
@@ -49,26 +48,31 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
     std::string def(defHead, index2);
 
     bool vs = (firstChar == 'v');
-    compile_shader(input, output, def, vs);
+    std::string tmp_output = output + "_tmp";
+    compile_shader(input, tmp_output, def, vs);
 
-    FileReader outputReader(output);
-    if(!outputReader.m_size)
     {
-        g_config->m_error.add_error("[%s] shader compile error!", input.c_str());
-        return false;
-    }
-    //delete the temp file of shaderc compiled.
-    delete_file(output);
+        FileReader outputReader(tmp_output);
+        if(!outputReader.m_size)
+        {
+            g_config->m_error.add_error("[%s] shader compile error!", input.c_str());
+            return false;
+        }
 
-    uint32_t memSize = outputReader.m_size + sizeof(Shader);
-    MemoryBuffer mem(memSize);
-    Shader* shader = (Shader*)mem.m_buf;
-    shader->m_size = outputReader.m_size;
-    shader->m_blob = mem.m_buf + sizeof(Shader);
-    shader->m_handle.idx = bgfx::invalidHandle;
-    shader->m_name = StringId(getFileName(m_input).c_str());
-    memcpy(shader->m_blob, outputReader.m_buf, outputReader.m_size);
-    return write_file(output, shader, memSize);
+        uint32_t memSize = outputReader.m_size + sizeof(Shader);
+        MemoryBuffer mem(memSize);
+        Shader* shader = (Shader*)mem.m_buf;
+        shader->m_size = outputReader.m_size;
+        shader->m_blob = mem.m_buf + sizeof(Shader);
+        shader->m_handle.idx = bgfx::invalidHandle;
+        shader->m_name = StringId(getFileName(m_input).c_str());
+        memcpy(shader->m_blob, outputReader.m_buf, outputReader.m_size);
+        m_processed = write_file(output, shader, memSize);
+    }
+    
+    //delete the temp file of shaderc compiled.
+    delete_file(tmp_output);
+    return m_processed;
 }
 
 ProgramCompiler::ProgramCompiler()

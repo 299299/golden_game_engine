@@ -41,7 +41,7 @@ const char* stringid_lookup(const StringId& id)
     if(iter == g_stringTable.end()) return  0;
     return iter->second;
 }
-#define STRING_TABLE_FMT "%u,%x,%s\n"
+#define STRING_TABLE_FMT "%u,%d,%s\n"
 void load_string_table(const char* fName)
 {
     FILE* fp = fopen(fName, "r");

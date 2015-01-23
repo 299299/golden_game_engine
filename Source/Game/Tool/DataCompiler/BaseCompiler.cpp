@@ -87,17 +87,24 @@ bool BaseCompiler::checkProcessing()
 bool BaseCompiler::process( const std::string& input, const std::string& output )
 {
     std::ifstream ifs(input.c_str());
-    if(!ifs.good()) return false;
+    if(!ifs.good()) 
+    {
+        g_config->m_error.add_error("ifstream error %s", input.c_str());
+        return false;
+    }
 
     std::string str((std::istreambuf_iterator<char>(ifs)),
     std::istreambuf_iterator<char>());
 
-
     jsonxx::Object o;
-    if(!o.parse(str)) return false;
-    readJSON(o);
-    m_processed = true;
-    return true;
+    if(!o.parse(str))
+    {
+        g_config->m_error.add_error("json parse error %s", input.c_str());
+        return false;
+    }
+
+    m_processed = readJSON(o);
+    return m_processed;
 }
 
 void BaseCompiler::checkModifyTime()

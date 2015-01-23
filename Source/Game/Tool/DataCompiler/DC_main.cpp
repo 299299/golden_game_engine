@@ -288,11 +288,6 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
 {
     int err = kErrorSuccess;
     uint32_t timeMS = ::GetTickCount();
-    if(argc < 2)
-    {
-        printf("argument num < 3 !\n");
-        return kErrorArg;
-    }
 
     LOG_INIT("DataCompilerLog.html", "Data Compiler");
     MemoryConfig cfg;
@@ -303,8 +298,9 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
 
     g_config = new DC_Config;
     const char* inputChar = cmdline->findOption('i');
-    const char* inputFileChar = cmdline->findOption('f');
+    if(!inputChar) inputChar = "intermediate";
     const char* outputFolderChar = cmdline->findOption('o');
+    if(!outputFolderChar) outputFolderChar = "data";
     const char* threadChar = cmdline->findOption('t');
     if(threadChar) g_config->m_numThreads = atoi(threadChar);
     g_config->m_ignoreTextures = cmdline->hasArg("ignore_texture");

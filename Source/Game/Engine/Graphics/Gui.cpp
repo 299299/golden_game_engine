@@ -10,7 +10,7 @@ int     g_dbgTexIndex = 0;
 
 void Gui::init()
 {
-    imguiCreate(s_droidSansTtf);
+    imguiCreate(s_droidSansTtf, sizeof s_droidSansTtf);
 }
 
 void Gui::frame_start()
