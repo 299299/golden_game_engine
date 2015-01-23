@@ -17,17 +17,16 @@ maya dx11 and engine runtime view
 pipline tool -- realtime sync from maya to engine
 ![short_3](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipeline.jpg)
 
-webtool for monitor engine runtime
-![short_4](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/web_tool.jpg)
-
 from level to engine & script hot reload.
-![short_5](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipline_tool.jpg)
+![short_4](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/pipline_tool.jpg)
 
 animation and bone attachment
-![short_6](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/animation.jpg)
+![short_5](https://raw.githubusercontent.com/299299/NagaGame/master/Shots/animation.jpg)
 
-## Dependencies
+## ThirdParties
+1. **Build System**: genie (https://github.com/bkaradzic/genie)
 1. **Common**: bx (https://github.com/bkaradzic/bx)
 2. **Graphics**: bgfx (https://github.com/bkaradzic/bgfx)
 3. **Physics**:  Havok free PC SDK (https://software.intel.com/sites/havok/en/)
 4. **Animation**: Havok free PC SDK (https://software.intel.com/sites/havok/en/)
+5. **Json**: jsonxx (https://github.com/hjiang/jsonxx)
