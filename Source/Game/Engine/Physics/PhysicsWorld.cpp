@@ -98,14 +98,14 @@ static IdArray<ProxyInstance>                   m_proxies;
 
 #define MAX_RAYCAST_PERFRAME    (1000)
 
-void PhysicsWorld::init()
+void PhysicsWorld::init(int max_bodies, int max_proxies)
 {
     m_config = 0;
     m_world = 0;
     m_numCollisionEvents = 0;
     m_numRaycasts = 0;
-    m_objects.init(MAX_PHYSICS, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
-    m_proxies.init(MAX_PROXY, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_objects.init(max_bodies, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_proxies.init(max_proxies, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 #ifdef HAVOK_COMPILE
     m_raycastSem = new hkSemaphoreBusyWait(0, 1000);
     hkpRayCastQueryJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());

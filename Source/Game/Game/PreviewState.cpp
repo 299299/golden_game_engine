@@ -15,6 +15,15 @@ static bool g_draw_debug_graphics = false;
 
 extern DebugFPSCamera  g_fpsCamera;
 
+static void swith_graphics_debug(uint32_t flag)
+{
+    bool is_wireframe = HAS_BITS(g_bgfx_debug,flag);
+    is_wireframe = !is_wireframe;
+    if(is_wireframe) ADD_BITS(g_bgfx_debug, flag);
+    else REMOVE_BITS(g_bgfx_debug, flag);
+    bgfx::setDebug(g_bgfx_debug);
+}
+
 PreviewState::PreviewState()
 {
 
@@ -33,18 +42,19 @@ void PreviewState::step( float dt )
 #ifdef HAVOK_COMPILE
     if(g_win32Context.is_key_just_pressed(VK_F1))
     {
-        bool is_wireframe = HAS_BITS(g_bgfx_debug,BGFX_DEBUG_WIREFRAME);
-        is_wireframe = !is_wireframe;
-        if(is_wireframe) ADD_BITS(g_bgfx_debug, BGFX_DEBUG_WIREFRAME);
-        else REMOVE_BITS(g_bgfx_debug, BGFX_DEBUG_WIREFRAME);
+        g_show_profile = !g_show_profile;
     }
     else if(g_win32Context.is_key_just_pressed(VK_F2))
     {
-        g_show_profile = !g_show_profile;
+        g_draw_debug_graphics = !g_draw_debug_graphics;
     }
     else if(g_win32Context.is_key_just_pressed(VK_F3))
     {
-        g_draw_debug_graphics = !g_draw_debug_graphics;
+        swith_graphics_debug(BGFX_DEBUG_WIREFRAME);
+    }
+    else if(g_win32Context.is_key_just_pressed(VK_F4))
+    {
+        swith_graphics_debug(BGFX_DEBUG_STATS);
     }
 
     if(g_show_profile)

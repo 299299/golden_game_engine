@@ -164,9 +164,9 @@ void lookup_resource_model( void * resource )
 ModelWorld g_modelWorld;
 static IdArray<ModelInstance>      m_models;
 
-void ModelWorld::init()
+void ModelWorld::init(int max_model)
 {
-    m_models.init(MAX_MODELS, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_models.init(max_model, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     reset();
 }
 

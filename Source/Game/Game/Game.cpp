@@ -15,14 +15,10 @@
 #include "PreviewState.h"
 #include "PlayerState.h"
 #include "RenderCamera.h"
-//==================================================
+#include "Actor.h"
 #include <bx/bx.h>
 #include <bx/commandline.h>
-#ifdef HAVOK_COMPILE
-#include <Windows.h>
-#endif
 
-ActorId32 g_actor;
 int game_main(int argc, bx::CommandLine* cmdline)
 {
     const char* actor_name = 0;
@@ -59,7 +55,6 @@ int game_main(int argc, bx::CommandLine* cmdline)
     extern void resource_hot_reload_init();
     resource_hot_reload_init();
 
-    printf("goes here\n");
     if(!g_resourceMgr.load_package_and_wait("data/core.package"))
     {
         msg_box("data/core.package load failed");
@@ -70,12 +65,24 @@ int game_main(int argc, bx::CommandLine* cmdline)
     g_debugDrawMgr.ready();
     g_physicsWorld.create_world(FIND_RESOURCE_NAMED(PhysicsConfig, "core/global"));
     g_physicsWorld.create_plane(500.0f);
+    g_actorWorld.m_shading_env = FIND_RESOURCE_NAMED(ShadingEnviroment, "core/common/default");
 
-    if(package_name) g_resourceMgr.load_package_and_wait(package_name);
+    if(package_name) 
+        g_resourceMgr.load_package_and_wait(package_name);
 
+    if(actor_name) 
+    {
+        LOGD("loading actor %s \n", actor_name);
+        hkQsTransform t;
+#ifdef HAVOK_COMPILE
+        t.setIdentity();
+#endif
+        ActorId32 actor = g_actorWorld.create_actor(StringId(actor_name), t);
+        LOGD("created actor = %d", actor);
+    }
     if(level_name)
     {
-        printf("loading level %s \n", level_name);
+        LOGD("loading level %s \n", level_name);
         Level* level = FIND_RESOURCE_NAMED(Level, level_name);
         if(level) level->load();
     }

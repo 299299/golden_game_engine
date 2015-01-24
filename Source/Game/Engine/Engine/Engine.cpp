@@ -15,6 +15,7 @@
 #include "Log.h"
 #include "DataDef.h"
 #include "Win32Context.h"
+#include "Actor.h"
 #include <bx/timer.h>
 
 float     g_totalSeconds = 0.0;
@@ -163,8 +164,15 @@ void Engine::subsystem_init()
     else g_engineMode = 1;
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
-    g_physicsWorld.init();
-    g_animMgr.init();
+    g_physicsWorld.init(MAX_PHYSICS, MAX_PROXY);
+    g_animMgr.init(MAX_ANIM_RIG, MAX_ANIM_EVENTS);
+
+    ActorConfig cfg;
+    memset(&cfg, 0x00, sizeof(cfg));
+    cfg.max_characters = MAX_CHARACTER;
+    cfg.max_geometries = MAX_LEVEL_GEOMETRY;
+    cfg.max_props = MAX_PROP;
+    g_actorWorld.init(cfg);
 }
 
 void Engine::core_shutdown()
@@ -179,6 +187,7 @@ void Engine::core_shutdown()
 void Engine::subsystem_shutdown()
 {
     TIMELOG("Engine Subsystem Shutdown");
+    g_actorWorld.shutdown();
     g_resourceMgr.offline_all_resources();
     g_animMgr.shutdown();
     g_physicsWorld.shutdown();

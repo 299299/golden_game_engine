@@ -50,7 +50,7 @@ struct ModelInstance
 
 struct ModelWorld
 {
-    void                    init();
+    void                    init(int max_model);
     void                    shutdown();
 
     void                    update(float dt);

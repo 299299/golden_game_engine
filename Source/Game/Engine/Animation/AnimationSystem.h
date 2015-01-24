@@ -17,7 +17,7 @@ struct AnimationEvent;
 
 struct AnimationSystem
 {
-    void    init();
+    void    init(int max_rigs, int max_anim_events);
     void    shutdown();
 
     void    frame_start();

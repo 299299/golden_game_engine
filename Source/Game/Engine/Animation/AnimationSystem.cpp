@@ -50,11 +50,11 @@ static void set_status(int newStatus)
     m_status = newStatus;
 }
 
-void AnimationSystem::init()
+void AnimationSystem::init(int max_rigs, int max_anim_events)
 {
     m_status = 0;
-    m_events = COMMON_ALLOC(AnimationEvent, MAX_ANIM_EVENTS);
-    m_rigs.init(MAX_ANIM_RIG, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_events = COMMON_ALLOC(AnimationEvent, max_anim_events);
+    m_rigs.init(max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif

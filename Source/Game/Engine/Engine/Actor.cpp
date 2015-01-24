@@ -273,16 +273,16 @@ ActorWorld g_actorWorld;
 typedef IdArray<Actor> ActorBucket;
 static ActorBucket g_actorBuckets[kActorClassNum];
 
-void ActorWorld::init()
+void ActorWorld::init(const ActorConfig& cfg)
 {
-    g_actorBuckets[kLevelGeometry].init(MAX_LEVEL_GEOMETRY, &default_allocator());
-    g_actorBuckets[kProp].init(MAX_PROP, &default_allocator());
-    g_actorBuckets[kCharacter].init(MAX_CHARACTER, &default_allocator());
+    g_actorBuckets[kLevelGeometry].init(cfg.max_geometries, &default_allocator());
+    g_actorBuckets[kProp].init(cfg.max_props, &default_allocator());
+    g_actorBuckets[kCharacter].init(cfg.max_characters, &default_allocator());
     m_shading_env = 0;
 }
 
 
-void ActorWorld::destroy()
+void ActorWorld::shutdown()
 {
     clear();
     for(uint32_t i=0; i<kActorClassNum; ++i)

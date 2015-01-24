@@ -33,7 +33,7 @@ ENGINE_NATIVE_ALIGN struct LightInstance
 struct ShadingEnviroment;
 struct LightWorld
 {
-    void                    init();
+    void                    init(int max_light);
     void                    shutdown();
 
     void                    update(float dt);

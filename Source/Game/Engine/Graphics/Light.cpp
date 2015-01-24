@@ -7,17 +7,16 @@
 #include "MathDefs.h"
 #include "MemorySystem.h"
 #include "IdArray.h"
-#include "GameConfig.h"
 
 LightWorld g_lightWorld;
 static IdArray<LightInstance>  m_lights;
 
-void LightWorld::init()
+void LightWorld::init(int max_light)
 {
     reset();
     bx::mtxIdentity(m_shadowView);
     bx::mtxIdentity(m_shadowProj);
-    m_lights.init(MAX_LIGHTS, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_lights.init(max_light, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 }
 
 void LightWorld::shutdown()

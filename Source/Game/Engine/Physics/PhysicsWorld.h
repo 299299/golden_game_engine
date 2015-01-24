@@ -46,7 +46,7 @@ ENGINE_NATIVE_ALIGN struct PhysicsConfig
 
 struct PhysicsWorld
 {
-    void init();
+    void init(int max_bodies, int max_proxies);
     void shutdown();
 
     void frame_start();

@@ -47,11 +47,17 @@ ENGINE_NATIVE_ALIGN struct Actor
     bool    set_key(const StringId& k, const float* v);
 };
 
+struct ActorConfig
+{
+    int max_geometries;
+    int max_props;
+    int max_characters;
+};
 
 struct ActorWorld
 {
-    void        init();
-    void        destroy();
+    void        init(const ActorConfig& cfg);
+    void        shutdown();
 
     void        clear();
     void        clear_actors(uint32_t type);

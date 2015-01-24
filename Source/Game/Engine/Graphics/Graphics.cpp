@@ -191,8 +191,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     g_camera.init();
     g_debugDrawMgr.init();
     g_guiMgr.init();
-    g_modelWorld.init();
-    g_lightWorld.init();
+    g_modelWorld.init(MAX_MODELS);
+    g_lightWorld.init(MAX_LIGHTS);
 
     //----------------------------------------------
     // view name for debug.
