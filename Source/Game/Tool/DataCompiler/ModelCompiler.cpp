@@ -22,10 +22,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
     model.m_meshName = StringId(meshFile.c_str());
     addDependency("mesh", name_to_file_path(meshFile, Mesh::get_name()));
     extern const char* g_viewGroupNames[];
-    if(root.has<std::string>("view_group"))
-        model.m_viewId = find_enum_index(root.get<std::string>("view_group").c_str(), g_viewGroupNames);
-    else
-        model.m_viewId = kSceneViewId;
+    model.m_viewId = json_to_enum(root, "view_group", g_viewGroupNames, kSceneViewId);
 
     extern const char* g_modelFlagNames[];
     model.m_flag = json_to_flags(root, "flags", g_modelFlagNames);

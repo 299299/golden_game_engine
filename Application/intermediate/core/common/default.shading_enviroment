@@ -38,7 +38,7 @@
             "core/common/lut_light_yellow",
         ],
 
-        "grading-index":0
+        "grading_index":0
     },
 
     "shadow":

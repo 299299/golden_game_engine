@@ -61,6 +61,10 @@ std::string get_resource_name(const std::string& input);
 
 uint32_t   json_to_floats(const jsonxx::Object& o, const char* name, float* p, uint32_t max_size);
 uint32_t   json_to_flags(const jsonxx::Object& o, const char* name, const char** enum_names);
+float      json_to_float(const jsonxx::Object& o, const char* name, float def = 0.0f);
+int        json_to_int(const jsonxx::Object& o, const char* name, int def = 0);
+StringId   json_to_stringid(const jsonxx::Object& o, const char* name, StringId def=StringId::ZERO);
+int        json_to_enum(const jsonxx::Object& o, const char* name, const char** enumnames, int def = -1);
 
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase

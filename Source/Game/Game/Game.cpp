@@ -86,8 +86,8 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
 err:
     //------------------------------------------------------------
-    g_engine.quit();
-    //------------------------------------------------------------
     g_profiler.dump_to_file("game_profile.txt", true, true);
+    //------------------------------------------------------------
+    g_engine.quit();
     return 0;
 }

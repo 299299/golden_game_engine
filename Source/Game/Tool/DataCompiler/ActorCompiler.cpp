@@ -40,8 +40,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     
     for (size_t i=0; i<numOfData; ++i)
     {
-        jsonxx::Object dataValue = datasValue.get<jsonxx::Object>(i);
-        memSize += g_fact_valuesizes[find_enum_index(dataValue.get<std::string>("type").c_str(), g_fact_keynames)];
+        memSize += g_fact_valuesizes[json_to_enum(datasValue.get<jsonxx::Object>(i), "type", g_fact_keynames)];
     }
 
     MemoryBuffer mem(memSize);
@@ -50,8 +49,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     ActorResource* actor = (ActorResource*)mem.m_buf;
     offset += sizeof(ActorResource);
     extern const char* g_actorClassNames[];
-    if(root.has<std::string>("name"))
-        actor->m_class = find_enum_index(root.get<std::string>("name").c_str(), g_actorClassNames);
+    actor->m_class = json_to_enum(root, "name", g_actorClassNames, 0);
     actor->m_numComponents = numComps;
     actor->m_resourceNames = (StringId*)offset;
     offset += sizeof(StringId) * numComps;
@@ -83,17 +81,18 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     for (size_t i=0; i<numOfData; ++i)
     {
-        jsonxx::Object dataValue = datasValue.get<jsonxx::Object>(i);
+        const jsonxx::Object& o = datasValue.get<jsonxx::Object>(i);
         Key& key = fact.m_keys[i];
-        key.m_type = find_enum_index(dataValue.get<std::string>("type").c_str(), g_fact_keynames);
-        key.m_name = StringId(dataValue.get<std::string>("name").c_str());
+        key.m_type = json_to_enum(o, "type", g_fact_keynames);
+        ENGINE_ASSERT(key.m_type >= 0, "Actor Key type not right.");
+        key.m_name = StringId(o.get<std::string>("name").c_str());
         key.m_offset = (uint32_t)(values - mem.m_buf);
         switch(key.m_type)
         {
-        case ValueType::INT:*((int*)values) = dataValue.get<int>("value");break;
-        case ValueType::FLOAT:*((float*)values) = dataValue.get<float>("value");break;
-        case ValueType::STRING:*((StringId*)values) = StringId(dataValue.get<std::string>("value").c_str());break;
-        case ValueType::FLOAT4:json_to_floats(dataValue, "value", (float*)values, 4);break;
+        case ValueType::INT:*((int*)values) = json_to_int(o, "value");break;
+        case ValueType::FLOAT:*((float*)values) = json_to_float(o, "value");break;
+        case ValueType::STRING:*((StringId*)values) = json_to_stringid(o, "value");break;
+        case ValueType::FLOAT4:json_to_floats(o, "value", (float*)values, 4);break;
         default: --i; continue;
         }
         values += g_fact_valuesizes[key.m_type];

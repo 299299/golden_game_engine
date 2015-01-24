@@ -92,7 +92,7 @@ const char* g_textureFlagNames[] =
     "w_clamp",
     "min_point",
     "min_anisotropic",
-    "mag-point",
+    "mag_point",
     "mag_anisotropic",
     "min_point",
     0
@@ -109,9 +109,9 @@ uint32_t g_textureFlags[] =
 uint32_t g_textureFlagNum = BX_COUNTOF(g_textureFlags);
  const char* g_uniformNames[] =
 {
-    "uniform-1i", "uniform-1f", "end", "uniform-1iv",
-    "uniform-1fv", "uniform-2fv", "uniform-3fv", "uniform-4fv",
-    "uniform-3x3fv", "uniform-4x4fv", 0,
+    "uniform_1i", "uniform_1f", "end", "uniform_1iv",
+    "uniform_1fv", "uniform_2fv", "uniform_3fv", "uniform_4fv",
+    "uniform_3x3fv", "uniform_4x4fv", 0,
 };
 uint8_t g_uniformNums[] =
 {
@@ -121,7 +121,7 @@ uint8_t g_uniformNums[] =
 
 const char* g_actorClassNames[] =
 {
-    "level-geometry",
+    "level_geometry",
     "prop",
     "character",
     0

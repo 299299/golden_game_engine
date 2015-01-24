@@ -32,7 +32,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     }
 
 #if 0
-	JsonValue animationsValue = root.GetValue("animation-set");
+	JsonValue animationsValue = root.GetValue("animation_set");
 	uint32_t animationsNum = 0;
 	if(animationsValue.IsValid()) animationsNum = animationsValue.GetElementsCount();
 #endif
@@ -63,7 +63,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     AnimRig* rig = (AnimRig*)offset;
     rig->m_havokDataOffset = havokOffset;
     rig->m_havokDataSize = havokFileSize;
-    rig->m_jointNum = root.get<int>("joint_num");
+    rig->m_jointNum = json_to_int(root, "joint_num");
     rig->m_mirrored = root.get<bool>("mirrored");
 
     offset += sizeof(AnimRig);
@@ -118,11 +118,11 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
         const jsonxx::Array& attachmentsValue = root.get<jsonxx::Array>("attachments");
         for (uint32_t i = 0; i < attachmentNum; ++i)
         {
-            const jsonxx::Object& attachmentValue = attachmentsValue.get<jsonxx::Object>(i);
+            const jsonxx::Object& o = attachmentsValue.get<jsonxx::Object>(i);
             BoneAttachment& ba = rig->m_attachments[i];
-            ba.m_name = StringId(attachmentValue.get<std::string>("name").c_str());
-            ba.m_boneIndex = attachmentValue.get<int>("bone");
-            json_to_floats(attachmentValue, "transform", ba.m_boneFromAttachment, 16);
+            ba.m_name = json_to_stringid(o, "name");
+            ba.m_boneIndex = json_to_int(o, "bone");
+            json_to_floats(o, "transform", ba.m_boneFromAttachment, 16);
         }
     }
 

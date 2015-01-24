@@ -24,7 +24,7 @@ void HiresTimer::init()
 
 int64_t HiresTimer::get_usec( bool reset )
 {
-    int64_t currentTime = bx::getHPFrequency();
+    int64_t currentTime = bx::getHPCounter();
     int64_t elapsedTime = currentTime - startTime_;
 
     // Correct for possible weirdness with changing internal frequency
@@ -39,7 +39,7 @@ int64_t HiresTimer::get_usec( bool reset )
 
 void HiresTimer::reset()
 {
-    startTime_ = bx::getHPFrequency();
+    startTime_ = bx::getHPCounter();
 }
 
 HiresTimer::HiresTimer()

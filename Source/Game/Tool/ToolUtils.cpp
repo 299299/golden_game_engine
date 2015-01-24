@@ -617,7 +617,8 @@ static uint32_t json_to_floats( const jsonxx::Array& array, float* p, uint32_t m
     uint32_t copy_size = array.size() > max_size ? max_size : array.size();
     for (uint32_t i=0; i<copy_size; ++i)
     {
-        p[i] = array.get<float>(i);
+        jsonxx::Number n = array.get<jsonxx::Number>(i);
+        p[i] = (float)n;
     }
     return copy_size;
 }
@@ -643,6 +644,37 @@ uint32_t json_to_flags( const jsonxx::Object& o, const char* name, const char** 
     if(!o.has<jsonxx::Array>(name))
         return 0;
     return json_to_flags(o.get<jsonxx::Array>(name), enum_names);
+}
+float json_to_float( const jsonxx::Object& o, const char* name, float def )
+{
+    if(!o.has<jsonxx::Number>(name))
+        return def;
+    jsonxx::Number n = o.get<jsonxx::Number>(name);
+    return static_cast<float>(n);
+}
+
+int json_to_int( const jsonxx::Object& o, const char* name, int def )
+{
+    if(!o.has<jsonxx::Number>(name))
+        return def;
+    jsonxx::Number n = o.get<jsonxx::Number>(name);
+    return static_cast<int>(n);
+}
+
+StringId json_to_stringid( const jsonxx::Object& o, const char* name, StringId def )
+{
+    if(!o.has<std::string>(name))
+        return def;
+    return StringId(o.get<std::string>(name).c_str());
+}
+
+int json_to_enum( const jsonxx::Object& o, const char* name, const char** enumnames, int def )
+{
+    if(!o.has<std::string>(name))
+        return def;
+    const std::string& sname = o.get<std::string>(name);
+    int index =  find_enum_index(sname.c_str(), enumnames);
+    return index >= 0 ? index : def;
 }
 
 //========================================================================

@@ -139,7 +139,7 @@ jsonxx::Object MaterialConverter::serializeToJson() const
     jsonxx::Object rootObject;
     rootObject << "name" << getResourceName();
     rootObject << "shader" << m_shader;
-    rootObject << "shadow-shader" << m_shadowShader;
+    rootObject << "shadow_shader" << m_shadowShader;
 
     extern const char* g_matFlagNames[];
 

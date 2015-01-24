@@ -50,12 +50,6 @@ havok_convert_database.txt
 data_compiler_database.txt
 maya_export_database.txt
 data_compiler_result.txt
-Application/intermediate/core/actor/
-Application/intermediate/preview/actor/
-Application/intermediate/world0
-Application/intermediate/world1
-Application/intermediate/world2
-Application/intermediate/world_city
 DataCompiler.exe
 HavokConverter.exe
 *_error.txt
@@ -63,6 +57,7 @@ output_rig.txt
 game_profile.txt
 havokconverter_profile.txt
 datacompiler_profile.txt
+imgui.ini
 
 ipch/
 *.suo

@@ -37,7 +37,7 @@ jsonxx::Object LightConverter::serializeToJson() const
     int lightType = kLightSpot;
     if(m_light->m_type == hkxLight::DIRECTIONAL_LIGHT) lightType = kLightDirectional;
     if(m_light->m_type == hkxLight::POINT_LIGHT) lightType = kLightPoint;
-    lightObject << "type" << std::string(g_lightTypeNames[lightType]);
+    lightObject << "light_type" << std::string(g_lightTypeNames[lightType]);
     lightObject << "shadow" << (bool)m_light->m_shadowCaster;
     float dir[3];
     transform_vec3(dir, m_light->m_direction);

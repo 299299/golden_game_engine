@@ -53,9 +53,17 @@ struct ActorId
 void* load_resource_actor(const char* data, uint32_t size)
 {
     ActorResource* actor = (ActorResource*)data;
+    uint32_t num = actor->m_numComponents;
     char* p = (char*)data;
     p += sizeof(ActorResource);
-    p += actor->m_numComponents * (sizeof(void*) + sizeof(StringId)) * 2;
+    actor->m_resourceNames = (StringId*)p;
+    p += sizeof(StringId) * num;
+    actor->m_resourceTypes = (StringId*)p;
+    p += sizeof(StringId) * num;
+    actor->m_factories = (ComponentFactory**)p;
+    p += sizeof(void*) * num;
+    actor->m_resources = (void**)p;
+    p += sizeof(void*) * num;
     Fact& fact = actor->m_fact;
     fact.m_keys = (Key*)(p);
     p += sizeof(actor->m_fact.m_num_keys * sizeof(Key));

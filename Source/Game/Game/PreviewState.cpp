@@ -7,6 +7,7 @@
 #include "RenderCamera.h"
 #include "DebugDraw.h"
 #include "Log.h"
+#include "Actor.h"
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;

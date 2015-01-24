@@ -17,11 +17,11 @@ bool LookIKCompiler::readJSON( const jsonxx::Object& root )
     memset(&lookat, 0x00, sizeof(lookat));
 
     vec3_make(lookat.m_fwdLS, 0, 0, 1);
-    json_to_floats(root, "forward-ls", lookat.m_fwdLS, 3);
+    json_to_floats(root, "forward_ls", lookat.m_fwdLS, 3);
 
-    lookat.m_lookAtLimit = root.get<float>("lookat-limit", 3.1415926f/4.0f);
-    lookat.m_gain = root.get<float>("gain", 0.05f);
-    lookat.m_targetGain = root.get<float>("target-gain", 0.2f);
+    lookat.m_lookAtLimit = json_to_float(root, "lookat_limit", 3.1415926f/4.0f);
+    lookat.m_gain = json_to_float(root, "gain", 0.05f);
+    lookat.m_targetGain =  json_to_float(root, "target_gain", 0.2f);
 
     const std::string& rigFile = root.get<std::string>("rig");
     lookat.m_rigName = StringId(rigFile.c_str());
@@ -37,18 +37,18 @@ bool ReachIKCompiler::readJSON( const jsonxx::Object& root )
     memset(&reach, 0x00, sizeof(reach));
 
     vec3_make(reach.m_elbowAxis, 0, 1, 0);
-    json_to_floats(root, "elbow-axis", reach.m_elbowAxis, 3);
+    json_to_floats(root, "elbow_axis", reach.m_elbowAxis, 3);
 
     reach.m_hingeLimitAngle[0] = 0;
     reach.m_hingeLimitAngle[1] = 180;
 
-    json_to_floats(root, "hinge-limit-angle", reach.m_hingeLimitAngle, 2);
+    json_to_floats(root, "hinge_limit_angle", reach.m_hingeLimitAngle, 2);
 
-    reach.m_reachGain = root.get<float>("reach-gain", 0.3f);
-    reach.m_leaveGain = root.get<float>("leave-gain", 0.19f);
-    reach.m_moveGain = root.get<float>("move-gain", 0.085f);
-    reach.m_targetGain = root.get<float>("target-gain", 0.2f);
-    reach.m_index = find_enum_index(root.get<std::string>("hand").c_str(), left_right_names);
+    reach.m_reachGain = json_to_float(root, "reach_gain", 0.3f);
+    reach.m_leaveGain = json_to_float(root, "leave_gain", 0.19f);
+    reach.m_moveGain = json_to_float(root, "move_gain", 0.085f);
+    reach.m_targetGain = json_to_float(root, "target_gain", 0.2f);
+    reach.m_index = json_to_enum(root, "hand", left_right_names);
 
     const std::string& rigFile = root.get<std::string>("rig");
     reach.m_rigName = StringId(rigFile.c_str());
@@ -67,30 +67,30 @@ bool FootIKCompiler::readJSON( const jsonxx::Object& root )
     vec3_make(foot.m_rightKneeAxisLS, 0, 0, 1);
     vec3_make(foot.m_footEndLS, 0, 0, 0.2f);
 
-    json_to_floats(root, "left-knee-axis", foot.m_leftKneeAxisLS, 3);
-    json_to_floats(root, "right-knee-axis", foot.m_rightKneeAxisLS, 3);
-    json_to_floats(root, "foot-end-ls", foot.m_footEndLS, 3);
+    json_to_floats(root, "left_knee_axis", foot.m_leftKneeAxisLS, 3);
+    json_to_floats(root, "right_knee_axis", foot.m_rightKneeAxisLS, 3);
+    json_to_floats(root, "foot_end_ls", foot.m_footEndLS, 3);
 
-    foot.m_orignalGroundHeightMS = root.get<float>("orignal-ground-height-ms");
-    foot.m_minAnkleHeightMS = root.get<float>("min-ankle-height-ms");
-    foot.m_maxAnkleHeightMS = root.get<float>("max-ankle-height-ms");
-    foot.m_footPlantedAnkleHeightMS = root.get<float>("foot-planted-ankle-height-ms");
-    foot.m_footRaisedAnkleHeightMS = root.get<float>("foot-raised-ankle-height-ms");
-    foot.m_cosineMaxKneeAngle = root.get<float>("max-consine-knee-angle", 180);
-    foot.m_cosineMinKneeAngle = root.get<float>("min-consine-knee-angle", 0);
-    foot.m_raycastDistanceUp = root.get<float>("raycast-dis-up", 0.5f);
-    foot.m_raycastDistanceDown = root.get<float>("raycast-dis-down", 0.8f);
-    foot.m_raycastCollisionLayer = StringId(root.get<std::string>("raycast-layer").c_str());
-    foot.m_groundAscendingGain =  root.get<float>("ground-ascending-gain", 0.35f);
-    foot.m_groundDescendingGain =  root.get<float>("ground-descending-gain", 0.6f);
-    foot.m_standAscendingGain =  root.get<float>("ground-ascending-gain", 0.6f);
-    foot.m_footPlantedGain =  root.get<float>("foot_planted-gain", 1.0f);
-    foot.m_footRaisedGain =  root.get<float>("foot-raised-gain", 0.85f);
-    foot.m_footOnOffGain =  root.get<float>("foot-onoff-gain", 0.2f);
-    foot.m_footUnLockGain =  root.get<float>("foot-unlock-gain", 0.85f);
-    foot.m_pelvisFeedback =  root.get<float>("pelvis-feedback", 0.1f);
-    foot.m_pelvisUpDownBias =  root.get<float>("pelvis-updown-bias", 0.95f);
-    foot.m_raycastType = find_enum_index(root.get<std::string>("raycast-type").c_str(), raycast_type_names);
+    foot.m_orignalGroundHeightMS = json_to_float(root, "orignal_ground_height_ms");
+    foot.m_minAnkleHeightMS = json_to_float(root, "min_ankle_height_ms");
+    foot.m_maxAnkleHeightMS = json_to_float(root, "max_ankle_height_ms");
+    foot.m_footPlantedAnkleHeightMS = json_to_float(root, "foot_planted_ankle_height_ms");
+    foot.m_footRaisedAnkleHeightMS = json_to_float(root, "foot_raised_ankle_height_ms");
+    foot.m_cosineMaxKneeAngle = json_to_float(root, "max_consine_knee_angle", 180);
+    foot.m_cosineMinKneeAngle = json_to_float(root, "min_consine_knee_angle", 0);
+    foot.m_raycastDistanceUp = json_to_float(root, "raycast_dis_up", 0.5f);
+    foot.m_raycastDistanceDown = json_to_float(root, "raycast_dis_down", 0.8f);
+    foot.m_raycastCollisionLayer = StringId(root.get<std::string>("raycast_layer").c_str());
+    foot.m_groundAscendingGain =  json_to_float(root, "ground_ascending_gain", 0.35f);
+    foot.m_groundDescendingGain =  json_to_float(root, "ground_descending_gain", 0.6f);
+    foot.m_standAscendingGain =  json_to_float(root, "ground_ascending_gain", 0.6f);
+    foot.m_footPlantedGain =  json_to_float(root, "foot_planted_gain", 1.0f);
+    foot.m_footRaisedGain =  json_to_float(root, "foot_raised_gain", 0.85f);
+    foot.m_footOnOffGain =  json_to_float(root, "foot_onoff_gain", 0.2f);
+    foot.m_footUnLockGain =  json_to_float(root, "foot_unlock_gain", 0.85f);
+    foot.m_pelvisFeedback =  json_to_float(root, "pelvis_feedback", 0.1f);
+    foot.m_pelvisUpDownBias =  json_to_float(root, "pelvis_updown_bias", 0.95f);
+    foot.m_raycastType = json_to_enum(root, "raycast_type", raycast_type_names, 0);
 
     const std::string& rigFile = root.get<std::string>("rig");
     foot.m_rigName = StringId(rigFile.c_str());

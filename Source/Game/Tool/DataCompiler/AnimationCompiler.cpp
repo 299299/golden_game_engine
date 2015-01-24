@@ -41,9 +41,9 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         for (uint32_t i = 0; i < triggerNum; ++i)
         {
             AnimTriggerData data;
-            const jsonxx::Object& triggerValue = triggersValue.get<jsonxx::Object>(i);
-            data.m_name = triggerValue.get<std::string>("name");
-            data.m_time = triggerValue.get<float>("time");
+            const jsonxx::Object& o = triggersValue.get<jsonxx::Object>(i);
+            data.m_name = o.get<std::string>("name");
+            data.m_time = json_to_float(o, "time");
             trigger_data.push_back(data);
         }
 
@@ -61,9 +61,9 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         for (uint32_t i = 0; i < beatNum; ++i)
         {
             AnimTriggerData data;
-            const jsonxx::Object& beatValue = beatsValue.get<jsonxx::Object>(i);
-            data.m_name = beatValue.get<std::string>("name");
-            data.m_time = beatValue.get<float>("time");
+            const jsonxx::Object& o = beatsValue.get<jsonxx::Object>(i);
+            data.m_name = o.get<std::string>("name");
+            data.m_time = json_to_float(o, "time");
             beat_data.push_back(data);
         }
 

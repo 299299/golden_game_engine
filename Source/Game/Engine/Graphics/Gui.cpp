@@ -1,7 +1,6 @@
 #include "Gui.h"
 #include <imgui/imgui.h>
 #include "Win32Context.h"
-#include "droidsans.ttf.h"
 #include "DataDef.h"
 
 Gui     g_guiMgr;
@@ -10,7 +9,7 @@ int     g_dbgTexIndex = 0;
 
 void Gui::init()
 {
-    imguiCreate(s_droidSansTtf, sizeof s_droidSansTtf);
+    imguiCreate();
 }
 
 void Gui::frame_start()

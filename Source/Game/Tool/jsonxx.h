@@ -493,62 +493,6 @@ namespace jsonxx {
         return *this << Value(value), *this;
     }
 
-
-#if 1
-    // new add functions
-    template<>
-    inline const float& Value::get<float>() const {
-        JSONXX_ASSERT(is<Number>());
-        return (const float&)number_value_;
-    }
-
-
-    template<>
-    inline const int& Value::get<int>() const {
-        JSONXX_ASSERT(is<Number>());
-        return (const int&)number_value_;
-    }
-
-    template<>
-    inline const unsigned& Value::get<unsigned>() const {
-        JSONXX_ASSERT(is<Number>());
-        return (const unsigned&)number_value_;
-    }
-
-    template<>
-    inline float& Value::get<float>() {
-        JSONXX_ASSERT(is<Number>());
-        return (float&)number_value_;
-    }
-
-
-    template<>
-    inline int& Value::get<int>() {
-        JSONXX_ASSERT(is<Number>());
-        return (int&)number_value_;
-    }
-
-    template<>
-    inline unsigned& Value::get<unsigned>() {
-        JSONXX_ASSERT(is<Number>());
-        return (unsigned&)number_value_;
-    }
-
-    template<>
-    inline bool Value::is<int>() const {
-        return type_ == NUMBER_;
-    }
-    template<>
-    inline bool Value::is<float>() const {
-        return type_ == NUMBER_;
-    }
-    template<>
-    inline bool Value::is<unsigned>() const {
-        return type_ == NUMBER_;
-    }
-
-#endif
-
 }  // namespace jsonxx
 
 std::ostream& operator<<(std::ostream& stream, const jsonxx::Value& v);

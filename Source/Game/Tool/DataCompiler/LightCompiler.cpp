@@ -25,11 +25,11 @@ bool LightCompiler::readJSON( const jsonxx::Object& root )
     }
 
     json_to_floats(root, "direction", light.m_dir, 3);
-    light.m_type = find_enum_index(root.get<std::string>("light-type").c_str(), g_lightTypeNames);
-    light.m_fallOff = root.get<float>("falloff", 0.7f);
-    light.m_intensity = root.get<float>("intensity", 1.0f);
-    light.m_coneAngle = root.get<float>("cone-angle", 0.46f);
-    light.m_attenScale = root.get<float>("atten-scale", 0.0f);
+    light.m_type = json_to_enum(root, "light_type", g_lightTypeNames);
+    light.m_fallOff = json_to_float(root, "falloff", 0.7f);
+    light.m_intensity = json_to_float(root, "intensity", 1.0f);
+    light.m_coneAngle = json_to_float(root, "cone_angle", 0.46f);
+    light.m_attenScale = json_to_float(root, "atten_scale", 0.0f);
     light.m_hasShadow = root.get<bool>("shadow");
     return write_file(m_output, &light, sizeof(light));
 }

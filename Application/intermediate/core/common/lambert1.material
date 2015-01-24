@@ -1,5 +1,5 @@
 {
     "shader": "base",
-    "shadow-shader":"shadow",
+    "shadow_shader":"shadow",
     "diffuse":[128, 128, 128]
-} 
+}

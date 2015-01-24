@@ -4,7 +4,6 @@
 #include "bgfx_shader.sc"
 #include "shaderlib.sc"
 
-
 #define ALPHA_THRESHOLD 0.1f
 
 uniform float   u_time;

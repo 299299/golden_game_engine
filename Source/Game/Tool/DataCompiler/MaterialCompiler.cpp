@@ -42,7 +42,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
         addDependency("shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
 
-    programFile = root.get<std::string>("shadow-shader", "");
+    programFile = root.get<std::string>("shadow_shader", "");
     if(!programFile.empty())
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
@@ -59,9 +59,9 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
 
 
     json_to_floats(root, "diffuse", m->m_diffuse, 3);
-    m->m_diffuse[3] = root.get<float>("diffuse-alpha", 1.0f);
+    m->m_diffuse[3] = json_to_float(root, "diffuse_alpha", 1.0f);
     json_to_floats(root, "specular", m->m_specular, 3);
-    m->m_specular[3] = root.get<float>("specular-power", 20.0f);
+    m->m_specular[3] = json_to_float(root, "specular_power", 20.0f);
 
     //convert all color 255 to 1 range.
     for(uint32_t i=0; i<3; ++i)
@@ -78,12 +78,12 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     m->m_offsetAndRepeat[2] = 1;
     m->m_offsetAndRepeat[3] = 1;
 
-    json_to_floats(root, "uv-offset", m->m_offsetAndRepeat, 2);
-    json_to_floats(root, "uv-repeat", m->m_offsetAndRepeat + 2, 2);
+    json_to_floats(root, "uv_offset", m->m_offsetAndRepeat, 2);
+    json_to_floats(root, "uv_repeat", m->m_offsetAndRepeat + 2, 2);
 
-    m->m_params1[0] = root.get<float>("blend-normal", 0.4f);
-    m->m_params1[1] = root.get<float>("normal-height", 1.0f);
-    m->m_params1[2] = root.get<float>("emissive-intensity", 1.0f);
+    m->m_params1[0] = json_to_float(root, "blend_normal", 0.4f);
+    m->m_params1[1] = json_to_float(root, "normal_height", 1.0f);
+    m->m_params1[2] = json_to_float(root, "emissive_intensity", 1.0f);
 
     extern const char*  g_textureNames[];
     extern const char* g_textureFlagNames[];
@@ -95,11 +95,11 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
         m->m_samplers = (MatSampler*)(mem.m_buf + sizeof(Material));
         for(unsigned i=0; i<m->m_numSamplers; ++i)
         {
-            const jsonxx::Object& samplerValue = samplersValue.get<jsonxx::Object>(i);
+            const jsonxx::Object& o = samplersValue.get<jsonxx::Object>(i);
             MatSampler& sampler = m->m_samplers[i];
-            sampler.m_type = find_enum_index(samplerValue.get<std::string>("name").c_str(), g_textureNames);
+            sampler.m_type = json_to_enum(o, "name", g_textureNames);
             sampler.m_flags = 0;
-            uint32_t flags = json_to_flags(samplerValue, "flags", g_textureFlagNames);
+            uint32_t flags = json_to_flags(o, "flags", g_textureFlagNames);
             if(flags > 0)
             {
                 for(uint32_t i=0; i<g_textureFlagNum; ++i)
@@ -111,37 +111,37 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             }
 
             std::string textureFile;
-            if(samplerValue.has<jsonxx::Object>("texture"))
+            if(o.has<jsonxx::Object>("texture"))
             {
                 //if it is a object, this is special case come from
                 //when group the texture resources to on json file.
                 TextureCompiler* compiler = new TextureCompiler;
                 compiler->m_mode = 1;
                 compiler->m_outputFolder = getFilePath(m_output);
-                if(!compiler->readJSON(samplerValue.get<jsonxx::Object>("texture")))
+                if(!compiler->readJSON(o.get<jsonxx::Object>("texture")))
                     m_subCompilerError = true;
                 textureFile = compiler->m_name;
                 g_config->add_child_compile(compiler);
             }
-            else if(samplerValue.has<std::string>("texture"))
+            else if(o.has<std::string>("texture"))
             {
-                textureFile = samplerValue.get<std::string>("texture");
+                textureFile = o.get<std::string>("texture");
             }
             sampler.m_textureName = StringId(textureFile.c_str());
             addDependency("texture", name_to_file_path(textureFile, Texture::get_name()));
         }
     }
 
-    if(root.has<jsonxx::Object>("render-state"))
+    if(root.has<jsonxx::Object>("render_state"))
     {
-        const jsonxx::Object& rsValue = root.get<jsonxx::Object>("render-state");
+        const jsonxx::Object& rsValue = root.get<jsonxx::Object>("render_state");
         //@TODO only cull mode now.
-        if(rsValue.get<bool>("cull-none"))
+        if(rsValue.get<bool>("cull_none"))
         {
             renderState &= ~BGFX_STATE_CULL_CW;
             renderState &= ~BGFX_STATE_CULL_CCW;
         }
-        if(rsValue.get<bool>("alpha-blending"))
+        if(rsValue.get<bool>("alpha_blending"))
         {
             renderState |= BGFX_STATE_BLEND_ADD;
             renderState |= BGFX_STATE_BLEND_ALPHA;
@@ -155,8 +155,8 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
         const jsonxx::Array& flagsValue = root.get<jsonxx::Array>("flags");
         for (uint32_t i=0; i<flagsValue.size(); ++i)
         {
-            const jsonxx::Object& flagValue = flagsValue.get<jsonxx::Object>(i);
-            int type = find_enum_index(flagValue.get<std::string>("name").c_str(), g_matFlagNames);
+            const jsonxx::Object& o = flagsValue.get<jsonxx::Object>(i);
+            int type = json_to_enum(o, "name", g_matFlagNames);
             if(type < 0) continue;
             flags |= (1 << type);
 
@@ -164,9 +164,9 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             {
             case kFlagRimLighting:
                 {
-                    m->m_rimColor.m_rimFresnelMin = flagValue.get<float>("rimFresnelMin", 0.8f);
-                    m->m_rimColor.m_rimFresnelMax = flagValue.get<float>("rimFresnelMax", 1.0f);
-                    m->m_rimColor.m_rimBrightness = flagValue.get<float>("rimBrightness", 0.0f);
+                    m->m_rimColor.m_rimFresnelMin = json_to_float(o, "rimFresnelMin", 0.8f);
+                    m->m_rimColor.m_rimFresnelMax = json_to_float(o, "rimFresnelMax", 1.0f);
+                    m->m_rimColor.m_rimBrightness = json_to_float(o, "rimBrightness", 0.0f);
                 }
                 break;
             case kFlagTranslucency:
@@ -175,20 +175,20 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
                     vec3_make(translucency.m_rampOuterColor, 1.0f, 0.64f, 0.25f);
                     vec3_make(translucency.m_rampMediumColor, 1.0f, 0.21f, 0.14f);
                     vec3_make(translucency.m_rampInnerColor, 0.25f, 0.05f, 0.02f);
-                    json_to_floats(flagValue, "ramp_outer_color",translucency.m_rampOuterColor, 3);
-                    json_to_floats(flagValue, "ramp_medium_color",translucency.m_rampMediumColor, 3);
-                    json_to_floats(flagValue, "ramp_inner_color",translucency.m_rampInnerColor, 3);
-                    translucency.m_info[0] = flagValue.get<float>("distortion", 0.2f);
-                    translucency.m_info[1] = flagValue.get<float>("power", 3.0f);
-                    translucency.m_info[2] = flagValue.get<float>("scale", 1.0f);
-                    translucency.m_info[3] = flagValue.get<float>("min", 0.0f);
+                    json_to_floats(o, "ramp_outer_color",translucency.m_rampOuterColor, 3);
+                    json_to_floats(o, "ramp_medium_color",translucency.m_rampMediumColor, 3);
+                    json_to_floats(o, "ramp_inner_color",translucency.m_rampInnerColor, 3);
+                    translucency.m_info[0] = json_to_float(o, "distortion", 0.2f);
+                    translucency.m_info[1] = json_to_float(o, "power", 3.0f);
+                    translucency.m_info[2] = json_to_float(o, "scale", 1.0f);
+                    translucency.m_info[3] = json_to_float(o, "min", 0.0f);
                 }
                 break;
             case kFlagOpacity:
                 {
-                    m->m_opacityParams[0] = flagValue.get<float>("opacity", 1.0f);
-                    m->m_opacityParams[1] = flagValue.get<float>("fresnel_min", 0.0f);
-                    m->m_opacityParams[2] = flagValue.get<float>("fresnel_max", 0.0f);
+                    m->m_opacityParams[0] = json_to_float(o, "opacity", 1.0f);
+                    m->m_opacityParams[1] = json_to_float(o, "fresnel_min", 0.0f);
+                    m->m_opacityParams[2] = json_to_float(o, "fresnel_max", 0.0f);
 
                     //if opacity is on
                     //default to alpha blending render state.

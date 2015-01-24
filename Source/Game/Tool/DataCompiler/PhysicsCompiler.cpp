@@ -20,7 +20,7 @@ bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
     MemoryBuffer mem(memSize);
     PhysicsResource* physics = (PhysicsResource*)mem.m_buf;
     extern const char* physics_type_names[];
-    physics->m_systemType = find_enum_index(root.get<std::string>("physics_type").c_str(), physics_type_names);
+    physics->m_systemType = json_to_enum(root, "physics_type", physics_type_names);
     physics->m_havokDataOffset = havokOffset;
     physics->m_havokDataSize = havokReader.m_size;
     memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
@@ -34,16 +34,16 @@ bool ProxyCompiler::readJSON(const jsonxx::Object& root)
     memset(&proxy, 0x00, sizeof(proxy));
 
     vec3_make(proxy.m_gravity, 0, -9.8f, 0);
-    proxy.m_radius = root.get<float>("radius", 0.5f);
-    proxy.m_standHeight = root.get<float>("stand_height", 2.0f);
-    proxy.m_friction = root.get<float>("friction", 0.9f);
-    proxy.m_strength = root.get<float>("strength", 1.0f);
-    proxy.m_verticalGain = root.get<float>("vertical-gain", 0.2f);
-    proxy.m_horizontalGain = root.get<float>("horizontal-gain", 0.8f);
-    proxy.m_maxVerticalSeparation = root.get<float>("max-vertical-separation", 5.0f);
-    proxy.m_maxHorizontalSeparation = root.get<float>("max-horizontal-separation", 0.15f);
-    proxy.m_offset = root.get<float>("offset", proxy.m_standHeight/2);
-    proxy.m_layerName = StringId(root.get<std::string>("collision-layer", "character-proxy").c_str());
+    proxy.m_radius = json_to_float(root, "radius", 0.5f);
+    proxy.m_standHeight = json_to_float(root, "stand_height", 2.0f);
+    proxy.m_friction = json_to_float(root, "friction", 0.9f);
+    proxy.m_strength = json_to_float(root, "strength", 1.0f);
+    proxy.m_verticalGain = json_to_float(root, "vertical_gain", 0.2f);
+    proxy.m_horizontalGain = json_to_float(root, "horizontal_gain", 0.8f);
+    proxy.m_maxVerticalSeparation = json_to_float(root, "max_vertical_separation", 5.0f);
+    proxy.m_maxHorizontalSeparation = json_to_float(root, "max_horizontal_separation", 0.15f);
+    proxy.m_offset = json_to_float(root, "offset", proxy.m_standHeight/2);
+    proxy.m_layerName = StringId(root.get<std::string>("collision_layer", "character_proxy").c_str());
 
     json_to_floats(root, "gravity", proxy.m_gravity, 3);
     return write_file(m_output, &proxy, sizeof(proxy));
@@ -63,7 +63,7 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
 {
     BaseCompiler::readJSON(root);
 
-    const jsonxx::Array& filtersValue = root.get<jsonxx::Array>("collision-filters");
+    const jsonxx::Array& filtersValue = root.get<jsonxx::Array>("collision_filters");
     uint32_t numOfFilters = filtersValue.size();
 
     ENGINE_ASSERT_ARGS(numOfFilters <= 32, "collsion filter num overflow = %d", numOfFilters);
@@ -71,7 +71,7 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
     PhysicsConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
     cfg.m_numFilterLayers = numOfFilters;
-    cfg.m_worldSize = root.get<float>("world_size", 1000.0f);
+    cfg.m_worldSize = json_to_float(root, "world_size", 1000.0f);
     vec3_make(cfg.m_gravity, 0, -9.8f, 0);
     json_to_floats(root, "gravity", cfg.m_gravity, 3);
 
@@ -86,18 +86,18 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
         const jsonxx::Object& filterValue = filtersValue.get<jsonxx::Object>(i);
         CollisionFilter& filter = cfg.m_filters[i];
         uint32_t mask = 0;
-        if(filterValue.has<jsonxx::Array>("collides-with"))
+        if(filterValue.has<jsonxx::Array>("collides_with"))
         {
-            const jsonxx::Array& colValue = filterValue.get<jsonxx::Array>("collides-with");
+            const jsonxx::Array& colValue = filterValue.get<jsonxx::Array>("collides_with");
             for(uint32_t i=0; i<colValue.size(); ++i)
             {
                 int index = findFilterIndex(colValue.get<std::string>(i));
                 ADD_BITS(mask, 1 << index);
             }
         }
-        else if(filterValue.has<jsonxx::Array>("collides-with-all-except"))
+        else if(filterValue.has<jsonxx::Array>("collides_with_all_except"))
         {
-            const jsonxx::Array& colExceptValue = filterValue.get<jsonxx::Array>("collides-with-all-except");
+            const jsonxx::Array& colExceptValue = filterValue.get<jsonxx::Array>("collides_with_all_except");
             mask = 0xffffffff;
             for(uint32_t i=0; i<colExceptValue.size(); ++i)
             {
