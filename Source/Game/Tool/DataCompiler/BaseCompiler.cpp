@@ -18,6 +18,7 @@ void BaseCompiler::postProcess()
     checkDependency();
     if(m_mode != 0 || !m_processed || m_subCompilerError) return;
     g_config->m_database.insertResourceFile(m_input, m_modifyTime);
+    g_config->m_processedCompilers.push_back(this);
 }
 
 void BaseCompiler::checkDependency()
@@ -65,6 +66,7 @@ BaseCompiler* BaseCompiler::createChildCompiler( const std::string& type, const 
     BaseCompiler* compiler = g_config->create_compiler(type);
     compiler->m_mode = 1;
     compiler->m_outputFolder = getFilePath(m_output);
+    compiler->m_resourceName = root.get<std::string>("name");
     if(!compiler->readJSON(root)) m_subCompilerError = true;
     g_config->add_child_compile(compiler);
     return compiler;

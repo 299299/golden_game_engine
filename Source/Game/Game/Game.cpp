@@ -52,8 +52,12 @@ int game_main(int argc, bx::CommandLine* cmdline)
     g_gameFSM.add_state(new PreviewState);
     g_gameFSM.add_state(new PlayerState);
 
-    extern void resource_hot_reload_init();
-    resource_hot_reload_init();
+    bool _autoreload = cmdline->hasArg("autoreload");
+    if(_autoreload)
+    {
+        extern void resource_hot_reload_init();
+        resource_hot_reload_init();
+    }
 
     if(!g_resourceMgr.load_package_and_wait("data/core.package"))
     {
@@ -94,6 +98,13 @@ int game_main(int argc, bx::CommandLine* cmdline)
 err:
     //------------------------------------------------------------
     g_profiler.dump_to_file("game_profile.txt", true, true);
+    
+    if(_autoreload)
+    {
+        extern void resource_hot_reload_shutdown();
+        resource_hot_reload_shutdown();
+    }
+    
     //------------------------------------------------------------
     g_engine.quit();
     return 0;

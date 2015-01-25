@@ -17,6 +17,7 @@ struct hkxAttributeGroup;
 #define SHADERC_PATH            ("shaderc.exe")
 #define SHADER_INCLUDE_EXT      ("sc")
 #define SHADER_SOURCE_PATH      INTERMEDIATE_PATH"core/shaders/"
+#define DC_RESULT               ("data_compiler_result.txt")
 
 std::string getFileNameAndExtension(const std::string& fileName);
 std::string getFileName(const std::string& fileName);
@@ -39,7 +40,7 @@ void        findFolders(const std::string& folder, bool bRecursive, std::vector<
 uint32_t    get_file_size(const std::string& fileName);
 std::string remove_top_folder(const std::string& fileName);
 std::string get_top_folder(const std::string& dirName);
-void        shell_exec(const std::string& exe, const std::string& args, const std::string& workDir = "", bool bHide = true);
+int         shell_exec(const std::string& exe, const std::vector<std::string>& args, const std::string& workDir = "", bool bHide = true);
 std::string name_to_file_path(const std::string& resourceName, const std::string& ext);
 bool        delete_file(const std::string& fileName);
 void        compile_shader(const std::string& src, const std::string& dst, const std::string& def, bool vs);

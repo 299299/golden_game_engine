@@ -101,7 +101,8 @@ MeshConverter::~MeshConverter()
 
 void MeshConverter::process(void* pData, int hint)
 {
-    PROFILE(mesh_converter_process);
+    HC_PROFILE(mesh_converter_process);
+
     m_mesh = (hkxMeshSection*)pData;
 #ifdef HAVOK_COMPILE
     processVertexBuffer(m_mesh->m_vertexBuffer);
@@ -211,7 +212,8 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
 
 void MeshConverter::processVertexBuffer(hkxVertexBuffer* vb)
 {
-    PROFILE(mesh_process_vertex_buffer);
+    HC_PROFILE(mesh_process_vertex_buffer);
+    
 #ifdef HAVOK_COMPILE
     m_numVertices = vb->getNumVertices();
     processDesc(vb->getVertexDesc());
@@ -221,7 +223,8 @@ void MeshConverter::processVertexBuffer(hkxVertexBuffer* vb)
 
 void MeshConverter::processTangent()
 {
-    PROFILE(mesh_process_tangent);
+    HC_PROFILE(mesh_process_tangent);
+
 #ifdef HAVOK_COMPILE
     hkxVertexBuffer* vb = m_mesh->m_vertexBuffer;
     const hkxVertexDescription::ElementDecl* ed_normal = vb->getVertexDesc().getElementDecl(hkxVertexDescription::HKX_DU_NORMAL,0);
@@ -256,7 +259,8 @@ void MeshConverter::processTangent()
 
 void MeshConverter::processIndexBuffer(hkxIndexBuffer* ib)
 {
-    PROFILE(mesh_process_index_buffer);
+    HC_PROFILE(mesh_process_index_buffer);
+
 #ifdef HAVOK_COMPILE
     ENGINE_ASSERT(ib->m_indexType == hkxIndexBuffer::INDEX_TYPE_TRI_LIST, "not tri list index buffer.");
     int numIndices = ib->m_indices16.getSize();

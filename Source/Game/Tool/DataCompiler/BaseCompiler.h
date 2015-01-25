@@ -31,13 +31,16 @@ public:
     virtual bool parseWithJson() const { return false; };
     virtual void checkModifyTime();
 
+    std::vector<ResourceDependency>                 m_dependencies;
+
     std::string                                     m_name;
     std::string                                     m_input;
     std::string                                     m_output;
     std::string                                     m_outputFolder;
+    std::string                                     m_resourceName;
+
     int                                             m_mode;
     uint32_t                                        m_modifyTime;
-    std::vector<ResourceDependency>                 m_dependencies;
     bool                                            m_processed;
     bool                                            m_subCompilerError;
     bool                                            m_skipped;

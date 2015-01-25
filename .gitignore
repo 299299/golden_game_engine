@@ -46,17 +46,15 @@ keyboard/
 data/
 string_table.txt
 dump.txt
-havok_convert_database.txt
 data_compiler_database.txt
-maya_export_database.txt
 data_compiler_result.txt
 DataCompiler.exe
 HavokConverter.exe
 *_error.txt
 output_rig.txt
 game_profile.txt
-havokconverter_profile.txt
-datacompiler_profile.txt
+havok_converter_profile.txt
+data_compiler_profile.txt
 imgui.ini
 
 ipch/

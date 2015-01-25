@@ -93,3 +93,13 @@ struct Id
 /// Note that ALIGNMENT must be a power of two for this to work.
 /// Note: to use this macro you must cast your pointer to a byte pointer or to an integer value.
 #define NEXT_MULTIPLE_OF(ALIGNMENT, VALUE)  ( ((VALUE) + ((ALIGNMENT)-1)) & (~((ALIGNMENT)-1)) )
+
+#define FIND_IN_ARRAY(_array, _len, _find, _index)\
+        for(int i=0; i<_len; ++i)\
+        {\
+            if(_array[i] == _find)\
+            {\
+                _index = i;\
+                break;\
+            } \
+       }

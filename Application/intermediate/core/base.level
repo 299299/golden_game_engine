@@ -16,7 +16,7 @@
         {
             "name":"box",
             "type":"core/common/cube",
-            "translation":[0, 10, 0]
+            "translation":[0, 2, 0]
         }
     ]
 }

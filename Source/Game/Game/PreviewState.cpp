@@ -70,6 +70,9 @@ void PreviewState::step( float dt )
     }
 
     g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());
+
+    extern void resource_hot_reload_update(float);
+    resource_hot_reload_update(dt);
 #endif
 }
 

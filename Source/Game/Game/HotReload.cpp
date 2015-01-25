@@ -1,3 +1,4 @@
+#ifndef _RETAIL
 #include "Resource.h"
 #include "Log.h"
 #include "AnimationSystem.h"
@@ -23,6 +24,8 @@
 #include "Component.h"
 #include "Actor.h"
 #include "DataDef.h"
+#include "FileWatcher.h"
+#include "ToolUtils.h"
 
 #ifdef HAVOK_COMPILE
 #include <Animation/Animation/Animation/hkaAnimation.h>
@@ -30,9 +33,27 @@
 #include <Animation/Animation/Animation/Mirrored/hkaMirroredAnimation.h>
 #endif
 
-static void* g_tmpResourceArray[1024*10];
-const uint32_t resourceMax = BX_COUNTOF(g_tmpResourceArray);
-static ResourceInfo** result = (ResourceInfo**)g_tmpResourceArray;
+#define MAX_RESOURCES_NUM 1024*10
+struct HotReloadData
+{
+    FileWatcher         m_watcher;
+    ResourceInfo**      m_results;
+
+    void init()
+    {
+        m_results = (ResourceInfo**)malloc(sizeof(ResourceInfo*) * MAX_RESOURCES_NUM);
+        m_watcher.start_watching("intermediate", true);
+    }
+    void shutdown()
+    {
+        free(m_results);
+    }
+};
+
+HotReloadData* g_hotReload = 0;
+
+#define FIND_RESOURCES(_type)   g_resourceMgr.find_resources_type_of(_type::get_type(), g_hotReload->m_results, MAX_RESOURCES_NUM);
+#define GET_RESOURCE(_type)     (_type*)g_hotReload->m_results[i]->m_ptr;
 
 //===================================================================================================
 template <typename T, typename U> void reload_component_resource(void* oldResource, void* newResource)
@@ -133,11 +154,11 @@ void reload_animation_resource(void* oldResource, void* newResource)
     Animation* oldAnimation = (Animation*)oldResource;
     Animation* newAnimation = (Animation*)newResource;
 
-    uint32_t numOfAnimations = g_resourceMgr.find_resources_type_of(Animation::get_type(), result, resourceMax);
+    uint32_t numOfAnimations = FIND_RESOURCES(Animation);
     LOGD("total num of animation resources = %d", numOfAnimations);
     for (uint32_t i = 0; i < numOfAnimations; ++i)
     {
-        Animation* anim = (Animation*)result[i]->m_ptr;
+        Animation* anim = GET_RESOURCE(Animation);
         if(!anim->m_mirroredFrom) continue;
 
 #ifdef HAVOK_COMPILE
@@ -173,11 +194,11 @@ void reload_material_resource(void* oldResource, void* newResource)
     Material* oldMat = (Material*)oldResource;
     Material* newMat = (Material*)newResource;
 
-    uint32_t numOfModels = g_resourceMgr.find_resources_type_of(ModelResource::get_type(), result, resourceMax);
+    uint32_t numOfModels = FIND_RESOURCES(ModelResource);
     LOGD("total num of model resources = %d", numOfModels);
     for(uint32_t i=0; i<numOfModels; ++i)
     {
-        ModelResource* model = (ModelResource*)result[i]->m_ptr;
+        ModelResource* model = GET_RESOURCE(ModelResource);
         for(uint32_t j=0; j<model->m_numMaterials; ++j)
         {
             if(model->m_materials[j] == oldMat)
@@ -210,11 +231,11 @@ void reload_texture_resource(void* oldResource, void* newResource)
     Texture* oldTex = (Texture*)oldResource;
     Texture* newTex = (Texture*)newResource;
 
-    uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::get_type(), result, resourceMax);
+    uint32_t numOfMaterials = FIND_RESOURCES(Material);
     LOGD("total num of materials = %d", numOfMaterials);
     for(uint32_t i=0; i<numOfMaterials; ++i)
     {
-        Material* mat = (Material*)result[i]->m_ptr;
+        Material* mat = GET_RESOURCE(Material);
         for(uint32_t j=0; j<mat->m_numSamplers; ++j)
         {
             MatSampler& sampler = mat->m_samplers[j];
@@ -231,11 +252,11 @@ void reload_texture_3d_resource(void* oldResource, void* newResource)
     Raw3DTexture* oldTex = (Raw3DTexture*)oldResource;
     Raw3DTexture* newTex = (Raw3DTexture*)newResource;
 
-    uint32_t numOfEnv = g_resourceMgr.find_resources_type_of(ShadingEnviroment::get_type(), result, resourceMax);
+    uint32_t numOfEnv = FIND_RESOURCES(ShadingEnviroment);
     LOGD("total num of shading enviroment = %d", numOfEnv);
     for(uint32_t i=0; i<numOfEnv; ++i)
     {
-        ShadingEnviroment* env = (ShadingEnviroment*)result[i]->m_ptr;
+        ShadingEnviroment* env = GET_RESOURCE(ShadingEnviroment);
         for (uint32_t j = 0; j < env->m_numColorgradingTextures; ++j)
         {
             if(env->m_colorGradingTextures[j] == oldTex) env->m_colorGradingTextures[j] = newTex;
@@ -247,11 +268,11 @@ void reload_mesh_resource(void* oldResource, void* newResource)
     Mesh* oldMesh = (Mesh*)oldResource;
     Mesh* newMesh = (Mesh*)newResource;
 
-    uint32_t numOfModels = g_resourceMgr.find_resources_type_of(ModelResource::get_type(), result, resourceMax);
+    uint32_t numOfModels = FIND_RESOURCES(ModelResource);
     LOGD("total num of model resources = %d", numOfModels);
     for(uint32_t i=0; i<numOfModels; ++i)
     {
-        ModelResource* model = (ModelResource*)result[i]->m_ptr;
+        ModelResource* model = GET_RESOURCE(ModelResource);
         if(model->m_mesh == oldMesh)
             model->m_mesh = newMesh;
     }
@@ -271,11 +292,11 @@ void reload_program_resource(void* oldResource, void* newResource)
     CHECK_SHADER_HANDLE(g_postProcess.m_blurShader);
     CHECK_SHADER_HANDLE(g_postProcess.m_combineShader);
 
-    uint32_t numOfMaterials = g_resourceMgr.find_resources_type_of(Material::get_type(), result, resourceMax);
+    uint32_t numOfMaterials = FIND_RESOURCES(Material);
     LOGD("total num of materials = %d", numOfMaterials);
     for(uint32_t i=0; i<numOfMaterials; ++i)
     {
-        Material* mat = (Material*)result[i]->m_ptr;
+        Material* mat = GET_RESOURCE(Material);
         if(mat->m_shader == oldProgram)
             mat->m_shader = newProgram;
         if(mat->m_shadowShader == oldProgram)
@@ -291,11 +312,11 @@ void reload_shader_resource(void* oldResource, void* newResource)
     Shader* oldShader = (Shader*)oldResource;
     Shader* newShader = (Shader*)newResource;
 
-    uint32_t numOfPrograms = g_resourceMgr.find_resources_type_of(ShaderProgram::get_type(), result, resourceMax);
+    uint32_t numOfPrograms = FIND_RESOURCES(ShaderProgram);
     LOGD("total num of programs = %d", numOfPrograms);
     for(uint32_t i=0; i<numOfPrograms; ++i)
     {
-        ShaderProgram* program = (ShaderProgram*)result[i]->m_ptr;
+        ShaderProgram* program = GET_RESOURCE(ShaderProgram);
         if(program->m_vs == oldShader || program->m_ps == oldShader)
         {
             bgfx::ProgramHandle oldHandle = program->m_handle;
@@ -361,6 +382,78 @@ void resource_hot_reload_init()
     register_component_resource_reload_callback_<RagdollResource,RagdollInstance>();
     register_component_resource_reload_callback_<FootResource, FootInstance>();
     register_component_resource_reload_callback_<ProxyResource, ProxyInstance>();
+
+    g_hotReload = new HotReloadData;
+    g_hotReload->init();
 }
 
+void resource_hot_reload_shutdown()
+{
+    g_hotReload->shutdown();
+    SAFE_DELETE(g_hotReload);
+}
 
+void resource_hot_reload_update(float dt)
+{
+    if(!g_hotReload)
+        return;
+
+    char _buf[256];
+    bool _changed = g_hotReload->m_watcher.get_next_change(_buf, sizeof _buf);
+    if(!_changed)
+        return;
+
+    int _dot = -1;
+    int _len = strlen(_buf);
+    FIND_IN_ARRAY(_buf, _len, '.', _dot);
+
+    const char* _ext = _buf + _dot + 1;
+    StringId _type = StringId(_ext);
+
+    ResourceFactory* fac = g_resourceMgr.find_factory(_type);
+    if(!fac)
+    {
+        LOGE("can not find any reload ext for %s type", _ext);
+        return;
+    }
+
+#if 0
+    char _name[256];
+    memset(_name, 0, sizeof _name);
+    strncpy(_name, _buf, _dot);
+    g_resourceMgr.reload_resource(_type, StringId(_name), _buf);
+#endif
+
+#ifdef _DEBUG
+    const char* exeName = "gameDebug.exe";
+#else
+    const char* exeName = "gameRelease.exe";
+#endif
+
+    std::vector<std::string> args;
+    args.push_back("--action");
+    args.push_back("DataCompile");
+    args.push_back("-i");
+    args.push_back("intermediate");
+    args.push_back("-o");
+    args.push_back("-data");
+    shell_exec(exeName, args);
+
+    FILE* fp = fopen(DC_RESULT, "r");
+    if(!fp) {
+        LOGW(__FUNCTION__ " can not open file %s", DC_RESULT);
+        return;
+    }
+    char buf1[256], buf2[256];
+    while(!feof(fp))
+    {
+        int argNum = fscanf(fp, "%s,%s", buf1, buf2);
+        if(argNum != 2) break;
+        
+        std::string ext = getFileExt(buf1);
+        g_resourceMgr.reload_resource(StringId(ext.c_str()), StringId(buf2), buf1);
+    }
+    fclose(fp);
+}
+
+#endif

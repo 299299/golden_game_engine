@@ -28,7 +28,10 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     cfg.m_havokFrameMemSize = 0;
     cfg.m_havokMonitorMemSize = 0;
     g_memoryMgr.init(cfg);
+
+#ifdef HC_PROFILE
     g_profiler.init(64);
+#endif
 
     g_hc_config = new HC_Config;
     g_hc_config->m_packNormal = cmdline->hasArg("packnormal");
@@ -148,8 +151,10 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     }
     converter->postProcess();
     converter->serializeToFile(config.m_output.c_str());
-    g_profiler.dump_to_file("havokconverter_profile.txt", true, true);
 
+#ifdef HC_PROFILE
+    g_profiler.dump_to_file("havokconverter_profile.txt", true, true);
+#endif
 
 error_exit:
     SAFE_REMOVEREF(converter);
@@ -157,7 +162,10 @@ error_exit:
     if(!g_hc_config->m_slient) g_hc_config->m_error.show_error();
     SAFE_DELETE(g_hc_config);
 
+#ifdef HC_PROFILE
     g_profiler.shutdown();
+#endif
+
     g_memoryMgr.shutdown();
 
     timeMS = GetTickCount() - timeMS;

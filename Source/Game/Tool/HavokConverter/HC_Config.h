@@ -5,6 +5,13 @@
 #define     PROXY_NAME          ("Proxy_")
 #define     LEVEL_NAME          ("Level")
 #define     ENGINE_ATTRIBUTES   ("engine_attributes")
+//#define   HC_DUMP_PROFILE
+
+#ifdef HC_DUMP_PROFILE
+#define HC_PROFILE(name)      PROFILE(name)
+#else
+#define HC_PROFILE(name)       
+#endif
 
 struct HC_Config
 {

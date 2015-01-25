@@ -326,16 +326,21 @@ std::string get_top_folder(const std::string& dirName)
     return ret.substr(0, npos);
 }
 
-void shell_exec(const std::string& exe, const std::string& args, const std::string& workDir, bool bHide)
+int shell_exec(const std::string& exe, const std::vector<std::string>& args, const std::string& workDir, bool bHide)
 {
-#ifdef HAVOK_COMPILE
+#ifdef WIN32
     SHELLEXECUTEINFO ShExecInfo = {0};
     ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
     ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
     ShExecInfo.hwnd = NULL;
     ShExecInfo.lpVerb = NULL;
     ShExecInfo.lpFile = exe.c_str();
-    ShExecInfo.lpParameters = args.c_str();
+    std::string arg_line;
+    for (size_t i=0; i<args.size(); ++i)
+    {
+        arg_line += " " + args[i];
+    }
+    ShExecInfo.lpParameters = arg_line.c_str();
     ShExecInfo.lpDirectory = workDir.length() ? workDir.c_str() : 0;
     ShExecInfo.nShow = bHide ? SW_HIDE : SW_SHOW;
     ShExecInfo.hInstApp = NULL;
@@ -343,9 +348,31 @@ void shell_exec(const std::string& exe, const std::string& args, const std::stri
     if(!bRet)
     {
         LOGE("ShellExecuteEx error ");
-        return;
+        return -1;
     }
     WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
+    return bRet;
+#else
+    pid_t pid = fork();
+    if (!pid)
+    {
+        std::vector<const char*> argPtrs;
+        argPtrs.push_back(exe.c_str());
+        for (unsigned i = 0; i < args.Size(); ++i)
+            argPtrs.push_back(args[i].c_str());
+        argPtrs.push_back(0);
+
+        execvp(argPtrs[0], (char**)&argPtrs[0]);
+        return -1; // Return -1 if we could not spawn the process
+    }
+    else if (pid > 0)
+    {
+        int exitCode;
+        wait(&exitCode);
+        return exitCode;
+    }
+    else
+        return -1;
 #endif
 }
 
@@ -370,7 +397,9 @@ void compile_shader(const std::string& src, const std::string& dst, const std::s
                 "-f %s -o %s --type %s --platform windows --verbose -p %s --varyingdef %s",
                 src.c_str(), dst.c_str(), type, target, def.c_str());
     std::string folder = getFilePath(src);
-    shell_exec(SHADERC_PATH, buf, "");
+    std::vector<std::string> args;
+    args.push_back(buf);
+    shell_exec(SHADERC_PATH, args, "");
 #if 1
     if(!isFileExist(dst))
     {
@@ -608,7 +637,14 @@ void texconv_compress( const std::string& src, const std::string& folder, const 
     string_replace(srcFile, "/", "\\");
     std::string dstDir = folder;
     string_replace(dstDir, "/", "\\");
-    std::string args = srcFile + " -ft DDS " + " -f " + fmt + " -o " + dstDir;
+    std::vector<std::string> args;
+    args.push_back(srcFile);
+    args.push_back("-ft");
+    args.push_back("DDS");
+    args.push_back("-f");
+    args.push_back(fmt);
+    args.push_back("-o");
+    args.push_back(dstDir);
     shell_exec(TEXCONV_PATH, args);
 }
 

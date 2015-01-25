@@ -5,6 +5,13 @@
 //#define COMPILER_LOAD_TEST
 #endif
 #define     DC_DATABASE         ("data_compiler_database.txt")
+//#define     DC_DUMP_PROFILE
+
+#ifdef DC_DUMP_PROFILE
+#define DC_PROFILE(name)      PROFILE(name)
+#else
+#define DC_PROFILE(name)       
+#endif
 
 struct ResourceFileDataBase;
 typedef std::vector<std::string> StringArray;
@@ -28,6 +35,7 @@ struct DC_Config
     std::vector<BaseCompiler*>      m_compilers;
     std::vector<LevelCompiler*>     m_levels;
     std::vector<BaseCompiler*>      m_childCompilers;
+    std::vector<BaseCompiler*>      m_processedCompilers;
     
     std::string                     m_inputDir;
     std::string                     m_inputFile;

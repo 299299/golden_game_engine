@@ -129,6 +129,18 @@ void DC_Config::post_process()
     {
         m_levels[i]->postProcess();
     }
+
+    FILE* fp = fopen(DC_RESULT, "w");
+    if(!fp) {
+        LOGW(__FUNCTION__ " can not open file %s", DC_RESULT);
+        return;
+    }
+    for(size_t i=0; i<m_processedCompilers.size(); ++i)
+    {
+        BaseCompiler* bc = m_processedCompilers[i];
+        fprintf(fp, "%s,%s\n", bc->m_output.c_str(), bc->m_resourceName.c_str());
+    }
+    fclose(fp);
 }
 
 BaseCompiler* DC_Config::create_compiler( const std::string& ext )
@@ -197,6 +209,7 @@ void level_processing()
         level->m_input = input;
         level->m_output = output;
         level->m_modifyTime = modifyTime;
+        level->m_resourceName = get_resource_name(output);
         level->preProcess();
         level->go();
     }
@@ -231,6 +244,7 @@ void resources_process()
         }
         LOGI("data compile %s --> %s.", input.c_str(), output.c_str());
         g_config->m_compilers.push_back(compiler);
+        compiler->m_resourceName = get_resource_name(output);
     }
     for(size_t i=0; i<g_config->m_compilers.size(); ++i)
     {
@@ -286,6 +300,8 @@ void package_processing()
 
 int data_compiler_main(int argc, bx::CommandLine* cmdline)
 {
+    delete_file(DC_RESULT);
+
     int err = kErrorSuccess;
     uint32_t timeMS = ::GetTickCount();
 
@@ -294,7 +310,10 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     memset(&cfg, 0, sizeof cfg);
     cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
     g_memoryMgr.init(cfg);
+
+#ifdef DC_PROFILE
     g_profiler.init(TOTAL_BLOCK_NUM);
+#endif
 
     g_config = new DC_Config;
     const char* inputChar = cmdline->findOption('i');
@@ -377,8 +396,11 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_config->m_database.m_files.clear();
     SAFE_DELETE(g_config);
 
-    g_profiler.dump_to_file("datacompiler_profile.txt", true, true);
+#ifdef DC_PROFILE
+    g_profiler.dump_to_file("data_compiler_profile.txt", true, true);
     g_profiler.shutdown();
+#endif
+
     g_memoryMgr.shutdown();
 
     

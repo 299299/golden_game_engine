@@ -25,6 +25,7 @@ void showHelp()
         "--level --> level name\n"
         "--animation --> animation name\n"
         "--headless no graphics & no window\n"
+        "--autoreload auto reload resource if file is changed \n"
         "-----------------------------------------\n"
         "Havok Converter options\n"
         "-m specific convert mode\n"
