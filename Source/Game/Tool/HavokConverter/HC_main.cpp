@@ -43,9 +43,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     const char* mode = cmdline->findOption('m');
     if(!mode)
     {
-        g_hc_config->m_error.add_error("havok convert must specific mode args!");
-        err = kErrorArg;
-        goto error_exit;
+        mode = "model";
     }
 
     const char* input = cmdline->findOption('f');

@@ -1,0 +1,123 @@
+{
+	"asset_path": "",
+	"class": "level_geometry",
+	"components": [
+		{
+			"materials": [
+				{
+					"flags": [
+					],
+					"name": "batman_BruceWayne_Suit_Torso_MIC",
+					"samplers": [
+						{
+							"flags": [
+							],
+							"name": "u_texColor",
+							"texture": {
+								"format": "DXT5",
+								"input": "C:\/Project\/NagaGame\/Arts\/animations\/BruceWayne_Suit_Torso_D.tga",
+								"name": "BruceWayne_Suit_Torso_D"
+							}
+						}
+					],
+					"shader": "diff",
+					"shadow_shader": "shadow"
+				},
+				{
+					"flags": [
+					],
+					"name": "batman_BruceWayne_Suit_Legs_MIC",
+					"samplers": [
+						{
+							"flags": [
+							],
+							"name": "u_texColor",
+							"texture": {
+								"format": "DXT5",
+								"input": "G:\/umodel_resources\/animations\/Batman_OZ\/Textures\/BruceWayne_Suit_Legs_D.tga",
+								"name": "BruceWayne_Suit_Legs_D"
+							}
+						}
+					],
+					"shader": "diff",
+					"shadow_shader": "shadow"
+				},
+				{
+					"flags": [
+					],
+					"name": "batman_BruceWayne_Head_MIC",
+					"samplers": [
+						{
+							"flags": [
+							],
+							"name": "u_texColor",
+							"texture": {
+								"format": "DXT5",
+								"input": "G:\/umodel_resources\/animations\/Batman_OZ\/Textures\/BruceWayne_Head_D.tga",
+								"name": "BruceWayne_Head_D"
+							}
+						}
+					],
+					"shader": "diff",
+					"shadow_shader": "shadow"
+				},
+				{
+					"flags": [
+					],
+					"name": "lambert1",
+					"samplers": [
+					],
+					"shader": "",
+					"shadow_shader": "shadow"
+				},
+				{
+					"flags": [
+					],
+					"name": "batman_BruceWayne_Hair_MIC",
+					"samplers": [
+						{
+							"flags": [
+							],
+							"name": "u_texColor",
+							"texture": {
+								"format": "DXT5",
+								"input": "G:\/umodel_resources\/animations\/Batman_OZ\/Textures\/BruceWayne_Hair_D.tga",
+								"name": "BruceWayne_Hair_D"
+							}
+						}
+					],
+					"shader": "diff",
+					"shadow_shader": "shadow"
+				},
+				{
+					"flags": [
+					],
+					"name": "batman_Character_FakeShadow",
+					"samplers": [
+						{
+							"flags": [
+							],
+							"name": "u_texColor",
+							"texture": {
+								"format": "DXT5",
+								"input": "Character_FakeShadow",
+								"name": "Character_FakeShadow"
+							}
+						}
+					],
+					"shader": "diff",
+					"shadow_shader": "shadow"
+				}
+			],
+			"mesh": "batman",
+			"name": "batman",
+			"packed": true,
+			"type": "model"
+		}
+	],
+	"data": [
+	],
+	"name": "batman",
+	"source_file": "havok\/batman.hkt",
+	"prefix":"core/"
+}

@@ -37,6 +37,7 @@ public:
     std::string                                     m_input;
     std::string                                     m_output;
     std::string                                     m_outputFolder;
+    std::string                                     m_pathPrefix;
 
     int                                             m_mode;
     uint32_t                                        m_modifyTime;

@@ -18,7 +18,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
     ModelResource model;
     memset(&model, 0x00, sizeof(model));
 
-    const std::string& meshFile = root.get<std::string>("mesh");
+    std::string meshFile = m_pathPrefix + root.get<std::string>("mesh");
     model.m_meshName = StringId(meshFile.c_str());
     addDependency("mesh", name_to_file_path(meshFile, Mesh::get_name()));
     extern const char* g_viewGroupNames[];
@@ -48,6 +48,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
             {
                 materialFile = materialsValue.get<std::string>(i);
             }
+            materialFile = m_pathPrefix + materialFile;
             model.m_materialNames[i] = StringId(materialFile.c_str());
             addDependency("material", name_to_file_path(materialFile, Material::get_name()));
         }

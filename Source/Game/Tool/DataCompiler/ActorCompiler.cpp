@@ -32,6 +32,10 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         datasValue = root.get<jsonxx::Array>("data");
         numOfData = datasValue.size();
     }
+    if(root.has<std::string>("prefix"))
+    {
+        m_pathPrefix = root.get<std::string>("prefix");
+    }
 
     numComps = compsValue.size();
     uint32_t memSize = sizeof(ActorResource);
@@ -63,7 +67,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         const jsonxx::Object& compValue = compsValue.get<jsonxx::Object>(i);
         bool bPacked = compValue.get<bool>("packed", false);
         const std::string& type = compValue.get<std::string>("type");
-        const std::string& name = compValue.get<std::string>("name");
+        std::string name = m_pathPrefix + compValue.get<std::string>("name");
         actor->m_resourceNames[i] = StringId(name.c_str());
         actor->m_resourceTypes[i] = StringId(type.c_str());
         if(bPacked)
