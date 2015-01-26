@@ -33,8 +33,9 @@ int compare_less_group(PackageGroup* grpA, PackageGroup* grpB)
 
 bool PackageCompiler::process(const std::string& input, const std::string& output)
 {
-    std::vector<std::string> filesInFolder;
-    findFiles(input, "*", true, filesInFolder);
+    StringArray filesInFolder;
+    scan_dir(filesInFolder, input.c_str(), "*", SCAN_FILES, true);
+
     extern int get_resource_order(const StringId& type);
 
     size_t numResources = filesInFolder.size();

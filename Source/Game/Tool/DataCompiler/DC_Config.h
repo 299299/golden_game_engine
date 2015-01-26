@@ -10,11 +10,10 @@
 #ifdef DC_DUMP_PROFILE
 #define DC_PROFILE(name)      PROFILE(name)
 #else
-#define DC_PROFILE(name)       
+#define DC_PROFILE(name)
 #endif
 
 struct ResourceFileDataBase;
-typedef std::vector<std::string> StringArray;
 class BaseCompiler;
 class LevelCompiler;
 
@@ -36,7 +35,7 @@ struct DC_Config
     std::vector<LevelCompiler*>     m_levels;
     std::vector<BaseCompiler*>      m_childCompilers;
     std::vector<BaseCompiler*>      m_processedCompilers;
-    
+
     std::string                     m_inputDir;
     std::string                     m_inputFile;
     std::string                     m_outputDir;

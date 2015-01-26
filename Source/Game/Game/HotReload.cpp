@@ -430,7 +430,7 @@ void resource_hot_reload_update(float dt)
     const char* exeName = "gameRelease.exe";
 #endif
 
-    std::vector<std::string> args;
+    StringArray args;
     args.push_back("--action");
     args.push_back("DataCompile");
     args.push_back("-i");
@@ -449,7 +449,7 @@ void resource_hot_reload_update(float dt)
     {
         int argNum = fscanf(fp, "%s,%s", buf1, buf2);
         if(argNum != 2) break;
-        
+
         std::string ext = getFileExt(buf1);
         g_resourceMgr.reload_resource(StringId(ext.c_str()), StringId(buf2), buf1);
     }

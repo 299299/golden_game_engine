@@ -30,5 +30,5 @@ public:
 
     int findFilterIndex(const std::string& name) const;
 private:
-    std::vector<std::string>    m_filterNames;
+    StringArray             m_filterNames;
 };

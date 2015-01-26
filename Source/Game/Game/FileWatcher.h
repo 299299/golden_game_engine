@@ -9,7 +9,7 @@
 
 struct ChangedFile
 {
-    char        m_fileName[64 - sizeof HiresTimer];
+    char        m_fileName[64 - sizeof(HiresTimer)];
     HiresTimer  m_timer;
 };
 
@@ -24,7 +24,7 @@ class  FileWatcher
 public:
     FileWatcher();
     ~FileWatcher();
-    
+
     /// Start watching a directory. Return true if successful.
     bool start_watching(const char* pathName, bool watchSubDirs);
     /// Stop watching the directory.
@@ -39,7 +39,7 @@ public:
     void thread_loop();
 
     static int32_t thread_func_file_watcher(void* userdata);
-    
+
 private:
 #ifdef WIN32
     /// Directory handle for the path being watched.
@@ -54,7 +54,7 @@ private:
 
     char                            m_path[256];
     typedef tinystl::unordered_map<uint32_t, ChangedFile> ChangeMap;
-    ChangeMap                       m_changedFiles;        
+    ChangeMap                       m_changedFiles;
     bx::Thread                      m_thread;
     bx::Mutex                       m_changesMutex;
     float                           m_delay;

@@ -69,7 +69,7 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
         memcpy(shader->m_blob, outputReader.m_buf, outputReader.m_size);
         m_processed = write_file(output, shader, memSize);
     }
-    
+
     //delete the temp file of shaderc compiled.
     delete_file(tmp_output);
     return m_processed;
@@ -123,8 +123,8 @@ ShaderIncludeCompiler::~ShaderIncludeCompiler()
 
 bool ShaderIncludeCompiler::process(const std::string& input, const std::string& output)
 {
-    std::vector<std::string> shaderFiles;
-    findFiles(SHADER_SOURCE_PATH, "shader", false, shaderFiles);
+    StringArray shaderFiles;
+    scan_dir(shaderFiles, SHADER_SOURCE_PATH, "shader", SCAN_FILES, false);
 
     for(size_t i=0; i<shaderFiles.size(); ++i)
     {

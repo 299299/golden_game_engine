@@ -173,18 +173,19 @@ int32_t thread_compile(void* _userData)
 void level_processing()
 {
     uint32_t modifyTime = 0;
-    std::vector<std::string> level_file_list;
+    StringArray level_file_list;
     std::string folder = remove_top_folder(g_config->m_inputDir);
     bool bTop = folder.empty();
     if(bTop)
     {
-        std::vector<std::string> folders;
-        findFolders(g_config->m_inputDir, false, folders);
+        StringArray folders;
+        scan_dir(folders, g_config->m_inputDir.c_str(), "*", SCAN_DIRS, false);
         for (size_t i=0; i<folders.size();++i)
         {
-            std::vector<std::string> levelFiles;
+            StringArray levelFiles;
             addBackSlash(folders[i]);
-            findFiles(folders[i], Level::get_name(), false, levelFiles);
+            scan_dir(levelFiles, folders[i].c_str(), Level::get_name(), SCAN_FILES, false);
+
             for (size_t j=0; j<levelFiles.size(); ++j)
             {
                 level_file_list.push_back(levelFiles[j]);
@@ -193,7 +194,7 @@ void level_processing()
     }
     else
     {
-        findFiles(g_config->m_inputDir, Level::get_name(), false, level_file_list);
+        scan_dir(level_file_list, g_config->m_inputDir.c_str(), Level::get_name(), SCAN_FILES, false);
     }
     LOGI("level file num = %d.", level_file_list.size());
     for (size_t i=0; i<level_file_list.size(); ++i)
@@ -217,8 +218,9 @@ void level_processing()
 
 void resources_process()
 {
-    std::vector<std::string> input_file_list;
-    findFiles(g_config->m_inputDir, "*", true, input_file_list);
+    StringArray input_file_list;
+    scan_dir(input_file_list, g_config->m_inputDir.c_str(), "*", SCAN_FILES, true);
+
     LOGI("input file num = %d.", input_file_list.size());
     bool shaderIncludedAdded = false;
 
@@ -266,8 +268,8 @@ void package_processing()
     }
     else
     {
-        std::vector<std::string> folders;
-        findFolders(ROOT_DATA_PATH, false, folders);
+        StringArray folders;
+        scan_dir(folders, ROOT_DATA_PATH, "*", SCAN_DIRS, false);
         for(size_t i=0; i<folders.size(); ++i)
         {
             std::string folder = remove_top_folder(folders[i]);
@@ -403,7 +405,7 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
 
     g_memoryMgr.shutdown();
 
-    
+
 
     LOGD("******************************************************");
     LOGD("******************************************************");

@@ -90,35 +90,40 @@ bool FileWatcher::start_watching( const char* pathName, bool watchSubDirs )
     else
     {
         // Store the root path here when reconstructed with inotify later
-        m_dirHandle[handle] = "";
         m_watchSubDirs = watchSubDirs;
 
         if (m_watchSubDirs)
         {
-            Vector<String> subDirs;
-            fileSystem_->ScanDir(subDirs, pathName, "*", SCAN_DIRS, true);
+            StringArray subDirs;
+            scan_dir(subDirs, pathName, "*", SCAN_DIRS, true);
 
-            for (unsigned i = 0; i < subDirs.Size(); ++i)
+            for (unsigned i = 0; i < subDirs.size(); ++i)
             {
-                String subDirFullPath = AddTrailingSlash(path_ + subDirs[i]);
+                std::string subDirFullPath = std::string(m_path) + subDirs[i];
+                addBackSlash(subDirFullPath);
 
                 // Don't watch ./ or ../ sub-directories
-                if (!subDirFullPath.EndsWith("./"))
+                if (!str_end_with(subDirFullPath, "./"))
                 {
-                    handle = inotify_add_watch(watchHandle_, subDirFullPath.CString(), flags);
+                    handle = inotify_add_watch(m_watchHandle, subDirFullPath.c_str(), flags);
                     if (handle < 0)
-                        LOGE("Failed to start watching subdirectory path " + subDirFullPath);
+                    {
+                        LOGE("Failed to start watching subdirectory path %s", subDirFullPath.c_str());
+                    }
                     else
                     {
                         // Store sub-directory to reconstruct later from inotify
-                        dirHandle_[handle] = AddTrailingSlash(subDirs[i]);
+                        addBackSlash(subDirs[i]);
+                        FileName& f = m_dirHandle[handle];
+                        memset(f.m_buf, 0, sizeof(f.m_buf));
+                        strncpy(f.m_buf, subDirs[i].c_str(), sizeof(f.m_buf));
                     }
                 }
             }
         }
         m_thread.init(thread_func_file_watcher, this);
 
-        LOGD("Started watching path " + pathName);
+        LOGD("Started watching path %s", pathName);
         return true;
     }
 #endif
@@ -130,7 +135,7 @@ void FileWatcher::stop_watching()
     {
         return;
     }
-    
+
     // Create and delete a dummy file to make sure the watcher loop terminates
     m_running = false;
 
@@ -148,7 +153,7 @@ void FileWatcher::stop_watching()
     CloseHandle((HANDLE)m_dirHandle);
 #elif defined(__linux__)
     for (DirHandleMap::iterator i = m_dirHandle.begin(); i != m_dirHandle.end(); ++i)
-        inotify_rm_watch(m_watchHandle, i->first_);
+        inotify_rm_watch(m_watchHandle, i->first);
     m_dirHandle.clear();
 #endif
 
@@ -223,7 +228,7 @@ void FileWatcher::add_change( const char* fileName )
 
 bool FileWatcher::get_next_change( char* dest, uint32_t buf_size)
 {
-    if(!m_changed) 
+    if(!m_changed)
         return false;
 
     unsigned delayMsec = (unsigned)(m_delay * 1000.0f);
@@ -233,7 +238,7 @@ bool FileWatcher::get_next_change( char* dest, uint32_t buf_size)
         return false;
     else
     {
-        for (ChangeMap::iterator i=m_changedFiles.begin(); 
+        for (ChangeMap::iterator i=m_changedFiles.begin();
              i != m_changedFiles.end(); ++i)
         {
             ChangedFile& f = i->second;
@@ -314,7 +319,7 @@ void FileWatcher::thread_loop()
                 if (event->mask & IN_MODIFY || event->mask & IN_MOVE)
                 {
                     char _buf[256];
-                    bx::snprintf(_buf, "%s%s", m_dirHandle[event->wd], event->name);
+                    bx::snprintf(_buf, sizeof(_buf), "%s%s", m_dirHandle[event->wd].m_buf, event->name);
                     add_change(_buf);
                 }
             }

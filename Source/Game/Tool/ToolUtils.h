@@ -19,6 +19,15 @@ struct hkxAttributeGroup;
 #define SHADER_SOURCE_PATH      INTERMEDIATE_PATH"core/shaders/"
 #define DC_RESULT               ("data_compiler_result.txt")
 
+typedef std::vector<std::string> StringArray;
+
+enum ScanFlags
+{
+    SCAN_FILES  = 0x1,
+    SCAN_DIRS   = 0x2,
+    SCAN_HIDDEN = 0x4,
+};
+
 std::string getFileNameAndExtension(const std::string& fileName);
 std::string getFileName(const std::string& fileName);
 std::string getFilePath(const std::string& fileName);
@@ -34,13 +43,11 @@ void        fixPathSlash(std::string& inout);
 bool        fileSystemCopy(const std::string& src, const std::string& destFolder);
 std::string getWorkingDir();
 void        runProcess(const std::string& process, const std::string& workingDir, const std::string& args);
-void        findFiles(const std::string& folder, const std::string& ext, bool bRecursive, std::vector<std::string>& outFiles);
 bool        write_file(const std::string& fileName, const void* buf, uint32_t bufSize);
-void        findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders);
 uint32_t    get_file_size(const std::string& fileName);
 std::string remove_top_folder(const std::string& fileName);
 std::string get_top_folder(const std::string& dirName);
-int         shell_exec(const std::string& exe, const std::vector<std::string>& args, const std::string& workDir = "", bool bHide = true);
+int         shell_exec(const std::string& exe, const StringArray& args, const std::string& workDir = "", bool bHide = true);
 std::string name_to_file_path(const std::string& resourceName, const std::string& ext);
 bool        delete_file(const std::string& fileName);
 void        compile_shader(const std::string& src, const std::string& dst, const std::string& def, bool vs);
@@ -48,6 +55,7 @@ int         find_char(const char* data, uint32_t size, char c);
 void        msgBox(const char* text, const char* title);
 bool        str_begin_with(const std::string& str1, const std::string& str2);
 bool        str_end_with(const std::string& str1, const std::string& str2);
+void        scan_dir(StringArray& result, const char* pathName, const char* filter, uint32_t flags, bool recursive);
 
 void        dumpNodeRec(hkxNode* theNode);
 void        findNodesRec(hkxNode* theNode, const hkClass* theClass, std::vector<hkxNode*>& outNodes);
@@ -60,12 +68,13 @@ std::string input_to_output(const std::string& inputName);
 std::string get_package_name(const std::string& input);
 std::string get_resource_name(const std::string& input);
 
-uint32_t   json_to_floats(const jsonxx::Object& o, const char* name, float* p, uint32_t max_size);
-uint32_t   json_to_flags(const jsonxx::Object& o, const char* name, const char** enum_names);
-float      json_to_float(const jsonxx::Object& o, const char* name, float def = 0.0f);
-int        json_to_int(const jsonxx::Object& o, const char* name, int def = 0);
-StringId   json_to_stringid(const jsonxx::Object& o, const char* name, StringId def=StringId::ZERO);
-int        json_to_enum(const jsonxx::Object& o, const char* name, const char** enumnames, int def = -1);
+//json utility functions
+uint32_t    json_to_floats(const jsonxx::Object& o, const char* name, float* p, uint32_t max_size);
+uint32_t    json_to_flags(const jsonxx::Object& o, const char* name, const char** enum_names);
+float       json_to_float(const jsonxx::Object& o, const char* name, float def = 0.0f);
+int         json_to_int(const jsonxx::Object& o, const char* name, int def = 0);
+StringId    json_to_stringid(const jsonxx::Object& o, const char* name, StringId def=StringId::ZERO);
+int         json_to_enum(const jsonxx::Object& o, const char* name, const char** enumnames, int def = -1);
 
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase
@@ -103,7 +112,7 @@ struct ToolError
     void add_error(const char* fmt, ...);
     void show_error();
 
-    std::vector<std::string>        m_error_msgs;
+    StringArray                     m_error_msgs;
     bx::LwMutex                     m_lock;
     int                             m_num_error;
 };

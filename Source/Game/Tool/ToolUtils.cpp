@@ -220,61 +220,91 @@ void runProcess(const std::string& process, const std::string& workingDir, const
 #endif
 }
 
-void findFiles(const std::string& folder, const std::string& ext, bool bRecursive, std::vector<std::string>& outFiles)
+static void scan_dir_internal(StringArray& result,
+                              std::string path,
+                              const std::string& startPath,
+                              const std::string& filter,
+                              uint32_t flags,
+                              bool recursive)
 {
-    std::string findPath = folder + "*." + ext;
+    addBackSlash(path);
+    std::string deltaPath;
+    if (path.length() > startPath.length())
+        deltaPath = path.substr(0, startPath.length());
 
-#ifdef HAVOK_COMPILE
-    WIN32_FIND_DATA wfd;
-    HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);
-    if (hFind == INVALID_HANDLE_VALUE)
-        return;
+    int index = filter.find_first_of('.');
+    std::string filterExtension = filter.substr(0, index);
+    if (filterExtension.find_first_of('*') != std::string::npos)
+        filterExtension.clear();
 
-    do
+    #ifdef WIN32
+    WIN32_FIND_DATAW info;
+    HANDLE handle = FindFirstFileA((path + "*").c_str(), &info);
+    if (handle != INVALID_HANDLE_VALUE)
     {
-        if (wfd.cFileName[0] == '.')
-            continue;
-        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        do
         {
-            std::string filePathName = folder + wfd.cFileName + "/";
-            if(bRecursive) findFiles(filePathName, ext, bRecursive, outFiles);
+            std::string fileName(info.cFileName);
+            if (!fileName.empty())
+            {
+                if (info.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN && !(flags & SCAN_HIDDEN))
+                    continue;
+                if (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                {
+                    if (flags & SCAN_DIRS)
+                        result.push_back(deltaPath + fileName);
+                    if (recursive && fileName != "." && fileName != "..")
+                        scan_dir_internal(result, path + fileName, startPath, filter, flags, recursive);
+                }
+                else if (flags & SCAN_FILES)
+                {
+                    if (filterExtension.empty() || str_end_with(fileName, filterExtension))
+                        result.push_back(deltaPath + fileName);
+                }
+            }
         }
-        else
-        {
-            std::string filePathName = folder + wfd.cFileName;
-            outFiles.push_back(filePathName);
-        }
+        while (FindNextFileA(handle, &info));
+        FindClose(handle);
     }
-    while (FindNextFile(hFind, &wfd));
-    FindClose(hFind);
-#endif
+    #else
+    DIR *dir;
+    struct dirent *de;
+    struct stat st;
+    dir = opendir(path.c_str());
+    if (dir)
+    {
+        while ((de = readdir(dir)))
+        {
+            /// \todo Filename may be unnormalized Unicode on Mac OS X. Re-normalize as necessary
+            std::string fileName(de->d_name);
+            bool normalEntry = fileName != "." && fileName != "..";
+            if (normalEntry && !(flags & SCAN_HIDDEN) && str_begin_with(fileName, "."))
+                continue;
+            std::string pathAndName = path + fileName;
+            if (!stat(pathAndName.c_str(), &st))
+            {
+                if (st.st_mode & S_IFDIR)
+                {
+                    if (flags & SCAN_DIRS)
+                        result.push_back(deltaPath + fileName);
+                    if (recursive && normalEntry)
+                        scan_dir_internal(result, path + fileName, startPath, filter, flags, recursive);
+                }
+                else if (flags & SCAN_FILES)
+                {
+                    if (filterExtension.empty() || str_end_with(fileName, filterExtension))
+                        result.push_back(deltaPath + fileName);
+                }
+            }
+        }
+        closedir(dir);
+    }
+    #endif
 }
-void findFolders(const std::string& folder, bool bRecursive, std::vector<std::string>& outFolders)
+
+void scan_dir(StringArray& result, const char* pathName, const char* filter, uint32_t flags, bool recursive)
 {
-    std::string findPath = folder + "*.*";
 
-#ifdef HAVOK_COMPILE
-    WIN32_FIND_DATA wfd;
-    memset(&wfd, 0, sizeof(wfd));
-    HANDLE hFind = FindFirstFile(findPath.c_str(), &wfd);
-    if (hFind == INVALID_HANDLE_VALUE)
-        return;
-
-    do
-    {
-        if (wfd.cFileName[0] == '.')
-            continue;
-        if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-        {
-            std::string filePathName = folder + wfd.cFileName + "/";
-            if(bRecursive)
-                findFolders(filePathName, bRecursive, outFolders);
-            outFolders.push_back(folder + wfd.cFileName);
-        }
-    }
-    while (FindNextFile(hFind, &wfd));
-    FindClose(hFind);
-#endif
 }
 
 bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
@@ -326,7 +356,7 @@ std::string get_top_folder(const std::string& dirName)
     return ret.substr(0, npos);
 }
 
-int shell_exec(const std::string& exe, const std::vector<std::string>& args, const std::string& workDir, bool bHide)
+int shell_exec(const std::string& exe, const StringArray& args, const std::string& workDir, bool bHide)
 {
 #ifdef WIN32
     SHELLEXECUTEINFO ShExecInfo = {0};
@@ -358,7 +388,7 @@ int shell_exec(const std::string& exe, const std::vector<std::string>& args, con
     {
         std::vector<const char*> argPtrs;
         argPtrs.push_back(exe.c_str());
-        for (unsigned i = 0; i < args.Size(); ++i)
+        for (unsigned i = 0; i < args.size(); ++i)
             argPtrs.push_back(args[i].c_str());
         argPtrs.push_back(0);
 
@@ -397,7 +427,7 @@ void compile_shader(const std::string& src, const std::string& dst, const std::s
                 "-f %s -o %s --type %s --platform windows --verbose -p %s --varyingdef %s",
                 src.c_str(), dst.c_str(), type, target, def.c_str());
     std::string folder = getFilePath(src);
-    std::vector<std::string> args;
+    StringArray args;
     args.push_back(buf);
     shell_exec(SHADERC_PATH, args, "");
 #if 1
@@ -637,7 +667,7 @@ void texconv_compress( const std::string& src, const std::string& folder, const 
     string_replace(srcFile, "/", "\\");
     std::string dstDir = folder;
     string_replace(dstDir, "/", "\\");
-    std::vector<std::string> args;
+    StringArray args;
     args.push_back(srcFile);
     args.push_back("-ft");
     args.push_back("DDS");
