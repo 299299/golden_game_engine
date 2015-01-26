@@ -439,21 +439,16 @@ void resource_hot_reload_update(float dt)
     args.push_back("-data");
     shell_exec(exeName, args);
 
-    FILE* fp = fopen(DC_RESULT, "r");
-    if(!fp) {
-        LOGW(__FUNCTION__ " can not open file %s", DC_RESULT);
+    std::ifstream ifs(DC_RESULT);
+    if(!ifs.good())
         return;
-    }
-    char buf1[256], buf2[256];
-    while(!feof(fp))
+    std::string line;
+    while(std::getline(ifs, line))
     {
-        int argNum = fscanf(fp, "%s,%s", buf1, buf2);
-        if(argNum != 2) break;
-
-        std::string ext = getFileExt(buf1);
-        g_resourceMgr.reload_resource(StringId(ext.c_str()), StringId(buf2), buf1);
+        std::string ext = getFileExt(line);
+        std::string resourceName = get_resource_name(line);
+        g_resourceMgr.reload_resource(StringId(ext.c_str()), StringId(resourceName.c_str()), line.c_str());
     }
-    fclose(fp);
 }
 
 #endif

@@ -232,13 +232,16 @@ static void scan_dir_internal(StringArray& result,
         deltaPath.c_str(), filterExtension.c_str());
 
     #ifdef WIN32
-    WIN32_FIND_DATAW info;
+    WIN32_FIND_DATAA info;
     HANDLE handle = FindFirstFileA((path + "*").c_str(), &info);
     if (handle != INVALID_HANDLE_VALUE)
     {
         do
         {
             std::string fileName(info.cFileName);
+            if(fileName == "." || fileName == "..")
+                continue;
+            std::string pathAndName = path + fileName;
             if (!fileName.empty())
             {
                 if (info.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN && !(flags & SCAN_HIDDEN))
@@ -247,7 +250,7 @@ static void scan_dir_internal(StringArray& result,
                 {
                     if (flags & SCAN_DIRS)
                         result.push_back(pathAndName);
-                    if (recursive && fileName != "." && fileName != "..")
+                    if (recursive)
                         scan_dir_internal(result, path + fileName, startPath, filter, flags, recursive);
                 }
                 else if (flags & SCAN_FILES)
@@ -270,11 +273,10 @@ static void scan_dir_internal(StringArray& result,
         while ((de = readdir(dir)))
         {
             std::string fileName(de->d_name);
-            bool normalEntry = (fileName != ".") && (fileName != "..");
+            if(fileName == "." || fileName == "..")
+                continue;
             bool isDot = str_begin_with(fileName, ".");
             if (!(flags & SCAN_HIDDEN) && isDot)
-                continue;
-            if(!normalEntry)
                 continue;
             std::string pathAndName = path + fileName;
             //LOGD("pathAndName=%s, fileName=%s", pathAndName.c_str(), fileName.c_str());

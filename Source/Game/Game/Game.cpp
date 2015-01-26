@@ -97,8 +97,10 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
 err:
     //------------------------------------------------------------
+#if 0
     g_profiler.dump_to_file("game_profile.txt", true, true);
-    
+#endif    
+
     if(_autoreload)
     {
         extern void resource_hot_reload_shutdown();

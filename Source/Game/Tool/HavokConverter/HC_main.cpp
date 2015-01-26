@@ -84,7 +84,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     }
 
     config.m_rlc = rlc;
-    createFolder(config.m_exportFolder);
+    create_folder(config.m_exportFolder);
     hkxEnvironment* env = LOAD_OBJECT(rlc, hkxEnvironment);
     if(env)
     {

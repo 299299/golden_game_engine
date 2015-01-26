@@ -7,7 +7,7 @@
             "name":"core/common/sun",
             "color":[255, 255, 255],
             "light_type":"directional",
-            "direction":[0, -1, -1],
+            "direction":[0, -2, -2],
             "shadow":true,
             "packed": true
         }

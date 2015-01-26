@@ -273,12 +273,12 @@ void regster_resource_factories()
         g_resourceMgr.register_factory(g_resourceFactories[i]);
     }
 }
-int get_resource_order(const StringId& type)
+int get_resource_order(const char* name)
 {
     uint32_t num = BX_COUNTOF(g_resourceFactories);
     for (uint32_t i = 0; i < num; ++i)
     {
-        if(type == StringId(g_resourceFactories[i].m_name))
+        if(!strcmp(g_resourceFactories[i].m_name, name))
             return i;
     }
     return -1;

@@ -115,6 +115,14 @@ void DC_Config::add_child_compile( BaseCompiler* compiler )
     m_childCompilers.push_back(compiler);
 }
 
+static int compare_less_resource(const std::string& nameA, const std::string& nameB)
+{
+    extern int get_resource_order(const char*);
+    int orderA = get_resource_order(getFileExt(nameA).c_str());
+    int orderB = get_resource_order(getFileExt(nameB).c_str());
+    return orderA < orderB;
+}
+
 void DC_Config::post_process()
 {
     for(size_t i=0; i<m_compilers.size(); ++i)
@@ -130,17 +138,25 @@ void DC_Config::post_process()
         m_levels[i]->postProcess();
     }
 
-    FILE* fp = fopen(DC_RESULT, "w");
-    if(!fp) {
-        LOGW(__FUNCTION__ " can not open file %s", DC_RESULT);
+    std::ofstream ofs(DC_RESULT);
+    if(!ofs.good())
         return;
-    }
-    for(size_t i=0; i<m_processedCompilers.size(); ++i)
+    ofs.clear();
+
+    StringArray _results;
+    _results.resize(m_processedCompilers.size());
+    for(size_t i=0; i<_results.size(); ++i)
     {
-        BaseCompiler* bc = m_processedCompilers[i];
-        fprintf(fp, "%s,%s\n", bc->m_output.c_str(), bc->m_resourceName.c_str());
+        _results[i] = m_processedCompilers[i]->m_output;
     }
-    fclose(fp);
+
+    std::sort(_results.begin(), _results.end(), compare_less_resource);
+
+    for(size_t i=0; i<_results.size(); ++i)
+    {
+        LOGD("---> processed ---> %s", _results[i].c_str());
+        ofs << _results[i] << std::endl;
+    }
 }
 
 BaseCompiler* DC_Config::create_compiler( const std::string& ext )
@@ -195,7 +211,6 @@ void level_processing()
         level->m_input = input;
         level->m_output = output;
         level->m_modifyTime = modifyTime;
-        level->m_resourceName = get_resource_name(output);
         level->preProcess();
         level->go();
     }
@@ -231,7 +246,6 @@ void resources_process()
         }
         LOGI("data compile %s --> %s", input.c_str(), output.c_str());
         g_config->m_compilers.push_back(compiler);
-        compiler->m_resourceName = get_resource_name(output);
     }
     for(size_t i=0; i<g_config->m_compilers.size(); ++i)
     {
