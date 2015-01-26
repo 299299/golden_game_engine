@@ -47,14 +47,15 @@ void BaseCompiler::go()
 {
     LOGD("[%s] processing from %s to %s", getFormatExt().c_str(), m_input.c_str(), m_output.c_str());
     std::string outputDir = getFilePath(m_output);
-    createFolder(outputDir);
+    create_folder(outputDir);
     process(m_input, m_output);
+    //LOGD("finished processing");
 }
 
 bool BaseCompiler::readJSON( const jsonxx::Object& root )
 {
     if(m_mode == 0) return true;
-    addBackSlash(m_outputFolder);
+    add_trailing_slash(m_outputFolder);
     m_name = root.get<std::string>("name");
     std::string fileName = getFileName(m_name);
     m_output = m_outputFolder + fileName + "." + getFormatExt();
@@ -89,7 +90,7 @@ bool BaseCompiler::checkProcessing()
 bool BaseCompiler::process( const std::string& input, const std::string& output )
 {
     std::ifstream ifs(input.c_str());
-    if(!ifs.good()) 
+    if(!ifs.good())
     {
         g_config->m_error.add_error("ifstream error %s", input.c_str());
         return false;

@@ -114,6 +114,7 @@ void msg_box( const char* fmt, ... )
     ::MessageBoxA(NULL, buf, "NagaGAME", MB_TOPMOST);
 #else
     printf("console msg-box [%s][%s]\n", buf, "NagaGAME");
+    printf("msg_box --> press any key:");
     getchar();
 #endif
 }

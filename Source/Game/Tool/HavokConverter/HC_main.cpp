@@ -29,7 +29,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     cfg.m_havokMonitorMemSize = 0;
     g_memoryMgr.init(cfg);
 
-#ifdef HC_PROFILE
+#ifdef HC_DUMP_PROFILE
     g_profiler.init(64);
 #endif
 
@@ -67,7 +67,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         bool has_itermediate = strstr(output, INTERMEDIATE_PATH) != 0;
         if(!has_itermediate) config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output;
         string_replace(config.m_exportFolder, "\\", "/");
-        addBackSlash(config.m_exportFolder);
+        add_trailing_slash(config.m_exportFolder);
         std::string path = config.m_exportFolder;
         string_replace(path, INTERMEDIATE_PATH, "");
         config.m_rootPath = path;
@@ -152,17 +152,14 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     converter->postProcess();
     converter->serializeToFile(config.m_output.c_str());
 
-#ifdef HC_PROFILE
-    g_profiler.dump_to_file("havokconverter_profile.txt", true, true);
-#endif
-
 error_exit:
     SAFE_REMOVEREF(converter);
     SAFE_REMOVEREF(config.m_loader);
     if(!g_hc_config->m_slient) g_hc_config->m_error.show_error();
     SAFE_DELETE(g_hc_config);
 
-#ifdef HC_PROFILE
+#ifdef HC_DUMP_PROFILE
+    g_profiler.dump_to_file("havokconverter_profile.txt", true, true);
     g_profiler.shutdown();
 #endif
 

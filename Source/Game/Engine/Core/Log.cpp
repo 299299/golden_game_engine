@@ -140,7 +140,7 @@ void Log::log( int logLevel, const char* msg, ...)
     va_end(argp);
 
     const char* tag = g_loglevelTag[logLevel];
-    printf("%s:%s.\n",tag, g_logBuffer);
+    printf("%s:%s\n",tag, g_logBuffer);
 
     m_stream << "<tr>\n";
     m_stream << "<td width=\"50\">";
@@ -157,11 +157,13 @@ void Log::log( int logLevel, const char* msg, ...)
 
     m_stream.flush();
 
+#ifdef HAVOK_COMPILE
     if(logLevel >= LOG_LEVEL_WARNING)
     {
         bx::debugOutput(g_logBuffer);
         bx::debugOutput("\n");
     }
+#endif
 }
 
 

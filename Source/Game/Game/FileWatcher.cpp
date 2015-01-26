@@ -100,7 +100,7 @@ bool FileWatcher::start_watching( const char* pathName, bool watchSubDirs )
             for (unsigned i = 0; i < subDirs.size(); ++i)
             {
                 std::string subDirFullPath = std::string(m_path) + subDirs[i];
-                addBackSlash(subDirFullPath);
+                add_trailing_slash(subDirFullPath);
 
                 // Don't watch ./ or ../ sub-directories
                 if (!str_end_with(subDirFullPath, "./"))
@@ -113,7 +113,7 @@ bool FileWatcher::start_watching( const char* pathName, bool watchSubDirs )
                     else
                     {
                         // Store sub-directory to reconstruct later from inotify
-                        addBackSlash(subDirs[i]);
+                        add_trailing_slash(subDirs[i]);
                         FileName& f = m_dirHandle[handle];
                         memset(f.m_buf, 0, sizeof(f.m_buf));
                         strncpy(f.m_buf, subDirs[i].c_str(), sizeof(f.m_buf));

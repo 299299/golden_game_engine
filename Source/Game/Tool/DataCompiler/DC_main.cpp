@@ -145,6 +145,7 @@ void DC_Config::post_process()
 
 BaseCompiler* DC_Config::create_compiler( const std::string& ext )
 {
+    //LOGD("create compiler key = %s", ext.c_str());
     uint32_t key = StringId::calculate(ext.c_str());
     CompilerBuildMap::iterator iter = m_compilerBuilder.find(key);
     if(iter == m_compilerBuilder.end()) return 0;
@@ -175,38 +176,22 @@ void level_processing()
     uint32_t modifyTime = 0;
     StringArray level_file_list;
     std::string folder = remove_top_folder(g_config->m_inputDir);
-    bool bTop = folder.empty();
-    if(bTop)
-    {
-        StringArray folders;
-        scan_dir(folders, g_config->m_inputDir.c_str(), "*", SCAN_DIRS, false);
-        for (size_t i=0; i<folders.size();++i)
-        {
-            StringArray levelFiles;
-            addBackSlash(folders[i]);
-            scan_dir(levelFiles, folders[i].c_str(), Level::get_name(), SCAN_FILES, false);
+    scan_dir(level_file_list, g_config->m_inputDir.c_str(), Level::get_name(), SCAN_FILES, true);
 
-            for (size_t j=0; j<levelFiles.size(); ++j)
-            {
-                level_file_list.push_back(levelFiles[j]);
-            }
-        }
-    }
-    else
+    LOGI("level file num = %d", level_file_list.size());
+    for (size_t i=0; i<level_file_list.size(); ++i)
     {
-        scan_dir(level_file_list, g_config->m_inputDir.c_str(), Level::get_name(), SCAN_FILES, false);
+        LOGI("level %s", level_file_list[i].c_str());
     }
-    LOGI("level file num = %d.", level_file_list.size());
+
     for (size_t i=0; i<level_file_list.size(); ++i)
     {
         const std::string& input = level_file_list[i];
         std::string output = input_to_output(input);
         LevelCompiler* level = new LevelCompiler;
         g_config->m_levels.push_back(level);
-        bool bFileChanged = g_config->m_database.isFileChanged(input, modifyTime);
-        bool bFileExist = isFileExist(output);
-        if(bFileChanged || !bFileExist) {}
-        else level->m_skipped = true;
+        if(!g_config->m_database.isFileChanged(input, modifyTime) && isFileExist(output))
+            level->m_skipped = true;
         level->m_input = input;
         level->m_output = output;
         level->m_modifyTime = modifyTime;
@@ -244,7 +229,7 @@ void resources_process()
             delete compiler;
             continue;
         }
-        LOGI("data compile %s --> %s.", input.c_str(), output.c_str());
+        LOGI("data compile %s --> %s", input.c_str(), output.c_str());
         g_config->m_compilers.push_back(compiler);
         compiler->m_resourceName = get_resource_name(output);
     }
@@ -262,7 +247,7 @@ void package_processing()
         PackageCompiler* compiler = new PackageCompiler;
         compiler->m_input = ROOT_DATA_PATH + g_config->m_packageName;
         compiler->m_output = ROOT_DATA_PATH + g_config->m_packageName + ".package";
-        addBackSlash(compiler->m_input);
+        add_trailing_slash(compiler->m_input);
         LOGI("package compile %s -> %s", compiler->m_input.c_str(), compiler->m_output.c_str());
         packageCompilers.push_back(compiler);
     }
@@ -276,7 +261,7 @@ void package_processing()
             PackageCompiler* compiler = new PackageCompiler;
             compiler->m_input = ROOT_DATA_PATH + folder;
             compiler->m_output = ROOT_DATA_PATH + folder + ".package";
-            addBackSlash(compiler->m_input);
+            add_trailing_slash(compiler->m_input);
             LOGI("package compile %s -> %s", compiler->m_input.c_str(), compiler->m_output.c_str());
             packageCompilers.push_back(compiler);
         }
@@ -313,7 +298,7 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
     g_memoryMgr.init(cfg);
 
-#ifdef DC_PROFILE
+#ifdef DC_DUMP_PROFILE
     g_profiler.init(TOTAL_BLOCK_NUM);
 #endif
 
@@ -328,18 +313,18 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_config->m_slient = cmdline->hasArg("slient");
     g_config->m_bundled = cmdline->hasArg("bundle");
 
-    createFolder("data");
+    create_folder("data");
     g_config->m_database.load(DC_DATABASE);
 
     g_config->m_inputDir = inputChar;
-    fixPathSlash(g_config->m_inputDir);
-    addBackSlash(g_config->m_inputDir);
+    string_replace(g_config->m_inputDir, "\\", "/");
+    add_trailing_slash(g_config->m_inputDir);
     g_config->m_topFolder = get_top_folder(g_config->m_inputDir);
     g_config->m_outputDir = input_to_output(g_config->m_inputDir);
 
     ENGINE_ASSERT(g_config->m_topFolder.length(), "top folder error.");
-    fixPathSlash(g_config->m_outputDir);
-    addBackSlash(g_config->m_outputDir);
+    string_replace(g_config->m_outputDir, "\\", "/");
+    add_trailing_slash(g_config->m_outputDir);
     std::string secondFolder = remove_top_folder(g_config->m_outputDir);
     if(secondFolder.length()) g_config->m_packageName = get_top_folder(secondFolder);
     LOGI("input = %s, output = %s, top-folder = %s, package-name=%s",
@@ -398,14 +383,12 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_config->m_database.m_files.clear();
     SAFE_DELETE(g_config);
 
-#ifdef DC_PROFILE
+#ifdef DC_DUMP_PROFILE
     g_profiler.dump_to_file("data_compiler_profile.txt", true, true);
     g_profiler.shutdown();
 #endif
 
     g_memoryMgr.shutdown();
-
-
 
     LOGD("******************************************************");
     LOGD("******************************************************");

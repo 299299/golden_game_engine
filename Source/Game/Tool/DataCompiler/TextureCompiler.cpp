@@ -43,7 +43,13 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     std::string ddsFile = getFilePath(output) + fileName + ".dds";
     std::string fileNameExt = getFileNameAndExtension(input);
     toLower(fileNameExt);
+#ifdef WIN32
     texconv_compress(input, getFilePath(output), m_format);
+#else
+    //in linux we just copy it to dest
+    copy_file(input, ddsFile);
+#endif
+
     addDependency("texture", input);
 
     //2. read the dds file back
@@ -60,10 +66,10 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
         memcpy(mem.m_buf + sizeof(Texture), texutreReader.m_buf, texutreReader.m_size);
         write_file(output, mem.m_buf, memSize);
     }
-    
 
     //3. delete the temp dds file.
     delete_file(ddsFile);
+
     return true;
 }
 

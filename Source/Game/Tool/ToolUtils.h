@@ -36,11 +36,10 @@ std::string replaceExtension(const std::string& fileName, const std::string& ext
 void        removeExtension(std::string& outStr);
 void        toLower(std::string& input);
 bool        isFileExist(const std::string& fileName);
-bool        createFolder(const std::string& folderName);
+bool        create_folder(const std::string& folderName);
 void        string_replace(std::string& strBig, const std::string & strsrc, const std::string &strdst);
-void        addBackSlash(std::string& outStr);
-void        fixPathSlash(std::string& inout);
-bool        fileSystemCopy(const std::string& src, const std::string& destFolder);
+void        add_trailing_slash(std::string& outStr);
+bool        copy_file(const std::string& src, const std::string& dst);
 std::string getWorkingDir();
 void        runProcess(const std::string& process, const std::string& workingDir, const std::string& args);
 bool        write_file(const std::string& fileName, const void* buf, uint32_t bufSize);

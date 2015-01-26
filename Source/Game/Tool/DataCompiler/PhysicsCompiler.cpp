@@ -77,27 +77,27 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
 
     for(uint32_t i=0; i<numOfFilters; ++i)
     {
-        const jsonxx::Object& filterValue = filtersValue.get<jsonxx::Object>(i);
-        m_filterNames.push_back(filterValue.get<std::string>("name"));
+        const jsonxx::Object& o = filtersValue.get<jsonxx::Object>(i);
+        m_filterNames.push_back(o.get<std::string>("name"));
     }
 
     for(uint32_t i=0; i<numOfFilters; ++i)
     {
-        const jsonxx::Object& filterValue = filtersValue.get<jsonxx::Object>(i);
+        const jsonxx::Object& o = filtersValue.get<jsonxx::Object>(i);
         CollisionFilter& filter = cfg.m_filters[i];
         uint32_t mask = 0;
-        if(filterValue.has<jsonxx::Array>("collides_with"))
+        if(o.has<jsonxx::Array>("collides_with"))
         {
-            const jsonxx::Array& colValue = filterValue.get<jsonxx::Array>("collides_with");
+            const jsonxx::Array& colValue = o.get<jsonxx::Array>("collides_with");
             for(uint32_t i=0; i<colValue.size(); ++i)
             {
                 int index = findFilterIndex(colValue.get<std::string>(i));
                 ADD_BITS(mask, 1 << index);
             }
         }
-        else if(filterValue.has<jsonxx::Array>("collides_with_all_except"))
+        else if(o.has<jsonxx::Array>("collides_with_all_except"))
         {
-            const jsonxx::Array& colExceptValue = filterValue.get<jsonxx::Array>("collides_with_all_except");
+            const jsonxx::Array& colExceptValue = o.get<jsonxx::Array>("collides_with_all_except");
             mask = 0xffffffff;
             for(uint32_t i=0; i<colExceptValue.size(); ++i)
             {
@@ -106,7 +106,7 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
             }
         }
         filter.m_mask = mask;
-        filter.m_name = StringId(filterValue.get<std::string>("name").c_str());
+        filter.m_name = json_to_stringid(o, "name");
     }
 
     return write_file(m_output, &cfg, sizeof(cfg));

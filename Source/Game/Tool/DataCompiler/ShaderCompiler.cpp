@@ -27,6 +27,7 @@ ShaderCompiler::~ShaderCompiler()
 
 bool ShaderCompiler::process(const std::string& input, const std::string& output)
 {
+#ifdef WIN32
     std::string fileName = getFileName(input);
     char firstChar = fileName[0];
     if(firstChar != 'v' && firstChar != 'f')
@@ -73,6 +74,10 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
     //delete the temp file of shaderc compiled.
     delete_file(tmp_output);
     return m_processed;
+#else
+    m_processed = true;
+    return m_processed;
+#endif
 }
 
 ProgramCompiler::ProgramCompiler()

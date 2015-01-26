@@ -38,7 +38,7 @@ std::string getFilePath(const std::string& fileName)
     if(pos == std::string::npos)
         return fileName;
     std::string ret = fileName.substr(0, pos);
-    addBackSlash(ret);
+    add_trailing_slash(ret);
     return ret;
 }
 std::string getFileName(const std::string& fileName)
@@ -87,15 +87,14 @@ bool isFileExist( const std::string& fileName )
     return access(fileName.c_str(), R_OK) == 0;
 #endif
 }
-bool createFolder(const std::string& inPath)
+bool create_folder(const std::string& inPath)
 {
     if(isFileExist(inPath) || inPath.empty())
         return true;
 
     std::string pathName = inPath;
-    string_replace(pathName, "/", "\\");
-    if(pathName[pathName.length() - 1] == '/')
-        pathName[pathName.length() - 1] = '/';
+    string_replace(pathName, "\\", "/");
+    add_trailing_slash(pathName);
 
     #ifdef HAVOK_COMPILE
     bool success = (CreateDirectoryA(pathName.c_str(), 0) == TRUE) || (GetLastError() == ERROR_ALREADY_EXISTS);
@@ -126,44 +125,28 @@ void string_replace( std::string &strBig, const std::string &strsrc, const std::
     }
 }
 
-bool fileSystemCopy(const std::string& src, const std::string& destFolder)
+bool copy_file(const std::string& src, const std::string& dst)
 {
-    LOGD("file system copy from %s to %s", src.c_str(), destFolder.c_str());
+    LOGD("file system copy from %s to %s", src.c_str(), dst.c_str());
 
-#ifdef HAVOK_COMPILE
-    SHFILEOPSTRUCT sfo;
-    ZeroMemory(&sfo, sizeof(sfo));
-    sfo.wFunc = FO_COPY;
-    char szSrc[MAX_PATH];
-    char szDest[MAX_PATH];
-    ZeroMemory(szDest, sizeof(szDest));
-    ZeroMemory(szSrc, sizeof(szSrc));
-    strcpy_s(szDest, destFolder.c_str());
-    strcpy_s(szSrc, src.c_str());
-    int srcLen = strlen(szSrc);
-    int dstLen = strlen(szDest);
-    szSrc[srcLen] = '\0';
-    szSrc[srcLen+1] = '\0';
-    szDest[dstLen] = '\0';
-    szDest[dstLen+1] = '\0';
-    sfo.pFrom = szSrc;
-    sfo.pTo = szDest;
-    sfo.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOCONFIRMMKDIR;
-    int ret = SHFileOperationA(&sfo);
-    if(sfo.fAnyOperationsAborted)
-    {
-        LOGE("file copy aborted!");
-    }
-    if (!ret)
-        return true;
-    else
-    {
-        LOGE("file system copy failed = %d, 0x%X!", ret, ret);
+    bx::CrtFileReader reader;
+    bx::CrtFileWriter writer;
+
+    if(reader.open(src.c_str()))
         return false;
-    }
-#else
-    return false;
-#endif
+
+    if(writer.open(dst.c_str()))
+        return false;
+
+    uint32_t size = bx::getSize(&reader);
+    void* p = malloc(size);
+    reader.read(p, size);
+    reader.close();
+
+    writer.write(p, size);
+    writer.close();
+    free(p);
+    return true;
 }
 
 std::string getWorkingDir()
@@ -176,7 +159,7 @@ std::string getWorkingDir()
     getcwd(path, MAX_PATH);
 #endif
     std::string ret(path);
-    addBackSlash(ret);
+    add_trailing_slash(ret);
     return ret;
 }
 
@@ -220,6 +203,14 @@ void runProcess(const std::string& process, const std::string& workingDir, const
 #endif
 }
 
+static std::string sub_string(const std::string& str, unsigned pos)
+{
+    if (pos < str.length())
+        return str.substr(pos, str.length() - pos);
+    else
+        return "";
+}
+
 static void scan_dir_internal(StringArray& result,
                               std::string path,
                               const std::string& startPath,
@@ -227,15 +218,18 @@ static void scan_dir_internal(StringArray& result,
                               uint32_t flags,
                               bool recursive)
 {
-    addBackSlash(path);
+    add_trailing_slash(path);
     std::string deltaPath;
     if (path.length() > startPath.length())
-        deltaPath = path.substr(0, startPath.length());
+        deltaPath = sub_string(path, startPath.length());
 
-    int index = filter.find_first_of('.');
-    std::string filterExtension = filter.substr(0, index);
+    std::string filterExtension = filter;
     if (filterExtension.find_first_of('*') != std::string::npos)
         filterExtension.clear();
+
+    LOGD("scan_dir_internal path=%s,startPath=%s,deltaPath=%s,filter=%s",
+        path.c_str(), startPath.c_str(),
+        deltaPath.c_str(), filterExtension.c_str());
 
     #ifdef WIN32
     WIN32_FIND_DATAW info;
@@ -252,14 +246,14 @@ static void scan_dir_internal(StringArray& result,
                 if (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                 {
                     if (flags & SCAN_DIRS)
-                        result.push_back(deltaPath + fileName);
+                        result.push_back(pathAndName);
                     if (recursive && fileName != "." && fileName != "..")
                         scan_dir_internal(result, path + fileName, startPath, filter, flags, recursive);
                 }
                 else if (flags & SCAN_FILES)
                 {
                     if (filterExtension.empty() || str_end_with(fileName, filterExtension))
-                        result.push_back(deltaPath + fileName);
+                        result.push_back(pathAndName);
                 }
             }
         }
@@ -275,25 +269,28 @@ static void scan_dir_internal(StringArray& result,
     {
         while ((de = readdir(dir)))
         {
-            /// \todo Filename may be unnormalized Unicode on Mac OS X. Re-normalize as necessary
             std::string fileName(de->d_name);
-            bool normalEntry = fileName != "." && fileName != "..";
-            if (normalEntry && !(flags & SCAN_HIDDEN) && str_begin_with(fileName, "."))
+            bool normalEntry = (fileName != ".") && (fileName != "..");
+            bool isDot = str_begin_with(fileName, ".");
+            if (!(flags & SCAN_HIDDEN) && isDot)
+                continue;
+            if(!normalEntry)
                 continue;
             std::string pathAndName = path + fileName;
+            //LOGD("pathAndName=%s, fileName=%s", pathAndName.c_str(), fileName.c_str());
             if (!stat(pathAndName.c_str(), &st))
             {
                 if (st.st_mode & S_IFDIR)
                 {
                     if (flags & SCAN_DIRS)
-                        result.push_back(deltaPath + fileName);
+                        result.push_back(pathAndName);
                     if (recursive && normalEntry)
                         scan_dir_internal(result, path + fileName, startPath, filter, flags, recursive);
                 }
                 else if (flags & SCAN_FILES)
                 {
                     if (filterExtension.empty() || str_end_with(fileName, filterExtension))
-                        result.push_back(deltaPath + fileName);
+                        result.push_back(pathAndName);
                 }
             }
         }
@@ -304,20 +301,29 @@ static void scan_dir_internal(StringArray& result,
 
 void scan_dir(StringArray& result, const char* pathName, const char* filter, uint32_t flags, bool recursive)
 {
-
+    LOGD("SCAN_DIR=%s, filter=%s, flags=%x, recursive=%d", pathName, filter, flags, recursive);
+    std::string initialPath(pathName);
+    add_trailing_slash(initialPath);
+    scan_dir_internal(result, initialPath, initialPath, filter, flags, recursive);
 }
 
 bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
 {
+    LOGI("write_file %s", fileName.c_str());
     bx::CrtFileWriter writer;
-    if(writer.open(fileName.c_str()))
+    if(writer.open(fileName.c_str())) {
+        LOGE("write_file can not open %s", fileName.c_str());
         return false;
+    }
     int32_t ret = writer.write(buf, bufSize);
     writer.close();
-    return ret != 0;
+    bool bRet = ret != 0;
+    if(!bRet)
+        LOGE("write_file %s failed", fileName.c_str());
+    return bRet;
 }
 
-void addBackSlash( std::string& outStr )
+void add_trailing_slash( std::string& outStr )
 {
     if(outStr.back() != '/')
         outStr += "/";
@@ -344,7 +350,10 @@ std::string remove_top_folder(const std::string& fileName)
     if(ret[0] == '/')
         ret = ret.substr(0, ret.length() - 1);
     int npos = ret.find_first_of('/') + 1;
-    return ret.substr(npos, ret.length() - npos);
+    std::string s = ret.substr(npos, ret.length() - npos);
+    if(s == ".")
+        s = "";
+    return s;
 }
 
 std::string get_top_folder(const std::string& dirName)
@@ -448,26 +457,13 @@ int find_char(const char* data, uint32_t size, char c)
     return -1;
 }
 
-bool str_begin_with( const std::string& str1, const std::string& str2 )
+bool str_begin_with( const std::string& s, const std::string& head )
 {
-#ifdef HAVOK_COMPILE
-    return hkString::beginsWithCase(str1.c_str(), str2.c_str());
-#else
-    return false;
-#endif
+    return s.compare(0, head.length(), head) == 0;
 }
-bool str_end_with(const std::string& str1, const std::string& str2)
+bool str_end_with(const std::string& s, const std::string& tail)
 {
-#ifdef HAVOK_COMPILE
-    return hkString::endsWithCase(str1.c_str(), str2.c_str());
-#else
-    return false;
-#endif
-}
-
-void fixPathSlash( std::string& inout )
-{
-    string_replace(inout, "\\", "/");
+    return s.compare(s.length() - tail.length(), tail.length(), tail) == 0;
 }
 
 void dumpNodeRec(hkxNode* theNode)
@@ -648,18 +644,6 @@ std::string get_resource_name( const std::string& input )
     return inputName;
 }
 
-static bool compare_filename_less(const std::string& fileName1, const std::string& fileName2)
-{
-    extern int get_resource_order(const StringId& type);
-    std::string ext1 = getFileExt(fileName1);
-    std::string ext2 = getFileExt(fileName2);
-    StringId ext1Id(ext1.c_str());
-    StringId ext2Id(ext2.c_str());
-    int ext1index = get_resource_order(ext1Id);
-    int ext2index = get_resource_order(ext2Id);
-    return ext1index < ext2index;
-}
-
 void texconv_compress( const std::string& src, const std::string& folder, const std::string& fmt )
 {
     //PROFILE(texconv_compress);
@@ -785,8 +769,14 @@ void ResourceFileDataBase::save(const char* fileName)
 
 unsigned get_file_modified_time(const std::string& fileName)
 {
-    if (fileName.empty() || !isFileExist(fileName))
+    if (fileName.empty())
         return 0;
+
+    if(!isFileExist(fileName))
+    {
+        LOGE("file not exist %s", fileName.c_str());
+        return 0;
+    }
 
 #ifdef WIN32
     struct _stat st;
@@ -837,7 +827,7 @@ FileReader::FileReader( const std::string& fileName )
 {
     if(m_file.open(fileName.c_str()))
         return;
-    m_size = (uint32_t)m_file.seek(0, bx::Whence::End);
+    m_size = (uint32_t)bx::getSize(&m_file);
     m_file.seek(0, bx::Whence::Begin);
     m_buf = COMMON_ALLOC(char, m_size);
     m_file.read(m_buf, m_size);

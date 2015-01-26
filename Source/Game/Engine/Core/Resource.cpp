@@ -132,8 +132,7 @@ void ResourcePackage::load_group(int index)
             continue;
         }
 
-        uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
-        reader.seek(0, bx::Whence::Begin);
+        uint32_t fileSize = (uint32_t)bx::getSize(&reader);
         char* buffer = (char*)m_allocator->allocate(fileSize);
         if(!buffer) continue;
 
@@ -584,8 +583,7 @@ void ResourceManager::process_request()
             continue;
         }
 
-        uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
-        reader.seek(0, bx::Whence::Begin);
+        uint32_t fileSize = (uint32_t)bx::getSize(&reader);
         ResourcePackage* package = (ResourcePackage*)COMMON_ALLOC(char, fileSize);
         reader.read(package, fileSize);
         reader.close();
@@ -759,8 +757,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     }
 
     void* newResource = 0;
-    uint32_t fileSize = (uint32_t)reader.seek(0, bx::Whence::End);
-    reader.seek(0, bx::Whence::Begin);
+    uint32_t fileSize = (uint32_t)bx::getSize(&reader);
     newResource = COMMON_ALLOC(char, fileSize);
     reader.read(newResource, fileSize);
     reader.close();
