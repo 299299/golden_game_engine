@@ -28,15 +28,10 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
     AnimRig* rig = (AnimRig*)data;
     const char* offset = data;
     offset += sizeof(AnimRig);
-	//joint names
+    //joint names
     rig->m_jointNames = (StringId*)(offset);
     offset += sizeof(StringId) * rig->m_jointNum;
-	//animations
-	rig->m_animNames = (StringId*)offset;
-	offset += sizeof(StringId) * rig->m_numAnimations;
-	rig->m_animations = (Animation**)offset;
-	offset += sizeof(StringId) * rig->m_numAnimations;
-	//bone attachments
+    //bone attachments
     rig->m_attachments = (BoneAttachment*)offset;
     offset = data + rig->m_havokDataOffset;
     rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
@@ -46,13 +41,7 @@ void* load_resource_anim_rig(const char* data, uint32_t size)
 void  lookup_resource_anim_rig(void * resource)
 {
     AnimRig* rig = (AnimRig*)resource;
-    uint32_t num = rig->m_numAnimations;
-    Animation** head = rig->m_animations;
-    StringId* nameHead = rig->m_animNames;
-    for (uint32_t i=0; i<num; ++i)
-    {
-        head[i] = FIND_RESOURCE(Animation, nameHead[i]);
-    }
+    // FIXME:TODO
 }
 void  destroy_resource_anim_rig(void * resource)
 {
@@ -95,17 +84,6 @@ void AnimRig::create_mirrored_skeleton()
 #endif
 }
 
-int AnimRig::find_animation_index( const StringId& name ) const
-{
-    int num = m_numAnimations;
-    StringId* names = m_animNames;
-    for (int i=0; i<num; ++i)
-    {
-        if(names[i] == name) return i;
-    }
-    return -1;
-}
-
 //------------------------------------------------------------------------------------------------
 //          INSTANCE
 //------------------------------------------------------------------------------------------------
@@ -117,13 +95,10 @@ void AnimRigInstance::init( const void* resource , ActorId32 actor)
     m_resource = (const AnimRig*)resource;
 #ifdef HAVOK_COMPILE
     const hkaSkeleton* skeleton = m_resource->m_skeleton;
-    uint32_t numAnimations = m_resource->m_numAnimations;
-    uint32_t ctrl_size = sizeof(hk_anim_ctrl);
-    ctrl_size *= numAnimations;
-	//uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(skeleton);
-	uint32_t pose_size = sizeof(hkaPose);
-	pose_size = NEXT_MULTIPLE_OF(16, pose_size);
-    uint32_t mem_size = sizeof(hkaSkeleton) + pose_size + ctrl_size + sizeof(hk_anim_ctrl*) * numAnimations;
+    //uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(skeleton);
+    uint32_t pose_size = sizeof(hkaPose);
+    pose_size = NEXT_MULTIPLE_OF(16, pose_size);
+    uint32_t mem_size = sizeof(hkaSkeleton) + pose_size;
     m_blob = COMMON_ALLOC(char, mem_size);
     char* offset = m_blob;
     m_skeleton = new(offset) hkaAnimatedSkeleton(skeleton);
@@ -131,30 +106,13 @@ void AnimRigInstance::init( const void* resource , ActorId32 actor)
     m_pose = new(offset) hkaPose(skeleton);
     m_pose->setToReferencePose();
     m_pose->syncAll();
-    if(numAnimations > 0) m_skeleton->setReferencePoseWeightThreshold(0.0f);
-    offset += pose_size;
-    m_numControls = numAnimations;
-	char* ptr = offset;
-	offset += sizeof(hk_anim_ctrl) * numAnimations;
-    m_controls = (hk_anim_ctrl**)offset;
-    offset += sizeof(hk_anim_ctrl*) * numAnimations;
-	Animation** anims = m_resource->m_animations;
-    for (uint32_t i=0; i<numAnimations; ++i)
-    {
-        m_controls[i] = new (ptr) hk_anim_ctrl(anims[i]);
-        ptr += sizeof(hk_anim_ctrl);
-    }
+    //m_skeleton->setReferencePoseWeightThreshold(0.0f);
 #endif
 }
 
 void AnimRigInstance::destroy()
 {
 #ifdef HAVOK_COMPILE
-    uint32_t num = m_numControls;
-    for (uint32_t i=0; i<num; ++i)
-    {
-        SAFE_DESTRUCTOR(m_controls[i], hk_anim_ctrl);
-    }
     SAFE_DESTRUCTOR(m_pose, hkaPose);
     SAFE_DESTRUCTOR(m_skeleton, hkaAnimatedSkeleton);
 #endif
@@ -181,7 +139,7 @@ void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 {
 #ifdef HAVOK_COMPILE
     uint32_t num = m_resource->m_attachNum;
-	m_attachmentTransforms = FRAME_ALLOC(float, num*16);
+    m_attachmentTransforms = FRAME_ALLOC(float, num*16);
     const BoneAttachment* attachments = m_resource->m_attachments;
     const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
     for (uint32_t i=0; i<num; ++i)
@@ -197,31 +155,6 @@ void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 #endif
 }
 
-
-bool AnimRigInstance::is_playing_animation() const
-{
-#ifdef HAVOK_COMPILE
-    int num = m_skeleton->getNumAnimationControls();
-    for(int i=0; i<num; ++i)
-    {
-        hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
-        float speed = ac->getPlaybackSpeed();
-        if(speed > 0.0f) return true;
-    }
-#endif
-    return false;
-}
-
-bool AnimRigInstance::is_playing_animation(int index) const
-{
-#ifdef HAVOK_COMPILE
-    hk_anim_ctrl* ac = get_control(index);
-    if(!ac->m_enabled) return false;
-    if(ac->getPlaybackSpeed() > 0.0f) return true;
-#endif
-    return false;
-}
-
 void AnimRigInstance::test_animation(const char* name)
 {
 #ifdef HAVOK_COMPILE
@@ -234,130 +167,6 @@ void AnimRigInstance::test_animation(const char* name)
     ac->m_enabled = true;
     ac->set_loop(true);
     ac->removeReference();
-#endif
-}
-
-hk_anim_ctrl* AnimRigInstance::get_control( int index ) const
-{
-    return m_controls[index];
-}
-
-int AnimRigInstance::find_control(const StringId& name) const
-{
-#ifdef HAVOK_COMPILE
-    uint32_t num = m_numControls;
-    hk_anim_ctrl** head = m_controls;
-    for (uint32_t i = 0; i < num; ++i)
-    {
-        hk_anim_ctrl* ac = head[i];
-        if(ac->m_name == name) return i;
-    }
-#endif
-    return -1;
-}
-
-float AnimRigInstance::get_animation_weight( int index ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->get_weight();
-#else
-    return 0.0f;
-#endif
-}
-
-float AnimRigInstance::get_animation_speed( int index ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->getPlaybackSpeed();
-#else
-    return 0.0f;
-#endif
-}
-
-float AnimRigInstance::get_animation_time( int index ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->getLocalTime();
-#else
-    return 0.0f;
-#endif
-}
-
-float AnimRigInstance::get_animation_period( int index ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->get_peroid();
-#else
-    return 0.0f;
-#endif
-}
-
-void AnimRigInstance::get_rootmotion(float dt, hkQsTransform& t ) const
-{
-#ifdef HAVOK_COMPILE
-    m_skeleton->getDeltaReferenceFrame(dt, t);
-#endif
-}
-
-void AnimRigInstance::get_rootmotion( int index, float dt, hkQsTransform& t ) const
-{
-#ifdef HAVOK_COMPILE
-    m_controls[index]->getExtractedMotionDeltaReferenceFrame(dt, t);
-#endif
-}
-
-float AnimRigInstance::get_beat_time( int index, int beat_index ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->m_animation->get_beat(beat_index).m_time;
-#else
-    return 0.0f;
-#endif
-}
-
-int AnimRigInstance::get_beat_type( int index, int beat_index ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->m_animation->get_beat(beat_index).m_type;
-#else
-    return -1;
-#endif
-}
-
-int AnimRigInstance::get_closest_beat( int index ) const
-{
-#ifdef HAVOK_COMPILE
-    hk_anim_ctrl* ac = m_controls[index];
-    return ac->m_animation->find_next_closest_beat(ac->getLocalTime(), ac->is_loop());
-#else
-    return -1;
-#endif
-}
-
-int AnimRigInstance::get_first_beat( int index, int type ) const
-{
-#ifdef HAVOK_COMPILE
-    return m_controls[index]->m_animation->find_first_beat(type);
-#else
-    return -1;
-#endif
-}
-
-float AnimRigInstance::next_anim_sync_time( int indexA, int indexB ) const
-{
-#ifdef HAVOK_COMPILE
-    hk_anim_ctrl* acA = m_controls[indexA];
-    hk_anim_ctrl* acB = m_controls[indexB];
-    Animation* animA = acA->m_animation;
-    Animation* animB = acB->m_animation;
-    int beat_index = animA->find_next_closest_beat(acA->getLocalTime(), acA->is_loop());
-    if(beat_index < 0) return -1;
-    int beat_type = animA->get_beat(beat_index).m_type;
-    beat_index = animB->find_first_beat(beat_type);
-    if(beat_index < 0) return -1;
-    return animB->get_beat(beat_index).m_time;
-#else
-    return 0.0f;
 #endif
 }
 

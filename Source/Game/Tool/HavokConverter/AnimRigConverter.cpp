@@ -156,28 +156,28 @@ int AnimRigConverter::findBodyPart( const std::string& boneName, const char** ar
 
 void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
 {
-	if(!m_node) return;
+    if(!m_node) return;
 
 #ifdef HAVOK_COMPILE
-	const hkxAttributeGroup* group = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
-	if(!group) return;
-	fill_object_attributes(object, group);
-	const char* animSetName = 0;
-	hkResult result = group->getStringValue("anim_set", true, animSetName);
-	if(result != HK_SUCCESS) return;
+    const hkxAttributeGroup* group = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
+    if(!group) return;
+    fill_object_attributes(object, group);
+    const char* animSetName = 0;
+    hkResult result = group->getStringValue("anim_set", true, animSetName);
+    if(result != HK_SUCCESS) return;
     //HACK HERE!
     std::string animSetFile("../pipeline/bones/");
     animSetFile += animSetName;
     animSetFile += "_animset.json";
-	FileReader reader(animSetFile.c_str());
-	if (!reader.m_size) return;
-	jsonxx::Value obj;
-	if(!obj.parse(reader.m_buf))
-	{
-		g_hc_config->m_error.add_error("anim-set %s json parse error.", animSetFile.c_str());
-		return;
-	}
-	object<<"animation-set"<<obj;
+    FileReader reader(animSetFile.c_str());
+    if (!reader.m_size) return;
+    jsonxx::Value obj;
+    if(!obj.parse(reader.m_buf))
+    {
+        g_hc_config->m_error.add_error("anim-set %s json parse error.", animSetFile.c_str());
+        return;
+    }
+    object<<"animation-set"<<obj;
 #endif
 
 }

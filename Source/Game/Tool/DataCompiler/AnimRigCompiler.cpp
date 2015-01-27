@@ -31,14 +31,8 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
         attachmentNum = root.get<jsonxx::Array>("attachments").size();
     }
 
-#if 0
-	JsonValue animationsValue = root.GetValue("animation_set");
-	uint32_t animationsNum = 0;
-	if(animationsValue.IsValid()) animationsNum = animationsValue.GetElementsCount();
-#endif
-
     uint32_t memSize = sizeof(AnimRig) + jointNum*sizeof(StringId) + attachmentNum*sizeof(BoneAttachment);
-	uint32_t headerSize = memSize;
+    uint32_t headerSize = memSize;
     memSize = NEXT_MULTIPLE_OF(16, memSize);
     uint32_t havokOffset = memSize;
 
@@ -67,9 +61,9 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     rig->m_mirrored = root.get<bool>("mirrored");
 
     offset += sizeof(AnimRig);
-	//-----------------------------------------------
-	//					joint names
-	//-----------------------------------------------
+    //-----------------------------------------------
+    //                  joint names
+    //-----------------------------------------------
     rig->m_jointNames = (StringId*)(offset);
     for(uint32_t i=0; i<jointNum; ++i)
     {
@@ -95,22 +89,9 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     }
     offset += jointNum*sizeof(StringId);
 
-	//-----------------------------------------------
-	//					animation-set names
-	//-----------------------------------------------
-	rig->m_animNames=(StringId*)offset;
-#if 0
-	for (uint32_t i=0; i<animationsNum; ++i)
-	{
-		std::string animName = JSON_GetString(animationsValue[i]);
-		addDependency("animation-set-anim", name_to_file_path(animName, Animation::get_name()));
-		rig->m_animNames[i] = StringId(animName.c_str());
-	}
-	offset += animationsNum * (sizeof(StringId)+sizeof(void*));
-#endif
-	//-----------------------------------------------
-	//					bone attachments
-	//-----------------------------------------------
+    //-----------------------------------------------
+    //                  bone attachments
+    //-----------------------------------------------
     rig->m_attachments = (BoneAttachment*)offset;
     rig->m_attachNum = attachmentNum;
     if(attachmentNum)
@@ -126,7 +107,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
         }
     }
 
-	offset += attachmentNum * sizeof(BoneAttachment);
-	ENGINE_ASSERT((offset-mem.m_buf == (int)headerSize), "anim-rig mem offset error.");
+    offset += attachmentNum * sizeof(BoneAttachment);
+    ENGINE_ASSERT((offset-mem.m_buf == (int)headerSize), "anim-rig mem offset error.");
     return write_file(m_output, mem.m_buf, memSize);
 }
