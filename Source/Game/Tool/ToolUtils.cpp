@@ -737,7 +737,7 @@ void ResourceFileDataBase::load(const char* fileName)
 {
     FILE* fp = fopen(fileName, "r");
     if(!fp) {
-        LOGW(__FUNCTION__ " can not open file %s", fileName);
+        LOGW("%s can not open file %s", BX_FUNCTION, fileName);
         return;
     }
     TIMELOG("load data compiler data base.");
@@ -757,7 +757,7 @@ void ResourceFileDataBase::save(const char* fileName)
 {
     FILE* fp = fopen(fileName, "w");
     if(!fp) {
-        LOGE(__FUNCTION__ " can not open file %s", fileName);
+        LOGE("%s can not open file %s", BX_FUNCTION, fileName);
         return;
     }
     TIMELOG("save data compiler data base.");

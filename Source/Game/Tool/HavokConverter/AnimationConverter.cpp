@@ -29,7 +29,7 @@ void AnimationConverter::postProcess()
         hkBinaryPackfileWriter writer;
         writer.setContents(m_ac, hkaAnimationContainerClass);
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
-            g_hc_config->m_error.add_error(__FUNCTION__" write error.");
+            g_hc_config->m_error.add_error("%s write error.", BX_FUNCTION);
         LOGI("save havok animation %s", m_animationFile.c_str());
     }
 #endif

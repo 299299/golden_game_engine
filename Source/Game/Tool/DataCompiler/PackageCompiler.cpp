@@ -82,7 +82,8 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
 
     std::sort(m_groups.begin(), m_groups.end(), compare_less_group);
     memSize += sizeof(ResourceGroup) * m_groups.size();
-    LOGI(__FUNCTION__" resource package group num = %d, total mem len = %d, total file size = %d", m_groups.size(), memSize, totalFileSize);
+    LOGI("%s resource package group num = %d, total mem len = %d, total file size = %d",
+        BX_FUNCTION, m_groups.size(), memSize, totalFileSize);
 
     MemoryBuffer mem(memSize);
     ResourcePackage* package = (ResourcePackage*)mem.m_buf;

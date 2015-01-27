@@ -46,7 +46,7 @@ void load_string_table(const char* fName)
 {
     FILE* fp = fopen(fName, "r");
     if(!fp) {
-        LOGW(__FUNCTION__ " can not open file %s", fName);
+        LOGW("%s can not open file %s", BX_FUNCTION, fName);
         return;
     }
     TIMELOG("load string table");
@@ -64,7 +64,7 @@ void save_string_table(const char* fName)
 {
     FILE* fp = fopen(fName, "w");
     if(!fp) {
-        LOGE(__FUNCTION__ " can not open file %s", fName);
+        LOGE("%s can not open file %s", BX_FUNCTION, fName);
         return;
     }
     TIMELOG("save string table");

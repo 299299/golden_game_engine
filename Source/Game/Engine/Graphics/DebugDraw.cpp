@@ -105,7 +105,7 @@ void DebugDrawManager::draw( uint32_t lineNum, DebugLine* lines, bool bDepth)
     uint32_t numVertices = lineNum*2;
     if (!bgfx::checkAvailTransientVertexBuffer(numVertices, PosColorVertex::ms_decl))
     {
-        LOGE(__FUNCTION__" checkAvailTransientVertexBuffer failed.");
+        LOGE("%s checkAvailTransientVertexBuffer failed.", BX_FUNCTION);
         return;
     }
 

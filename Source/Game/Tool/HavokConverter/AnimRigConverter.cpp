@@ -81,7 +81,7 @@ void AnimRigConverter::postProcess()
         hkBinaryPackfileWriter writer;
         writer.setContents(skeleton, hkaSkeleton::staticClass());
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
-            g_hc_config->m_error.add_error(__FUNCTION__" write error.");
+            g_hc_config->m_error.add_error("%s write error.", BX_FUNCTION);
     }
 #endif
 }

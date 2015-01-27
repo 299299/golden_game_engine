@@ -54,7 +54,7 @@ void PhysicsConverter::postProcess()
         hkBinaryPackfileWriter writer;
         writer.setContents(m_physics, hkpPhysicsData::staticClass());
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
-            g_hc_config->m_error.add_error(__FUNCTION__" write error.");
+            g_hc_config->m_error.add_error("%s write error.", BX_FUNCTION);
     }
 #endif
 }

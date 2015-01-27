@@ -477,7 +477,7 @@ void Graphics::screenspace_quad(float _textureWidth, float _textureHeight, float
 {
     if (!bgfx::checkAvailTransientVertexBuffer(3, PosTexCoord0Vertex::ms_decl))
     {
-        LOGE(__FUNCTION__" checkAvailTransientVertexBuffer failed.");
+        LOGE("%s checkAvailTransientVertexBuffer failed.", BX_FUNCTION);
         return;
     }
 

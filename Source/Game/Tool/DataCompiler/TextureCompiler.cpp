@@ -101,12 +101,12 @@ bool Texture3DCompiler::readJSON(const jsonxx::Object& root)
     int w, h, comps;
     stbi_uc* image = stbi_load(inputName.c_str(), &w, &h, &comps, 4);
     if(!image) {
-        g_config->m_error.add_error(__FUNCTION__" stbi_load failed");
+        g_config->m_error.add_error("%s stbi_load failed", BX_FUNCTION);
         return false;
     }
     if(w != 256 || h != 16)
     {
-        g_config->m_error.add_error(__FUNCTION__"lut input error (%d, %d)", w, h);
+        g_config->m_error.add_error("%s lut input error (%d, %d)", BX_FUNCTION, w, h);
         return false;
     }
 

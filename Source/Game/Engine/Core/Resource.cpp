@@ -54,7 +54,7 @@ void ResourcePackage::init()
 
 void ResourcePackage::load()
 {
-    TIMELOG(__FUNCTION__);
+    TIMELOG(BX_FUNCTION);
     m_groups = (ResourceGroup*)((char*)this + sizeof(ResourcePackage));
 
     //=======================================================
@@ -93,7 +93,7 @@ void ResourcePackage::destroy()
 
 void ResourcePackage::load_group(int index)
 {
-    TIMELOG(__FUNCTION__" load group %d.", index);
+    TIMELOG("%s %d", BX_FUNCTION, index);
 
     if(!is_running())
         return;
@@ -149,7 +149,7 @@ void ResourcePackage::load_group(int index)
 
 void ResourcePackage::load_group_bundled(int index)
 {
-    TIMELOG(__FUNCTION__" load group %d.", index);
+    TIMELOG("%s load group %d", BX_FUNCTION, index);
 
     if(!is_running())
         return;
@@ -192,7 +192,7 @@ void ResourcePackage::flush(int maxNum)
 
 void ResourcePackage::lookup_all_resources()
 {
-    TimeAutoLog _log(__FUNCTION__);
+    TimeAutoLog _log(BX_FUNCTION);
     uint32_t num = m_numGroups;
     ResourceGroup* groups = m_groups;
 
@@ -215,7 +215,7 @@ void ResourcePackage::lookup_all_resources()
 
 void ResourcePackage::destroy_all_resources()
 {
-    TimeAutoLog _log(__FUNCTION__);
+    TimeAutoLog _log(BX_FUNCTION);
     for(uint32_t i=0; i<m_numGroups; ++i)
     {
         ResourceGroup& group = m_groups[i];
@@ -243,7 +243,7 @@ void ResourcePackage::bringin_all_resources(int maxNum)
 {
     if(maxNum < 0)
     {
-        TIMELOG(__FUNCTION__);
+        TIMELOG(BX_FUNCTION);
         for(uint32_t i=0; i<m_numGroups; ++i)
         {
             ResourceGroup& group = m_groups[i];
@@ -285,7 +285,7 @@ void ResourcePackage::bringin_all_resources(int maxNum)
 
 void ResourcePackage::bringout_all_resources()
 {
-    TimeAutoLog _log(__FUNCTION__);
+    TimeAutoLog _log(BX_FUNCTION);
     uint32_t num = m_numGroups;
     ResourceGroup* groups = m_groups;
     for(uint32_t i=0; i<num; ++i)
@@ -315,7 +315,7 @@ void ResourcePackage::set_status( int status )
 
 void ResourcePackage::remove_all_resources()
 {
-    TimeAutoLog _log(__FUNCTION__);
+    TimeAutoLog _log(BX_FUNCTION);
     uint32_t num = m_numGroups;
     ResourceGroup* groups = m_groups;
     for(uint32_t i=0; i<num; ++i)
@@ -444,7 +444,7 @@ void* ResourceManager::find_resource( const StringId& type, const StringId& name
     ResourceMap::Iterator it = g_resourceMap->findKey(packId(type, name));
     if(!g_resourceMap->isValid(it))
     {
-        LOGE(__FUNCTION__" can not find resource %s, %s", stringid_lookup(type), stringid_lookup(name));
+        LOGE("%s can not find resource %s, %s", BX_FUNCTION, stringid_lookup(type), stringid_lookup(name));
         return 0;
     }
     return g_resourceMap->getValue(it);
@@ -729,7 +729,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     void* oldResource = find_resource(type, name);
     if(!oldResource)
     {
-        LOGW(__FUNCTION__" old resource not exist ---> %s!", pathName);
+        LOGW("%s old resource not exist ---> %s!", BX_FUNCTION, pathName);
         bFireCallbacks = false;
     }
 
@@ -737,13 +737,13 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     int32_t ret = reader.open(pathName);
     if(ret)
     {
-        LOGE(__FUNCTION__" load file failed ---> %s!", pathName);
+        LOGE("%s load file failed ---> %s!", BX_FUNCTION, pathName);
         return 0;
     }
 
     ResourceFactory* fac = find_factory(type);
     if(!fac) {
-        LOGE("can not find factory = %x", stringid_lookup(type));
+        LOGE("%s can not find factory = %x", BX_FUNCTION, stringid_lookup(type));
         return 0;
     }
 

@@ -11,7 +11,7 @@ bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
     FileReader havokReader(havokFile);
     if(havokReader.m_size < 16)
     {
-        g_config->m_error.add_error(__FUNCTION__ " can not find havok file [%s]", havokFile.c_str());
+        g_config->m_error.add_error("%s can not find havok file [%s]", BX_FUNCTION, havokFile.c_str());
         return false;
     }
 
