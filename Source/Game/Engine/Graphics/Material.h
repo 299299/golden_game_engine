@@ -46,7 +46,7 @@ struct TranslucencyInfo
     float           m_info[4];
 };
 
-ENGINE_NATIVE_ALIGN struct MatSampler
+ENGINE_NATIVE_ALIGN(struct) MatSampler
 {
     Texture*                m_texture;
     uint32_t                m_flags;
@@ -56,7 +56,7 @@ ENGINE_NATIVE_ALIGN struct MatSampler
     char                    m_padding[3];
 };
 
-ENGINE_NATIVE_ALIGN struct Material
+ENGINE_NATIVE_ALIGN(struct) Material
 {
     DECLARE_RESOURCE(material);
 

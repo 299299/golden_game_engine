@@ -159,7 +159,7 @@ void caculate_value(short tx, short ty, float deadZone, float* outValue)
     float normalizedLX = LX / magnitude;
     float normalizedLY = LY / magnitude;
 
-    float normalizedMagnitude;
+    //float normalizedMagnitude;
 
     //check if the controller is outside a circular dead zone
     if (magnitude > deadZone)
@@ -173,12 +173,12 @@ void caculate_value(short tx, short ty, float deadZone, float* outValue)
 
         //optionally normalize the magnitude with respect to its expected range
         //giving a magnitude value of 0.0 to 1.0
-        normalizedMagnitude = magnitude / (32767.0f - deadZone);
+        //normalizedMagnitude = magnitude / (32767.0f - deadZone);
     }
     else //if the controller is in the deadzone zero out the magnitude
     {
         magnitude = 0.0f;
-        normalizedMagnitude = 0.0f;
+        //normalizedMagnitude = 0.0f;
 
         if(abs(tx) < deadZone)
             normalizedLX = 0.0f;

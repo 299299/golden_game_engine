@@ -129,8 +129,8 @@ bool check_unique_process()
         ::CloseHandle(hMutex);
         return false;
     }
-    return true;
 #endif
+    return true;
 }
 
 uint32_t Fact::value_type(const StringId& k) const

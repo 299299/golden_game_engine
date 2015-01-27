@@ -41,7 +41,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     uint32_t memSize = sizeof(ActorResource);
     memSize += (numComps * (sizeof(StringId) + sizeof(void*)) * 2);
     memSize += (numOfData * sizeof(Key));
-    
+
     for (size_t i=0; i<numOfData; ++i)
     {
         memSize += g_fact_valuesizes[json_to_enum(datasValue.get<jsonxx::Object>(i), "type", g_fact_keynames)];
@@ -87,8 +87,9 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     {
         const jsonxx::Object& o = datasValue.get<jsonxx::Object>(i);
         Key& key = fact.m_keys[i];
-        key.m_type = json_to_enum(o, "type", g_fact_keynames);
-        ENGINE_ASSERT(key.m_type >= 0, "Actor Key type not right.");
+        int index = json_to_enum(o, "type", g_fact_keynames);
+        ENGINE_ASSERT(index >= 0, "Actor Key type not right.");
+        key.m_type = index;
         key.m_name = StringId(o.get<std::string>("name").c_str());
         key.m_offset = (uint32_t)(values - mem.m_buf);
         switch(key.m_type)

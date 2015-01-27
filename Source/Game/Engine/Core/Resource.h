@@ -26,7 +26,7 @@ typedef void  (*__RESOURCE_LOOKUP)(void*);
 typedef void  (*__RESOURCE_BRINGOUT)(void*);
 typedef void  (*__RESOURCE_RELOAD)(void*, void*);
 
-ENGINE_NATIVE_ALIGN struct ResourceInfo
+ENGINE_NATIVE_ALIGN(struct) ResourceInfo
 {
     StringId                    m_name;
     void*                       m_ptr;
@@ -34,7 +34,7 @@ ENGINE_NATIVE_ALIGN struct ResourceInfo
     uint32_t                    m_offset;
 };
 
-ENGINE_NATIVE_ALIGN struct ResourceGroup
+ENGINE_NATIVE_ALIGN(struct) ResourceGroup
 {
     ResourceInfo*               m_resources;
     ResourceFactory*            m_factory;
@@ -55,7 +55,7 @@ struct ResourceFactory
     const char*                 m_name;
 };
 
-ENGINE_NATIVE_ALIGN struct ResourcePackage
+ENGINE_NATIVE_ALIGN(struct) ResourcePackage
 {
     ResourceGroup*                      m_groups;
 

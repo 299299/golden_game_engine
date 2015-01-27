@@ -3,12 +3,12 @@
 #include "MathDefs.h"
 #include <bgfx.h>
 
-ENGINE_NATIVE_ALIGN struct SubMesh
+ENGINE_NATIVE_ALIGN(struct) SubMesh
 {
     Sphere                          m_sphere;
     Aabb                            m_aabb;
     bgfx::VertexBufferHandle        m_vbh;
-    bgfx::IndexBufferHandle         m_ibh; 
+    bgfx::IndexBufferHandle         m_ibh;
 
     uint32_t                        m_vertexOffset;
     uint32_t                        m_vertexSize;
@@ -18,7 +18,7 @@ ENGINE_NATIVE_ALIGN struct SubMesh
     void submit() const;
 };
 
-ENGINE_NATIVE_ALIGN struct Mesh
+ENGINE_NATIVE_ALIGN(struct) Mesh
 {
     DECLARE_RESOURCE(mesh);
 
@@ -32,13 +32,13 @@ ENGINE_NATIVE_ALIGN struct Mesh
 
     bgfx::VertexDecl            m_decl;
     Aabb                        m_aabb;
-    
+
     uint32_t                    m_subMeshOffset;
     uint32_t                    m_jointOffset;
-    
+
     SubMesh*                    m_submeshes;
     Matrix*                     m_jointMatrix;
-    
+
     uint8_t                     m_numSubMeshes;
     uint8_t                     m_numJoints;
     char                        m_padding[2];

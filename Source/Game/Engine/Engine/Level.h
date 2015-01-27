@@ -33,7 +33,7 @@ struct LevelLight
     uint32_t            m_lightId;
 };
 
-ENGINE_NATIVE_ALIGN struct Level
+ENGINE_NATIVE_ALIGN(struct) Level
 {
     DECLARE_RESOURCE(level);
 

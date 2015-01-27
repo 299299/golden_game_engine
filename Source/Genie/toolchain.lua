@@ -385,7 +385,6 @@ function toolchain(_buildDir, _libDir, _bxDir, _outputDir)
             "-fdata-sections",
             "-ffunction-sections",
             "-msse2",
-            "-Wunused-value",
             "-Wundef",
         }
         linkoptions {
@@ -454,8 +453,10 @@ function toolchain(_buildDir, _libDir, _bxDir, _outputDir)
         buildoptions {
             "-std=c++0x",
             "-msse2",
-            "-Wunused-value",
             "-Wundef",
+            "-Wno-unused-variable",
+            "-Wno-unused-parameter",
+            "-Wno-unused-function",
         }
         links {
             "rt",

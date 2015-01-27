@@ -34,10 +34,10 @@ struct CollisionFilter
     uint32_t                    m_mask;
 };
 
-ENGINE_NATIVE_ALIGN struct PhysicsConfig
+ENGINE_NATIVE_ALIGN(struct) PhysicsConfig
 {
     DECLARE_RESOURCE(physics_config);
-    
+
     CollisionFilter             m_filters[32];
     uint32_t                    m_numFilterLayers;
     float                       m_worldSize;
@@ -62,7 +62,7 @@ struct PhysicsWorld
 
     void add_to_world(PhysicsInstance* instance);
     void remove_from_world(PhysicsInstance* instance);
-    
+
     void add_collision_event(uint64_t key, const CollisionEvent& evt);
     int add_raycast_job(const float* from, const float* to, int32_t filterInfo = -1);
     RaycastJob* get_raycast_job(int handle) const;

@@ -42,7 +42,7 @@ struct AnimationTrigger
     float                           m_time;
 };
 
-ENGINE_NATIVE_ALIGN struct Animation
+ENGINE_NATIVE_ALIGN(struct) Animation
 {
     DECLARE_RESOURCE(animation);
 
@@ -52,7 +52,7 @@ ENGINE_NATIVE_ALIGN struct Animation
     int get_frames() const;
     float get_length() const;
     bool mirrored() const { return m_mirroredFrom;};
-    
+
     int  find_first_beat(uint32_t type) const;
     int  find_next_closest_beat(float time, bool bLoop) const;
     const AnimationBeat& get_beat(int index) const { return m_beats[index]; };

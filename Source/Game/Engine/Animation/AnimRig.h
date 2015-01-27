@@ -55,7 +55,7 @@ struct BoneAttachment
     int                 m_boneIndex;
 };
 
-ENGINE_NATIVE_ALIGN struct AnimRig
+ENGINE_NATIVE_ALIGN(struct) AnimRig
 {
     DECLARE_RESOURCE(rig);
 
@@ -76,13 +76,13 @@ ENGINE_NATIVE_ALIGN struct AnimRig
     StringId*                       m_animNames;
     uint32_t                        m_numAnimations;
     Animation**                     m_animations;
-    
+
     uint16_t                        m_jointNum;
     uint8_t                         m_attachNum;
     bool                            m_mirrored;
 };
 
-ENGINE_NATIVE_ALIGN struct AnimRigInstance
+ENGINE_NATIVE_ALIGN(struct) AnimRigInstance
 {
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
@@ -116,4 +116,4 @@ ENGINE_NATIVE_ALIGN struct AnimRigInstance
     int   get_first_beat(int index, int type) const;
     float next_anim_sync_time(int indexA, int indexB) const;
     //----------------------------------------------------------------------
-}; 
+};

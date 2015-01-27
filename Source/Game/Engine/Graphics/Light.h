@@ -3,7 +3,7 @@
 #include "MathDefs.h"
 #include "StringId.h"
 
-ENGINE_NATIVE_ALIGN struct LightResource
+ENGINE_NATIVE_ALIGN(struct) LightResource
 {
     DECLARE_RESOURCE(light);
 
@@ -19,7 +19,7 @@ ENGINE_NATIVE_ALIGN struct LightResource
     char                    m_padding[2];
 };
 
-ENGINE_NATIVE_ALIGN struct LightInstance
+ENGINE_NATIVE_ALIGN(struct) LightInstance
 {
     float                   m_transform[16];
     float                   m_color[3];
@@ -38,13 +38,13 @@ struct LightWorld
 
     void                    update(float dt);
     void                    submit_lights(ShadingEnviroment* env);
-    void                    update_shadow(float shadowArea, 
-                                          float shadowSize, 
+    void                    update_shadow(float shadowArea,
+                                          float shadowSize,
                                           const float* camPos);
 
     LightInstance**         m_drawLights;
     uint32_t                m_numLightsToDraw;
-    
+
     const LightInstance*    m_shadowLight;
     Frustum                 m_shadowFrustum;
     float                   m_shadowView[16];

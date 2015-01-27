@@ -9,7 +9,7 @@ struct AnimRigInstance;
 struct AnimRig;
 class  AnimRaycastInterface;
 
-ENGINE_NATIVE_ALIGN struct LookAtResource
+ENGINE_NATIVE_ALIGN(struct) LookAtResource
 {
     DECLARE_RESOURCE(lookat);
 
@@ -17,29 +17,29 @@ ENGINE_NATIVE_ALIGN struct LookAtResource
     float                                   m_lookAtLimit;
     float                                   m_gain;
     float                                   m_targetGain;
-    
+
     const AnimRig*                          m_rig;
     StringId                                m_rigName;
 };
 
 
-ENGINE_NATIVE_ALIGN struct ReachResource
+ENGINE_NATIVE_ALIGN(struct) ReachResource
 {
     DECLARE_RESOURCE(reach);
 
     float                                   m_elbowAxis[3];
-    float                                   m_hingeLimitAngle[2];    
+    float                                   m_hingeLimitAngle[2];
     float                                   m_targetGain;
     float                                   m_reachGain;
     float                                   m_leaveGain;
     float                                   m_moveGain;
     int                                     m_index;
-    
+
     const AnimRig*                          m_rig;
     StringId                                m_rigName;
 };
-    
-ENGINE_NATIVE_ALIGN struct  FootResource
+
+ENGINE_NATIVE_ALIGN(struct)  FootResource
 {
     DECLARE_RESOURCE(foot);
 
@@ -68,14 +68,14 @@ ENGINE_NATIVE_ALIGN struct  FootResource
     float                                   m_pelvisUpDownBias;
     int                                     m_raycastType;
     StringId                                m_raycastCollisionLayer;
-    
+
     const AnimRig*                          m_rig;
     StringId                                m_rigName;
 };
 
 //===================================================================================================
 
-ENGINE_NATIVE_ALIGN struct LookAtInstance
+ENGINE_NATIVE_ALIGN(struct) LookAtInstance
 {
     hkVector4                   m_lookAtLastTargetWS;
     const LookAtResource*       m_resource;
@@ -84,11 +84,11 @@ ENGINE_NATIVE_ALIGN struct LookAtInstance
 
     void init(const void* resource);
     void do_lookat(const hkVector4& targetPosWS,
-                   const hkQsTransform& worldFromModel, 
+                   const hkQsTransform& worldFromModel,
                    hkaPose& thePose);
 };
 
-ENGINE_NATIVE_ALIGN struct ReachInstance
+ENGINE_NATIVE_ALIGN(struct) ReachInstance
 {
     hkVector4                   m_reachLastTargetWS;
     const ReachResource*        m_resource;
@@ -97,11 +97,11 @@ ENGINE_NATIVE_ALIGN struct ReachInstance
 
     void init(const void* resource);
     void do_reach(const hkVector4& targetPosWS,
-                  const hkQsTransform& worldFromModel, 
+                  const hkQsTransform& worldFromModel,
                   hkaPose& thePose);
 };
 
-ENGINE_NATIVE_ALIGN struct FootInstance
+ENGINE_NATIVE_ALIGN(struct) FootInstance
 {
     hkaFootPlacementIkSolver*   m_solver[2];
     AnimRaycastInterface*       m_raycast;
@@ -114,6 +114,6 @@ ENGINE_NATIVE_ALIGN struct FootInstance
     void destroy();
     void do_foot( bool isStanding,
                     const hkQsTransform& worldFromModel,
-                    hkaPose& poseInOut, 
+                    hkaPose& poseInOut,
                     hkReal& verticalDisplacementInOut);
 };

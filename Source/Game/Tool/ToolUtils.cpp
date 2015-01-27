@@ -286,7 +286,7 @@ static void scan_dir_internal(StringArray& result,
                 {
                     if (flags & SCAN_DIRS)
                         result.push_back(pathAndName);
-                    if (recursive && normalEntry)
+                    if (recursive)
                         scan_dir_internal(result, path + fileName, startPath, filter, flags, recursive);
                 }
                 else if (flags & SCAN_FILES)

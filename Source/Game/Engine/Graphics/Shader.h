@@ -9,7 +9,7 @@ struct ShaderProgram;
 #define PROGRAM_PATH         "core/programs/"
 #define SHADER_PATH          "core/shaders/"
 
-ENGINE_NATIVE_ALIGN struct Shader
+ENGINE_NATIVE_ALIGN(struct) Shader
 {
     DECLARE_RESOURCE(shader);
 
@@ -18,12 +18,12 @@ ENGINE_NATIVE_ALIGN struct Shader
     uint32_t                    m_size;
     bgfx::ShaderHandle          m_handle;
     char                        m_padding[2];
-        
+
     void bringin();
     void bringout();
 };
 
-ENGINE_NATIVE_ALIGN struct ShaderProgram
+ENGINE_NATIVE_ALIGN(struct) ShaderProgram
 {
     DECLARE_RESOURCE(program);
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <stddef.h>
+#include <bx/macros.h>
 
 #define SAFE_DELETE(ptr)                            delete (ptr); (ptr) = 0;
 #define SAFE_DELETE_ARRAY(ptr)                      delete[] (ptr); (ptr) = 0;
@@ -29,12 +30,7 @@
 #define HAS_BITS(value, bit)                (value & bit)
 #define NOT_HAS_BITS(value, bit)            (value & bit == 0)
 
-#ifdef _WIN32
-#define ENGINE_ALIGN(_alignment)    __declspec(align(_alignment))
-#else
-#define ENGINE_ALIGN(_alignment)    __attribute__((aligned(_alignment)))
-#endif
-#define ENGINE_NATIVE_ALIGN         ENGINE_ALIGN(16)
+#define ENGINE_NATIVE_ALIGN BX_ALIGN_DECL_16
 
 #define DECLARE_RESOURCE(name)\
         static const char* get_name() {return #name; } \

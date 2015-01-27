@@ -6,7 +6,7 @@
 struct ShadingEnviroment;
 struct ComponentFactory;
 
-ENGINE_NATIVE_ALIGN struct ActorResource
+ENGINE_NATIVE_ALIGN(struct) ActorResource
 {
     DECLARE_RESOURCE(actor);
     StringId*           m_resourceNames;
@@ -18,7 +18,7 @@ ENGINE_NATIVE_ALIGN struct ActorResource
     Fact                m_fact;
 };
 
-ENGINE_NATIVE_ALIGN struct Actor
+ENGINE_NATIVE_ALIGN(struct) Actor
 {
     hkQsTransform               m_transform;
     Id                          m_components[16]; //-> hack!
@@ -61,7 +61,7 @@ struct ActorWorld
 
     void        clear();
     void        clear_actors(uint32_t type);
-    
+
     ActorId32   create_actor(const StringId& resourceName, const hkQsTransform& t);
     ActorId32   create_actor(const void* actorResource, const hkQsTransform& t);
     void        destroy_actor(ActorId32 id);

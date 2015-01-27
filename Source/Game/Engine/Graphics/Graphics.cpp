@@ -118,7 +118,7 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
                                uint32_t texFlags = BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP)
 {
     texFlags |= texFlags & BGFX_TEXTURE_RT_MSAA_MASK ? 0 : BGFX_TEXTURE_RT;
-    FrameBufferTexture texInfo[1] = {format, texFlags};
+    FrameBufferTexture texInfo[1] = {{format, texFlags}};
     return createFrameBuffer(w, h, wDiv, hDiv, scaled, 1, texInfo);
 }
 
@@ -365,7 +365,8 @@ void postProcessSubmit(ShadingEnviroment* env)
     int height = g_win32Context.m_height;
 
     bgfx::TextureHandle colorTex = g_postProcess.m_colorFB->m_textures[0];
-    bgfx::TextureHandle depthTex = g_postProcess.m_colorFB->m_textures[1];
+    //bgfx::TextureHandle depthTex = g_postProcess.m_colorFB->m_textures[1];
+
     const float* view = g_postProcess.m_view;
     const float* proj = g_postProcess.m_proj;
     float* dirParams = env->m_ppParams;

@@ -86,7 +86,7 @@ void StaticModelConverter::processNode( hkxNode* node )
         if(i == 0)
             bx::vsnprintf(buf, sizeof(buf), "%s", m_name.c_str());
         else
-            bx::vsnprintf(buf, sizeof(buf), %s_%d", m_name.c_str(), i);
+            bx::vsnprintf(buf, sizeof(buf), "%s_%d", m_name.c_str(), i);
 
         mc->setName(buf);
         mc->process((void*)skin->m_mesh, 0);

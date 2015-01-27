@@ -4,8 +4,8 @@
 
 SamplerConverter::SamplerConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
-,m_type(0)
 ,m_textureFormat(DDS_FORMAT)
+,m_type(0)
 {
 
 }

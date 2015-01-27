@@ -53,9 +53,9 @@ Profiler g_profiler;
 Profiler::Profiler() :
     current_(0),
     root_(0),
+    numBlocks_(0),
     intervalFrames_(0),
-    totalFrames_(0),
-    numBlocks_(0)
+    totalFrames_(0)
 {
 
 }

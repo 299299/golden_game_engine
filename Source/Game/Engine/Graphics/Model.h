@@ -8,7 +8,7 @@ struct Material;
 struct Mesh;
 struct Frustum;
 
-ENGINE_NATIVE_ALIGN struct ModelResource
+ENGINE_NATIVE_ALIGN(struct) ModelResource
 {
     DECLARE_RESOURCE(model);
 
@@ -16,7 +16,7 @@ ENGINE_NATIVE_ALIGN struct ModelResource
     StringId                       m_materialNames[MAX_MATERIAL_NUM];
     Mesh*                          m_mesh;
     StringId                       m_meshName;
-    
+
     uint8_t                        m_numMaterials;
     uint8_t                        m_viewId;
     uint8_t                        m_flag;
@@ -30,7 +30,7 @@ struct ModelInstance
     Material*                       m_materials[MAX_MATERIAL_NUM];
     float*                          m_skinMatrix;
     const ModelResource*            m_resource;
-    
+
     uint8_t                         m_numMaterials;
     uint8_t                         m_flag;
     uint8_t                         m_viewId;
@@ -42,8 +42,8 @@ struct ModelInstance
 
     void update();
     float* alloc_skinning_mat();
-    bool check_intersection( const float* rayOrig, 
-                            const float* rayDir, 
+    bool check_intersection( const float* rayOrig,
+                            const float* rayDir,
                             float* intsPos,
                             float* outNormal ) const;
 };

@@ -127,6 +127,6 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     }
 
 	offset += attachmentNum * sizeof(BoneAttachment);
-	ENGINE_ASSERT((offset-mem.m_buf == headerSize), "anim-rig mem offset error.");
+	ENGINE_ASSERT((offset-mem.m_buf == (int)headerSize), "anim-rig mem offset error.");
     return write_file(m_output, mem.m_buf, memSize);
 }

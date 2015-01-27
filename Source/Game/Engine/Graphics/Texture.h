@@ -2,20 +2,20 @@
 #include "StringId.h"
 #include <bgfx.h>
 
-ENGINE_NATIVE_ALIGN struct Texture
+ENGINE_NATIVE_ALIGN(struct) Texture
 {
     DECLARE_RESOURCE(texture);
 
     void bringin(uint32_t flags, uint8_t skip = 0);
     void bringout();
-    
+
     bgfx::TextureHandle         m_handle;
     bgfx::TextureInfo           m_info;
     char*                       m_blob;
     uint32_t                    m_size;
 };
 
-ENGINE_NATIVE_ALIGN struct Raw2DTexture
+ENGINE_NATIVE_ALIGN(struct) Raw2DTexture
 {
     DECLARE_RESOURCE(texture_2d);
 
@@ -34,7 +34,7 @@ ENGINE_NATIVE_ALIGN struct Raw2DTexture
     uint8_t                     m_numMips;
 };
 
-ENGINE_NATIVE_ALIGN struct Raw3DTexture
+ENGINE_NATIVE_ALIGN(struct) Raw3DTexture
 {
     DECLARE_RESOURCE(texture_3d);
 

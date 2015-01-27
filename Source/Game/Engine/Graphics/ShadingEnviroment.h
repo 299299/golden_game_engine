@@ -8,7 +8,7 @@ struct Texture;
 struct Raw3DTexture;
 struct ShaderProgram;
 
-ENGINE_NATIVE_ALIGN struct ShadingEnviroment
+ENGINE_NATIVE_ALIGN(struct) ShadingEnviroment
 {
     DECLARE_RESOURCE(shading_enviroment);
 
@@ -21,7 +21,7 @@ ENGINE_NATIVE_ALIGN struct ShadingEnviroment
     float                               m_ambientSkyColor[3];
     float                               m_ambientGroundColor[3];
     float                               m_fogParams[4];
-    
+
     // x -->  exposure
     // y -->  bloomThreshold
     // z -->  bloomWidth
@@ -35,7 +35,7 @@ ENGINE_NATIVE_ALIGN struct ShadingEnviroment
     // w,w --> focusFalloff
     float                               m_dofParams[4];
 
-        
+
     // xy -->  blur direction
     // z -->  defocus
     // w --> film gain noise
@@ -44,7 +44,7 @@ ENGINE_NATIVE_ALIGN struct ShadingEnviroment
     float                               m_shadowAreaSize;
     float                               m_shadowFar;
     float                               m_shadowParams[3];
-    
+
     uint32_t                            m_numColorgradingTextures;
     int                                 m_colorGradingIndex;
     Raw3DTexture*                       m_colorGradingTextures[MAX_COLOR_GRADING_NUM];

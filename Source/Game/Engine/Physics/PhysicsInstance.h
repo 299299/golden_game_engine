@@ -7,7 +7,7 @@ class hkpPhysicsSystem;
 class hkpRigidBody;
 class hkTransformf;
 
-ENGINE_NATIVE_ALIGN struct PhysicsResource
+ENGINE_NATIVE_ALIGN(struct) PhysicsResource
 {
     DECLARE_RESOURCE(physics);
 
@@ -28,7 +28,7 @@ enum PhysicsSystemType
 };
 
 
-ENGINE_NATIVE_ALIGN struct PhysicsInstance
+ENGINE_NATIVE_ALIGN(struct) PhysicsInstance
 {
     union
     {

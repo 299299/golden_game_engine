@@ -20,7 +20,7 @@ enum RagdollState
 };
 #define MAX_LOWER_BODY_BONE       (16)
 
-ENGINE_NATIVE_ALIGN struct RagdollResource
+ENGINE_NATIVE_ALIGN(struct) RagdollResource
 {
     DECLARE_RESOURCE(ragdoll);
 
@@ -59,7 +59,7 @@ ENGINE_NATIVE_ALIGN struct RagdollResource
 };
 
 
-ENGINE_NATIVE_ALIGN struct RagdollInstance
+ENGINE_NATIVE_ALIGN(struct) RagdollInstance
 {
     void init(const void* resource);
     void destroy();
