@@ -63,12 +63,16 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     if(output)
     {
         bool has_itermediate = strstr(output, INTERMEDIATE_PATH) != 0;
-        if(!has_itermediate) config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output;
+        if(!has_itermediate) 
+            config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output;
+        else
+            config.m_exportFolder = output;
         string_replace(config.m_exportFolder, "\\", "/");
         add_trailing_slash(config.m_exportFolder);
         std::string path = config.m_exportFolder;
         string_replace(path, INTERMEDIATE_PATH, "");
         config.m_rootPath = path;
+        LOGD("export-folder=%s *********** root-folder=%s", config.m_exportFolder.c_str(), config.m_rootPath.c_str());
     }
     config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
 
@@ -111,7 +115,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         converter = new StaticModelConverter;
         converter->setClass(config.m_exportClass);
     }
-    else if(config.m_exportMode == "skinning")
+    else if(config.m_exportMode == "skin")
     {
         converter = new CharacterConverter;
         converter->setClass("character");
@@ -135,7 +139,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
 
     converter->m_config = &config;
     converter->setName(config.m_exportName);
-    if(config.m_exportMode == "skinning")
+    if(config.m_exportMode == "skin")
     {
         converter->process(ac);
     }

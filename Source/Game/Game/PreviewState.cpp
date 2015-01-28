@@ -1,6 +1,6 @@
+#include <imgui/imgui.h>
 #include "PreviewState.h"
 #include "RenderCamera.h"
-#include "Win32Context.h"
 #include "Profiler.h"
 #include "Model.h"
 #include "Light.h"
@@ -10,7 +10,7 @@
 #include "Actor.h"
 #include "Animation.h"
 #include "Resource.h"
-#include <imgui/imgui.h>
+#include "Win32Context.h"
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;
@@ -93,8 +93,10 @@ void PreviewState::step( float dt )
     {
         extern void draw_debug_models();
         extern void draw_debug_lights();
+        extern void draw_debug_animation(); 
         draw_debug_lights();
         draw_debug_models();
+        draw_debug_animation();
     }
 
     g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());

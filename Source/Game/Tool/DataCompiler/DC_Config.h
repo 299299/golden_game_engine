@@ -53,6 +53,8 @@ struct DC_Config
     void post_process();
     BaseCompiler* create_compiler(const std::string& ext);
     bool is_engine_ext(const std::string& ext);
+    bool is_type_valid(const std::string& type);
 };
+
 
 extern DC_Config* g_config;

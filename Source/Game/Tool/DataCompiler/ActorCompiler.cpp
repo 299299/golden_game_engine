@@ -37,7 +37,13 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         m_pathPrefix = root.get<std::string>("prefix");
     }
 
-    numComps = compsValue.size();
+    for(size_t i=0; i<compsValue.size(); ++i)
+    {
+        const std::string& type =  compsValue.get<jsonxx::Object>(i).get<std::string>("type");
+        if(g_config->is_type_valid(type))
+            ++numComps;
+    }
+
     uint32_t memSize = sizeof(ActorResource);
     memSize += (numComps * (sizeof(StringId) + sizeof(void*)) * 2);
     memSize += (numOfData * sizeof(Key));
@@ -53,7 +59,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     ActorResource* actor = (ActorResource*)mem.m_buf;
     offset += sizeof(ActorResource);
     extern const char* g_actorClassNames[];
-    actor->m_class = json_to_enum(root, "name", g_actorClassNames, 0);
+    actor->m_class = json_to_enum(root, "class", g_actorClassNames, 0);
     actor->m_numComponents = numComps;
     actor->m_resourceNames = (StringId*)offset;
     offset += sizeof(StringId) * numComps;
@@ -62,17 +68,22 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     offset += sizeof(void*) * numComps;
     offset += sizeof(void*) * numComps;
 
-    for(size_t i=0; i<numComps; ++i)
+    int index = 0;
+    for(size_t i=0; i<compsValue.size(); ++i)
     {
         const jsonxx::Object& compValue = compsValue.get<jsonxx::Object>(i);
         bool bPacked = compValue.get<bool>("packed", false);
         const std::string& type = compValue.get<std::string>("type");
+        if(!g_config->is_type_valid(type))
+            continue;
+        LOGD("processing actor %s component %s", m_input.c_str(), type.c_str());
         std::string name = m_pathPrefix + compValue.get<std::string>("name");
-        actor->m_resourceNames[i] = StringId(name.c_str());
-        actor->m_resourceTypes[i] = StringId(type.c_str());
+        actor->m_resourceNames[index] = StringId(name.c_str());
+        actor->m_resourceTypes[index] = StringId(type.c_str());
         if(bPacked)
             createChildCompiler(type, compValue);
         addDependency(type, name_to_file_path(name, type));
+        ++index;
     }
 
     Fact& fact = actor->m_fact;

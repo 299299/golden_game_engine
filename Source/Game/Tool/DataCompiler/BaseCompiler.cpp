@@ -69,11 +69,14 @@ bool BaseCompiler::readJSON( const jsonxx::Object& root )
 BaseCompiler* BaseCompiler::createChildCompiler( const std::string& type, const jsonxx::Object& root )
 {
     BaseCompiler* compiler = g_config->create_compiler(type);
+    if(!compiler) 
+        return 0;
     compiler->m_mode = 1;
     compiler->m_outputFolder = getFilePath(m_output);
     compiler->m_pathPrefix = m_pathPrefix;
     bool _ok = compiler->readJSON(root);
-    if(!_ok) m_subCompilerError = true;
+    if(!_ok) 
+        m_subCompilerError = true;
     compiler->m_processed = _ok;
     g_config->add_child_compile(compiler);
     return compiler;

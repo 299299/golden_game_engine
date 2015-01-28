@@ -393,6 +393,23 @@ void resource_hot_reload_shutdown()
     SAFE_DELETE(g_hotReload);
 }
 
+void run_data_compile()
+{
+#ifdef _DEBUG
+    const char* exeName = "gameDebug.exe";
+#else
+    const char* exeName = "gameRelease.exe";
+#endif
+    StringArray args;
+    args.push_back("--action");
+    args.push_back("DataCompile");
+    args.push_back("-i");
+    args.push_back("intermediate");
+    args.push_back("-o");
+    args.push_back("-data");
+    shell_exec(exeName, args);
+}
+
 void resource_hot_reload_update(float dt)
 {
     if(!g_hotReload)
@@ -424,20 +441,7 @@ void resource_hot_reload_update(float dt)
     g_resourceMgr.reload_resource(_type, StringId(_name), _buf);
 #endif
 
-#ifdef _DEBUG
-    const char* exeName = "gameDebug.exe";
-#else
-    const char* exeName = "gameRelease.exe";
-#endif
-
-    StringArray args;
-    args.push_back("--action");
-    args.push_back("DataCompile");
-    args.push_back("-i");
-    args.push_back("intermediate");
-    args.push_back("-o");
-    args.push_back("-data");
-    shell_exec(exeName, args);
+    run_data_compile();
 
     std::ifstream ifs(DC_RESULT);
     if(!ifs.good())

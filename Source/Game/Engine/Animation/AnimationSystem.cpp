@@ -195,17 +195,17 @@ void AnimationSystem::update_animations(float dt)
 void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 {
     PROFILE(Animation_UpdateAttachment);
-#if 0
+    StringId anim_type = AnimRig::get_type();
     extern void* get_anim_rig(Id);
     for (uint32_t i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
-        Id rigId = actor.m_components[kComponentAnimRig];
+        int index = actor.get_first_component_index_of(anim_type);
+        Id rigId = actor.m_components[index];
         AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
         if(!rig) continue;
         rig->update_attachment(actor.m_transform);
     }
-#endif
 }
 
 

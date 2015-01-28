@@ -21,6 +21,12 @@
 
 int game_main(int argc, bx::CommandLine* cmdline)
 {
+    if(cmdline->hasArg("compile"))
+    {
+        extern void run_data_compile();
+        run_data_compile();
+    }
+
     const char* actor_name = 0;
     const char* level_name = 0;
     const char* package_name = 0;

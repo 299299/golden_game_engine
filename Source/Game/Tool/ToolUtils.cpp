@@ -838,7 +838,8 @@ FileReader::FileReader( const std::string& fileName )
 FileReader::~FileReader()
 {
     COMMON_DEALLOC(m_buf);
-    m_file.close();
+    if(m_size)
+        m_file.close();
 }
 
 MemoryBuffer::MemoryBuffer( uint32_t size )

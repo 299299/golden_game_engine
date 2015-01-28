@@ -168,6 +168,12 @@ BaseCompiler* DC_Config::create_compiler( const std::string& ext )
     return iter->second();
 }
 
+bool DC_Config::is_type_valid( const std::string& type )
+{
+    uint32_t key = StringId::calculate(type.c_str());
+    return m_compilerBuilder.find(key) != m_compilerBuilder.end();
+}
+
 bool DC_Config::is_engine_ext( const std::string& ext )
 {
     uint32_t key = StringId::calculate(ext.c_str());

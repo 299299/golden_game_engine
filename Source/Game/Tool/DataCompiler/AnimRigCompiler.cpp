@@ -58,7 +58,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     rig->m_havokDataOffset = havokOffset;
     rig->m_havokDataSize = havokFileSize;
     rig->m_jointNum = json_to_int(root, "joint_num");
-    rig->m_mirrored = root.get<bool>("mirrored");
+    rig->m_mirrored = root.get<bool>("mirrored", false);
 
     offset += sizeof(AnimRig);
     //-----------------------------------------------
@@ -76,7 +76,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
         jsonxx::Object humanPartValue = root.get<jsonxx::Object>("human_body");
         for(int i=0; i<kBodyPartMax; ++i)
         {
-            StringId name = StringId(humanPartValue.get<std::string>(g_humanBodyNames[i]).c_str());
+            StringId name = json_to_stringid(humanPartValue, g_humanBodyNames[i]);
             rig->m_humanJointIndices[i] = find_joint_index(name, rig->m_jointNames, jointNum);
         }
     }

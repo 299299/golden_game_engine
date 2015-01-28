@@ -26,6 +26,7 @@ void showHelp()
         "--animation --> animation name\n"
         "--headless no graphics & no window\n"
         "--autoreload auto reload resource if file is changed \n"
+        "--compile will data compile first than run the game \n"
         "-----------------------------------------\n"
         "Havok Converter options\n"
         "-m specific convert mode\n"
