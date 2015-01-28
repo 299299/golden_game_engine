@@ -8,6 +8,9 @@
 #include "DebugDraw.h"
 #include "Log.h"
 #include "Actor.h"
+#include "Animation.h"
+#include "Resource.h"
+#include <imgui/imgui.h>
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;
@@ -22,6 +25,31 @@ static void swith_graphics_debug(uint32_t flag)
     if(is_wireframe) ADD_BITS(g_bgfx_debug, flag);
     else REMOVE_BITS(g_bgfx_debug, flag);
     bgfx::setDebug(g_bgfx_debug);
+}
+
+static void list_resources_gui(const StringId& type)
+{
+    static int32_t _scroll = 0;
+    static bool _enabled = true;
+    _enabled = imguiBeginScroll(600, &_scroll, _enabled);
+
+    ResourceInfo* _animations[32];
+    uint32_t _len = g_resourceMgr.find_resources_type_of(
+        Animation::get_type(),
+        _animations,
+        BX_COUNTOF(_animations));
+
+    for(uint32_t i=0; i<_len; ++i)
+    {
+        ResourceInfo* _info = _animations[i];
+        if(imguiButton(stringid_lookup(_info->m_name)))
+        {
+            // load animation --->
+            // FIXME:TODO
+        }
+    }
+
+    imguiEndScroll();
 }
 
 PreviewState::PreviewState()

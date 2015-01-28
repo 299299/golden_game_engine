@@ -1,6 +1,7 @@
 #pragma once
 #include "Prerequisites.h"
 #include "Animation.h"
+#include "DataDef.h"
 #ifdef HAVOK_COMPILE
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>
 

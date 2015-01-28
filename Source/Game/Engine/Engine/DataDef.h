@@ -64,3 +64,20 @@ enum AppErrorCode
     kErrorArg       = -2,
     KErrorLoadHavok = -3,
 };
+
+
+
+enum EaseCurveType
+{
+    kEaseCurveSmooth,
+    kEaseCurveLinear,
+    kEaseCurveFast
+};
+
+enum MotionType
+{
+    kMotionDefault,
+    kMotionIgnoreRotation,
+    kMotionIgnoreTranslation,
+    kMotionIgnoreAll
+};

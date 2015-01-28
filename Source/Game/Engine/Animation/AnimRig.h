@@ -33,21 +33,6 @@ enum HumanBodypart
     kBodyPartMax
 };
 
-enum EaseCurveType
-{
-    kEaseCurveSmooth,
-    kEaseCurveLinear,
-    kEaseCurveFast
-};
-
-enum MotionType
-{
-    kMotionDefault,
-    kMotionIgnoreRotation,
-    kMotionIgnoreTranslation,
-    kMotionIgnoreAll
-};
-
 struct BoneAttachment
 {
     float               m_boneFromAttachment[16];
