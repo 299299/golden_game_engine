@@ -1,6 +1,6 @@
 {
 	"asset_path": "",
-	"class": "level_geometry",
+	"class": "character",
 	"components": [
 		{
 			"materials": [
@@ -15,13 +15,23 @@
 							"name": "u_texColor",
 							"texture": {
 								"format": "DXT5",
-								"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_D.tga",
-								"name": "core\/Guard_A4_Raincoat_D"
-							}
-						}
+								"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_D.DDS",
+								"name": "core\/Guard_A4_Raincoat_D" 
+							} 
+						},
+						{
+							"flags": [
+							],
+							"name": "u_texNormal",
+							"texture": {
+								"format": "DXT5",
+								"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_N.DDS",
+								"name": "core\/Guard_A4_Raincoat_N" 
+							} 
+						} 
 					],
-					"shader": "skin_diff",
-					"shadow_shader": "skin_shadow"
+					"shader": "skin_diff_norm",
+					"shadow_shader": "skin_shadow" 
 				},
 				{
 					"flags": [
@@ -35,18 +45,18 @@
 							"texture": {
 								"format": "DXT5",
 								"input": "Guard_A_Head_A2_FaceFX_Mat",
-								"name": "core\/Guard_A_Head_A2_FaceFX_Mat"
-							}
-						}
+								"name": "core\/Guard_A_Head_A2_FaceFX_Mat" 
+							} 
+						} 
 					],
 					"shader": "skin_diff",
-					"shadow_shader": "skin_shadow"
-				}
+					"shadow_shader": "skin_shadow" 
+				} 
 			],
 			"mesh": "core\/batman",
 			"name": "core\/batman",
 			"packed": true,
-			"type": "model"
+			"type": "model" 
 		},
 		{
 			"attachments": [
@@ -54,7 +64,7 @@
 			"havok_file": "intermediate\/core\/batman_rig.havok",
 			"human_body": {
 				"head": "Bip01_Head",
-				"neck": "Bip01_Neck"
+				"neck": "Bip01_Neck" 
 			},
 			"joint_num": 72,
 			"joints": [
@@ -129,15 +139,15 @@
 				"Bip01_R_Foretwist",
 				"Bip01_R_Foretwist1",
 				"Bip01_RUpArmTwist",
-				"Bip01_RUpArmTwist1"
+				"Bip01_RUpArmTwist1" 
 			],
 			"name": "core\/batman",
 			"packed": true,
-			"type": "rig1"
-		}
+			"type": "rig" 
+		} 
 	],
 	"data": [
 	],
 	"name": "batman",
-	"source_file": "havok\/batman.hkt"
-}
+	"source_file": "havok\/batman.hkt" 
+} 

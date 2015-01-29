@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: bruce.ma
-//Last modified: Wed, Jan 28, 2015 09:56:05 PM
+//Last modified: Thu, Jan 29, 2015 08:26:30 PM
 //Codeset: 936
 requires maya "2015";
 requires -nodeType "hkNodeOptions" "hctMayaSceneExport" "2014.1.0.1 (2014.1 r1)";
@@ -12,12 +12,12 @@ fileInfo "cutIdentifier" "201410051530-933320";
 fileInfo "osv" "Microsoft Windows 7 Ultimate Edition, 64-bit Windows 7 Service Pack 1 (Build 7601)\n";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 267.62968785521986 734.8170731226453 1079.3082142730216 ;
-	setAttr ".r" -type "double3" -22.538352729602376 15.800000000000047 -8.2636021744866581e-016 ;
+	setAttr ".t" -type "double3" -162.067336549564 826.73244484316535 678.91829843331539 ;
+	setAttr ".r" -type "double3" -33.938352729603437 -11.800000000000015 4.061523958683355e-016 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 1329.4580950804398;
+	setAttr ".coi" 947.23161418357347;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -24144,12 +24144,6 @@ createNode displayLayer -n "defaultLayer";
 createNode renderLayerManager -n "renderLayerManager";
 createNode renderLayer -n "defaultRenderLayer";
 	setAttr ".g" yes;
-createNode phong -n "Guard_NoRain_Mat";
-	setAttr ".dc" 1;
-	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
-	setAttr ".sc" -type "float3" 0 0 0 ;
-	setAttr ".rfl" 1;
-	setAttr ".cp" 2;
 createNode shadingEngine -n "Louie_Green_Hood_on_MeshSG";
 	setAttr ".ihi" 0;
 	setAttr ".ro" yes;
@@ -24165,7 +24159,7 @@ createNode shadingEngine -n "Louie_Green_Hood_on_MeshSG1";
 	setAttr ".ro" yes;
 createNode materialInfo -n "materialInfo2";
 createNode file -n "Guard_NoRain_Mat_ncl1_1";
-	setAttr ".ftn" -type "string" "C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.tga";
+	setAttr ".ftn" -type "string" "C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS";
 createNode place2dTexture -n "place2dTexture1";
 createNode file -n "Guard_A_Head_A2_FaceFX_Mat_ncl1_1";
 	setAttr ".ftn" -type "string" "Guard_A_Head_A2_FaceFX_Mat";
@@ -32389,6 +32383,19 @@ createNode hkNodeOptions -n "hkNodeOptions1";
 		 109 62 10 9 60 47 104 107 111 98 106 101
 		 99 116 62 10 60 47 104 107 111 112 116 105
 		 111 110 115 62 ;
+createNode phong -n "Guard_NoRain_Mat";
+	setAttr ".dc" 1;
+	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
+	setAttr ".sc" -type "float3" 0 0 0 ;
+	setAttr ".rfl" 1;
+	setAttr ".cp" 2;
+createNode psdFileTex -n "psdFileTex1";
+	setAttr ".ail" yes;
+	setAttr ".ftn" -type "string" "C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS";
+createNode place2dTexture -n "place2dTexture3";
+createNode bump2d -n "bump2d1";
+	setAttr ".vc1" -type "float3" 0 0.00011000001 0 ;
+	setAttr ".vc2" -type "float3" 9.9999997e-006 9.9999997e-006 0 ;
 select -ne :time1;
 	setAttr ".o" 1;
 	setAttr ".unw" 1;
@@ -32400,10 +32407,10 @@ select -ne :defaultShaderList1;
 select -ne :postProcessList1;
 	setAttr -s 2 ".p";
 select -ne :defaultRenderUtilityList1;
-	setAttr -s 2 ".u";
+	setAttr -s 4 ".u";
 select -ne :defaultRenderingList1;
 select -ne :defaultTextureList1;
-	setAttr -s 2 ".tx";
+	setAttr -s 3 ".tx";
 select -ne :initialShadingGroup;
 	setAttr ".ro" yes;
 select -ne :initialParticleSE;
@@ -32514,7 +32521,6 @@ relationship "shadowLink" ":lightLinker1" "Louie_Green_Hood_on_MeshSG.message" "
 relationship "shadowLink" ":lightLinker1" "Louie_Green_Hood_on_MeshSG1.message" ":defaultLightSet.message";
 connectAttr "layerManager.dli[0]" "defaultLayer.id";
 connectAttr "renderLayerManager.rlmi[0]" "defaultRenderLayer.rlid";
-connectAttr "Guard_NoRain_Mat_ncl1_1.oc" "Guard_NoRain_Mat.c";
 connectAttr "Guard_NoRain_Mat.oc" "Louie_Green_Hood_on_MeshSG.ss";
 connectAttr "groupId1.msg" "Louie_Green_Hood_on_MeshSG.gn" -na;
 connectAttr "Louie_Green_Hood_on_MeshShape.iog.og[0]" "Louie_Green_Hood_on_MeshSG.dsm"
@@ -32965,17 +32971,41 @@ connectAttr "Bip01_R_Finger32.bps" "bindPose1.wm[66]";
 connectAttr "Bip01_R_Finger4.bps" "bindPose1.wm[67]";
 connectAttr "Bip01_R_Finger41.bps" "bindPose1.wm[68]";
 connectAttr "Bip01_R_Finger42.bps" "bindPose1.wm[69]";
+connectAttr "Guard_NoRain_Mat_ncl1_1.oc" "Guard_NoRain_Mat.c";
+connectAttr "bump2d1.o" "Guard_NoRain_Mat.n";
+connectAttr "place2dTexture3.c" "psdFileTex1.c";
+connectAttr "place2dTexture3.tf" "psdFileTex1.tf";
+connectAttr "place2dTexture3.rf" "psdFileTex1.rf";
+connectAttr "place2dTexture3.mu" "psdFileTex1.mu";
+connectAttr "place2dTexture3.mv" "psdFileTex1.mv";
+connectAttr "place2dTexture3.s" "psdFileTex1.s";
+connectAttr "place2dTexture3.wu" "psdFileTex1.wu";
+connectAttr "place2dTexture3.wv" "psdFileTex1.wv";
+connectAttr "place2dTexture3.re" "psdFileTex1.re";
+connectAttr "place2dTexture3.of" "psdFileTex1.of";
+connectAttr "place2dTexture3.r" "psdFileTex1.ro";
+connectAttr "place2dTexture3.n" "psdFileTex1.n";
+connectAttr "place2dTexture3.vt1" "psdFileTex1.vt1";
+connectAttr "place2dTexture3.vt2" "psdFileTex1.vt2";
+connectAttr "place2dTexture3.vt3" "psdFileTex1.vt3";
+connectAttr "place2dTexture3.vc1" "psdFileTex1.vc1";
+connectAttr "place2dTexture3.o" "psdFileTex1.uv";
+connectAttr "place2dTexture3.ofs" "psdFileTex1.fs";
+connectAttr "psdFileTex1.oa" "bump2d1.bv";
 connectAttr "Louie_Green_Hood_on_MeshSG.pa" ":renderPartition.st" -na;
 connectAttr "Louie_Green_Hood_on_MeshSG1.pa" ":renderPartition.st" -na;
 connectAttr "Guard_NoRain_Mat.msg" ":defaultShaderList1.s" -na;
 connectAttr "Guard_A_Head_A2_FaceFX_Mat.msg" ":defaultShaderList1.s" -na;
 connectAttr "place2dTexture1.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "place2dTexture2.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "place2dTexture3.msg" ":defaultRenderUtilityList1.u" -na;
+connectAttr "bump2d1.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
 connectAttr "Guard_NoRain_Mat_ncl1_1.msg" ":defaultTextureList1.tx" -na;
 connectAttr "Guard_A_Head_A2_FaceFX_Mat_ncl1_1.msg" ":defaultTextureList1.tx" -na
 		;
+connectAttr "psdFileTex1.msg" ":defaultTextureList1.tx" -na;
 dataStructure -fmt "raw" -as "name=externalContentTable:string=node:string=key:string=upath:uint32=upathcrc:string=rpath:string=roles";
-applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"Guard_NoRain_Mat_ncl1_1\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.tga\" 1046872817 \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.tga\" \"sourceImages\"\n1\n\"Guard_A_Head_A2_FaceFX_Mat_ncl1_1\" \"fileTextureName\" \"Guard_A_Head_A2_FaceFX_Mat\" 2510539110 \"\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
+applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"Guard_NoRain_Mat_ncl1_1\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS\" 1819525504 \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS\" \"sourceImages\"\n1\n\"Guard_A_Head_A2_FaceFX_Mat_ncl1_1\" \"fileTextureName\" \"Guard_A_Head_A2_FaceFX_Mat\" 2510539110 \"\" \"sourceImages\"\n2\n\"psdFileTex1\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS\" 650369313 \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
 		-scn;
 // End of bruce.ma

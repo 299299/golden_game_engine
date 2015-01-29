@@ -11,6 +11,7 @@
 #include "Animation.h"
 #include "Resource.h"
 #include "Win32Context.h"
+#include <bx/string.h>
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;
@@ -50,6 +51,31 @@ static void list_resources_gui(const StringId& type)
     }
 
     imguiEndScroll();
+}
+
+static void actor_information_imgui(const char* _name, int _x, int _y, int _texHeight)
+{
+    const ActorResource* _res = FIND_RESOURCE_NAMED(ActorResource, _name);
+    if(!_res)
+        return;
+    ImguiTextAlign::Enum _align = ImguiTextAlign::Left;
+    uint32_t _argb = imguiRGBA(255, 125, 125);
+    char _buf[256];
+    uint32_t _num = _res->m_numComponents;
+    int _class = _res->m_class;
+    extern const char* g_actorClassNames[];
+    bx::snprintf(_buf, sizeof(_buf), "[%s] [%s] has [%d] components: ", g_actorClassNames[_class], _name, _num);
+    imguiDrawText(_x, _y, _align, _buf, _argb);
+    const char* _indent = "    ";
+    for(uint32_t i=0; i<_num; ++i)
+    {
+        _y += _texHeight;
+        StringId _comp_name = _res->m_resourceNames[i];
+        StringId _comp_type = _res->m_resourceTypes[i];
+        bx::snprintf(_buf, sizeof(_buf), "%s component type:%s name:%s",
+            _indent, stringid_lookup(_comp_type), stringid_lookup(_comp_name));
+        imguiDrawText(_x, _y, _align, _buf, _argb);
+    }
 }
 
 PreviewState::PreviewState()
@@ -93,7 +119,7 @@ void PreviewState::step( float dt )
     {
         extern void draw_debug_models();
         extern void draw_debug_lights();
-        extern void draw_debug_animation(); 
+        extern void draw_debug_animation();
         draw_debug_lights();
         draw_debug_models();
         draw_debug_animation();
@@ -103,6 +129,8 @@ void PreviewState::step( float dt )
 
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
+
+    actor_information_imgui("core/batman", 0, 25, 15);
 #endif
 }
 
