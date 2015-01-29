@@ -832,6 +832,7 @@ FileReader::FileReader( const std::string& fileName )
     m_size = (uint32_t)bx::getSize(&m_file);
     m_file.seek(0, bx::Whence::Begin);
     m_buf = COMMON_ALLOC(char, m_size);
+    memset(m_buf, 0x00, m_size);
     m_file.read(m_buf, m_size);
 }
 
@@ -846,6 +847,7 @@ MemoryBuffer::MemoryBuffer( uint32_t size )
 :m_size(size)
 {
     m_buf = COMMON_ALLOC(char, size);
+    memset(m_buf, 0x00, size);
 }
 
 MemoryBuffer::~MemoryBuffer()

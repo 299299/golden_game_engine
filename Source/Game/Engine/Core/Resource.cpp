@@ -509,6 +509,7 @@ bool ResourceManager::load_package(const char* packageName)
     uint32_t packageNameLen = strlen(packageName) + 1;
     uint32_t memSize = packageNameLen + sizeof(ResourceRequest);
     char* blob = COMMON_ALLOC(char, memSize);
+    memset(blob, 0x00, memSize);
     ResourceRequest* request = (ResourceRequest*)blob;
     request->m_data = blob + sizeof(ResourceRequest);
     request->m_dataLen = packageNameLen;

@@ -157,7 +157,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
             {
                 transform_matrix(tempT2, invMats[i].m_x);
                 tempT1.setMul(poseMS[i], tempT2);
-                tempT2.setMul(actor.m_transform, tempT1);
+                tempT2.setMul(t, tempT1);
                 transform_matrix(matrix, tempT2);
                 matrix += 16;
             }

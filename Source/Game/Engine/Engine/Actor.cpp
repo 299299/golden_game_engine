@@ -90,7 +90,7 @@ void lookup_resource_actor(void* resource)
 void Actor::set_transform( const hkQsTransform& t )
 {
     m_transform = t;
-    
+
     const ActorResource* resource = m_resource;
     uint32_t num = resource->m_numComponents;
     Id* id = m_components;

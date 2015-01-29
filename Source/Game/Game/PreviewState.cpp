@@ -11,12 +11,13 @@
 #include "Animation.h"
 #include "Resource.h"
 #include "Win32Context.h"
+#include "AnimRig.h"
 #include <bx/string.h>
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;
 static bool g_draw_debug_graphics = false;
-
+extern ActorId32 g_previewActor;
 extern DebugFPSCamera  g_fpsCamera;
 
 static void swith_graphics_debug(uint32_t flag)
@@ -28,29 +29,41 @@ static void swith_graphics_debug(uint32_t flag)
     bgfx::setDebug(g_bgfx_debug);
 }
 
-static void list_resources_gui(const StringId& type)
+typedef void on_imgui_button_cb(const char*);
+
+static void list_resources_gui(const char* type, int x, int y, int w, int h, on_imgui_button_cb cb)
 {
     static int32_t _scroll = 0;
     static bool _enabled = true;
+    imguiBeginScrollArea(type, x, y, w, h, &_scroll);
     _enabled = imguiBeginScroll(600, &_scroll, _enabled);
-
-    ResourceInfo* _animations[32];
+    static ResourceInfo* _resources[64];
     uint32_t _len = g_resourceMgr.find_resources_type_of(
-        Animation::get_type(),
-        _animations,
-        BX_COUNTOF(_animations));
+        StringId(type),
+        _resources,
+        BX_COUNTOF(_resources));
 
     for(uint32_t i=0; i<_len; ++i)
     {
-        ResourceInfo* _info = _animations[i];
-        if(imguiButton(stringid_lookup(_info->m_name)))
+        ResourceInfo* _info = _resources[i];
+        const char* _name = stringid_lookup(_info->m_name);
+        if(imguiButton(_name))
+            cb(_name);
+    }
+    imguiEndScrollArea();
+}
+
+static void on_button_animation(const char* _name)
+{
+    Actor* actor = g_actorWorld.get_actor(g_previewActor);
+    if(actor)
+    {
+        AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(AnimRig::get_type());
+        if(rig)
         {
-            // load animation --->
-            // FIXME:TODO
+            rig->test_animation(_name);
         }
     }
-
-    imguiEndScroll();
 }
 
 static void actor_information_imgui(const char* _name, int _x, int _y, int _texHeight)
@@ -110,6 +123,7 @@ void PreviewState::step( float dt )
     {
         swith_graphics_debug(BGFX_DEBUG_STATS);
     }
+#endif
 
     if(g_show_profile)
     {
@@ -125,13 +139,15 @@ void PreviewState::step( float dt )
         draw_debug_animation();
     }
 
+#ifdef HAVOK_COMPILE
     g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());
+#endif
 
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
 
     actor_information_imgui("core/batman", 0, 25, 15);
-#endif
+    list_resources_gui(Animation::get_name(), 0, 100, 200, 200, on_button_animation);
 }
 
 void PreviewState::on_enter( GameState* prev_state )

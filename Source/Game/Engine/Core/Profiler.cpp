@@ -281,6 +281,7 @@ void Profiler::dump_block_to_file(  void* fp_,
 void Profiler::init(int max_block_num)
 {
     blocks_ = COMMON_ALLOC(ProfilerBlock, max_block_num);
+    memset(blocks_, 0x00, sizeof(ProfilerBlock) * max_block_num);
     root_ = alloc_block("Root");
     current_ = root_;
 }

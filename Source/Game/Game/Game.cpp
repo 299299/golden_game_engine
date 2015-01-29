@@ -19,6 +19,8 @@
 #include <bx/bx.h>
 #include <bx/commandline.h>
 
+
+ActorId32 g_previewActor = 0;
 int game_main(int argc, bx::CommandLine* cmdline)
 {
     if(cmdline->hasArg("compile"))
@@ -77,18 +79,18 @@ int game_main(int argc, bx::CommandLine* cmdline)
     g_physicsWorld.create_plane(500.0f);
     g_actorWorld.m_shading_env = FIND_RESOURCE_NAMED(ShadingEnviroment, "core/common/default");
 
-    if(package_name) 
+    if(package_name)
         g_resourceMgr.load_package_and_wait(package_name);
 
-    if(actor_name) 
+    if(actor_name)
     {
         LOGD("loading actor %s \n", actor_name);
         hkQsTransform t;
 #ifdef HAVOK_COMPILE
         t.setIdentity();
 #endif
-        ActorId32 actor = g_actorWorld.create_actor(StringId(actor_name), t);
-        LOGD("created actor = %d", actor);
+        g_previewActor = g_actorWorld.create_actor(StringId(actor_name), t);
+        LOGD("created actor = %d", g_previewActor);
     }
     if(level_name)
     {
@@ -105,14 +107,14 @@ err:
     //------------------------------------------------------------
 #if 0
     g_profiler.dump_to_file("game_profile.txt", true, true);
-#endif    
+#endif
 
     if(_autoreload)
     {
         extern void resource_hot_reload_shutdown();
         resource_hot_reload_shutdown();
     }
-    
+
     //------------------------------------------------------------
     g_engine.quit();
     return 0;

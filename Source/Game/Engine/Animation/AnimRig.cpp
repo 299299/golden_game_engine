@@ -160,8 +160,13 @@ void AnimRigInstance::test_animation(const char* name)
 #ifdef HAVOK_COMPILE
     Animation* anim = FIND_RESOURCE_NAMED(Animation, name);
     if(!anim) return;
+    for(int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
+    {
+        m_skeleton->removeAnimationControl(m_skeleton->getAnimationControl(i));
+    }
     hk_anim_ctrl* ac = new hk_anim_ctrl(anim);
     ac->easeIn(0.0f);
+    ac->setLocalTime(0.0f);
     m_skeleton->addAnimationControl(ac);
     m_skeleton->setReferencePoseWeightThreshold(0.0f);
     ac->m_enabled = true;

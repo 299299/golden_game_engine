@@ -14,7 +14,7 @@ set SOLUTION=%~dp0\..\Source\.build\projects\vs2010\game.sln
 :: set PACKAGE=%~dp0\package.py
 
 :: Setup the Visual Studio environment variables
-call %VCVARS32%
+:: call %VCVARS32%
 
 msbuild %SOLUTION% /t:Build
 
