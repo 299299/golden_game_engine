@@ -262,31 +262,46 @@ void draw_debug_animation()
         hkaPose* pose = rig.m_pose;
         Actor* actor = g_actorWorld.get_actor(rig.m_actor);
         const hkQsTransform& t = actor->m_transform;
-        //draw debug pose
-        if(g_engineMode == 0) 
-            draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
-        else 
-            draw_pose_vdb(*pose, t);
-        //draw debug attachment
-        uint32_t num_attach = res->m_attachNum;
-        const BoneAttachment* attachments = res->m_attachments;
-        const float* world_poses = rig.m_attachmentTransforms;
-        if(!world_poses) return;
-        for (uint32_t i=0; i<num_attach; ++i)
+
+        
         {
-            const BoneAttachment& attchment = attachments[i];
-            const float* world_pose = world_poses + 16 * i;
-            hkQsTransform t1;
-            transform_matrix(t1, world_pose);
-            g_debugDrawMgr.add_axis(t1);
-            float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
-            g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
+            //draw debug pose
+            if(g_engineMode == 0) 
+                draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
+            else 
+                draw_pose_vdb(*pose, t);
         }
-        hkQsTransform t2 = t;
-        float y = t.m_translation.getSimdAt(1);
-        y -= 1.0f;
-        t2.m_translation(1) = y;
-        g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
+        
+        {
+            //draw local motion mark
+            //FIXME:TODO move it to a better place
+            hkQsTransform t2 = t;
+            float y = t.m_translation.getSimdAt(1);
+            ModelInstance* model = (ModelInstance*)actor->get_first_component_of(ModelResource::get_type());
+            float halfheight = model ? aabb_get_height(model->m_aabb) / 2 : 1.0f;
+            t2.m_translation(1) = y - halfheight;
+            g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
+        }
+        
+        {
+            //draw debug attachment
+            uint32_t num_attach = res->m_attachNum;
+            const BoneAttachment* attachments = res->m_attachments;
+            const float* world_poses = rig.m_attachmentTransforms;
+            if(world_poses)
+            {
+                for (uint32_t i=0; i<num_attach; ++i)
+                {
+                    const BoneAttachment& attchment = attachments[i];
+                    const float* world_pose = world_poses + 16 * i;
+                    hkQsTransform t1;
+                    transform_matrix(t1, world_pose);
+                    g_debugDrawMgr.add_axis(t1);
+                    float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
+                    g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
+                }
+            }
+        }
     }
 #endif
 }

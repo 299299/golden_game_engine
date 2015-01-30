@@ -37,17 +37,17 @@ struct Fact
     char*           m_values; //--> default values
     uint32_t        m_value_size;
 
-    uint32_t value_type(const StringId& k) const;
-    bool has_key(const StringId& k) const;
-    bool get_key(const StringId& k, Key& out_k) const;
-    bool get_key(char* values, const StringId& k, int& v) const;
-    bool get_key(char* values, const StringId& k, float& v) const;
-    bool get_key(char* values, const StringId& k, StringId& v) const;
-    bool get_key(char* values, const StringId& k, float* v) const;
-    bool set_key(char* values, const StringId& k, int v) const;
-    bool set_key(char* values, const StringId& k, float v) const;
-    bool set_key(char* values, const StringId& k, const StringId& v) const;
-    bool set_key(char* values, const StringId& k, const float* v) const;
+    uint32_t value_type(StringId k) const;
+    bool has_key(StringId k) const;
+    bool get_key(StringId k, Key& out_k) const;
+    bool get_key(char* values, StringId k, int& v) const;
+    bool get_key(char* values, StringId k, float& v) const;
+    bool get_key(char* values, StringId k, StringId& v) const;
+    bool get_key(char* values, StringId k, float* v) const;
+    bool set_key(char* values, StringId k, int v) const;
+    bool set_key(char* values, StringId k, float v) const;
+    bool set_key(char* values, StringId k, StringId v) const;
+    bool set_key(char* values, StringId k, const float* v) const;
 };
 
 

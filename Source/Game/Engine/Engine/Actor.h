@@ -29,22 +29,22 @@ ENGINE_NATIVE_ALIGN(struct) Actor
     void    init(const ActorResource* resource, const hkQsTransform& t, ActorId32 id);
     void    destroy();
     void    set_transform(const hkQsTransform& t);
-    void    set_transform_ignore_type(const hkQsTransform& t, const StringId& type);
-    void*   get_first_component_of(const StringId& type);
-    int     get_first_component_index_of(const StringId& type);
-    uint32_t    get_components_of(const StringId& type, void** comps, uint32_t buflen);
-    uint32_t    get_component_indices_of(const StringId& type, int* indices, uint32_t buflen);
+    void    set_transform_ignore_type(const hkQsTransform& t, StringId type);
+    void*   get_first_component_of(StringId type);
+    int     get_first_component_index_of(StringId type);
+    uint32_t    get_components_of(StringId type, void** comps, uint32_t buflen);
+    uint32_t    get_component_indices_of(StringId type, int* indices, uint32_t buflen);
 
-    bool    has_key(const StringId& k) const;
-    uint32_t value_type(const StringId& k);
-    bool    get_key(const StringId& k, int& v) const;
-    bool    get_key(const StringId& k, float& v) const;
-    bool    get_key(const StringId& k, StringId& v) const;
-    bool    get_key(const StringId& k, float* v) const;
-    bool    set_key(const StringId& k, int v);
-    bool    set_key(const StringId& k, float v);
-    bool    set_key(const StringId& k, const StringId& v);
-    bool    set_key(const StringId& k, const float* v);
+    bool    has_key(StringId k) const;
+    uint32_t value_type(StringId k);
+    bool    get_key(StringId k, int& v) const;
+    bool    get_key(StringId k, float& v) const;
+    bool    get_key(StringId k, StringId& v) const;
+    bool    get_key(StringId k, float* v) const;
+    bool    set_key(StringId k, int v);
+    bool    set_key(StringId k, float v);
+    bool    set_key(StringId k, StringId v);
+    bool    set_key(StringId k, const float* v);
 };
 
 struct ActorConfig
@@ -62,7 +62,7 @@ struct ActorWorld
     void        clear();
     void        clear_actors(uint32_t type);
 
-    ActorId32   create_actor(const StringId& resourceName, const hkQsTransform& t);
+    ActorId32   create_actor(StringId resourceName, const hkQsTransform& t);
     ActorId32   create_actor(const void* actorResource, const hkQsTransform& t);
     void        destroy_actor(ActorId32 id);
     Actor*      get_actor(ActorId32 id);

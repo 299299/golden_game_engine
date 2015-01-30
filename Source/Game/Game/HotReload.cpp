@@ -425,7 +425,7 @@ void resource_hot_reload_update(float dt)
     FIND_IN_ARRAY(_buf, _len, '.', _dot);
 
     const char* _ext = _buf + _dot + 1;
-    StringId _type = StringId(_ext);
+    StringId _type = stringid_caculate(_ext);
 
     ResourceFactory* fac = g_resourceMgr.find_factory(_type);
     if(!fac)
@@ -438,7 +438,7 @@ void resource_hot_reload_update(float dt)
     char _name[256];
     memset(_name, 0, sizeof _name);
     strncpy(_name, _buf, _dot);
-    g_resourceMgr.reload_resource(_type, StringId(_name), _buf);
+    g_resourceMgr.reload_resource(_type, stringid_caculate(_name), _buf);
 #endif
 
     run_data_compile();
@@ -451,7 +451,10 @@ void resource_hot_reload_update(float dt)
     {
         std::string ext = getFileExt(line);
         std::string resourceName = get_resource_name(line);
-        g_resourceMgr.reload_resource(StringId(ext.c_str()), StringId(resourceName.c_str()), line.c_str());
+        g_resourceMgr.reload_resource(
+            stringid_caculate(ext.c_str()),
+            stringid_caculate(resourceName.c_str()),
+            line.c_str());
     }
 }
 

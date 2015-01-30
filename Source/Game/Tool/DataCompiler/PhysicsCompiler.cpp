@@ -43,7 +43,7 @@ bool ProxyCompiler::readJSON(const jsonxx::Object& root)
     proxy.m_maxVerticalSeparation = json_to_float(root, "max_vertical_separation", 5.0f);
     proxy.m_maxHorizontalSeparation = json_to_float(root, "max_horizontal_separation", 0.15f);
     proxy.m_offset = json_to_float(root, "offset", proxy.m_standHeight/2);
-    proxy.m_layerName = StringId(root.get<std::string>("collision_layer", "character_proxy").c_str());
+    proxy.m_layerName = json_to_stringid(root, "collision_layer", stringid_caculate("character_proxy"));
 
     json_to_floats(root, "gravity", proxy.m_gravity, 3);
     return write_file(m_output, &proxy, sizeof(proxy));

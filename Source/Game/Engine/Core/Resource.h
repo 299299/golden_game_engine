@@ -87,8 +87,8 @@ ENGINE_NATIVE_ALIGN(struct) ResourcePackage
     int  get_status() const;
     void set_status(int status);
 
-    ResourceGroup* find_group(const StringId& type) const;
-    ResourceInfo* find_resource(const StringId& type, const StringId& name) const;
+    ResourceGroup* find_group(StringId type) const;
+    ResourceInfo* find_resource(StringId type, StringId name) const;
 
 private:
     void load_group(int index);
@@ -126,29 +126,29 @@ struct ResourceManager
 
     //--------------------------------------------------------------------
     // Factory API
-    ResourceFactory* find_factory(const StringId& type);
+    ResourceFactory* find_factory(StringId type);
     void register_factory(const ResourceFactory& factory);
 
     //--------------------------------------------------------------------
     // Package API
     bool load_package(const char* packageName);
     bool load_package_and_wait(const char* packageName);
-    bool unload_package(const StringId& packageName);
-    int  get_package_status(const StringId& packageName);
-    void flush_package(const StringId& packageName, int maxNum = -1);
+    bool unload_package(StringId packageName);
+    int  get_package_status(StringId packageName);
+    void flush_package(StringId packageName, int maxNum = -1);
 
     //--------------------------------------------------------------------
     // Resource API
-    void  insert_resource(const StringId& type, const StringId& name, void* resource);
-    void* find_resource(const StringId& type, const StringId& name);
-    void  remove_resource(const StringId& type, const ResourceInfo& info);
-    uint32_t  find_resources_type_of(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen);
-    ResourceInfo* find_resource_info(const StringId& type, const StringId& name);
+    void  insert_resource(StringId type, StringId name, void* resource);
+    void* find_resource(StringId type, StringId name);
+    void  remove_resource(StringId type, const ResourceInfo& info);
+    uint32_t  find_resources_type_of(StringId type, ResourceInfo** resourceArray, uint32_t arrayLen);
+    ResourceInfo* find_resource_info(StringId type, StringId name);
 #ifdef RESOURCE_RELOAD
-    void* reload_resource(const StringId& type, const StringId& name, const char* pathName, bool bFireCallbacks = true);
+    void* reload_resource(StringId type, StringId name, const char* pathName, bool bFireCallbacks = true);
     void  destroy_reload_resources();
-    void  register_reload_callback(const StringId& type, __RESOURCE_RELOAD func);
-    void  reload_resource(const StringId& type, bool bFireCallbacks = true);
+    void  register_reload_callback(StringId type, __RESOURCE_RELOAD func);
+    void  reload_resource(StringId type, bool bFireCallbacks = true);
 #endif
 
     //--------------------------------------------------------------------
@@ -157,12 +157,12 @@ struct ResourceManager
     void  process_request();
 
 private:
-    ResourcePackage* find_package(const StringId& name);
+    ResourcePackage* find_package(StringId name);
     void push_request(ResourceRequest* request);
 };
 
 extern ResourceManager      g_resourceMgr;
 
 #define FIND_RESOURCE(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), name))
-#define FIND_RESOURCE_NAMED(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), StringId(name)))
+#define FIND_RESOURCE_NAMED(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), stringid_caculate(name)))
 

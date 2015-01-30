@@ -94,8 +94,8 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         const jsonxx::Object& mirrorObject = root.get<jsonxx::Object>("mirrored");
         const std::string& mirrorFile = mirrorObject.get<std::string>("animation");
         const std::string& rigFile = mirrorObject.get<std::string>("rig");
-        anim->m_mirroredFrom = StringId(mirrorFile.c_str());
-        anim->m_rigName = StringId(rigFile.c_str());
+        anim->m_mirroredFrom = stringid_caculate(mirrorFile.c_str());
+        anim->m_rigName = stringid_caculate(rigFile.c_str());
         addDependency("mirror animation", name_to_file_path(mirrorFile, Animation::get_name()));
         addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
     }
@@ -111,7 +111,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
 
     for (uint32_t i=0; i<anim->m_numTriggers; ++i)
     {
-        anim->m_triggers[i].m_name = StringId(trigger_data[i].m_name.c_str());
+        anim->m_triggers[i].m_name = stringid_caculate(trigger_data[i].m_name.c_str());
         anim->m_triggers[i].m_time = trigger_data[i].m_time;
     }
 

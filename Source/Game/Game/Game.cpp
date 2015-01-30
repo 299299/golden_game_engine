@@ -89,7 +89,7 @@ int game_main(int argc, bx::CommandLine* cmdline)
 #ifdef HAVOK_COMPILE
         t.setIdentity();
 #endif
-        g_previewActor = g_actorWorld.create_actor(StringId(actor_name), t);
+        g_previewActor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
         LOGD("created actor = %d", g_previewActor);
     }
     if(level_name)

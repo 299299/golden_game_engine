@@ -1,7 +1,7 @@
 #include "AnimRigCompiler.h"
 #include "Animation.h"
 
-static int find_joint_index(const StringId& name, StringId* names, int size)
+static int find_joint_index(StringId name, StringId* names, int size)
 {
     for(int i=0; i<size; ++i)
     {
@@ -67,7 +67,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     rig->m_jointNames = (StringId*)(offset);
     for(uint32_t i=0; i<jointNum; ++i)
     {
-        rig->m_jointNames[i] = StringId(jointsValue.get<std::string>(i).c_str());
+        rig->m_jointNames[i] = stringid_caculate(jointsValue.get<std::string>(i).c_str());
     }
 
     if(root.has<jsonxx::Object>("human_body"))

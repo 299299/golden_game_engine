@@ -62,7 +62,7 @@ ENGINE_NATIVE_ALIGN(struct) Material
 
     void lookup();
     void bringin();
-    void change_texture(int slot, const StringId& tex);
+    void change_texture(int slot, StringId tex);
     void submit() const;
     void submit_shadow() const;
 

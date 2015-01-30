@@ -19,7 +19,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
     memset(&model, 0x00, sizeof(model));
 
     std::string meshFile = m_pathPrefix + root.get<std::string>("mesh");
-    model.m_meshName = StringId(meshFile.c_str());
+    model.m_meshName = stringid_caculate(meshFile.c_str());
     addDependency("mesh", name_to_file_path(meshFile, Mesh::get_name()));
     extern const char* g_viewGroupNames[];
     model.m_viewId = json_to_enum(root, "view_group", g_viewGroupNames, kSceneViewId);
@@ -49,7 +49,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
                 materialFile = materialsValue.get<std::string>(i);
             }
             materialFile = m_pathPrefix + materialFile;
-            model.m_materialNames[i] = StringId(materialFile.c_str());
+            model.m_materialNames[i] = stringid_caculate(materialFile.c_str());
             addDependency("material", name_to_file_path(materialFile, Material::get_name()));
         }
     }

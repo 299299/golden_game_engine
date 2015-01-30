@@ -14,7 +14,7 @@ void Material::lookup()
     uint32_t num = m_numSamplers;
     MatSampler* head = m_samplers;
 
-    for (uint32_t i=0; i<num; ++i) 
+    for (uint32_t i=0; i<num; ++i)
     {
         head[i].m_texture = FIND_RESOURCE(Texture, head[i].m_textureName);
     }
@@ -33,7 +33,7 @@ void Material::bringin()
     }
 }
 
-void Material::change_texture( int slot, const StringId& tex )
+void Material::change_texture( int slot, StringId tex )
 {
     MatSampler& sampler = m_samplers[slot];
     Texture* texture = FIND_RESOURCE(Texture, tex);

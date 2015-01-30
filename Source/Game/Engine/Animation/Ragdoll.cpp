@@ -27,13 +27,13 @@
 #include <Physics2012/Utilities/Constraint/Bilateral/hkpConstraintUtils.h>
 #include <Physics2012/Collide/Filter/Group/hkpGroupFilter.h>
 
-static int  find_bone_index(const hkaSkeleton* skeleton, const StringId& boneName)
+static int  find_bone_index(const hkaSkeleton* skeleton, StringId boneName)
 {
     int num = skeleton->m_bones.getSize();
     const hkaBone* head = skeleton->m_bones.begin();
     for(int i=0;i<num;++i)
     {
-        if(boneName == StringId(head[i].m_name.cString()))
+        if(boneName == stringid_caculate(head[i].m_name.cString()))
             return i;
     }
     return -1;

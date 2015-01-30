@@ -42,9 +42,15 @@ bool RagdollCompiler::readJSON(const jsonxx::Object& root)
     ragdoll->m_dampVelocity = json_to_float(root, "damp_velocity", 0.0f);
     ragdoll->m_accelerationGain = json_to_float(root, "acceleration_gain", 1.0f);
     ragdoll->m_fixLegs = root.get<bool>("fix-legs", true);
-    ragdoll->m_leftLeg = StringId(root.get<std::string>("left_leg").c_str());
-    ragdoll->m_rightLeg = StringId(root.get<std::string>("right_leg").c_str());
-    ragdoll->m_keyframeLayer = StringId(root.get<std::string>("keyframe_layer", "ragdoll_keyframe").c_str());
-    ragdoll->m_dynamicLayer = StringId(root.get<std::string>("dynamic_layer", "ragdoll_dynamic").c_str());
+    ragdoll->m_leftLeg = json_to_stringid(root, "left_leg");
+    ragdoll->m_rightLeg = json_to_stringid(root, "right_leg");
+    ragdoll->m_keyframeLayer = json_to_stringid(
+        root,
+        "keyframe_layer",
+        stringid_caculate("ragdoll_keyframe"));
+    ragdoll->m_dynamicLayer = json_to_stringid(
+        root,
+        "dynamic_layer",
+        stringid_caculate("ragdoll_dynamic"));
     return write_file(m_output, mem.m_buf, memSize);
 }

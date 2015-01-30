@@ -133,14 +133,14 @@ bool check_unique_process()
     return true;
 }
 
-uint32_t Fact::value_type(const StringId& k) const
+uint32_t Fact::value_type(StringId k) const
 {
     Key key;
     if(!get_key(k, key)) return ValueType::UNKNOW;
     return key.m_type;
 }
 
-bool Fact::has_key(const StringId& k) const
+bool Fact::has_key(StringId k) const
 {
     uint32_t num = m_num_keys;
     Key* head = m_keys;
@@ -151,7 +151,7 @@ bool Fact::has_key(const StringId& k) const
     return false;
 }
 
-bool Fact::get_key(const StringId& k, Key& out_k) const
+bool Fact::get_key(StringId k, Key& out_k) const
 {
     uint32_t num = m_num_keys;
     Key* head = m_keys;
@@ -166,7 +166,7 @@ bool Fact::get_key(const StringId& k, Key& out_k) const
     return false;
 }
 
-bool Fact::get_key(char* values, const StringId& k, int& v) const
+bool Fact::get_key(char* values, StringId k, int& v) const
 {
     Key key;
     bool has = get_key(k, key);
@@ -175,7 +175,7 @@ bool Fact::get_key(char* values, const StringId& k, int& v) const
     return has;
 }
 
-bool Fact::get_key(char* values, const StringId& k, float& v) const
+bool Fact::get_key(char* values, StringId k, float& v) const
 {
     Key key;
     bool has = get_key(k, key);
@@ -184,7 +184,7 @@ bool Fact::get_key(char* values, const StringId& k, float& v) const
     return has;
 }
 
-bool Fact::get_key(char* values, const StringId& k, StringId& v) const
+bool Fact::get_key(char* values, StringId k, StringId& v) const
 {
     Key key;
     bool has = get_key(k, key);
@@ -193,7 +193,7 @@ bool Fact::get_key(char* values, const StringId& k, StringId& v) const
     return has;
 }
 
-bool Fact::get_key(char* values, const StringId& k, float* v) const
+bool Fact::get_key(char* values, StringId k, float* v) const
 {
     Key key;
     bool has = get_key(k, key);
@@ -202,7 +202,7 @@ bool Fact::get_key(char* values, const StringId& k, float* v) const
     return has;
 }
 
-bool Fact::set_key(char* values, const StringId& k, int v) const
+bool Fact::set_key(char* values, StringId k, int v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
@@ -210,7 +210,7 @@ bool Fact::set_key(char* values, const StringId& k, int v) const
     return false;
 }
 
-bool Fact::set_key(char* values, const StringId& k, float v) const
+bool Fact::set_key(char* values, StringId k, float v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
@@ -218,7 +218,7 @@ bool Fact::set_key(char* values, const StringId& k, float v) const
     return true;
 }
 
-bool Fact::set_key(char* values, const StringId& k, const StringId& v) const
+bool Fact::set_key(char* values, StringId k, StringId v) const
 {
     Key key;
     if(!get_key(k, key)) return false;
@@ -226,7 +226,7 @@ bool Fact::set_key(char* values, const StringId& k, const StringId& v) const
     return true;
 }
 
-bool Fact::set_key(char* values, const StringId& k, const float* v) const
+bool Fact::set_key(char* values, StringId k, const float* v) const
 {
     Key key;
     if(!get_key(k, key)) return false;

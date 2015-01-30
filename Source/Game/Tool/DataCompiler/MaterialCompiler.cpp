@@ -38,7 +38,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     if(!programFile.empty())
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
-        m->m_shaderName = StringId(programName);
+        m->m_shaderName = stringid_caculate(programName);
         addDependency("shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
 
@@ -46,7 +46,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     if(!programFile.empty())
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
-        m->m_shadowShaderName = StringId(programName);
+        m->m_shadowShaderName = stringid_caculate(programName);
         addDependency("shadow shader", name_to_file_path(programName, ShaderProgram::get_name()));
     }
 
@@ -127,7 +127,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             {
                 textureFile = o.get<std::string>("texture");
             }
-            sampler.m_textureName = StringId(textureFile.c_str());
+            sampler.m_textureName = stringid_caculate(textureFile.c_str());
             addDependency("texture", name_to_file_path(textureFile, Texture::get_name()));
         }
     }

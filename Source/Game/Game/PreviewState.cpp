@@ -39,7 +39,7 @@ static void list_resources_gui(const char* type, int x, int y, int w, int h, on_
     _enabled = imguiBeginScroll(600, &_scroll, _enabled);
     static ResourceInfo* _resources[64];
     uint32_t _len = g_resourceMgr.find_resources_type_of(
-        StringId(type),
+        stringid_caculate(type),
         _resources,
         BX_COUNTOF(_resources));
 

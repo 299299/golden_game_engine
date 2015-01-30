@@ -210,7 +210,7 @@ void FileWatcher::add_change( const char* fileName )
 
     LOGD("%s has changed.", fileName);
     m_changed = true;
-    uint32_t key = StringId::calculate(fileName);
+    uint32_t key = stringid_caculate(fileName);
     ChangedFile f;
     strncpy(f.m_fileName, fileName, sizeof(f.m_fileName));
 

@@ -55,7 +55,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
         const jsonxx::Object& actorValue = actorsValue.get<jsonxx::Object>(i);
         const std::string& typeName = actorValue.get<std::string>("type");
         const std::string& actorName = actorValue.get<std::string>("name");
-        uint32_t key = StringId::calculate(typeName.c_str());
+        uint32_t key = stringid_caculate(typeName.c_str());
         int index = -1;
         ResourceKeyMap::iterator iter = m_resourceKeys.find(key);
         ENGINE_ASSERT(typeName.length(), "type name null");
@@ -102,13 +102,13 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
         const jsonxx::Object& actorValue = actorsValue.get<jsonxx::Object>(i);
         LevelObject& object = level->m_objects[i];
         object.m_resourceIndex = actorIndices[i];
-        object.m_name = StringId(actorValue.get<std::string>("name").c_str());
+        object.m_name = json_to_stringid(actorValue, "name");
         json_transform(actorValue, object.m_translation, object.m_rotation, object.m_scale);
     }
 
     for (uint32_t i = 0; i < numOfResources; ++i)
     {
-        level->m_resources[i].m_name = StringId(resourceNames[i]);
+        level->m_resources[i].m_name = resourceNames[i];
     }
 
     return write_file(m_output, mem.m_buf, memSize);

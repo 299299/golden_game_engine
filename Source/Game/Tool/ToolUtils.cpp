@@ -717,7 +717,7 @@ StringId json_to_stringid( const jsonxx::Object& o, const char* name, StringId d
 {
     if(!o.has<std::string>(name))
         return def;
-    return StringId(o.get<std::string>(name).c_str());
+    return stringid_caculate(o.get<std::string>(name).c_str());
 }
 
 int json_to_enum( const jsonxx::Object& o, const char* name, const char** enumnames, int def )
@@ -805,7 +805,7 @@ bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& 
     //bx::LwMutexScope _l(&m_lock);
     modifyTime = get_file_modified_time(fileName);
     ENGINE_ASSERT(modifyTime, "modifyTime");
-    uint32_t key = StringId(fileName.c_str()).value();
+    uint32_t key = stringid_caculate(fileName.c_str());
     ResourceFileMap::const_iterator iter = m_files.find(key);
     if(iter == m_files.end())
         return true;
@@ -816,7 +816,7 @@ bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& 
 void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  const uint32_t& modifyTime )
 {
     //bx::LwMutexScope _l(&m_lock);
-    uint32_t key = StringId(fileName.c_str()).value();
+    uint32_t key = stringid_caculate(fileName.c_str());
     m_files[key] = modifyTime;
     ENGINE_ASSERT(key && modifyTime, "key && modifyTime");
 }

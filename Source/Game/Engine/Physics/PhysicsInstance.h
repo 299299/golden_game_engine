@@ -38,16 +38,16 @@ ENGINE_NATIVE_ALIGN(struct) PhysicsInstance
 
     const PhysicsResource*      m_resource;
     ActorId32                   m_actor;
+
     uint8_t                     m_numData;
     uint8_t                     m_systemType;
-    bool                        m_dirty;
     bool                        m_inWorld;
+    char                        m_padding[1];
 
     void init(const void* resource, ActorId32 actor);
     void destroy();
     void set_transform(const hkTransformf& t);
     void add_to_simulation();
     void remove_from_simulation();
-    void post_simulation(hkpRigidBody* rb);
     void fetch_transform(int index, hkTransformf& outT);
 };

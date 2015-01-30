@@ -12,7 +12,7 @@ void ComponentManager::shutdown()
 
 }
 
-ComponentFactory* ComponentManager::find_factory( const StringId& type )
+ComponentFactory* ComponentManager::find_factory( StringId type )
 {
     uint32_t num = m_num_types;
     StringId* types = m_types;
@@ -24,7 +24,7 @@ ComponentFactory* ComponentManager::find_factory( const StringId& type )
     return NULL;
 }
 
-void ComponentManager::register_factory( const ComponentFactory& fac, const StringId& type )
+void ComponentManager::register_factory( const ComponentFactory& fac, StringId type )
 {
     uint32_t num = m_num_types;
     ++m_num_types;

@@ -62,7 +62,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         {
             group = new PackageGroup;
             group->m_ext = ext;
-            group->m_type = StringId(ext.c_str());
+            group->m_type = stringid_caculate(ext.c_str());
             group->m_order = order;
             m_groups.push_back(group);
         }
@@ -90,7 +90,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     package->m_bundled = bundled;
     totalFileSize = NEXT_MULTIPLE_OF(16, totalFileSize);
     if(!bundled) package->m_memBudget = totalFileSize;
-    package->m_name = StringId(output.c_str());
+    package->m_name = stringid_caculate(output.c_str());
     package->m_numGroups = m_groups.size();
 
     char* offset = mem.m_buf + sizeof(ResourcePackage);
@@ -112,7 +112,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         LOGI("group[%d] name = %s, num-resources = %d, type=%u, info-offset=%d", i,
             in_group->m_ext.c_str(),
             in_group->m_files.size(),
-            out_group.m_type.value(),
+            out_group.m_type,
             out_group.m_resourceInfoOffset);
     }
 
@@ -142,7 +142,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
 
             std::string resourceName = remove_top_folder(fileName);
             removeExtension(resourceName);
-            info.m_name = StringId(resourceName.c_str());
+            info.m_name = stringid_caculate(resourceName.c_str());
             if(bundled)
             {
                 info.m_size = get_file_size(fileName);

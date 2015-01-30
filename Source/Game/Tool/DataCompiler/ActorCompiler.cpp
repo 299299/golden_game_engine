@@ -78,8 +78,8 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
             continue;
         LOGD("processing actor %s component %s", m_input.c_str(), type.c_str());
         std::string name = m_pathPrefix + compValue.get<std::string>("name");
-        actor->m_resourceNames[index] = StringId(name.c_str());
-        actor->m_resourceTypes[index] = StringId(type.c_str());
+        actor->m_resourceNames[index] = stringid_caculate(name.c_str());
+        actor->m_resourceTypes[index] = stringid_caculate(type.c_str());
         if(bPacked)
             createChildCompiler(type, compValue);
         addDependency(type, name_to_file_path(name, type));
@@ -101,7 +101,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         int index = json_to_enum(o, "type", g_fact_keynames);
         ENGINE_ASSERT(index >= 0, "Actor Key type not right.");
         key.m_type = index;
-        key.m_name = StringId(o.get<std::string>("name").c_str());
+        key.m_name = stringid_caculate(o.get<std::string>("name").c_str());
         key.m_offset = (uint32_t)(values - mem.m_buf);
         switch(key.m_type)
         {

@@ -24,7 +24,7 @@ bool LookIKCompiler::readJSON( const jsonxx::Object& root )
     lookat.m_targetGain =  json_to_float(root, "target_gain", 0.2f);
 
     const std::string& rigFile = root.get<std::string>("rig");
-    lookat.m_rigName = StringId(rigFile.c_str());
+    lookat.m_rigName = stringid_caculate(rigFile.c_str());
     addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
 
     return write_file(m_output, &lookat, sizeof(lookat));
@@ -51,7 +51,7 @@ bool ReachIKCompiler::readJSON( const jsonxx::Object& root )
     reach.m_index = json_to_enum(root, "hand", left_right_names);
 
     const std::string& rigFile = root.get<std::string>("rig");
-    reach.m_rigName = StringId(rigFile.c_str());
+    reach.m_rigName = stringid_caculate(rigFile.c_str());
     addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
 
     return write_file(m_output, &reach, sizeof(reach));
@@ -80,7 +80,7 @@ bool FootIKCompiler::readJSON( const jsonxx::Object& root )
     foot.m_cosineMinKneeAngle = json_to_float(root, "min_consine_knee_angle", 0);
     foot.m_raycastDistanceUp = json_to_float(root, "raycast_dis_up", 0.5f);
     foot.m_raycastDistanceDown = json_to_float(root, "raycast_dis_down", 0.8f);
-    foot.m_raycastCollisionLayer = StringId(root.get<std::string>("raycast_layer").c_str());
+    foot.m_raycastCollisionLayer = json_to_stringid(root, "raycast_layer");
     foot.m_groundAscendingGain =  json_to_float(root, "ground_ascending_gain", 0.35f);
     foot.m_groundDescendingGain =  json_to_float(root, "ground_descending_gain", 0.6f);
     foot.m_standAscendingGain =  json_to_float(root, "ground_ascending_gain", 0.6f);
@@ -93,7 +93,7 @@ bool FootIKCompiler::readJSON( const jsonxx::Object& root )
     foot.m_raycastType = json_to_enum(root, "raycast_type", raycast_type_names, 0);
 
     const std::string& rigFile = root.get<std::string>("rig");
-    foot.m_rigName = StringId(rigFile.c_str());
+    foot.m_rigName = stringid_caculate(rigFile.c_str());
     addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
 
     return write_file(m_output, &foot, sizeof(foot));

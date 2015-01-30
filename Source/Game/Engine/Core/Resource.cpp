@@ -37,14 +37,14 @@ static void set_running(int bRunning)
 {
     g_running = bRunning;
 }
-inline hkUint64 packId(const StringId& type, const StringId& name)
+inline hkUint64 packId(StringId type, StringId name)
 {
-    return ((hkUint64)type.value() << 32) | (hkUint64)name.value();
+    return ((hkUint64)type << 32) | (hkUint64)name;
 }
 inline void unpackId(const hkUint64& key, StringId& type, StringId& name)
 {
-    name = StringId((uint32_t)(key));
-    type = StringId((uint32_t)(key >> 32));
+    name = (uint32_t)(key);
+    type = (uint32_t)(key >> 32);
 }
 
 void ResourcePackage::init()
@@ -340,7 +340,7 @@ void ResourcePackage::unload()
     m_numGroups = 0;
 }
 
-ResourceGroup* ResourcePackage::find_group( const StringId& type ) const
+ResourceGroup* ResourcePackage::find_group( StringId type ) const
 {
     uint32_t num = m_numGroups;
     ResourceGroup* groups = m_groups;
@@ -352,7 +352,7 @@ ResourceGroup* ResourcePackage::find_group( const StringId& type ) const
     return 0;
 }
 
-ResourceInfo* ResourcePackage::find_resource( const StringId& type, const StringId& name ) const
+ResourceInfo* ResourcePackage::find_resource( StringId type, StringId name ) const
 {
     ResourceGroup* group = find_group(type);
     if(!group) return 0;
@@ -413,7 +413,7 @@ void ResourceManager::shutdown()
 }
 
 
-ResourceFactory* ResourceManager::find_factory(const StringId& type)
+ResourceFactory* ResourceManager::find_factory(StringId type)
 {
     int index = -1;
     uint32_t num = m_numFactories;
@@ -431,12 +431,12 @@ ResourceFactory* ResourceManager::find_factory(const StringId& type)
 
 void ResourceManager::register_factory(const ResourceFactory& factory)
 {
-    m_types[m_numFactories] = StringId(factory.m_name);
+    m_types[m_numFactories] = stringid_caculate(factory.m_name);
     m_factories[m_numFactories++] = factory;
     ENGINE_ASSERT(m_numFactories < MAX_RESOURCE_TYPES, "resource manager factories overflow.");
 }
 
-void* ResourceManager::find_resource( const StringId& type, const StringId& name )
+void* ResourceManager::find_resource( StringId type, StringId name )
 {
     if(!name) return 0;
     bx::LwMutexScope _l(g_resourceLock);
@@ -453,7 +453,7 @@ void* ResourceManager::find_resource( const StringId& type, const StringId& name
 #endif
 }
 
-void ResourceManager::insert_resource( const StringId& type, const StringId& name, void* resource )
+void ResourceManager::insert_resource( StringId type, StringId name, void* resource )
 {
     bx::LwMutexScope _l(g_resourceLock);
 #ifdef HAVOK_COMPILE
@@ -461,7 +461,7 @@ void ResourceManager::insert_resource( const StringId& type, const StringId& nam
 #endif
 }
 
-void ResourceManager::remove_resource( const StringId& type, const ResourceInfo& info )
+void ResourceManager::remove_resource( StringId type, const ResourceInfo& info )
 {
     bx::LwMutexScope _l(g_resourceLock);
 #ifdef HAVOK_COMPILE
@@ -484,7 +484,7 @@ void* ResourceManager::io_work_loop( void* p )
     return 0;
 }
 
-ResourcePackage* ResourceManager::find_package(const StringId& name)
+ResourcePackage* ResourceManager::find_package(StringId name)
 {
     uint32_t num = m_numPackages;
     ResourcePackage** packages = m_packages;
@@ -498,7 +498,7 @@ ResourcePackage* ResourceManager::find_package(const StringId& name)
 
 bool ResourceManager::load_package(const char* packageName)
 {
-    StringId packageNameId = StringId(packageName);
+    StringId packageNameId = stringid_caculate(packageName);
     ResourcePackage* package = find_package(packageNameId);
     if(package)
     {
@@ -521,7 +521,7 @@ bool ResourceManager::load_package(const char* packageName)
     return true;
 }
 
-bool ResourceManager::unload_package(const StringId& packageName)
+bool ResourceManager::unload_package(StringId packageName)
 {
     for(size_t i=0; i<m_numPackages; ++i)
     {
@@ -544,14 +544,14 @@ bool ResourceManager::unload_package(const StringId& packageName)
     return true;
 }
 
-int ResourceManager::get_package_status(const StringId& packageName)
+int ResourceManager::get_package_status(StringId packageName)
 {
     ResourcePackage* package = find_package(packageName);
     if(!package) return kResourceNotFound;
     return package->get_status();
 }
 
-void ResourceManager::flush_package(const StringId& packageName, int maxNum)
+void ResourceManager::flush_package(StringId packageName, int maxNum)
 {
     ResourcePackage* package = find_package(packageName);
     if(!package) return;
@@ -613,7 +613,7 @@ void ResourceManager::push_request( ResourceRequest* request )
     }
 }
 
-uint32_t  ResourceManager::find_resources_type_of(const StringId& type, ResourceInfo** resourceArray, uint32_t arrayLen)
+uint32_t  ResourceManager::find_resources_type_of(StringId type, ResourceInfo** resourceArray, uint32_t arrayLen)
 {
     uint32_t num = m_numPackages;
     ResourcePackage** packages = m_packages;
@@ -634,7 +634,7 @@ uint32_t  ResourceManager::find_resources_type_of(const StringId& type, Resource
     return retNum;
 }
 
-ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const StringId& name )
+ResourceInfo* ResourceManager::find_resource_info( StringId type, StringId name )
 {
     uint32_t num = m_numPackages;
     ResourcePackage** packages = m_packages;
@@ -658,7 +658,7 @@ ResourceInfo* ResourceManager::find_resource_info( const StringId& type, const S
 bool ResourceManager::load_package_and_wait(const char* packageName)
 {
     TIMELOG("load_package_and_wait %s", packageName);
-    StringId name(packageName);
+    StringId name = stringid_caculate(packageName);
     if(load_package(packageName))
     {
         while(1)
@@ -709,21 +709,20 @@ void ResourceManager::destroy_reload_resources()
     }
     g_reloadResources.clear();
 }
-void  ResourceManager::register_reload_callback(const StringId& type, __RESOURCE_RELOAD func)
+void  ResourceManager::register_reload_callback(StringId type, __RESOURCE_RELOAD func)
 {
-    uint32_t key = type.value();
-    ReloadCallbackMap::iterator iter = g_reloadCallbacks.find(key);
+    ReloadCallbackMap::iterator iter = g_reloadCallbacks.find(type);
     if(iter == g_reloadCallbacks.end())
     {
         std::vector<__RESOURCE_RELOAD> callbacks;
         callbacks.push_back(func);
-        g_reloadCallbacks[key] = callbacks;
+        g_reloadCallbacks[type] = callbacks;
     }
     else {
         iter->second.push_back(func);
     }
 }
-void* ResourceManager::reload_resource( const StringId& type, const StringId& name, const char* pathName , bool bFireCallbacks)
+void* ResourceManager::reload_resource( StringId type, StringId name, const char* pathName , bool bFireCallbacks)
 {
     LOGD("start reloading resource path %s", pathName);
 
@@ -779,7 +778,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
 
     if(bFireCallbacks)
     {
-        ReloadCallbackMap::iterator iter1 = g_reloadCallbacks.find(type.value());
+        ReloadCallbackMap::iterator iter1 = g_reloadCallbacks.find(type);
         if(iter1 != g_reloadCallbacks.end())
         {
             const std::vector<__RESOURCE_RELOAD>& callbacks = iter1->second;
@@ -799,7 +798,7 @@ void* ResourceManager::reload_resource( const StringId& type, const StringId& na
     return newResource;
 }
 
-void ResourceManager::reload_resource(const StringId& type, bool bFireCallbacks)
+void ResourceManager::reload_resource(StringId type, bool bFireCallbacks)
 {
     char name[256];
     for (uint32_t i = 0; i < m_numPackages; ++i)

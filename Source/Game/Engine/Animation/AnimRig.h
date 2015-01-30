@@ -44,7 +44,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimRig
 {
     DECLARE_RESOURCE(rig);
 
-    int  find_joint_index(const StringId& jointName) const;
+    int  find_joint_index(StringId jointName) const;
     void create_mirrored_skeleton();
 
     int                             m_humanJointIndices[kBodyPartMax];

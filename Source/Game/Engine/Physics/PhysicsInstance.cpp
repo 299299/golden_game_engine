@@ -82,12 +82,6 @@ void PhysicsInstance::remove_from_simulation()
     m_inWorld = false;
 }
 
-
-void PhysicsInstance::post_simulation(hkpRigidBody* rb)
-{
-    m_dirty = true;
-}
-
 void PhysicsInstance::fetch_transform(int index, hkTransform& outT)
 {
 #ifdef HAVOK_COMPILE

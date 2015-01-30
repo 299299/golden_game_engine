@@ -53,7 +53,7 @@ void  destroy_resource_anim_rig(void * resource)
     unload_havok_inplace(p, rig->m_havokDataSize);
 }
 
-int AnimRig::find_joint_index(const StringId& jointName) const
+int AnimRig::find_joint_index(StringId jointName) const
 {
     int num = m_jointNum;
     StringId* head = m_jointNames;

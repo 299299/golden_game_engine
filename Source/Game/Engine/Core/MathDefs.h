@@ -195,3 +195,10 @@ inline float low_pass_filter(float unfilteredInput, float lastFramesFilteredInpu
     float a = dt / (rc + dt);
     return (1 - a) * lastFramesFilteredInput + a * unfilteredInput;
 };
+
+inline float aabb_get_height(const Aabb& aabb)
+{
+    float extent[3];
+    bx::vec3Sub(extent, aabb.m_max, aabb.m_min);
+    return extent[1];
+}

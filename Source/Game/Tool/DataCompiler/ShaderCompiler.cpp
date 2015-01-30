@@ -66,7 +66,7 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
         shader->m_size = outputReader.m_size;
         shader->m_blob = mem.m_buf + sizeof(Shader);
         shader->m_handle.idx = bgfx::invalidHandle;
-        shader->m_name = StringId(getFileName(m_input).c_str());
+        shader->m_name = stringid_caculate(getFileName(m_input).c_str());
         memcpy(shader->m_blob, outputReader.m_buf, outputReader.m_size);
         m_processed = write_file(output, shader, memSize);
     }
@@ -105,8 +105,8 @@ bool ProgramCompiler::readJSON(const jsonxx::Object& root)
     ShaderProgram program;
     memset(&program, 0x00, sizeof(program));
 
-    program.m_vsName = StringId(vs);
-    program.m_psName = StringId(ps);
+    program.m_vsName = stringid_caculate(vs);
+    program.m_psName = stringid_caculate(ps);
     program.m_handle.idx = bgfx::invalidHandle;
 
     addDependency("vertex shader", name_to_file_path(vs, Shader::get_name()));

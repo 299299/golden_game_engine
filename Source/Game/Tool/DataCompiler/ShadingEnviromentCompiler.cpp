@@ -81,7 +81,7 @@ bool ShadingEnviromentCompiler::readJSON(const jsonxx::Object& root)
         for (uint32_t i=0; i<shading.m_numColorgradingTextures; ++i)
         {
             const std::string& lutTexture = texturesValue.get<std::string>(i);
-            shading.m_colorgradingTextureNames[i] = StringId(lutTexture.c_str());
+            shading.m_colorgradingTextureNames[i] = stringid_caculate(lutTexture.c_str());
             addDependency("color_grading_texture", name_to_file_path(lutTexture.c_str(), Raw3DTexture::get_name()));
         }
         shading.m_colorGradingIndex = json_to_int(o, "grading_index");

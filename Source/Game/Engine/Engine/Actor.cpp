@@ -102,7 +102,7 @@ void Actor::set_transform( const hkQsTransform& t )
     }
 }
 
-void Actor::set_transform_ignore_type( const hkQsTransform& t, const StringId& type )
+void Actor::set_transform_ignore_type( const hkQsTransform& t, StringId type )
 {
     m_transform = t;
 
@@ -158,14 +158,14 @@ void Actor::destroy()
     COMMON_DEALLOC(m_values);
 }
 
-void* Actor::get_first_component_of( const StringId& type )
+void* Actor::get_first_component_of( StringId type )
 {
     int index = get_first_component_index_of(type);
     if(index < 0) return NULL;
     return m_resource->m_factories[index]->get_component(m_components[index]);
 }
 
-int Actor::get_first_component_index_of(const StringId& type)
+int Actor::get_first_component_index_of(StringId type)
 {
     const ActorResource* res = m_resource;
     uint32_t num = res->m_numComponents;
@@ -178,7 +178,7 @@ int Actor::get_first_component_index_of(const StringId& type)
     return -1;
 }
 
-uint32_t Actor::get_components_of( const StringId& type, void** comps, uint32_t buflen )
+uint32_t Actor::get_components_of( StringId type, void** comps, uint32_t buflen )
 {
     uint32_t ret = 0;
     const ActorResource* res = m_resource;
@@ -198,7 +198,7 @@ uint32_t Actor::get_components_of( const StringId& type, void** comps, uint32_t 
     return ret;
 }
 
-uint32_t Actor::get_component_indices_of( const StringId& type, int* indices, uint32_t buflen )
+uint32_t Actor::get_component_indices_of( StringId type, int* indices, uint32_t buflen )
 {
     uint32_t ret = 0;
     const ActorResource* res = m_resource;
@@ -216,52 +216,52 @@ uint32_t Actor::get_component_indices_of( const StringId& type, int* indices, ui
     return ret;
 }
 
-bool Actor::has_key(const StringId& k) const
+bool Actor::has_key(StringId k) const
 {
     return m_resource->m_fact.has_key(k);
 }
 
-uint32_t Actor::value_type(const StringId& k)
+uint32_t Actor::value_type(StringId k)
 {
     return m_resource->m_fact.value_type(k);
 }
 
-bool Actor::get_key(const StringId& k, int& v) const
+bool Actor::get_key(StringId k, int& v) const
 {
     return m_resource->m_fact.get_key(m_values, k, v);
 }
 
-bool Actor::get_key(const StringId& k, float& v) const
+bool Actor::get_key(StringId k, float& v) const
 {
     return m_resource->m_fact.get_key(m_values, k, v);
 }
 
-bool Actor::get_key(const StringId& k, StringId& v) const
+bool Actor::get_key(StringId k, StringId& v) const
 {
     return m_resource->m_fact.get_key(m_values, k, v);
 }
 
-bool Actor::get_key(const StringId& k, float* v) const
+bool Actor::get_key(StringId k, float* v) const
 {
     return m_resource->m_fact.get_key(m_values, k, v);
 }
 
-bool Actor::set_key(const StringId& k, int v)
+bool Actor::set_key(StringId k, int v)
 {
     return m_resource->m_fact.set_key(m_values, k, v);
 }
 
-bool Actor::set_key(const StringId& k, float v)
+bool Actor::set_key(StringId k, float v)
 {
     return m_resource->m_fact.set_key(m_values, k, v);
 }
 
-bool Actor::set_key(const StringId& k, const StringId& v)
+bool Actor::set_key(StringId k, StringId v)
 {
     return m_resource->m_fact.set_key(m_values, k, v);
 }
 
-bool Actor::set_key(const StringId& k, const float* v)
+bool Actor::set_key(StringId k, const float* v)
 {
     return m_resource->m_fact.set_key(m_values, k, v);
 }
@@ -325,7 +325,7 @@ ActorId32 ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     return ret;
 }
 
-ActorId32 ActorWorld::create_actor( const StringId& resourceName, const hkQsTransform& t )
+ActorId32 ActorWorld::create_actor( StringId resourceName, const hkQsTransform& t )
 {
     return create_actor(FIND_RESOURCE(ActorResource, resourceName), t);
 }
@@ -378,7 +378,7 @@ void ActorWorld::step( float dt )
 
 void ActorWorld::post_step( float dt )
 {
-    g_physicsWorld.sync_rigidbody_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
+    //g_physicsWorld.sync_rigidbody_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
     g_physicsWorld.sync_proxy_actors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
 }
 

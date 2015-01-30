@@ -67,7 +67,7 @@ struct PhysicsWorld
     int add_raycast_job(const float* from, const float* to, int32_t filterInfo = -1);
     RaycastJob* get_raycast_job(int handle) const;
 
-    int get_layer(const StringId& name) const;
+    int get_layer(StringId name) const;
     void create_plane(float size);
 
     void sync_rigidbody_actors(Actor* actors, uint32_t num);

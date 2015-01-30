@@ -217,6 +217,10 @@ void PhysicsWorld::post_simulation()
     const hkArray<hkpSimulationIsland*>& activeIslands = m_world->getActiveSimulationIslands();
     int num = activeIslands.getSize();
 
+    hkTransformf t;
+    hkQsTransform tq;
+    StringId body_type = PhysicsResource::get_type();
+
     for(int i = 0; i < num; ++i)
     {
         const hkArray<hkpEntity*>& activeEntities = activeIslands[i]->getEntities();
@@ -230,8 +234,12 @@ void PhysicsWorld::post_simulation()
             if(rigidBody->isFixed()) continue;
             hkUlong user_data = rigidBody->getUserData();
             if (!user_data) continue;
-            PhysicsInstance* phy = (PhysicsInstance*)user_data;
-            phy->post_simulation(rigidBody);
+            PhysicsInstance* body = (PhysicsInstance*)user_data;
+            ActorId32 actorId = body->m_actor;
+            body->fetch_transform(0, t);
+            tq.setFromTransformNoScale(t);
+            Actor* actor = g_actorWorld.get_actor(actorId);
+            actor->set_transform_ignore_type(tq, body_type);
         }
     }
 #endif
@@ -433,7 +441,7 @@ void PhysicsWorld::kickin_raycast_jobs()
 }
 
 
-int PhysicsWorld::get_layer(const StringId& name) const
+int PhysicsWorld::get_layer(StringId name) const
 {
     //if not found default filter is 0.
     if(!m_config) return 0;
@@ -450,22 +458,6 @@ int PhysicsWorld::get_layer(const StringId& name) const
 void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
 {
     PROFILE(sync_rigidbody_actors);
-#ifdef HAVOK_COMPILE
-    check_status();
-    hkQsTransform t;
-    hkTransform t1;
-    StringId physics_type = PhysicsResource::get_type();
-    for (uint32_t i=0; i<num; ++i)
-    {
-        Actor& actor = actors[i];
-        PhysicsInstance* physics_object = (PhysicsInstance*)actor.get_first_component_of(physics_type);
-        if(!physics_object->m_dirty) continue;
-        physics_object->fetch_transform(0, t1);
-        t.setFromTransformNoScale(t1);
-        actor.set_transform_ignore_type(t, physics_type);
-        physics_object->m_dirty = false;
-    }
-#endif
 }
 
 void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )

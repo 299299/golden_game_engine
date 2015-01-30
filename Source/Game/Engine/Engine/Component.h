@@ -52,8 +52,8 @@ struct ComponentManager
     void init();
     void shutdown();
 
-    ComponentFactory* find_factory(const StringId& type);
-    void register_factory(const ComponentFactory& fac, const StringId& type);
+    ComponentFactory* find_factory(StringId type);
+    void register_factory(const ComponentFactory& fac, StringId type);
 
     ComponentFactory         m_factories[MAX_COMPONENT_TYPES];
     StringId                 m_types[MAX_COMPONENT_TYPES];

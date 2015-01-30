@@ -86,7 +86,7 @@ DC_Config::DC_Config()
     uint32_t num = BX_COUNTOF(g_resourceTypeNames);
     for (uint32_t i=0; i<num; ++i)
     {
-        m_compilerBuilder[StringId::calculate(g_resourceTypeNames[i])] = g_funtions[i];
+        m_compilerBuilder[stringid_caculate(g_resourceTypeNames[i])] = g_funtions[i];
     }
 }
 
@@ -162,7 +162,7 @@ void DC_Config::post_process()
 BaseCompiler* DC_Config::create_compiler( const std::string& ext )
 {
     //LOGD("create compiler key = %s", ext.c_str());
-    uint32_t key = StringId::calculate(ext.c_str());
+    uint32_t key = stringid_caculate(ext.c_str());
     CompilerBuildMap::iterator iter = m_compilerBuilder.find(key);
     if(iter == m_compilerBuilder.end()) return 0;
     return iter->second();
@@ -170,13 +170,13 @@ BaseCompiler* DC_Config::create_compiler( const std::string& ext )
 
 bool DC_Config::is_type_valid( const std::string& type )
 {
-    uint32_t key = StringId::calculate(type.c_str());
+    uint32_t key = stringid_caculate(type.c_str());
     return m_compilerBuilder.find(key) != m_compilerBuilder.end();
 }
 
 bool DC_Config::is_engine_ext( const std::string& ext )
 {
-    uint32_t key = StringId::calculate(ext.c_str());
+    uint32_t key = stringid_caculate(ext.c_str());
     CompilerBuildMap::iterator iter = m_compilerBuilder.find(key);
     if(iter == m_compilerBuilder.end()) return false;
     return true;

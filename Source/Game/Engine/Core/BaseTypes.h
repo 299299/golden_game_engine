@@ -34,7 +34,7 @@
 
 #define DECLARE_RESOURCE(name)\
         static const char* get_name() {return #name; } \
-        static const StringId& get_type() { static StringId type(get_name()); return type; };
+        static StringId get_type() { static StringId type = stringid_caculate(get_name()); return type; };
 
 #ifndef _RETAIL
 #define RESOURCE_RELOAD
@@ -95,3 +95,14 @@ struct Id
                 break;\
             } \
        }
+
+#define FIND_IN_ARRAY_RET(_array, _len, _find)\
+        for(int i=0; i<_len; ++i)\
+        {\
+            if(_array[i] == _find)\
+            {\
+                return i;\
+            } \
+        }\
+        return -1;
+
