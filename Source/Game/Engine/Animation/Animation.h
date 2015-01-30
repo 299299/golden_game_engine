@@ -22,20 +22,6 @@ inline float frame_to_time(int frame)
     return frame * ANIMATION_TIME_PERFRAME;
 }
 
-
-enum AnimBeatType
-{
-    kAnimBeatLeftFootDown,
-    kAnimBeatRightFootDown,
-};
-
-struct AnimationBeat
-{
-    float                           m_time;
-    uint8_t                         m_type;
-    char                            m_padding[3];
-};
-
 struct AnimationTrigger
 {
     StringId                        m_name;
@@ -53,10 +39,8 @@ ENGINE_NATIVE_ALIGN(struct) Animation
     float get_length() const;
     bool mirrored() const { return m_mirroredFrom;};
 
-    int  find_first_beat(uint32_t type) const;
-    int  find_next_closest_beat(float time, bool bLoop) const;
-    const AnimationBeat& get_beat(int index) const { return m_beats[index]; };
-
+    int  find_first_trigger(StringId name) const;
+    int  find_next_closest_trigger(float time, bool bLoop) const;
     uint32_t collect_triggers(float curTime, float dt, AnimationEvent* events) const;
     void create_mirrored_animation(const Animation* orginalAnim);
 
@@ -67,14 +51,11 @@ ENGINE_NATIVE_ALIGN(struct) Animation
     hkaAnimationBinding*            m_binding;
 
     AnimationTrigger*               m_triggers;
-    AnimationBeat*                  m_beats;
 
     uint32_t                        m_havokDataOffset;
     uint32_t                        m_havokDataSize;
 
-    uint8_t                         m_numTriggers;
-    uint8_t                         m_numBeats;
-    char                            m_padding[2];
+    uint32_t                        m_numTriggers;
 };
 
 //======================================================================

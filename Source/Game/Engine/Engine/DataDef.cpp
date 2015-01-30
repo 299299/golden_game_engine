@@ -64,14 +64,6 @@ const char* g_lightTypeNames[] =
     0
 };
 
-
-const char* g_beatTypeNames[] =
-{
-    "left_foot_down",
-    "right_foot_down",
-    0,
-};
-
 const char* g_matFlagNames[] =
 {
     "skinning",
@@ -314,7 +306,7 @@ EXTERN_COMP_FUNCS_T(physics_proxy);
 
 void register_components()
 {
-    ComponentFactory g_compFactories[] = 
+    ComponentFactory g_compFactories[] =
     {
         DECLARE_COMP_FUNCS_T(model),
         DECLARE_COMP_FUNCS_T(light),
@@ -323,7 +315,7 @@ void register_components()
         DECLARE_COMP_FUNCS_T(physics_proxy),
     };
 
-    StringId g_compNames[] = 
+    StringId g_compNames[] =
     {
         ModelResource::get_type(),
         LightResource::get_type(),

@@ -51,26 +51,6 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
             std::sort(trigger_data.begin(), trigger_data.end(), compare_anim_trigger_less);
     }
 
-    std::vector<AnimTriggerData> beat_data;
-    uint32_t beatNum = 0;
-    if(root.has<jsonxx::Array>("beats"))
-    {
-        jsonxx::Array beatsValue = root.get<jsonxx::Array>("beats");
-        beatNum = beatsValue.size();
-        beat_data.reserve(beatNum);
-        for (uint32_t i = 0; i < beatNum; ++i)
-        {
-            AnimTriggerData data;
-            const jsonxx::Object& o = beatsValue.get<jsonxx::Object>(i);
-            data.m_name = o.get<std::string>("name");
-            data.m_time = json_to_float(o, "time");
-            beat_data.push_back(data);
-        }
-
-        if(!beat_data.empty())
-            std::sort(beat_data.begin(), beat_data.end(), compare_anim_trigger_less);
-    }
-
     std::string havokFile = root.get<std::string>("havok_file");
     FileReader havokReader(havokFile);
     if(havokReader.m_size < 16)
@@ -79,7 +59,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         return false;
     }
 
-    uint32_t havokOffset = sizeof(Animation) + beatNum * sizeof(AnimationBeat) + triggerNum * sizeof(triggerNum);
+    uint32_t havokOffset = sizeof(Animation) + triggerNum * sizeof(triggerNum);
     havokOffset = NEXT_MULTIPLE_OF(16, havokOffset);
     uint32_t memSize = havokOffset + havokReader.m_size;
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
@@ -100,12 +80,10 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
     }
 
-    anim->m_numBeats = beatNum;
     anim->m_numTriggers = triggerNum;
     offset += sizeof(Animation);
     anim->m_triggers = (AnimationTrigger*)offset;
     offset += (triggerNum * sizeof(triggerNum));
-    anim->m_beats = (AnimationBeat*)offset;
     anim->m_havokDataOffset = havokOffset;
     anim->m_havokDataSize = havokReader.m_size;
 
@@ -113,13 +91,6 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     {
         anim->m_triggers[i].m_name = stringid_caculate(trigger_data[i].m_name.c_str());
         anim->m_triggers[i].m_time = trigger_data[i].m_time;
-    }
-
-    extern const char* g_beatTypeNames[];
-    for(uint32_t i=0; i<anim->m_numBeats; ++i)
-    {
-        anim->m_beats[i].m_type = find_enum_index(beat_data[i].m_name.c_str(), g_beatTypeNames);
-        anim->m_beats[i].m_time = beat_data[i].m_time;
     }
 
     return write_file(m_output, mem.m_buf, memSize);

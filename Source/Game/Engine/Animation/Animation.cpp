@@ -52,22 +52,22 @@ void Animation::create_mirrored_animation(const Animation* orginalAnim)
 #endif
 }
 
-int Animation::find_first_beat( uint32_t type ) const
+int Animation::find_first_trigger( StringId name ) const
 {
-    uint32_t num = m_numBeats;
-    AnimationBeat* head = m_beats;
-    for (uint32_t i = 0; i < num; ++i)
+    uint32_t num = m_numTriggers;
+    AnimationTrigger* head = m_triggers;
+    for(int i=0; i<num; ++i)
     {
-        if(head[i].m_type == type)
+        if(head[i].m_name == name)
             return i;
     }
     return -1;
 }
 
-int Animation::find_next_closest_beat(float time, bool bLoop) const
+int Animation::find_next_closest_trigger(float time, bool bLoop) const
 {
-    int num = m_numBeats;
-    AnimationBeat* head = m_beats;
+    int num = m_numTriggers;
+    AnimationTrigger* head = m_triggers;
     if(!num || time >= get_length()) return -1;
     for(int i = 0; i < num; ++i)
     {
@@ -118,7 +118,6 @@ void* load_resource_animation( const char* data, uint32_t size)
 {
     Animation* anim = (Animation*)data;
     anim->m_triggers = (AnimationTrigger*)(data + sizeof(Animation));
-    anim->m_beats = (AnimationBeat*)(data + sizeof(Animation) + sizeof(AnimationTrigger) * anim->m_numTriggers);
     char* p = (char*)data + anim->m_havokDataOffset;
 #ifdef HAVOK_COMPILE
     hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havokDataSize);

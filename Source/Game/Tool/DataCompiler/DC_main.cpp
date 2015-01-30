@@ -4,6 +4,7 @@
 #include "Mesh.h"
 //=================================================================
 #include "AnimationCompiler.h"
+#include "AnimationStateCompiler.h"
 #include "AnimRigCompiler.h"
 #include "ActorCompiler.h"
 #include "IKCompiler.h"
@@ -35,6 +36,7 @@ DC_Config::DC_Config()
     const char* g_resourceTypeNames[] =
     {
         Animation::get_name(),
+        AnimationStateLayer::get_name(),
         AnimRig::get_name(),
         ActorResource::get_name(),
         LookAtResource::get_name(),
@@ -60,6 +62,7 @@ DC_Config::DC_Config()
     __create_compiler__ g_funtions[] =
     {
         _create_compiler<AnimationCompiler>,
+        _create_compiler<AnimationStateCompiler>,
         _create_compiler<AnimRigCompiler>,
         _create_compiler<ActorCompiler>,
         _create_compiler<LookIKCompiler>,
