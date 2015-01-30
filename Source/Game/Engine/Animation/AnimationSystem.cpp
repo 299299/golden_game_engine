@@ -263,8 +263,10 @@ void draw_debug_animation()
         Actor* actor = g_actorWorld.get_actor(rig.m_actor);
         const hkQsTransform& t = actor->m_transform;
         //draw debug pose
-        if(g_engineMode == 0) draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
-        else draw_pose_vdb(*pose, t);
+        if(g_engineMode == 0) 
+            draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
+        else 
+            draw_pose_vdb(*pose, t);
         //draw debug attachment
         uint32_t num_attach = res->m_attachNum;
         const BoneAttachment* attachments = res->m_attachments;
