@@ -81,3 +81,25 @@ enum MotionType
     kMotionIgnoreTranslation,
     kMotionIgnoreAll
 };
+
+enum MotionBlendingType
+{
+    kMotionBlendingDefault,
+    kMotionBlendingIgnoreSrcRotation,
+    kMotionBlendingIgnoreDstRotation,
+    kMotionBlendingIgnoreSrcMotion,
+    kMotionBlendingIgnoreDstMotion,
+};
+
+struct BlendNodeType
+{
+    enum
+    {
+        Undefined = -1,
+        Value,
+        Lerp,
+        Additive
+    };
+};
+
+#define DEFAULT_ANIM_TRANSITION_DURATION    (0.1f)

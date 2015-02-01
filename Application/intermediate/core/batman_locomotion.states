@@ -1,0 +1,66 @@
+{
+    "states":
+    [
+        {
+            "name":"idle_state",
+            "transitions":
+            [
+                {
+                    "name":"move",
+                    "duration":0.1,
+                    "ease":"smooth",
+                    "motion_blending":"default",
+                    "dest":"move_state"
+                }
+            ],
+            "nodes":
+            {
+                "name":"root",
+                "type":"lerp",
+                "left":
+                {
+                    "name": "stand_test_1",
+                    "type": "value",
+                    "animation":"core/stand_idle"
+                },
+                "right":
+                {
+                    "name": "stand_test_2",
+                    "type": "value",
+                    "animation":"core/stand_idle"
+                }
+            }
+        },
+
+        {
+            "name":"move_state",
+            "transitions":
+            [
+                {
+                    "name":"stop",
+                    "duration":0.1,
+                    "ease":"smooth",
+                    "motion_blending":"default",
+                    "dest":"stand_idle"
+                }
+            ],
+            "nodes":
+            {
+                "name":"root",
+                "type":"lerp",
+                "left":
+                {
+                    "name": "move_test_1",
+                    "type": "value",
+                    "animation":"core/stand_idle"
+                },
+                "right":
+                {
+                    "name": "move_test_2",
+                    "type": "value",
+                    "animation":"core/stand_idle"
+                }
+            }
+        }
+    ]
+}

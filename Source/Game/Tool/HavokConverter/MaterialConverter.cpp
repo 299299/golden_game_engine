@@ -133,7 +133,6 @@ void MaterialConverter::process(hkxMaterial* material)
 
 jsonxx::Object MaterialConverter::serializeToJson() const
 {
-    extern const char*  g_defaultTextureNames[];
     extern const char*  g_textureNames[];
 
     jsonxx::Object rootObject;

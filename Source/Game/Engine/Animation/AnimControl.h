@@ -4,6 +4,7 @@
 #include "DataDef.h"
 #ifdef HAVOK_COMPILE
 #include <Animation/Animation/Playback/Control/Default/hkaDefaultAnimationControl.h>
+#include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
 
 struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
@@ -76,6 +77,23 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
     float get_peroid() const {return m_binding->m_animation->m_duration; }
     void set_loop(bool bLooped) { m_maxCycles = bLooped ? -1 : 1; }
     bool is_loop() const { return m_maxCycles < 0;}
+    void set_max_cycles(int maxCycles) { m_maxCycles = m_maxCycles; };
+
+    void add_to_skeleton(hkaAnimatedSkeleton* s)
+    {
+        if(m_enabled)
+            return;
+        s->addAnimationControl(this);
+        m_enabled = true;
+    }
+
+    void remove_from_skeleton(hkaAnimatedSkeleton* s)
+    {
+        if(!m_enabled)
+            return;
+        s->removeAnimationControl(this);
+        m_enabled = false;
+    }
 };
 #else
 struct hk_anim_ctrl{};

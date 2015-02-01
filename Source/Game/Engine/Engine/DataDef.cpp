@@ -43,35 +43,14 @@ const char* g_humanBodyNames[] =
     0
 };
 
-
-const char* g_defaultTextureNames[] =
-{
-    "core/common/default_diffuse",
-    "core/common/default_normal",
-    "core/common/default_specular",
-    "",
-    "",
-    "",
-    0
-};
-
-
 const char* g_lightTypeNames[] =
 {
-    "directional",
-    "spot",
-    "point",
-    0
+    "directional", "spot", "point", 0
 };
 
 const char* g_matFlagNames[] =
 {
-    "skinning",
-    "alpha_mask",
-    "rim_color",
-    "translucency",
-    "opacity",
-    0
+    "skinning", "alpha_mask", "rim_color", "translucency", "opacity", 0
 };
 
 const char* g_textureFlagNames[] =
@@ -113,45 +92,42 @@ uint8_t g_uniformNums[] =
 
 const char* g_actorClassNames[] =
 {
-    "level_geometry",
-    "prop",
-    "character",
-    0
+    "level_geometry", "prop", "character", 0
 };
 
 const char* g_viewGroupNames[] =
 {
-    "shadow",
-    "background",
-    "scene",
-    "debug",
-    "bright",
-    0
+    "shadow", "background", "scene", "debug", "bright", 0
 };
 
 const char* g_modelFlagNames[] =
 {
-    "invisible",
-    "transform_dirty",
-    "no_shadow",
-    0,
+    "invisible", "transform_dirty", "no_shadow", 0,
 };
 
 const char*   physics_type_names[] =
 {
-    "rigidbody",
-    "ragdoll",
-    "trigger",
-    "complex",
-    0
+    "rigidbody", "ragdoll", "trigger", "complex", 0
 };
 
-const char* movement_names[] =
+const char* g_anim_ease_type_names[] =
 {
-    "move_by_velociy",
-    "move_by_animation",
-    "move_by_velociy_and_animation",
-    0
+  "smooth","linear", "fast", 0  
+};
+
+const char* g_anim_motion_blending_type_names[] =
+{
+    "default",
+    "ignore_src_rotation", 
+    "ignore_dst_rotation", 
+    "ignore_src_motion", 
+    "ignore_dst_motion", 
+    0  
+};
+
+const char* g_anim_node_names[] =
+{
+    "value", "lerp", "additive", 0
 };
 
 //======================================================

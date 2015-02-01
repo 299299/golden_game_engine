@@ -729,6 +729,14 @@ int json_to_enum( const jsonxx::Object& o, const char* name, const char** enumna
     return index >= 0 ? index : def;
 }
 
+
+bool json_to_bool( const jsonxx::Object& o,const char* name, bool def/*=false*/ )
+{
+    if(!o.has<bool>(name))
+        return def;
+    return o.get<bool>(name);
+}
+
 //========================================================================
 //  RESOURCE DB
 //
@@ -799,6 +807,7 @@ std::string input_to_output( const std::string& inputName )
     string_replace(ret, INTERMEDIATE_PATH, ROOT_DATA_PATH);
     return ret;
 }
+
 
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
 {
