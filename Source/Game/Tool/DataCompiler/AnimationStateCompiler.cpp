@@ -88,7 +88,7 @@ struct RuntimeAnimationState
         m_state.m_numTransitions = m_transitions.size();
         m_state.m_numNodes = m_nodes.size();
         m_state.m_numAnimations = m_animations.size();
-        uint32_t offset = sizeof(AnimationState);
+        uint32_t offset = 0;
         m_state.m_transitionNameOffset = offset;
         offset += sizeof(StringId) * m_transitions.size();
         m_state.m_transitionOffset = offset;
@@ -163,14 +163,14 @@ struct RuntimeAnimationState
         }
     }
 
-    void fillState(AnimationState& state, uint32_t memSize, char* head) const
+    void fillState(AnimationState& state, uint32_t memOffset, char* head) const
     {
         memcpy(&state, &m_state, sizeof(AnimationState));
-        state.m_transitionNameOffset += memSize;
-        state.m_transitionOffset += memSize;
-        state.m_nodeNameOffset += memSize;
-        state.m_nodesOffset += memSize;
-        state.m_animDataOffset += memSize;
+        state.m_transitionNameOffset += memOffset;
+        state.m_transitionOffset += memOffset;
+        state.m_nodeNameOffset += memOffset;
+        state.m_nodesOffset += memOffset;
+        state.m_animDataOffset += memOffset;
         state.load(head);
         for (uint32_t i=0; i<state.m_numTransitions; ++i)
         {
@@ -215,16 +215,19 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         states[i].readJSON(o);
     }
 
-    uint32_t memSize = 0;
+    uint32_t memSize = sizeof(AnimationStateLayer);
+    memSize += (sizeof(StringId) + sizeof(AnimationState))* numStates;
     for (uint32_t i=0; i<numStates; ++i)
     {
         states[i].findStates(states);
         memSize += states[i].m_memorySize;
     }
 
+    memSize = NEXT_MULTIPLE_OF(16, memSize);
     MemoryBuffer mem(memSize);
     AnimationStateLayer* layer = (AnimationStateLayer*)mem.m_buf;
     layer->m_numStates = numStates;
+    layer->m_memorySize = memSize;
     char* p = mem.m_buf;
     p += sizeof(AnimationStateLayer);
     layer->m_stateNames = (StringId*)p;
@@ -239,9 +242,37 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         layer->m_stateNames[i] = stringid_caculate(rtState.m_name.c_str());
         AnimationState& state = layer->m_states[i];
         rtState.fillState(state, memOffset, mem.m_buf);
-        p += rtState.m_memorySize;
+        memOffset += rtState.m_memorySize;
     }
 
-    ENGINE_ASSERT(p == mem.m_buf + memSize, "AnimationStateCompiler OFFSET ERROR");
+#if 1
+    extern void* load_animation_state_layer(const char*, uint32_t);
+    AnimationStateLayer* l = (AnimationStateLayer*)load_animation_state_layer(mem.m_buf, mem.m_size);
+    ENGINE_ASSERT(l->m_numStates == numStates, "AnimationStateLayer load check");
+    for(uint32_t i=0; i<numStates; ++i)
+    {
+        const AnimationState& state = l->m_states[i];
+        const RuntimeAnimationState& state2 = states[i];
+        ENGINE_ASSERT(l->m_stateNames[i] == stringid_caculate(state2.m_name.c_str()), "AnimationStateLayer load check");
+        ENGINE_ASSERT(state.m_numAnimations == state2.m_animations.size(), "AnimationStateLayer load check");
+        ENGINE_ASSERT(state.m_numNodes == state2.m_nodes.size(), "AnimationStateLayer load check");
+        ENGINE_ASSERT(state.m_numTransitions == state2.m_transitions.size(), "AnimationStateLayer load check");
+        for (uint32_t j=0; j<state.m_numNodes; ++j)
+        {
+            ENGINE_ASSERT(state.m_nodeNames[j] == stringid_caculate(state2.m_nodes[j]->m_name.c_str()), 
+                "AnimationStateLayer load check");
+        }
+        for (uint32_t j=0; j<state.m_numTransitions; ++j)
+        {
+            ENGINE_ASSERT(state.m_transitionNames[j] == stringid_caculate(state2.m_transitions[j].m_name.c_str()), 
+                "AnimationStateLayer load check");
+        }
+        for (uint32_t j=0; j<state.m_numAnimations; ++j)
+        {
+            ENGINE_ASSERT(state.m_animations[j].m_name == state2.m_animations[j].m_name, 
+                "AnimationStateLayer load check");
+        }
+    }
+#endif
     return write_file(m_output, mem.m_buf, memSize);
 }

@@ -165,14 +165,20 @@ void Engine::subsystem_init()
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init(MAX_PHYSICS, MAX_PROXY);
-    g_animMgr.init(MAX_ANIM_RIG, MAX_ANIM_EVENTS);
 
-    ActorConfig cfg;
-    memset(&cfg, 0x00, sizeof(cfg));
-    cfg.max_characters = MAX_CHARACTER;
-    cfg.max_geometries = MAX_LEVEL_GEOMETRY;
-    cfg.max_props = MAX_PROP;
-    g_actorWorld.init(cfg);
+    AnimationConfig cfg1;
+    memset(&cfg1, 0x00, sizeof(cfg1));
+    cfg1.max_rigs = MAX_ANIM_RIG;
+    cfg1.max_anim_events = MAX_ANIM_EVENTS;
+    cfg1.max_state_layers = MAX_ANIM_FSM;
+    g_animMgr.init(cfg1);
+
+    ActorConfig cfg2;
+    memset(&cfg2, 0x00, sizeof(cfg2));
+    cfg2.max_characters = MAX_CHARACTER;
+    cfg2.max_geometries = MAX_LEVEL_GEOMETRY;
+    cfg2.max_props = MAX_PROP;
+    g_actorWorld.init(cfg2);
 }
 
 void Engine::core_shutdown()

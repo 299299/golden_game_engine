@@ -148,6 +148,7 @@ const char* g_anim_node_names[] =
 #include "ShadingEnviroment.h"
 #include "Level.h"
 #include "Actor.h"
+#include "AnimationState.h"
 //-----------------------------------------------------------------
 extern void* load_resource_texture(const char*, uint32_t);
 extern void  bringout_resource_texture(void*);
@@ -208,6 +209,10 @@ extern void  lookup_resource_level(void*);
 extern void* load_resource_actor(const char*, uint32_t);
 extern void  lookup_resource_actor(void*);
 //-----------------------------------------------------------------
+//-----------------------------------------------------------------
+extern void* load_animation_state_layer(const char*, uint32_t);
+extern void  lookup_animation_state_layer(void*);
+//-----------------------------------------------------------------
 
 ResourceFactory g_resourceFactories[] =
 {
@@ -232,6 +237,7 @@ ResourceFactory g_resourceFactories[] =
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::get_name()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::get_name()},
     {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::get_name()},
+    {load_animation_state_layer, 0, lookup_animation_state_layer, 0, 0, AnimationStateLayer::get_name()},
 };
 void regster_resource_factories()
 {
@@ -268,6 +274,7 @@ EXTERN_COMP_FUNCS_T(light);
 EXTERN_COMP_FUNCS_(anim_rig);
 EXTERN_COMP_FUNCS_T(physics_object);
 EXTERN_COMP_FUNCS_T(physics_proxy);
+EXTERN_COMP_FUNCS_(anim_statelayer);
 
 #define DECLARE_COMP_FUNCS_(comp_name, t_func)\
         {create_##comp_name, destroy_##comp_name, get_##comp_name, num_all_##comp_name, get_all_##comp_name, t_func, }
@@ -289,6 +296,7 @@ void register_components()
         DECLARE_COMP_FUNCS(anim_rig),
         DECLARE_COMP_FUNCS_T(physics_object),
         DECLARE_COMP_FUNCS_T(physics_proxy),
+        DECLARE_COMP_FUNCS(anim_statelayer),
     };
 
     StringId g_compNames[] =

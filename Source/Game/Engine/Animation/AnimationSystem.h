@@ -15,9 +15,16 @@ struct AnimRigInstance;
 struct Actor;
 struct AnimationEvent;
 
+struct AnimationConfig
+{
+    int    max_rigs;
+    int    max_state_layers;
+    int    max_anim_events;
+};
+
 struct AnimationSystem
 {
-    void    init(int max_rigs, int max_anim_events);
+    void    init(const AnimationConfig& cfg);
     void    shutdown();
 
     void    frame_start();

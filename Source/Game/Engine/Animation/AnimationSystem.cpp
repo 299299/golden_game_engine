@@ -16,6 +16,7 @@
 #include "AnimRig.h"
 #include "ProxyInstance.h"
 #include "Actor.h"
+#include "AnimationState.h"
 #ifdef HAVOK_COMPILE
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Container/LocalArray/hkLocalArray.h>
@@ -36,6 +37,7 @@
 
 AnimationSystem g_animMgr;
 static IdArray<AnimRigInstance>                    m_rigs;
+static IdArray<AnimationStateLayer>                m_stateLayers;
 static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
 
@@ -50,11 +52,12 @@ static void set_status(int newStatus)
     m_status = newStatus;
 }
 
-void AnimationSystem::init(int max_rigs, int max_anim_events)
+void AnimationSystem::init(const AnimationConfig& cfg)
 {
     m_status = 0;
-    m_events = COMMON_ALLOC(AnimationEvent, max_anim_events);
-    m_rigs.init(max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_events = COMMON_ALLOC(AnimationEvent, cfg.max_anim_events);
+    m_rigs.init(cfg.max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_stateLayers.init(cfg.max_state_layers, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif
@@ -62,6 +65,11 @@ void AnimationSystem::init(int max_rigs, int max_anim_events)
 
 void AnimationSystem::shutdown()
 {
+    for (uint32_t i=0; i<m_stateLayers.size(); ++i)
+    {
+        m_stateLayers[i].destroy();
+    }
+    m_stateLayers.destroy();
     m_rigs.destroy();
     COMMON_DEALLOC(m_events);
 }
@@ -190,6 +198,12 @@ void AnimationSystem::update_animations(float dt)
     {
         rigs[i].update(dt);
     }
+    num = m_stateLayers.size();
+    AnimationStateLayer* l = m_stateLayers.begin();
+    for(uint32_t i=0; i<num;++i)
+    {
+        l[i].update(dt);
+    }
 }
 
 void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
@@ -241,6 +255,39 @@ uint32_t num_all_anim_rig()
 }
 
 void* get_all_anim_rig()
+{
+    return m_rigs.begin();
+}
+
+Id create_anim_statelayer( const void* resource, ActorId32 id)
+{
+    check_status();
+    AnimationStateLayer* inst;
+    Id animId = m_stateLayers.create(&inst);
+    inst->init(resource, id);
+    return animId;
+}
+
+void destroy_anim_statelayer( Id id )
+{
+    check_status();
+    if(!m_stateLayers.has(id)) return;
+    m_stateLayers.get(id)->destroy();
+    m_stateLayers.destroy(id);
+}
+
+void* get_anim_statelayer( Id id )
+{
+    if(!m_stateLayers.has(id)) return 0;
+    return m_stateLayers.get(id);
+}
+
+uint32_t num_all_anim_statelayer()
+{
+    return m_stateLayers.size();
+}
+
+void* get_all_anim_statelayer()
 {
     return m_rigs.begin();
 }

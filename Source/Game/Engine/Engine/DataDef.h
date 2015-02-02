@@ -74,14 +74,6 @@ enum EaseCurveType
     kEaseCurveFast
 };
 
-enum MotionType
-{
-    kMotionDefault,
-    kMotionIgnoreRotation,
-    kMotionIgnoreTranslation,
-    kMotionIgnoreAll
-};
-
 enum MotionBlendingType
 {
     kMotionBlendingDefault,

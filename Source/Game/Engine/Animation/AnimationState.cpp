@@ -4,6 +4,14 @@
 #include "AnimRig.h"
 #include "Resource.h"
 
+enum LayerState
+{
+    kLayerDefault,
+    kLayerCrossFading,
+    kLayerWaitingAlign,
+    kLayerStateMax
+};
+
 int AnimationState::find_transition(StringId name)
 {
     StringId* _names = m_transitionNames;
@@ -197,16 +205,62 @@ void AnimationStateLayer::init( const void* resource, ActorId32 id )
 
     m_easeInCtrl = new hk_anim_ctrl(NULL);
     m_easeOutCtrl = new hk_anim_ctrl(NULL);
+    m_state = kLayerDefault;
 }
 
 void AnimationStateLayer::update( float dt )
 {
-    uint32_t _num = m_numStates;
-    AnimationState* _states = m_states;
-    for (uint32_t i=0; i<_num; ++i)
+    int _state = m_state;
+    switch(_state)
     {
-        //_states[i].update(dt);
+    case kLayerDefault:
+        updateDefault(dt);
+        break;
+    case kLayerCrossFading:
+        updateCrossFading(dt);
+        break;
+    case kLayerWaitingAlign:
+        updateWaitingForAlign(dt);
+        break;
+    default:
+        break;
     }
+}
+
+void AnimationStateLayer::updateDefault( float dt )
+{
+    if (m_curState)
+        m_curState->update(m_weight, dt);
+}
+
+void AnimationStateLayer::updateCrossFading( float dt )
+{
+    hk_anim_ctrl* c1 = m_easeInCtrl;
+    hk_anim_ctrl* c2 = m_easeOutCtrl;
+    c1->update(dt);
+    c2->update(dt);
+
+    float _w = m_weight;
+    float _w1 = c1->getWeight() * _w;
+    float _w2 = c2->getWeight() * _w;
+    m_curState->update(_w1, dt);
+    m_lastState->update(_w2, dt);
+
+    hk_anim_ctrl::EaseStatus status1 = c1->getEaseStatus();
+    hk_anim_ctrl::EaseStatus status2 = c2->getEaseStatus();
+    if(status1 == hk_anim_ctrl::EASED_IN &&
+       status2 == hk_anim_ctrl::EASED_OUT)
+    {
+        // crossfading finished!
+        m_state = kLayerDefault;
+        m_curTransition = NULL;
+        m_lastState = NULL;
+    }
+}
+
+void AnimationStateLayer::updateWaitingForAlign(float dt)
+{
+    // FIXME:TODO
 }
 
 void AnimationStateLayer::destroy()
@@ -221,43 +275,107 @@ void AnimationStateLayer::destroy()
     SAFE_REMOVEREF(m_easeOutCtrl);
 }
 
-void AnimationStateLayer::changeState(AnimationTranstion* t)
+void AnimationStateLayer::changeState(hkaAnimatedSkeleton* s, AnimationTranstion* t)
 {
     int _index = t->m_dstStateIndex;
     AnimationState* newState = _index >= 0 ? m_states + _index : 0;
     if(m_curState == newState)
         return;
-    hkaAnimatedSkeleton* s = m_skeleton;
     AnimationState* oldState = m_curState;
     if(oldState)
     {
         oldState->on_exit(newState, t);
     }
-    m_curState = newState;
     if(newState)
     {
         newState->on_enter(s, oldState, t);
     }
+    m_lastState = oldState;
+    m_curState = newState;
+    m_curTransition = t;
+    m_state = kLayerCrossFading;
+    float _time = t->m_duration;
+    int _easeType = t->m_easeType;
+    m_easeInCtrl->ease_in(_time, _easeType);
+    m_easeOutCtrl->ease_out(_time, _easeType);
 }
 
-void AnimationStateLayer::changeState( StringId name )
+void AnimationStateLayer::changeState( hkaAnimatedSkeleton* s, StringId name )
 {
     int _index = find_state(name);
     if(_index < 0)
         return;
-    static AnimationTranstion t = { 0.1f,  (uint16_t)-1, kEaseCurveSmooth, kMotionDefault};
+    static AnimationTranstion t = { 0.1f,  (uint16_t)-1, kEaseCurveSmooth, kMotionBlendingDefault};
     t.m_dstStateIndex = _index;
-    changeState(&t);
+    changeState(s, &t);
 }
 
-void AnimationStateLayer::fireEvent( StringId name )
+void AnimationStateLayer::fireEvent( hkaAnimatedSkeleton* s, StringId name )
 {
     if(!m_curState)
         return;
     int _index = m_curState->find_transition(name);
     if(_index < 0)
         return;
-    changeState(m_curState->m_transitions + _index);
+    changeState(s, m_curState->m_transitions + _index);
+}
+
+void AnimationStateLayer::get_root_motion( hkaAnimatedSkeleton* s, float deltaTime, hkQsTransformf& deltaMotionOut )
+{
+    int _state = m_state;
+    switch(_state)
+    {
+    case kLayerDefault:
+        {
+            s->getDeltaReferenceFrame(deltaTime, deltaMotionOut);
+        }
+        break;
+    case kLayerCrossFading:
+        {
+            get_root_motion_crossfading(s, deltaTime, deltaMotionOut);
+        }
+        break;
+    case kLayerWaitingAlign:
+        break;
+    default:
+        break;
+    }
+}
+
+void AnimationStateLayer::get_root_motion_crossfading(hkaAnimatedSkeleton* s,  float deltaTime, hkQsTransformf& deltaMotionOut )
+{
+    int _state = (int)m_curTransition->m_motionBlendingType;
+    switch (_state)
+    {
+    case kMotionBlendingDefault:
+    default:
+        s->getDeltaReferenceFrame(deltaTime, deltaMotionOut);
+        break;
+    case kMotionBlendingIgnoreSrcMotion:
+        m_curState->get_root_motion(deltaTime, deltaMotionOut);
+        break;
+    case kMotionBlendingIgnoreDstMotion:
+        m_lastState->get_root_motion(deltaTime, deltaMotionOut);
+        break;
+    case kMotionBlendingIgnoreSrcRotation:
+        {
+            hkQsTransformf motionSrc, motionDst;
+            m_curState->get_root_motion(deltaTime, motionDst);
+            m_lastState->get_root_motion(deltaTime, motionSrc);
+            motionSrc.m_rotation.setIdentity();
+            deltaMotionOut.setMul(motionSrc, motionDst);
+        }
+        break;
+    case kMotionBlendingIgnoreDstRotation:
+        {
+            hkQsTransformf motionSrc, motionDst;
+            m_curState->get_root_motion(deltaTime, motionDst);
+            m_lastState->get_root_motion(deltaTime, motionSrc);
+            motionDst.m_rotation.setIdentity();
+            deltaMotionOut.setMul(motionSrc, motionDst);
+        }
+        break;
+    }
 }
 
 void* load_animation_state_layer(const char* data, uint32_t size)
@@ -274,12 +392,10 @@ void* load_animation_state_layer(const char* data, uint32_t size)
     {
         _layer->m_states[i].load((char*)data);
     }
-    ENGINE_ASSERT((_p + sizeof(AnimationState) * _layer->m_numStates) == (data + _layer->m_memorySize),
-        "Animation Layer Load Memory Offset Error.");
     return _layer;
 }
 
-void lookup_animation_state_layer(const void* resource)
+void lookup_animation_state_layer(void* resource)
 {
     AnimationStateLayer* _layer = (AnimationStateLayer*)resource;
     _layer->lookup();
