@@ -6,6 +6,7 @@ struct Animation;
 struct hk_anim_ctrl;
 struct AnimRig;
 class  hkaAnimatedSkeleton;
+struct hkQsTransformf;
 
 struct AnimationTranstion
 {
@@ -67,9 +68,9 @@ struct AnimationState
     void on_enter(hkaAnimatedSkeleton* s, AnimationState* _lastState, AnimationTranstion* t);
     void on_exit(AnimationState* _nextState, AnimationTranstion* t);
     void update(float factor, float dt);
-
-    void addToSkeleton(hkaAnimatedSkeleton* s);
-    void removeFromSkeleton(hkaAnimatedSkeleton* s);
+    void add_to_skeleton(hkaAnimatedSkeleton* s);
+    void remove_from_skeleton(hkaAnimatedSkeleton* s);
+    void get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut);
 
 private:
     void update_node_recursive(AnimationNode* _node, float weight);
@@ -105,6 +106,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
 
     void fireEvent(StringId name);
     void changeState(StringId name);
+    void get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut);
 
 private:
     void changeState(AnimationTranstion* t);

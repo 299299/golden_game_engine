@@ -126,7 +126,7 @@ void AnimationState::load( char* _p )
     m_animations = (AnimationData*)(_p + m_animDataOffset);
 }
 
-void AnimationState::addToSkeleton( hkaAnimatedSkeleton* s )
+void AnimationState::add_to_skeleton( hkaAnimatedSkeleton* s )
 {
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
@@ -138,7 +138,7 @@ void AnimationState::addToSkeleton( hkaAnimatedSkeleton* s )
     }
 }
 
-void AnimationState::removeFromSkeleton( hkaAnimatedSkeleton* s )
+void AnimationState::remove_from_skeleton( hkaAnimatedSkeleton* s )
 {
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
@@ -150,6 +150,19 @@ void AnimationState::removeFromSkeleton( hkaAnimatedSkeleton* s )
     }
 }
 
+void AnimationState::get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut)
+{
+    uint32_t _num = m_numAnimations;
+    AnimationData* _data = m_animations;
+    for(uint32_t i=0; i<_num; ++i)
+    {
+        AnimationData& animData = _data[i];
+        hk_anim_ctrl* ac = animData.m_control;
+        hkQsTransform t;
+        ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
+        deltaMotionOut.setMulEq(t);
+    }
+}
 
 int AnimationStateLayer::find_state(StringId name)
 {
@@ -210,7 +223,8 @@ void AnimationStateLayer::destroy()
 
 void AnimationStateLayer::changeState(AnimationTranstion* t)
 {
-    AnimationState* newState = t->m_dstStateIndex >= 0 ? m_states + t->m_dstStateIndex : 0;
+    int _index = t->m_dstStateIndex;
+    AnimationState* newState = _index >= 0 ? m_states + _index : 0;
     if(m_curState == newState)
         return;
     hkaAnimatedSkeleton* s = m_skeleton;
@@ -231,7 +245,7 @@ void AnimationStateLayer::changeState( StringId name )
     int _index = find_state(name);
     if(_index < 0)
         return;
-    static AnimationTranstion t = { 0.1f,  -1, kEaseCurveSmooth, kMotionDefault};
+    static AnimationTranstion t = { 0.1f,  (uint16_t)-1, kEaseCurveSmooth, kMotionDefault};
     t.m_dstStateIndex = _index;
     changeState(&t);
 }

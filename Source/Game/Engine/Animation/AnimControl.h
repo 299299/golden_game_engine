@@ -10,39 +10,16 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
     Animation*              m_animation;
     StringId                m_name;
-
-    uint8_t                 m_motionType;
     bool                    m_enabled;
-    char                    m_padding[2];
+    char                    m_padding[3];
 
     HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_ANIM_CONTROL);
     hk_anim_ctrl(Animation* anim)
         :hkaDefaultAnimationControl(anim ? anim->m_binding : 0, false)
         ,m_animation(anim)
         ,m_enabled(false)
-        ,m_motionType(kMotionDefault)
     {
 
-    }
-
-    virtual void getExtractedMotionDeltaReferenceFrame( hkReal deltaTime, hkQsTransform& deltaMotionOut ) const HK_OVERRIDE
-    {
-        switch(m_motionType)
-        {
-        case kMotionDefault:
-            __super::getExtractedMotionDeltaReferenceFrame(deltaTime, deltaMotionOut);
-            break;
-        case kMotionIgnoreRotation:
-            __super::getExtractedMotionDeltaReferenceFrame(deltaTime, deltaMotionOut);
-            deltaMotionOut.m_rotation.setIdentity();
-            break;
-        case kMotionIgnoreTranslation:
-            __super::getExtractedMotionDeltaReferenceFrame(deltaTime, deltaMotionOut);
-            deltaMotionOut.m_translation.setZero4();
-            break;
-        case kMotionIgnoreAll:
-        default: return;
-        }
     }
 
     void ease_in(float time, int type)
