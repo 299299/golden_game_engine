@@ -60,13 +60,13 @@ struct AnimationState
     // COLD FUNCTION
     void lookup();
     void load(char* _p);
-    
+
     // HOT FUNCTION
     void init();
     void destroy();
     void on_enter(hkaAnimatedSkeleton* s, AnimationState* _lastState, AnimationTranstion* t);
     void on_exit(AnimationState* _nextState, AnimationTranstion* t);
-    void update(float dt);
+    void update(float factor, float dt);
 
     void addToSkeleton(hkaAnimatedSkeleton* s);
     void removeFromSkeleton(hkaAnimatedSkeleton* s);
@@ -79,7 +79,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
 {
     DECLARE_RESOURCE(states);
 
-    /* 
+    /*
         COLD DATA
     */
     uint32_t                    m_memorySize;
@@ -87,7 +87,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
     StringId*                   m_stateNames;
     AnimationState*             m_states;
 
-    /* 
+    /*
         HOT DATA
     */
     float                       m_weight;

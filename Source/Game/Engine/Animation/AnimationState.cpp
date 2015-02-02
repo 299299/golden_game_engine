@@ -39,10 +39,11 @@ void AnimationState::on_exit( AnimationState* _nextState, AnimationTranstion* t 
 
 }
 
-void AnimationState::update( float dt )
+void AnimationState::update( float factor, float dt )
 {
     if(!m_dirty)
         return;
+    update_node_recursive(m_nodes, factor);
 }
 
 void AnimationState::lookup()
@@ -92,7 +93,7 @@ void AnimationState::update_node_recursive( AnimationNode* _node, float weight )
         {
             AnimationData& animData = m_animations[_data0];
             hk_anim_ctrl* ac = animData.m_control;
-            ac->setMasterWeight(weight);
+            ac->set_weight(weight);
         }
         break;
     case BlendNodeType::Lerp:
@@ -191,7 +192,7 @@ void AnimationStateLayer::update( float dt )
     AnimationState* _states = m_states;
     for (uint32_t i=0; i<_num; ++i)
     {
-        _states[i].update(dt);
+        //_states[i].update(dt);
     }
 }
 
@@ -240,7 +241,7 @@ void AnimationStateLayer::fireEvent( StringId name )
     if(!m_curState)
         return;
     int _index = m_curState->find_transition(name);
-    if(_index < 0) 
+    if(_index < 0)
         return;
     changeState(m_curState->m_transitions + _index);
 }
@@ -259,7 +260,7 @@ void* load_animation_state_layer(const char* data, uint32_t size)
     {
         _layer->m_states[i].load((char*)data);
     }
-    ENGINE_ASSERT((_p + sizeof(AnimationState) * _layer->m_numStates) == (data + _layer->m_memorySize), 
+    ENGINE_ASSERT((_p + sizeof(AnimationState) * _layer->m_numStates) == (data + _layer->m_memorySize),
         "Animation Layer Load Memory Offset Error.");
     return _layer;
 }

@@ -77,7 +77,6 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
     float get_peroid() const {return m_binding->m_animation->m_duration; }
     void set_loop(bool bLooped) { m_maxCycles = bLooped ? -1 : 1; }
     bool is_loop() const { return m_maxCycles < 0;}
-    void set_max_cycles(int maxCycles) { m_maxCycles = m_maxCycles; };
 
     void add_to_skeleton(hkaAnimatedSkeleton* s)
     {
@@ -96,5 +95,25 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
     }
 };
 #else
-struct hk_anim_ctrl{};
+struct hkaAnimatedSkeleton;
+struct hk_anim_ctrl
+{
+    Animation* m_animation;
+    hk_anim_ctrl(Animation* anim):m_animation(anim) {};
+    void removeReference() {};
+    void getExtractedMotionDeltaReferenceFrame( hkReal deltaTime, hkQsTransform& deltaMotionOut ) {}
+    void ease_in(float time, int type) {}
+    void ease_out(float time, int type) {}
+    void set_weight(float fWeight){}
+    float get_weight() const { return 1.0f; }
+    float get_peroid() const {return 2.0f; }
+    void set_loop(bool bLooped) {}
+    bool is_loop() const { return true;}
+    void add_to_skeleton(hkaAnimatedSkeleton* s) {}
+    void remove_from_skeleton(hkaAnimatedSkeleton* s) {}
+    void setLocalTime(float time) {}
+    void setPlaybackSpeed(float speed) {}
+    void setUnderflowCount(int c) {}
+    void setOverflowCount(int c) {}
+};
 #endif
