@@ -2,6 +2,13 @@
 #include "StringId.h"
 #include "GameConfig.h"
 
+struct ComponentData
+{
+    StringId        m_componentType;
+    uint32_t        m_dataSize;
+    char*           m_data;
+};
+
 typedef Id      (*func_create_component)(const void*, ActorId32);
 typedef void    (*func_destroy_component)(Id);
 typedef void*   (*func_get_component)(Id);
@@ -53,6 +60,8 @@ struct ComponentManager
     void shutdown();
 
     ComponentFactory* find_factory(StringId type);
+    int find_factory_index(StringId type);
+    ComponentFactory* get_factory(int index);
     void register_factory(const ComponentFactory& fac, StringId type);
 
     ComponentFactory         m_factories[MAX_COMPONENT_TYPES];

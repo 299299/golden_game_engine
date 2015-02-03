@@ -98,6 +98,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
     hk_anim_ctrl*               m_easeInCtrl;
     hk_anim_ctrl*               m_easeOutCtrl;
     int                         m_state;
+    hkaAnimatedSkeleton*        m_skeleton;
 
     int  find_state(StringId name);
     void lookup();
@@ -106,14 +107,14 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
     void update(float dt);
     void destroy();
 
-    void fireEvent(hkaAnimatedSkeleton* s, StringId name);
-    void changeState(hkaAnimatedSkeleton* s, StringId name);
-    void get_root_motion(hkaAnimatedSkeleton* s, float deltaTime, hkQsTransformf& deltaMotionOut);
+    void fireEvent(StringId name);
+    void changeState(StringId name);
+    void get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut);
 
 private:
-    void changeState(hkaAnimatedSkeleton* s, AnimationTranstion* t);
+    void changeState(AnimationTranstion* t);
     void updateDefault(float dt);
     void updateCrossFading(float dt);
     void updateWaitingForAlign(float dt);
-    void get_root_motion_crossfading(hkaAnimatedSkeleton* s, float deltaTime, hkQsTransformf& deltaMotionOut);
+    void get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
 };

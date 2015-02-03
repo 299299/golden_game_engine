@@ -9,24 +9,28 @@ ENGINE_NATIVE_ALIGN(struct) LightResource
 
     float                   m_color[3];
     float                   m_dir[3];
-    float                   m_fallOff;
-    float                   m_intensity;
-    float                   m_coneAngle;
-    float                   m_attenScale;
+    
 
     bool                    m_hasShadow;
     uint8_t                 m_type;
     char                    m_padding[2];
 };
 
-ENGINE_NATIVE_ALIGN(struct) LightInstance
+struct Light
 {
     float                   m_transform[16];
     float                   m_color[3];
     float                   m_dir[3];
-    const LightResource*    m_resource;
+
+    float                   m_fallOff;
+    float                   m_intensity;
+    float                   m_coneAngle;
+    float                   m_attenScale;
+
     uint8_t                 m_flag;
-    char                    m_padding[3];
+    bool                    m_hasShadow;
+    uint8_t                 m_type;
+    char                    m_padding[1];
 };
 
 

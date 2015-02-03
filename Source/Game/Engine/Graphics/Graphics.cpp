@@ -135,7 +135,10 @@ void createUniforms()
     g_uniformPerObject.m_uv = createEngineUniform("u_uvOffsetAndRepeat", bgfx::UniformType::Uniform4fv);
     for(int i=0; i<TEX_MAX_SLOT; ++i)
     {
-        g_uniformPerObject.m_tex[i] = createEngineUniform(g_textureNames[i], bgfx::UniformType::Uniform1iv);
+        const char* _name = g_textureNames[i];
+        if(!_name)
+            break;
+        g_uniformPerObject.m_tex[i] = createEngineUniform(_name, bgfx::UniformType::Uniform1iv);
     }
 
     g_uniformPerObject.m_diffuse = createEngineUniform("u_diffuseColor", bgfx::UniformType::Uniform4fv);

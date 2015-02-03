@@ -306,6 +306,7 @@ void register_components()
         AnimRig::get_type(),
         PhysicsResource::get_type(),
         ProxyResource::get_type(),
+        AnimationStateLayer::get_type(),
     };
 
     ENGINE_ASSERT(BX_COUNTOF(g_compFactories) == BX_COUNTOF(g_compNames), "COMPONENT REGISTER ERR");

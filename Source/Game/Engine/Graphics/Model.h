@@ -8,10 +8,8 @@ struct Material;
 struct Mesh;
 struct Frustum;
 
-ENGINE_NATIVE_ALIGN(struct) ModelResource
+struct ModelData
 {
-    DECLARE_RESOURCE(model);
-
     Material*                      m_materials[MAX_MATERIAL_NUM];
     StringId                       m_materialNames[MAX_MATERIAL_NUM];
     Mesh*                          m_mesh;
@@ -23,7 +21,7 @@ ENGINE_NATIVE_ALIGN(struct) ModelResource
     char                           m_padding[1];
 };
 
-struct ModelInstance
+struct Model
 {
     float                           m_transform[16];
     Aabb                            m_aabb;
