@@ -225,8 +225,6 @@ ResourceFactory g_resourceFactories[] =
     {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, Animation::get_name()},
     {load_resource_anim_rig, destroy_resource_anim_rig, lookup_resource_anim_rig, 0, 0, AnimRig::get_name()},
     {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, Material::get_name()},
-    {0, 0, 0, 0, 0, LightResource::get_name()},
-    {0, 0, lookup_resource_model, 0, 0, ModelResource::get_name()},
     {0, 0, 0, 0, 0, PhysicsConfig::get_name()},
     {load_resource_physics, destroy_resource_physics, 0, 0, 0, PhysicsResource::get_name()},
     {load_resource_proxy, destroy_resource_proxy, 0, 0, 0, ProxyResource::get_name()},

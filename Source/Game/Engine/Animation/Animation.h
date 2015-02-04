@@ -12,16 +12,6 @@ struct AnimationEvent;
 #define ANIMATION_FRAME_FPS          (30.0f)
 #define ANIMATION_TIME_PERFRAME      (1.0f/30.0f)
 
-inline int tim_to_frame(float fTime)
-{
-    return (int)(fTime * ANIMATION_FRAME_FPS);
-}
-
-inline float frame_to_time(int frame)
-{
-    return frame * ANIMATION_TIME_PERFRAME;
-}
-
 struct AnimationTrigger
 {
     StringId                        m_name;
@@ -30,8 +20,6 @@ struct AnimationTrigger
 
 ENGINE_NATIVE_ALIGN(struct) Animation
 {
-    DECLARE_RESOURCE(animation);
-
     void lookup();
     void destroy();
 

@@ -38,7 +38,7 @@
 AnimationSystem g_animMgr;
 static IdArray<AnimRigInstance>                    m_rigs;
 static IdArray<AnimationStateLayer>                m_stateLayers;
-static hkaSampleBlendJob                           m_animJobs[MAX_ANIM_RIG];
+static hkaSampleBlendJob*                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
 
 #define MT_ANIMATION
@@ -58,6 +58,7 @@ void AnimationSystem::init(const AnimationConfig& cfg)
     m_events = COMMON_ALLOC(AnimationEvent, cfg.max_anim_events);
     m_rigs.init(cfg.max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     m_stateLayers.init(cfg.max_state_layers, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
+    m_jobs = new hkaSampleBlendJob[cfg.max_rigs];
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif
@@ -72,6 +73,7 @@ void AnimationSystem::shutdown()
     m_stateLayers.destroy();
     m_rigs.destroy();
     COMMON_DEALLOC(m_events);
+    delete []m_jobs;
 }
 
 void AnimationSystem::frame_start()
@@ -147,7 +149,7 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
         if(!bVisibleThisFrame) continue;
 
         hkaPose* pose = rig->m_pose;
-        const Mesh* mesh = model->m_resource->m_mesh;
+        const Mesh* mesh = model->m_mesh;
         if(!mesh->m_numJoints) continue;
 
         const hkQsTransform& t = actor.m_transform;

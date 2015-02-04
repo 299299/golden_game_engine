@@ -32,10 +32,6 @@
 
 #define ENGINE_NATIVE_ALIGN BX_ALIGN_DECL_16
 
-#define DECLARE_RESOURCE(name)\
-        static const char* get_name() {return #name; } \
-        static StringId get_type() { static StringId type = stringid_caculate(get_name()); return type; };
-
 #ifndef _RETAIL
 #define RESOURCE_RELOAD
 #endif

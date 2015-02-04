@@ -78,8 +78,6 @@ private:
 
 ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
 {
-    DECLARE_RESOURCE(states);
-
     /*
         COLD DATA
     */
@@ -118,3 +116,7 @@ private:
     void updateWaitingForAlign(float dt);
     void get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
 };
+
+
+extern const char* ANIMATION_STATES_NAME;
+extern StringId    ANIMATION_STATES_TYPE;

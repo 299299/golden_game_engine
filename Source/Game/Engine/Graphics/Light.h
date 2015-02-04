@@ -3,6 +3,8 @@
 #include "MathDefs.h"
 #include "StringId.h"
 
+struct ShadingEnviroment;
+
 struct Light
 {
     float                   m_transform[16];
@@ -20,8 +22,6 @@ struct Light
     char                    m_padding[1];
 };
 
-
-struct ShadingEnviroment;
 struct LightWorld
 {
     void                    init(int max_light);

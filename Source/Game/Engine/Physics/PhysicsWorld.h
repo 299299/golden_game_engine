@@ -36,8 +36,6 @@ struct CollisionFilter
 
 ENGINE_NATIVE_ALIGN(struct) PhysicsConfig
 {
-    DECLARE_RESOURCE(physics_config);
-
     CollisionFilter             m_filters[32];
     uint32_t                    m_numFilterLayers;
     float                       m_worldSize;

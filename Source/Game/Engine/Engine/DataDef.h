@@ -1,5 +1,6 @@
 #pragma once
 #include "ShaderInc.h"
+#include "BaseTypes.h"
 
 enum ActorClass
 {
@@ -65,8 +66,6 @@ enum AppErrorCode
     KErrorLoadHavok = -3,
 };
 
-
-
 enum EaseCurveType
 {
     kEaseCurveSmooth,
@@ -95,3 +94,29 @@ struct BlendNodeType
 };
 
 #define DEFAULT_ANIM_TRANSITION_DURATION    (0.1f)
+
+namespace EngineTypes
+{
+    extern StringId     ANIMATION;
+    extern StringId     ANIMATION_STATES;
+    extern StringId     MESH;
+    extern StringId     MATERIAL;
+    extern StringId     TEXTURE;
+    extern StringId     TEXTURE_2D;
+    extern StringId     TEXTURE_3D;
+    extern StringId     ANIMATION_RIG;
+    extern StringId     SHADER;
+    extern StringId     PROGRAM;
+    extern StringId     SHADING_ENV;
+    extern StringId     PHYSICS_CONFIG;
+    extern StringId     MODEL;
+    extern StringId     LIGHT;
+    extern StringId     ACTOR;
+    extern StringId     LEVEL;
+};
+
+
+namespace EngineNames
+{
+    extern const char* ANIMATION;
+};
