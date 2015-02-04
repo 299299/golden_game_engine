@@ -246,6 +246,7 @@ void AnimationStateLayer::updateCrossFading( float dt )
     m_curState->update(_w1, dt);
     m_lastState->update(_w2, dt);
 
+#ifdef HAVOK_COMPILE
     hk_anim_ctrl::EaseStatus status1 = c1->getEaseStatus();
     hk_anim_ctrl::EaseStatus status2 = c2->getEaseStatus();
     if(status1 == hk_anim_ctrl::EASED_IN &&
@@ -257,6 +258,7 @@ void AnimationStateLayer::updateCrossFading( float dt )
         m_lastState->remove_from_skeleton(m_skeleton);
         m_lastState = NULL;
     }
+#endif
 }
 
 void AnimationStateLayer::updateWaitingForAlign(float dt)

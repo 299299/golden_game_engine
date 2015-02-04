@@ -11,22 +11,10 @@
 #include "IdArray.h"
 #include "GameConfig.h"
 
-void ModelInstance::init(const void* resource)
+void Model::submit()
 {
-    m_visibleThisFrame = true;
-    m_resource = (const ModelResource*)resource;
-    m_viewId = m_resource->m_viewId;
-    m_flag = m_resource->m_flag;
-    m_numMaterials = m_resource->m_numMaterials;
-    memcpy(m_materials, m_resource->m_materials, m_resource->m_numMaterials*sizeof(void*));
-    ADD_BITS(m_flag, kNodeTransformDirty);
-	bx::mtxIdentity(m_transform);
-}
-
-void ModelInstance::submit()
-{
-    const Mesh* mesh = m_resource->m_mesh;
-    const SubMesh* submeshes = mesh->m_submeshes;
+    const Mesh* mesh = m_mesh;
+    const SubMesh* submeshes = m_submeshes;
     bool bSkinning = mesh->m_numJoints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
     int num = bSkinning ? mesh->m_numJoints : 1;
@@ -44,9 +32,9 @@ void ModelInstance::submit()
     }
 }
 
-void ModelInstance::submit_shadow()
+void Model::submit_shadow()
 {
-    const Mesh* mesh = m_resource->m_mesh;
+    const Mesh* mesh = m_mesh;
     const SubMesh* submeshes = mesh->m_submeshes;
     bool bSkinning = mesh->m_numJoints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
@@ -64,30 +52,27 @@ void ModelInstance::submit_shadow()
     }
 }
 
-void ModelInstance::update()
+void Model::update()
 {
-	if(!HAS_BITS(m_flag, kNodeTransformDirty)) return;
-    const Mesh* mesh = m_resource->m_mesh;
-	const Aabb& modelAabb = mesh->m_aabb;
-	transform_aabb(m_aabb.m_min, m_aabb.m_max, m_transform, modelAabb.m_min, modelAabb.m_max);
-	REMOVE_BITS(m_flag, kNodeTransformDirty);
+    if(!HAS_BITS(m_flag, kNodeTransformDirty)) return;
+    const Mesh* mesh = m_mesh;
+    const Aabb& modelAabb = mesh->m_aabb;
+    transform_aabb(m_aabb.m_min, m_aabb.m_max, m_transform, modelAabb.m_min, modelAabb.m_max);
+    REMOVE_BITS(m_flag, kNodeTransformDirty);
 }
 
-float* ModelInstance::alloc_skinning_mat()
+float* Model::alloc_skinning_mat()
 {
-    m_skinMatrix = FRAME_ALLOC(float, m_resource->m_mesh->m_numJoints * 16);
+    m_skinMatrix = FRAME_ALLOC(float, m_mesh->m_numJoints * 16);
     return m_skinMatrix;
 }
 
-bool ModelInstance::check_intersection( const float* rayOrig,
-                                        const float* rayDir,
-                                        float* intsPos,
-                                        float* outNormal ) const
+bool Model::check_intersection( const float* rayOrig, const float* rayDir, float* intsPos, float* outNormal ) const
 {
     if(!ray_aabb_intersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max))
         return false;
 
-    const Mesh* mesh = m_resource->m_mesh;
+    const Mesh* mesh = m_mesh;
     if(!mesh) return false;
 
     const bgfx::VertexDecl& decl = mesh->m_decl;
@@ -162,7 +147,7 @@ void lookup_resource_model( void * resource )
 }
 
 ModelWorld g_modelWorld;
-static IdArray<ModelInstance>      m_models;
+static IdArray<Model>      m_models;
 
 void ModelWorld::init(int max_model)
 {
@@ -186,7 +171,7 @@ void ModelWorld::reset()
 void ModelWorld::update(float dt)
 {
     uint32_t num = m_models.size();
-    ModelInstance* begin = m_models.begin();
+    Model* begin = m_models.begin();
     for(uint32_t i=0; i<num; ++i)
     {
         begin[i].update();
@@ -196,7 +181,7 @@ void ModelWorld::update(float dt)
 void ModelWorld::submit_models()
 {
     uint32_t num = m_numModels;
-    ModelInstance** head = m_modelsToDraw;
+    Model** head = m_modelsToDraw;
 
     for(uint32_t i=0; i<num; ++i)
     {
@@ -207,7 +192,7 @@ void ModelWorld::submit_models()
 void ModelWorld::submit_shadows()
 {
     uint32_t num = m_numShadows;
-    ModelInstance** head = m_shadowsToDraw;
+    Model** head = m_shadowsToDraw;
 
     for(uint32_t i=0; i<num; ++i)
     {
@@ -218,15 +203,15 @@ void ModelWorld::submit_shadows()
 void ModelWorld::cull_models(const Frustum& frust)
 {
     uint32_t numModels = m_models.size();
-    m_modelsToDraw = FRAME_ALLOC(ModelInstance*, numModels);
+    m_modelsToDraw = FRAME_ALLOC(Model*, numModels);
 
-    ModelInstance* begin = m_models.begin();
-    ModelInstance** head = m_modelsToDraw;
+    Model* begin = m_models.begin();
+    Model** head = m_modelsToDraw;
     uint32_t num = 0;
 
     for(uint32_t i=0; i<numModels; ++i)
     {
-        ModelInstance* model = begin + i;
+        Model* model = begin + i;
         if(model->m_flag & kNodeInvisible) continue;
         bool bVisible = !frust.cull_box(model->m_aabb.m_min, model->m_aabb.m_max);
         model->m_visibleThisFrame = bVisible;
@@ -239,15 +224,15 @@ void ModelWorld::cull_models(const Frustum& frust)
 void ModelWorld::cull_shadows(const Frustum& lightFrust)
 {
     uint32_t numModels = m_models.size();
-    m_shadowsToDraw = FRAME_ALLOC(ModelInstance*, numModels);
+    m_shadowsToDraw = FRAME_ALLOC(Model*, numModels);
 
-    ModelInstance* begin = m_models.begin();
-    ModelInstance** head = m_shadowsToDraw;
+    Model* begin = m_models.begin();
+    Model** head = m_shadowsToDraw;
     uint32_t num = 0;
 
     for(uint32_t i=0; i<numModels; ++i)
     {
-        ModelInstance* model = begin + i;
+        Model* model = begin + i;
         uint32_t flag = model->m_flag;
         if((flag & kNodeInvisible) || (flag & kNodeNoShadow))
             continue;
@@ -262,11 +247,12 @@ void ModelWorld::cull_shadows(const Frustum& lightFrust)
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_model(const void* modelResource, ActorId32)
+Id create_model(const void* data, ActorId32)
 {
-    ModelInstance* inst;
+    Model* inst;
     Id modelId = m_models.create(&inst);
     inst->init(modelResource);
+    memcpy(inst, data, sizeof(Model));
     return modelId;
 }
 
@@ -295,7 +281,7 @@ void* get_all_model()
 void transform_model(Id id, const hkQsTransform& t)
 {
     if(!m_models.has(id)) return;
-    ModelInstance* model = m_models.get(id);
+    Model* model = m_models.get(id);
 #ifdef HAVOK_COMPILE
     transform_matrix(model->m_transform, t);
     ADD_BITS(model->m_flag, kNodeTransformDirty);
@@ -309,7 +295,7 @@ void draw_debug_models()
 {
     PROFILE(draw_debug_models);
     uint32_t num = m_models.size();
-    ModelInstance* models = m_models.begin();
+    Model* models = m_models.begin();
     for (uint32_t i=0; i<num; ++i)
     {
         const Aabb& aabb = models[i].m_aabb;

@@ -92,5 +92,7 @@ struct hk_anim_ctrl
     void setPlaybackSpeed(float speed) {}
     void setUnderflowCount(int c) {}
     void setOverflowCount(int c) {}
+    void update(float dt) {}
+    float getWeight() const { return 1.0f; };
 };
 #endif

@@ -3,19 +3,6 @@
 #include "MathDefs.h"
 #include "StringId.h"
 
-ENGINE_NATIVE_ALIGN(struct) LightResource
-{
-    DECLARE_RESOURCE(light);
-
-    float                   m_color[3];
-    float                   m_dir[3];
-    
-
-    bool                    m_hasShadow;
-    uint8_t                 m_type;
-    char                    m_padding[2];
-};
-
 struct Light
 {
     float                   m_transform[16];
@@ -46,10 +33,10 @@ struct LightWorld
                                           float shadowSize,
                                           const float* camPos);
 
-    LightInstance**         m_drawLights;
+    Light**                 m_drawLights;
     uint32_t                m_numLightsToDraw;
 
-    const LightInstance*    m_shadowLight;
+    const Light*            m_shadowLight;
     Frustum                 m_shadowFrustum;
     float                   m_shadowView[16];
     float                   m_shadowProj[16];

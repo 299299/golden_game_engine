@@ -9,7 +9,7 @@
 #include "IdArray.h"
 
 LightWorld g_lightWorld;
-static IdArray<LightInstance>  m_lights;
+static IdArray<Light>  m_lights;
 
 void LightWorld::init(int max_light)
 {
@@ -36,11 +36,11 @@ void LightWorld::update( float dt )
     reset();
 
     uint32_t numLights = m_lights.size();
-    m_drawLights = FRAME_ALLOC(LightInstance*, numLights);
-    LightInstance* lights = m_lights.begin();
+    m_drawLights = FRAME_ALLOC(Light*, numLights);
+    Light* lights = m_lights.begin();
     for (uint32_t i=0; i<numLights; ++i)
     {
-        LightInstance& l = lights[i];
+        Light& l = lights[i];
         if(l.m_flag & kNodeInvisible) continue;
         if(l.m_resource->m_hasShadow && !m_shadowLight) m_shadowLight = &l;
         m_drawLights[m_numLightsToDraw++] = &l;
@@ -61,22 +61,21 @@ void LightWorld::submit_lights(ShadingEnviroment* env)
 
     //submit light information first.
     uint32_t num = m_numLightsToDraw > BGFX_CONFIG_MAX_LIGHTS ? BGFX_CONFIG_MAX_LIGHTS : m_numLightsToDraw;
-    LightInstance** lights = (LightInstance**)m_drawLights;
+    Light** lights = (Light**)m_drawLights;
     for (uint32_t i = 0; i < num; ++i)
     {
-        const LightInstance* light = lights[i];
-        const LightResource* res = light->m_resource;
+        const Light* light = lights[i];
         Vec4& info = s_lightInfo[i];
         Vec3& color = s_lightColor[i];
         Vec3& vec = s_lightVec[i];
-        s_lightType[i] = res->m_type;
+        s_lightType[i] = Light->m_type;
         bx::vec3Move(color.m_vec, light->m_color);
         if(s_lightType[i] == kLightDirectional) bx::vec3Move(vec.m_vec, light->m_dir);
         else vec3_make(vec.m_vec, light->m_transform[12], light->m_transform[13], light->m_transform[14]);
-        info.m_vec[0] = res->m_fallOff;
-        info.m_vec[1] = res->m_intensity;
-        info.m_vec[2] = res->m_coneAngle;
-        info.m_vec[3] = res->m_attenScale;
+        info.m_vec[0] = light->m_fallOff;
+        info.m_vec[1] = light->m_intensity;
+        info.m_vec[2] = light->m_coneAngle;
+        info.m_vec[3] = light->m_attenScale;
     }
 
     extern UniformPerLight      g_uniformLights;
@@ -114,7 +113,7 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
     float shadowEye[3] = {0,0,0};
     float shadowAt[3] = {0,0,0};
 
-    switch(m_shadowLight->m_resource->m_type)
+    switch(m_shadowLight->m_type)
     {
     case kLightDirectional:
         {
@@ -141,13 +140,9 @@ void LightWorld::update_shadow(float shadowArea, float shadowSize, const float* 
 //-----------------------------------------------------------------
 Id create_light(const void* res, ActorId32 actorId)
 {
-    LightInstance* inst;
+    Light* inst;
     Id lightId = m_lights.create(&inst);
-    const LightResource* lightResource = (const LightResource*)res;
-    inst->m_resource = lightResource;
-    memcpy(inst->m_color, lightResource->m_color, sizeof(inst->m_color));
-    memcpy(inst->m_dir, lightResource->m_dir, sizeof(inst->m_dir));
-    ADD_BITS(inst->m_flag, kNodeTransformDirty);
+    memcpy(inst, res, sizeof(Light));
     return lightId;
 }
 
@@ -177,7 +172,7 @@ void* get_all_light()
 void transform_light(Id id, const hkQsTransform& t)
 {
     if(!m_lights.has(id)) return;
-    LightInstance* light = m_lights.get(id);
+    Light* light = m_lights.get(id);
 #ifdef HAVOK_COMPILE
     transform_matrix(light->m_transform, t);
     ADD_BITS(light->m_flag, kNodeTransformDirty);
@@ -188,14 +183,13 @@ void transform_light(Id id, const hkQsTransform& t)
 void draw_debug_lights()
 {
     uint32_t num = m_lights.size();
-    LightInstance* lights = m_lights.begin();
+    Light* lights = m_lights.begin();
     bool bShadow = false;
 
     for (uint32_t i=0; i<num; ++i)
     {
-        const LightInstance& lt = lights[i];
-        const LightResource* lt_res = lt.m_resource;
-        switch(lt_res->m_type)
+        const Light& lt = lights[i];
+        switch(lt.m_type)
         {
         case kLightDirectional:
             {
@@ -220,7 +214,7 @@ void draw_debug_lights()
                     }
                 }
 
-                if(lt_res->m_hasShadow) bShadow = true;
+                if(lt.m_hasShadow) bShadow = true;
             }
             break;
         case kLightPoint:
