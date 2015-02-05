@@ -1,5 +1,6 @@
 #include "AnimationCompiler.h"
 #include "AnimRig.h"
+#include "Animation.h"
 
 struct AnimTriggerData
 {
@@ -76,8 +77,8 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         const std::string& rigFile = mirrorObject.get<std::string>("rig");
         anim->m_mirroredFrom = stringid_caculate(mirrorFile.c_str());
         anim->m_rigName = stringid_caculate(rigFile.c_str());
-        addDependency("mirror animation", name_to_file_path(mirrorFile, Animation::get_name()));
-        addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
+        addDependency("mirror animation", name_to_file_path(mirrorFile, EngineNames::ANIMATION));
+        addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION));
     }
 
     anim->m_numTriggers = triggerNum;

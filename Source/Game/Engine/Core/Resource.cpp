@@ -4,9 +4,7 @@
 #include "linear_allocator.h"
 #include "DataDef.h"
 #include "Utils.h"
-#include "GameConfig.h"
 #include <bx/readerwriter.h>
-#include <bx/mutex.h>
 #ifdef HAVOK_COMPILE
 #include <Common/Base/Thread/Thread/hkThread.h>
 #include <Common/Base/Thread/Semaphore/hkSemaphore.h>
@@ -19,24 +17,12 @@
 #endif
 
 ResourceManager                 g_resourceMgr;
-static bx::LwMutex              g_queueLock;
-static bx::LwMutex              g_resourceLock;
-static volatile int             g_running = 1;
-
 #define RESOURCE_WORKER_THREAD_ID                   (1)
 #ifdef HAVOK_COMPILE
 typedef hkPointerMap<hkUint64, void*> ResourceMap;
 static  ResourceMap*            g_resourceMap = 0;
 #endif
 
-static bool is_running()
-{
-    return g_running != 0;
-}
-static void set_running(int bRunning)
-{
-    g_running = bRunning;
-}
 inline hkUint64 packId(StringId type, StringId name)
 {
     return ((hkUint64)type << 32) | (hkUint64)name;
@@ -439,7 +425,7 @@ void ResourceManager::register_factory(const ResourceFactory& factory)
 void* ResourceManager::find_resource( StringId type, StringId name )
 {
     if(!name) return 0;
-    bx::LwMutexScope _l(g_resourceLock);
+    bx::LwMutexScope _l(m_resourceLock);
 #ifdef HAVOK_COMPILE
     ResourceMap::Iterator it = g_resourceMap->findKey(packId(type, name));
     if(!g_resourceMap->isValid(it))
@@ -455,7 +441,7 @@ void* ResourceManager::find_resource( StringId type, StringId name )
 
 void ResourceManager::insert_resource( StringId type, StringId name, void* resource )
 {
-    bx::LwMutexScope _l(g_resourceLock);
+    bx::LwMutexScope _l(m_resourceLock);
 #ifdef HAVOK_COMPILE
     g_resourceMap->insert(packId(type, name), resource);
 #endif
@@ -463,7 +449,7 @@ void ResourceManager::insert_resource( StringId type, StringId name, void* resou
 
 void ResourceManager::remove_resource( StringId type, const ResourceInfo& info )
 {
-    bx::LwMutexScope _l(g_resourceLock);
+    bx::LwMutexScope _l(m_resourceLock);
 #ifdef HAVOK_COMPILE
     g_resourceMap->remove(packId(type, info.m_name));
 #endif
@@ -566,7 +552,7 @@ void ResourceManager::process_request()
             break;
         ResourceRequest* request;
         {
-            bx::LwMutexScope _l(g_queueLock);
+            bx::LwMutexScope _l(m_queueLock);
             request = m_requestListHead;
             m_requestListHead = request->m_next;
         }
@@ -595,7 +581,7 @@ void ResourceManager::process_request()
 
 void ResourceManager::push_request( ResourceRequest* request )
 {
-    bx::LwMutexScope _l(g_queueLock);
+    bx::LwMutexScope _l(m_queueLock);
     if(!m_requestListHead)
     {
         m_requestListHead = request;

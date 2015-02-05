@@ -35,8 +35,6 @@ struct LevelLight
 
 ENGINE_NATIVE_ALIGN(struct) Level
 {
-    DECLARE_RESOURCE(level);
-
     uint32_t                    m_numLoadedObjects;
     // cold data
     LevelObject*                m_objects;

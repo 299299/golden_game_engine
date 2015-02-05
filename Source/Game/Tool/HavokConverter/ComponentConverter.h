@@ -4,7 +4,6 @@
 class hkxNode;
 class ActorConverter;
 
-
 class ComponentConverter : public hkReferencedObject
 {
 public:

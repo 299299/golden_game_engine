@@ -11,8 +11,6 @@ class  AnimRaycastInterface;
 
 ENGINE_NATIVE_ALIGN(struct) LookAtResource
 {
-    DECLARE_RESOURCE(lookat);
-
     float                                   m_fwdLS[3];
     float                                   m_lookAtLimit;
     float                                   m_gain;
@@ -25,8 +23,6 @@ ENGINE_NATIVE_ALIGN(struct) LookAtResource
 
 ENGINE_NATIVE_ALIGN(struct) ReachResource
 {
-    DECLARE_RESOURCE(reach);
-
     float                                   m_elbowAxis[3];
     float                                   m_hingeLimitAngle[2];
     float                                   m_targetGain;
@@ -41,8 +37,6 @@ ENGINE_NATIVE_ALIGN(struct) ReachResource
 
 ENGINE_NATIVE_ALIGN(struct)  FootResource
 {
-    DECLARE_RESOURCE(foot);
-
     float                                   m_leftKneeAxisLS[3];
     float                                   m_rightKneeAxisLS[3];
     float                                   m_footEndLS[3];

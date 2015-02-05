@@ -327,7 +327,7 @@ ActorId32 ActorWorld::create_actor( const void* res , const hkQsTransform& t)
 
 ActorId32 ActorWorld::create_actor( StringId resourceName, const hkQsTransform& t )
 {
-    return create_actor(FIND_RESOURCE(ActorResource, resourceName), t);
+    return create_actor(FIND_RESOURCE(ActorResource, EngineTypes::ACTOR, resourceName), t);
 }
 
 void ActorWorld::destroy_actor( ActorId32 actor_id )

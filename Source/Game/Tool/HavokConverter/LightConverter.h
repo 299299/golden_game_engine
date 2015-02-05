@@ -1,6 +1,5 @@
 #pragma once
 #include "ComponentConverter.h"
-#include "Light.h"
 
 class hkxLight;
 class LightConverter : public ComponentConverter
@@ -10,7 +9,7 @@ public:
     LightConverter(ActorConverter* ownner);
     ~LightConverter();
 
-    virtual std::string getTypeName() const { return LightResource::get_name(); };
+    virtual std::string getTypeName() const { return EngineNames::LIGHT; };
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
 

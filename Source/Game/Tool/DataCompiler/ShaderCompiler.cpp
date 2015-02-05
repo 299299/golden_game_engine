@@ -1,4 +1,5 @@
 #include "ShaderCompiler.h"
+#include "Shader.h"
 
 bool isShaderProcessed(const std::string& fileName)
 {
@@ -109,8 +110,8 @@ bool ProgramCompiler::readJSON(const jsonxx::Object& root)
     program.m_psName = stringid_caculate(ps);
     program.m_handle.idx = bgfx::invalidHandle;
 
-    addDependency("vertex shader", name_to_file_path(vs, Shader::get_name()));
-    addDependency("pixel shader", name_to_file_path(ps, Shader::get_name()));
+    addDependency("vertex shader", name_to_file_path(vs, EngineNames::SHADER));
+    addDependency("pixel shader", name_to_file_path(ps, EngineNames::SHADER));
 
     return write_file(m_output, &program, sizeof(program));
 }

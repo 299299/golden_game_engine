@@ -133,6 +133,7 @@ bool Model::check_intersection( const float* rayOrig, const float* rayDir, float
     return intersection;
 }
 
+#if 0
 void lookup_resource_model( void * resource )
 {
     ModelResource* model = (ModelResource*)resource;
@@ -145,6 +146,7 @@ void lookup_resource_model( void * resource )
         head[i] = FIND_RESOURCE(Material, matNames[i]);
     }
 }
+#endif
 
 ModelWorld g_modelWorld;
 static IdArray<Model>      m_models;

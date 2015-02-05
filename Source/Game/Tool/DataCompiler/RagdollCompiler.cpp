@@ -1,4 +1,5 @@
 #include "RagdollCompiler.h"
+#include "Ragdoll.h"
 
 RagdollCompiler::RagdollCompiler()
 {

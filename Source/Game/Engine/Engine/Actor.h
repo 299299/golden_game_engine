@@ -8,7 +8,6 @@ struct ComponentFactory;
 
 ENGINE_NATIVE_ALIGN(struct) ActorResource
 {
-    DECLARE_RESOURCE(actor);
     StringId*           m_resourceNames;
     StringId*           m_resourceTypes;
     ComponentFactory**  m_factories;

@@ -328,22 +328,3 @@ void  FootInstance::do_foot(bool isStanding,
     }
 #endif
 }
-
-
-void  lookup_resource_lookat_ik(void* resource)
-{
-    LookAtResource* lookat = (LookAtResource*) resource;
-    lookat->m_rig = FIND_RESOURCE(AnimRig, lookat->m_rigName);
-}
-
-void  lookup_resource_reach_ik(void* resource)
-{
-    ReachResource* reach = (ReachResource*) resource;
-    reach->m_rig = FIND_RESOURCE(AnimRig, reach->m_rigName);
-}
-
-void  lookup_resource_foot_ik(void* resource)
-{
-    FootResource* foot = (FootResource*)resource;
-    foot->m_rig = FIND_RESOURCE(AnimRig, foot->m_rigName);
-}

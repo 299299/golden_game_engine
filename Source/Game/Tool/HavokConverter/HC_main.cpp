@@ -63,7 +63,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     if(output)
     {
         bool has_itermediate = strstr(output, INTERMEDIATE_PATH) != 0;
-        if(!has_itermediate) 
+        if(!has_itermediate)
             config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output;
         else
             config.m_exportFolder = output;
@@ -74,7 +74,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         config.m_rootPath = path;
         LOGD("export-folder=%s *********** root-folder=%s", config.m_exportFolder.c_str(), config.m_rootPath.c_str());
     }
-    config.m_output = config.m_exportFolder + config.m_exportName + "." + ActorResource::get_name();
+    config.m_output = config.m_exportFolder + config.m_exportName + "." + std::string(EngineNames::ACTOR);
 
     config.m_loader = new hkLoader;
     hkRootLevelContainer* rlc = config.m_loader->load(config.m_input.c_str());
@@ -123,12 +123,12 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     else if(config.m_exportMode == "level")
     {
         converter = new LevelConverter;
-        config.m_output = config.m_exportFolder + config.m_exportName + "." + Level::get_name();
+        config.m_output = config.m_exportFolder + config.m_exportName + "." + std::string(EngineNames::LEVEL);
     }
     else if(config.m_exportMode == "animation")
     {
         converter = new AnimationConverter;
-        config.m_output = config.m_exportFolder + config.m_exportName + "." + Animation::get_name();
+        config.m_output = config.m_exportFolder + config.m_exportName + "." + std::string(EngineNames::ANIMATION);
     }
     if(!converter)
     {

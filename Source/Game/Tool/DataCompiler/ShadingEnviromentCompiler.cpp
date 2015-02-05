@@ -1,5 +1,6 @@
 #include "ShadingEnviromentCompiler.h"
 #include "Texture.h"
+#include "ShadingEnviroment.h"
 
 ShadingEnviromentCompiler::ShadingEnviromentCompiler()
 {
@@ -82,7 +83,7 @@ bool ShadingEnviromentCompiler::readJSON(const jsonxx::Object& root)
         {
             const std::string& lutTexture = texturesValue.get<std::string>(i);
             shading.m_colorgradingTextureNames[i] = stringid_caculate(lutTexture.c_str());
-            addDependency("color_grading_texture", name_to_file_path(lutTexture.c_str(), Raw3DTexture::get_name()));
+            addDependency("color_grading_texture", name_to_file_path(lutTexture.c_str(), EngineNames::TEXTURE_3D));
         }
         shading.m_colorGradingIndex = json_to_int(o, "grading_index");
     }

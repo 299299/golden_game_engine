@@ -5,7 +5,6 @@
 #include "Profiler.h"
 #include "Log.h"
 #include "IdArray.h"
-#include "GameConfig.h"
 #include "Event.h"
 #include "Resource.h"
 #include "Model.h"
@@ -17,6 +16,7 @@
 #include "ProxyInstance.h"
 #include "Actor.h"
 #include "AnimationState.h"
+#include "GameConfig.h"
 #ifdef HAVOK_COMPILE
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Container/LocalArray/hkLocalArray.h>
@@ -36,10 +36,9 @@
 #endif
 
 AnimationSystem g_animMgr;
-static IdArray<AnimRigInstance>                    m_rigs;
 static IdArray<AnimationStateLayer>                m_stateLayers;
-static hkaSampleBlendJob*                           m_animJobs[MAX_ANIM_RIG];
 static int                                         m_status = 0;
+static hkaSampleBlendJob                           m_jobs[MAX_ANIM_RIG];
 
 #define MT_ANIMATION
 
@@ -56,9 +55,7 @@ void AnimationSystem::init(const AnimationConfig& cfg)
 {
     m_status = 0;
     m_events = COMMON_ALLOC(AnimationEvent, cfg.max_anim_events);
-    m_rigs.init(cfg.max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     m_stateLayers.init(cfg.max_state_layers, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
-    m_jobs = new hkaSampleBlendJob[cfg.max_rigs];
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif
@@ -71,9 +68,7 @@ void AnimationSystem::shutdown()
         m_stateLayers[i].destroy();
     }
     m_stateLayers.destroy();
-    m_rigs.destroy();
     COMMON_DEALLOC(m_events);
-    delete []m_jobs;
 }
 
 void AnimationSystem::frame_start()
@@ -83,6 +78,7 @@ void AnimationSystem::frame_start()
 
 void AnimationSystem::kick_in_jobs()
 {
+#if 0
     uint32_t num = m_rigs.size();
     if(num == 0) return;
     AnimRigInstance* rigs = m_rigs.begin();
@@ -114,18 +110,18 @@ void AnimationSystem::kick_in_jobs()
     }
 #endif
 #endif
+#endif
 }
 
 void AnimationSystem::tick_finished_jobs()
 {
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
-    uint32_t num = m_rigs.size();
-    if(!num) return;
+    uint32_t num = m_stateLayers.size();
     PROFILE(AnimationFinishJobs);
     for(uint32_t i=0; i<num; ++i)
     {
-        m_animJobs[i].destroy();
+        m_jobs[i].destroy();
     }
     set_status(kTickFinishedJobs);
 #endif
@@ -136,8 +132,9 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 {
     PROFILE(Animation_SkinActors);
 
-    StringId anim_type = AnimRig::get_type();
-    StringId model_type = ModelResource::get_type();
+#if 0
+    StringId anim_type = EngineTypes::ANIMATION_RIG;
+    StringId model_type = EngineTypes::MODEL;
     for (uint32_t i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
@@ -188,19 +185,13 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 #endif
 #endif
     }
+#endif
 }
 
 void AnimationSystem::update_animations(float dt)
 {
-    uint32_t num = m_rigs.size();
-    if(!num) return;
     PROFILE(Animation_Update);
-    AnimRigInstance* rigs = m_rigs.begin();
-    for(uint32_t i=0; i<num;++i)
-    {
-        rigs[i].update(dt);
-    }
-    num = m_stateLayers.size();
+    uint32_t num = m_stateLayers.size();
     AnimationStateLayer* l = m_stateLayers.begin();
     for(uint32_t i=0; i<num;++i)
     {
@@ -210,6 +201,7 @@ void AnimationSystem::update_animations(float dt)
 
 void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 {
+#if 0
     PROFILE(Animation_UpdateAttachment);
     StringId anim_type = AnimRig::get_type();
     extern void* get_anim_rig(Id);
@@ -222,45 +214,13 @@ void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
         if(!rig) continue;
         rig->update_attachment(actor.m_transform);
     }
+#endif
 }
 
 
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-Id create_anim_rig( const void* resource, ActorId32 id)
-{
-    check_status();
-    AnimRigInstance* inst;
-    Id animId = m_rigs.create(&inst);
-    inst->init(resource, id);
-    return animId;
-}
-
-void destroy_anim_rig( Id id )
-{
-    check_status();
-    if(!m_rigs.has(id)) return;
-    m_rigs.get(id)->destroy();
-    m_rigs.destroy(id);
-}
-
-void* get_anim_rig( Id id )
-{
-    if(!m_rigs.has(id)) return 0;
-    return m_rigs.get(id);
-}
-
-uint32_t num_all_anim_rig()
-{
-    return m_rigs.size();
-}
-
-void* get_all_anim_rig()
-{
-    return m_rigs.begin();
-}
-
 Id create_anim_statelayer( const void* resource, ActorId32 id)
 {
     check_status();
@@ -291,7 +251,7 @@ uint32_t num_all_anim_statelayer()
 
 void* get_all_anim_statelayer()
 {
-    return m_rigs.begin();
+    return m_stateLayers.begin();
 }
 //-----------------------------------------------------------------
 //
@@ -299,6 +259,7 @@ void* get_all_anim_statelayer()
 #include "DebugDraw.h"
 void draw_debug_animation()
 {
+#if 0
 #ifdef HAVOK_COMPILE
     PROFILE(draw_debug_animation);
     extern int g_engineMode;
@@ -312,15 +273,15 @@ void draw_debug_animation()
         Actor* actor = g_actorWorld.get_actor(rig.m_actor);
         const hkQsTransform& t = actor->m_transform;
 
-        
+
         {
             //draw debug pose
-            if(g_engineMode == 0) 
+            if(g_engineMode == 0)
                 draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
-            else 
+            else
                 draw_pose_vdb(*pose, t);
         }
-        
+
         {
             //draw local motion mark
             //FIXME:TODO move it to a better place
@@ -331,7 +292,7 @@ void draw_debug_animation()
             t2.m_translation(1) = y - halfheight;
             g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
         }
-        
+
         {
             //draw debug attachment
             uint32_t num_attach = res->m_attachNum;
@@ -352,6 +313,7 @@ void draw_debug_animation()
             }
         }
     }
+#endif
 #endif
 }
 //-----------------------------------------------------------------

@@ -4,6 +4,7 @@
 #include <bounds.h>
 #include <forsyth-too/forsythtriangleorderoptimizer.h>
 #include <vertexdecl.h>
+#include "Mesh.h"
 
 //#define FLOAT_WEIGHT
 
@@ -213,7 +214,7 @@ void MeshConverter::processDesc(const hkxVertexDescription& desc)
 void MeshConverter::processVertexBuffer(hkxVertexBuffer* vb)
 {
     HC_PROFILE(mesh_process_vertex_buffer);
-    
+
 #ifdef HAVOK_COMPILE
     m_numVertices = vb->getNumVertices();
     processDesc(vb->getVertexDesc());

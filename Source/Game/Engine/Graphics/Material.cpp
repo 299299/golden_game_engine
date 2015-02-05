@@ -9,14 +9,14 @@
 void Material::lookup()
 {
     m_shader = FIND_RESOURCE(ShaderProgram, m_shaderName);
-    if(m_shadowShaderName) m_shadowShader = FIND_RESOURCE(ShaderProgram, m_shadowShaderName);
+    if(m_shadowShaderName) m_shadowShader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, m_shadowShaderName);
 
     uint32_t num = m_numSamplers;
     MatSampler* head = m_samplers;
 
     for (uint32_t i=0; i<num; ++i)
     {
-        head[i].m_texture = FIND_RESOURCE(Texture, head[i].m_textureName);
+        head[i].m_texture = FIND_RESOURCE(Texture, EngineTypes::TEXTURE, head[i].m_textureName);
     }
 }
 
@@ -36,7 +36,7 @@ void Material::bringin()
 void Material::change_texture( int slot, StringId tex )
 {
     MatSampler& sampler = m_samplers[slot];
-    Texture* texture = FIND_RESOURCE(Texture, tex);
+    Texture* texture = FIND_RESOURCE(Texture, EngineTypes::TEXTURE, tex);
     if(!texture) return;
     sampler.m_texture = texture;
     texture->bringin(sampler.m_flags);

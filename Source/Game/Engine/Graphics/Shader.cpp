@@ -35,8 +35,8 @@ void ShaderProgram::bringout()
 
 void ShaderProgram::lookup()
 {
-    m_vs = FIND_RESOURCE(Shader, m_vsName);
-    m_ps = FIND_RESOURCE(Shader, m_psName);
+    m_vs = FIND_RESOURCE(Shader, EngineTypes::SHADER, m_vsName);
+    m_ps = FIND_RESOURCE(Shader, EngineTypes::SHADER, m_psName);
     if(!m_vs) LOGE("vs[%s] lookup error", stringid_lookup(m_vsName));
     if(!m_ps) LOGE("ps[%s] lookup error", stringid_lookup(m_psName));
 }
@@ -83,5 +83,5 @@ ShaderProgram* find_shader( const char* name )
 {
     char buf[256];
     bx::snprintf(buf, sizeof(buf), PROGRAM_PATH"%s", name);
-    return FIND_RESOURCE_NAMED(ShaderProgram, buf);
+    return (ShaderProgram*)g_resourceMgr.find_resource(EngineTypes::PROGRAM, stringid_caculate(buf));
 }

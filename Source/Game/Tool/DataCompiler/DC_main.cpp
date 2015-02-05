@@ -35,27 +35,21 @@ DC_Config::DC_Config()
 {
     const char* g_resourceTypeNames[] =
     {
-        Animation::get_name(),
-        AnimationStateLayer::get_name(),
-        AnimRig::get_name(),
-        ActorResource::get_name(),
-        LookAtResource::get_name(),
-        ReachResource::get_name(),
-        FootResource::get_name(),
-        LightResource::get_name(),
-        Material::get_name(),
-        PhysicsConfig::get_name(),
-        PhysicsResource::get_name(),
-        ProxyResource::get_name(),
-        RagdollResource::get_name(),
-        ShaderProgram::get_name(),
-        Texture::get_name(),
-        Raw3DTexture::get_name(),
-        Raw2DTexture::get_name(),
-        Mesh::get_name(),
-        ModelResource::get_name(),
-        Shader::get_name(),
-        ShadingEnviroment::get_name(),
+        EngineNames::ANIMATION,
+        EngineNames::ANIMATION_STATES,
+        EngineNames::ANIMATION_RIG,
+        EngineNames::ACTOR,
+        EngineNames::LIGHT,
+        EngineNames::MATERIAL,
+        EngineNames::PHYSICS_CONFIG,
+        EngineNames::PROGRAM,
+        EngineNames::TEXTURE,
+        EngineNames::TEXTURE_3D,
+        EngineNames::TEXTURE_2D,
+        EngineNames::MESH,
+        EngineNames::MODEL,
+        EngineNames::SHADER,
+        EngineNames::SHADING_ENV,
         SHADER_INCLUDE_EXT,
         "dds",
     };
@@ -65,15 +59,9 @@ DC_Config::DC_Config()
         _create_compiler<AnimationStateCompiler>,
         _create_compiler<AnimRigCompiler>,
         _create_compiler<ActorCompiler>,
-        _create_compiler<LookIKCompiler>,
-        _create_compiler<ReachIKCompiler>,
-        _create_compiler<FootIKCompiler>,
         _create_compiler<LightCompiler>,
         _create_compiler<MaterialCompiler>,
         _create_compiler<PhysicsConfigCompiler>,
-        _create_compiler<PhysicsCompiler>,
-        _create_compiler<ProxyCompiler>,
-        _create_compiler<RagdollCompiler>,
         _create_compiler<ProgramCompiler>,
         _create_compiler<TextureCompiler>,
         _create_compiler<Texture3DCompiler>,
@@ -201,7 +189,7 @@ void level_processing()
     uint32_t modifyTime = 0;
     StringArray level_file_list;
     std::string folder = remove_top_folder(g_config->m_inputDir);
-    scan_dir(level_file_list, g_config->m_inputDir.c_str(), Level::get_name(), SCAN_FILES, true);
+    scan_dir(level_file_list, g_config->m_inputDir.c_str(), EngineNames::LEVEL, SCAN_FILES, true);
 
     LOGI("level file num = %d", level_file_list.size());
     for (size_t i=0; i<level_file_list.size(); ++i)
@@ -237,7 +225,7 @@ void resources_process()
     {
         const std::string& input = input_file_list[i];
         std::string ext = getFileExt(input);
-        if(ext == Level::get_name()) continue;
+        if(ext == EngineNames::LEVEL) continue;
         BaseCompiler* compiler = g_config->create_compiler(ext);
         if(!compiler)
         {
@@ -245,7 +233,7 @@ void resources_process()
             continue;
         }
         std::string output = input_to_output(input);
-        if(ext == "dds") output = replaceExtension(output, Texture::get_name());
+        if(ext == "dds") output = replaceExtension(output, EngineNames::TEXTURE);
         compiler->m_input = input;
         compiler->m_output = output;
         if(!compiler->checkProcessing())

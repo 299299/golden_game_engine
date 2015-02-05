@@ -1,6 +1,6 @@
 #pragma once
 #include "ShaderInc.h"
-#include "BaseTypes.h"
+#include "StringId.h"
 
 enum ActorClass
 {

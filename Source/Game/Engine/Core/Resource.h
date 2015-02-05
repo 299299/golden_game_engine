@@ -2,6 +2,7 @@
 #include "Prerequisites.h"
 #include "StringId.h"
 #include "GameConfig.h"
+#include <bx/mutex.h>
 
 struct ResourceFactory;
 struct ResourcePackage;
@@ -120,6 +121,10 @@ struct ResourceManager
     hkThread*                       m_thread;
     hkSemaphore*                    m_semaphore;
 
+    bx::LwMutex                     m_queueLock;
+    bx::LwMutex                     m_resourceLock;
+    volatile int                    m_running;
+
     void init();
     void shutdown();
     void offline_all_resources();
@@ -156,13 +161,15 @@ struct ResourceManager
     static void* io_work_loop(void* p);
     void  process_request();
 
+
 private:
     ResourcePackage* find_package(StringId name);
     void push_request(ResourceRequest* request);
+
+    bool is_running() const { return m_running != 0; };
+    void set_running(int r) { m_running = r;};
 };
 
 extern ResourceManager      g_resourceMgr;
 
-#define FIND_RESOURCE(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), name))
-#define FIND_RESOURCE_NAMED(className,name) ((className*)g_resourceMgr.find_resource(className::get_type(), stringid_caculate(name)))
-
+#define FIND_RESOURCE(className,type,name) ((className*)g_resourceMgr.find_resource(type, name))

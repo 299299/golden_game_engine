@@ -31,12 +31,12 @@ void CharacterConverter::process(hkaAnimationContainer* ac)
     collectRigSkinData(ac->m_skeletons[0]);
     ModelConverter* mc = new ModelConverter(this);
     mc->m_type = kModelSkinning;
-    mc->m_node = findNode(ModelResource::get_name());
+    mc->m_node = findNode(EngineNames::MODEL);
     mc->setName(m_name);
     mc->process((void*)m_skin, 1);
     m_components.push_back(mc);
     AnimRigConverter* anic = new AnimRigConverter(this);
-    anic->m_node = findNode(AnimRig::get_name());
+    anic->m_node = findNode(EngineNames::ANIMATION_RIG);
     anic->setName(m_name);
     anic->process((void*)m_skin);
     m_components.push_back(anic);

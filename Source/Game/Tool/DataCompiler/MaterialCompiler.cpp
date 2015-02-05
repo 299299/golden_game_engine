@@ -1,6 +1,7 @@
 #include "MaterialCompiler.h"
 #include "TextureCompiler.h"
 #include "Shader.h"
+#include "Material.h"
 
 //material
 MaterialCompiler::MaterialCompiler()
@@ -39,7 +40,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
         m->m_shaderName = stringid_caculate(programName);
-        addDependency("shader", name_to_file_path(programName, ShaderProgram::get_name()));
+        addDependency("shader", name_to_file_path(programName, EngineNames::PROGRAM));
     }
 
     programFile = root.get<std::string>("shadow_shader", "");
@@ -47,7 +48,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
         m->m_shadowShaderName = stringid_caculate(programName);
-        addDependency("shadow shader", name_to_file_path(programName, ShaderProgram::get_name()));
+        addDependency("shadow shader", name_to_file_path(programName, EngineNames::PROGRAM));
     }
 
     uint64_t renderState = BGFX_STATE_RGB_WRITE
@@ -128,7 +129,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
                 textureFile = o.get<std::string>("texture");
             }
             sampler.m_textureName = stringid_caculate(textureFile.c_str());
-            addDependency("texture", name_to_file_path(textureFile, Texture::get_name()));
+            addDependency("texture", name_to_file_path(textureFile, EngineNames::TEXTURE));
         }
     }
 

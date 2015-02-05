@@ -1,5 +1,6 @@
 #include "ActorConverter.h"
 #include "ComponentConverter.h"
+#include "Actor.h"
 
 ActorConverter::ActorConverter()
 :m_config(NULL)

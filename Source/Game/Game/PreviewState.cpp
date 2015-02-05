@@ -56,6 +56,7 @@ static void list_resources_gui(const char* type, int x, int y, int w, int h, on_
 static void on_button_animation(const char* _name)
 {
     Actor* actor = g_actorWorld.get_actor(g_previewActor);
+#if 0
     if(actor)
     {
         AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(AnimRig::get_type());
@@ -64,11 +65,12 @@ static void on_button_animation(const char* _name)
             rig->test_animation(_name);
         }
     }
+#endif
 }
 
 static void actor_information_imgui(const char* _name, int _x, int _y, int _texHeight)
 {
-    const ActorResource* _res = FIND_RESOURCE_NAMED(ActorResource, _name);
+    ActorResource* _res = (ActorResource*)g_resourceMgr.find_resource(EngineTypes::ACTOR, stringid_caculate(_name));
     if(!_res)
         return;
     ImguiTextAlign::Enum _align = ImguiTextAlign::Left;
@@ -147,7 +149,7 @@ void PreviewState::step( float dt )
     resource_hot_reload_update(dt);
 
     actor_information_imgui("core/batman", 0, 25, 15);
-    list_resources_gui(Animation::get_name(), 0, 100, 200, 200, on_button_animation);
+    list_resources_gui(EngineNames::ANIMATION, 0, 100, 200, 200, on_button_animation);
 }
 
 void PreviewState::on_enter( GameState* prev_state )

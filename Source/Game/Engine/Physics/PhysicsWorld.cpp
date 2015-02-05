@@ -212,6 +212,7 @@ void PhysicsWorld::post_simulation()
 {
     PROFILE(Physics_PostCallback);
 
+#if 0
 #ifdef HAVOK_COMPILE
     PHYSICS_LOCKREAD(m_world);
     const hkArray<hkpSimulationIsland*>& activeIslands = m_world->getActiveSimulationIslands();
@@ -242,6 +243,7 @@ void PhysicsWorld::post_simulation()
             actor->set_transform_ignore_type(tq, body_type);
         }
     }
+#endif
 #endif
 }
 

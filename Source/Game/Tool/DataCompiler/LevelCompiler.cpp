@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Light.h"
 #include "ToolUtils.h"
+#include "Level.h"
 
 void json_transform(const jsonxx::Object& jValue, float* t, float* r, float* s)
 {
@@ -64,7 +65,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
             resourceNames.push_back(key);
             index = (int)resourceNames.size() - 1;
             m_resourceKeys[key] = index;
-            addDependency("actor resource", name_to_file_path(typeName, ActorResource::get_name()));
+            addDependency("actor resource", name_to_file_path(typeName, EngineNames::ACTOR));
         }
         else
         {
@@ -73,7 +74,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
         actorIndices[i] = index;
         if(!actorValue.get<bool>("packed" ,false))
             continue;
-        createChildCompiler(ActorResource::get_name(), actorValue);
+        createChildCompiler(EngineNames::ACTOR, actorValue);
     }
 
     uint32_t numOfResources = resourceNames.size();

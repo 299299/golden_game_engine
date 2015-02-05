@@ -1,6 +1,5 @@
 #pragma once
 #include "ComponentConverter.h"
-#include "Model.h"
 
 class MaterialConverter;
 class MeshConverter;
@@ -33,7 +32,7 @@ public:
     ModelConverter(ActorConverter* ownner);
     ~ModelConverter();
 
-    virtual std::string getTypeName() const { return ModelResource::get_name(); };
+    virtual std::string getTypeName() const { return EngineNames::MODEL; };
     virtual void process(void* pData, int hint = 0);
     void processMeshes(const std::vector<hkxMesh*>& meshes);
 

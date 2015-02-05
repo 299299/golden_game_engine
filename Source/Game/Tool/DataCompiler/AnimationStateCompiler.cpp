@@ -1,5 +1,5 @@
 #include "AnimationStateCompiler.h"
-
+#include "AnimationState.h"
 
 extern const char* g_anim_ease_type_names[];
 extern const char* g_anim_motion_blending_type_names[];
@@ -81,8 +81,8 @@ struct RuntimeAnimationState
         readNode(jsonNodes, node);
 
         //post process
-        m_memorySize = (sizeof(AnimationTranstion) + sizeof(StringId)) * m_transitions.size() + 
-                       (sizeof(AnimationNode) + sizeof(StringId)) * m_nodes.size() + 
+        m_memorySize = (sizeof(AnimationTranstion) + sizeof(StringId)) * m_transitions.size() +
+                       (sizeof(AnimationNode) + sizeof(StringId)) * m_nodes.size() +
                        sizeof(AnimationData) * m_animations.size();
         m_state.m_loop = json_to_bool(o, "looped");
         m_state.m_numTransitions = m_transitions.size();
@@ -116,7 +116,7 @@ struct RuntimeAnimationState
                 data.m_name = stringid_caculate(node->m_animationName.c_str());
                 data.m_speed = json_to_float(o, "speed", 1.0f);
                 node->m_animationIndex = m_animations.size();
-                m_animations.push_back(data);    
+                m_animations.push_back(data);
                 break;
             }
         case BlendNodeType::Lerp:
@@ -235,7 +235,7 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
     layer->m_states = (AnimationState*)p;
     p += sizeof(AnimationState) * layer->m_numStates;
     uint32_t memOffset = (uint32_t)(p - mem.m_buf);
-    
+
     for(uint32_t i=0; i<numStates; ++i)
     {
         const RuntimeAnimationState& rtState = states[i];
@@ -259,17 +259,17 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         ENGINE_ASSERT(state.m_numTransitions == state2.m_transitions.size(), "AnimationStateLayer load check");
         for (uint32_t j=0; j<state.m_numNodes; ++j)
         {
-            ENGINE_ASSERT(state.m_nodeNames[j] == stringid_caculate(state2.m_nodes[j]->m_name.c_str()), 
+            ENGINE_ASSERT(state.m_nodeNames[j] == stringid_caculate(state2.m_nodes[j]->m_name.c_str()),
                 "AnimationStateLayer load check");
         }
         for (uint32_t j=0; j<state.m_numTransitions; ++j)
         {
-            ENGINE_ASSERT(state.m_transitionNames[j] == stringid_caculate(state2.m_transitions[j].m_name.c_str()), 
+            ENGINE_ASSERT(state.m_transitionNames[j] == stringid_caculate(state2.m_transitions[j].m_name.c_str()),
                 "AnimationStateLayer load check");
         }
         for (uint32_t j=0; j<state.m_numAnimations; ++j)
         {
-            ENGINE_ASSERT(state.m_animations[j].m_name == state2.m_animations[j].m_name, 
+            ENGINE_ASSERT(state.m_animations[j].m_name == state2.m_animations[j].m_name,
                 "AnimationStateLayer load check");
         }
     }

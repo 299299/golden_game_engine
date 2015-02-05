@@ -9,8 +9,6 @@ struct AnimCharacterListener;
 
 ENGINE_NATIVE_ALIGN(struct) ProxyResource
 {
-    DECLARE_RESOURCE(proxy);
-
     void createShape();
     void destroyShape();
 

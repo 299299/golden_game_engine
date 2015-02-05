@@ -1,4 +1,5 @@
 #include "TextureCompiler.h"
+#include "Texture.h"
 #include <stb/stb_image.c>
 
 TextureCompiler::TextureCompiler()
@@ -124,7 +125,7 @@ bool Texture3DCompiler::readJSON(const jsonxx::Object& root)
     std::string outputLut = m_output;
     std::string outputPath = getFilePath(m_output);
     std::string fileName = getFileName(outputLut);
-    outputLut = outputPath + "/" + fileName + "." +Raw3DTexture::get_name();
+    outputLut = outputPath + "/" + fileName + "." + std::string(EngineNames::TEXTURE_3D);
     stbi_image_free(image);
     return write_file(outputLut, mem.m_buf, memSize);
 }

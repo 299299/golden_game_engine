@@ -1,5 +1,6 @@
 #include "AnimRigCompiler.h"
 #include "Animation.h"
+#include "AnimRig.h"
 
 static int find_joint_index(StringId name, StringId* names, int size)
 {

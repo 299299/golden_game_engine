@@ -9,8 +9,6 @@ class hkTransformf;
 
 ENGINE_NATIVE_ALIGN(struct) PhysicsResource
 {
-    DECLARE_RESOURCE(physics);
-
     hkpPhysicsData*             m_data;
     uint32_t                    m_havokDataOffset;
     uint32_t                    m_havokDataSize;

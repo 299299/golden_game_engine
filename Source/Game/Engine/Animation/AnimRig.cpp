@@ -84,10 +84,8 @@ void AnimRig::create_mirrored_skeleton()
 #endif
 }
 
-//------------------------------------------------------------------------------------------------
-//          INSTANCE
-//------------------------------------------------------------------------------------------------
 
+#if 0
 void AnimRigInstance::init( const void* resource , ActorId32 actor)
 {
     m_actor = actor;
@@ -174,4 +172,5 @@ void AnimRigInstance::test_animation(const char* name)
     ac->removeReference();
 #endif
 }
+#endif
 

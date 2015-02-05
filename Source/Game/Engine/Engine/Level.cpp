@@ -47,7 +47,7 @@ void Level::lookup()
     LevelActorResource* head = m_resources;
     for (uint32_t i = 0; i < num; ++i)
     {
-        head[i].m_resource = FIND_RESOURCE(ActorResource, head[i].m_name);
+        head[i].m_resource = FIND_RESOURCE(ActorResource, EngineTypes::ACTOR, head[i].m_name);
     }
 }
 

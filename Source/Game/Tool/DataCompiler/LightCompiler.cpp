@@ -1,4 +1,5 @@
 #include "LightCompiler.h"
+#include "Light.h"
 
 LightCompiler::LightCompiler()
 {

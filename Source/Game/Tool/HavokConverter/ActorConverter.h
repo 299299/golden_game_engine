@@ -1,6 +1,5 @@
 #pragma once
 #include "HC_Config.h"
-#include "Actor.h"
 
 class ComponentConverter;
 class ActorConverter : public hkReferencedObject
@@ -10,7 +9,7 @@ public:
     ActorConverter();
     virtual ~ActorConverter();
 
-    virtual std::string getTypeName() const { return ActorResource::get_name(); };
+    virtual std::string getTypeName() const { return EngineNames::ACTOR; };
     virtual std::string getResourceName() const;
 
     virtual void process(void* pData) = 0;

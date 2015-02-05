@@ -22,8 +22,6 @@ enum RagdollState
 
 ENGINE_NATIVE_ALIGN(struct) RagdollResource
 {
-    DECLARE_RESOURCE(ragdoll);
-
     void load(hkRootLevelContainer* container);
 
     hkInt16                                 m_lowerBodyBones[MAX_LOWER_BODY_BONE];

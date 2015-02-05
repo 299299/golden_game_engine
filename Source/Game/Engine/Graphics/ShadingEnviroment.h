@@ -10,8 +10,6 @@ struct ShaderProgram;
 
 ENGINE_NATIVE_ALIGN(struct) ShadingEnviroment
 {
-    DECLARE_RESOURCE(shading_enviroment);
-
     void update(float dt);
     void submit();
     void lookup();

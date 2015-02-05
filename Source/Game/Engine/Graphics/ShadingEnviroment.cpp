@@ -35,7 +35,7 @@ void ShadingEnviroment::lookup()
     StringId* names = m_colorgradingTextureNames;
     for (uint32_t i=0; i<num; ++i)
     {
-        head[i] = FIND_RESOURCE(Raw3DTexture, names[i]);
+        head[i] = FIND_RESOURCE(Raw3DTexture, EngineTypes::TEXTURE_3D, names[i]);
         ENGINE_ASSERT(head[i], "can not find color-grading texture.");
     }
 }

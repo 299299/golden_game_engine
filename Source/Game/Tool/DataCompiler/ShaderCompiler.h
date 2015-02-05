@@ -1,6 +1,5 @@
 #pragma once
 #include "BaseCompiler.h"
-#include "Shader.h"
 
 class ShaderCompiler : public BaseCompiler
 {
@@ -9,7 +8,7 @@ public:
     ~ShaderCompiler();
 
     virtual void preProcess();
-    virtual std::string getFormatExt() const { return Shader::get_name(); };
+    virtual std::string getFormatExt() const { return EngineNames::SHADER; };
     virtual bool process(const std::string& input, const std::string& output);
 };
 
@@ -20,7 +19,7 @@ public:
     ProgramCompiler();
     ~ProgramCompiler();
 
-    virtual std::string getFormatExt() const { return ShaderProgram::get_name(); };
+    virtual std::string getFormatExt() const { return EngineNames::PROGRAM; };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
 };

@@ -37,7 +37,6 @@ struct AnimationSystem
 
     uint32_t                m_numAnimEvts;
     AnimationEvent*         m_events;
-    hkaSampleBlendJob*      m_jobs;
 };
 extern AnimationSystem g_animMgr;
 

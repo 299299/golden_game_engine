@@ -1,6 +1,5 @@
 #pragma once
 #include "ActorConverter.h"
-#include "Level.h"
 
 class hkxNode;
 class hkxScene;

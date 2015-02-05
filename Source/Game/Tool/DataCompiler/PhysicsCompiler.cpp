@@ -1,5 +1,7 @@
 #include "PhysicsCompiler.h"
 #include "PhysicsWorld.h"
+#include "PhysicsInstance.h"
+#include "ProxyInstance.h"
 
 bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
 {

@@ -1,5 +1,6 @@
 #include "IKCompiler.h"
 #include "AnimRig.h"
+#include "IK.h"
 
 static const char* raycast_type_names[] =
 {
@@ -25,7 +26,7 @@ bool LookIKCompiler::readJSON( const jsonxx::Object& root )
 
     const std::string& rigFile = root.get<std::string>("rig");
     lookat.m_rigName = stringid_caculate(rigFile.c_str());
-    addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
+    addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION_RIG));
 
     return write_file(m_output, &lookat, sizeof(lookat));
 }
@@ -52,7 +53,7 @@ bool ReachIKCompiler::readJSON( const jsonxx::Object& root )
 
     const std::string& rigFile = root.get<std::string>("rig");
     reach.m_rigName = stringid_caculate(rigFile.c_str());
-    addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
+    addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION_RIG));
 
     return write_file(m_output, &reach, sizeof(reach));
 }
@@ -94,7 +95,7 @@ bool FootIKCompiler::readJSON( const jsonxx::Object& root )
 
     const std::string& rigFile = root.get<std::string>("rig");
     foot.m_rigName = stringid_caculate(rigFile.c_str());
-    addDependency("rig", name_to_file_path(rigFile, AnimRig::get_name()));
+    addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION_RIG));
 
     return write_file(m_output, &foot, sizeof(foot));
 }

@@ -75,9 +75,15 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
     Graphics::ready();
     g_debugDrawMgr.ready();
-    g_physicsWorld.create_world(FIND_RESOURCE_NAMED(PhysicsConfig, "core/global"));
+    PhysicsConfig* cfg = (PhysicsConfig*)g_resourceMgr.find_resource(
+        EngineTypes::PHYSICS_CONFIG,
+        stringid_caculate("core/global"));
+    g_physicsWorld.create_world(cfg);
     g_physicsWorld.create_plane(500.0f);
-    g_actorWorld.m_shading_env = FIND_RESOURCE_NAMED(ShadingEnviroment, "core/common/default");
+    ShadingEnviroment* env = (ShadingEnviroment*)(g_resourceMgr.find_resource(
+        EngineTypes::SHADING_ENV,
+        stringid_caculate("core/common/default")));
+    g_actorWorld.m_shading_env = env;
 
     if(package_name)
         g_resourceMgr.load_package_and_wait(package_name);
@@ -95,7 +101,7 @@ int game_main(int argc, bx::CommandLine* cmdline)
     if(level_name)
     {
         LOGD("loading level %s \n", level_name);
-        Level* level = FIND_RESOURCE_NAMED(Level, level_name);
+        Level* level = (Level*)g_resourceMgr.find_resource(EngineTypes::LEVEL, stringid_caculate(level_name));
         if(level) level->load();
     }
 

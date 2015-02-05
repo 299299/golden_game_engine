@@ -1,4 +1,5 @@
 #include "AnimationConverter.h"
+#include "Animation.h"
 
 AnimationConverter::AnimationConverter()
 :m_ac(0)

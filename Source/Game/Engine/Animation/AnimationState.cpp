@@ -61,7 +61,7 @@ void AnimationState::lookup()
     for (uint32_t i=0; i<_num; ++i)
     {
         AnimationData& animData = _data[i];
-        animData.m_animation = FIND_RESOURCE(Animation, animData.m_name);
+        animData.m_animation = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, animData.m_name);
     }
 }
 

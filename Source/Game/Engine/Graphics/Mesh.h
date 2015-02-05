@@ -20,8 +20,6 @@ ENGINE_NATIVE_ALIGN(struct) SubMesh
 
 ENGINE_NATIVE_ALIGN(struct) Mesh
 {
-    DECLARE_RESOURCE(mesh);
-
     void bringin();
     void bringout();
 

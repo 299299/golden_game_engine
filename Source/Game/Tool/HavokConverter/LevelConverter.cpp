@@ -2,6 +2,7 @@
 #include "ModelConverter.h"
 #include "LightConverter.h"
 #include "StaticModelConverter.h"
+#include "Level.h"
 
 #ifdef HAVOK_COMPILE
 void matrix_to_transform(const hkMatrix4& m, hkQsTransform& t)

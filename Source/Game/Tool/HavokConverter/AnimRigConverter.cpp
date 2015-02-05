@@ -1,6 +1,7 @@
 #include "AnimRigConverter.h"
 #include "ModelConverter.h"
 #include "ActorConverter.h"
+#include "AnimRig.h"
 
 const char* g_body_names_0[] =
 {

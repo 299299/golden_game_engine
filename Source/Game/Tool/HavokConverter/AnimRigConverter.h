@@ -1,6 +1,5 @@
 #pragma once
 #include "ComponentConverter.h"
-#include "AnimRig.h"
 
 struct RigSkinData;
 class AnimRigConverter : public ComponentConverter
@@ -10,7 +9,7 @@ public:
     AnimRigConverter(ActorConverter* ownner);
     ~AnimRigConverter();
 
-    virtual std::string getTypeName() const { return AnimRig::get_name(); };
+    virtual std::string getTypeName() const { return EngineNames::ANIMATION_RIG; };
     virtual void process(void* pData, int hint = 0);
     virtual void postProcess();
     virtual jsonxx::Object serializeToJson() const;

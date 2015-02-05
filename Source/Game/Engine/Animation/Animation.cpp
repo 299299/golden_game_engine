@@ -7,6 +7,7 @@
 #include "Utils.h"
 #include "Profiler.h"
 #include "Event.h"
+#include "DataDef.h"
 
 #ifdef HAVOK_COMPILE
 #include <Animation/Animation/Animation/hkaAnimation.h>
@@ -37,14 +38,14 @@ void Animation::destroy()
 void Animation::lookup()
 {
     if(!m_mirroredFrom) return;
-    create_mirrored_animation(FIND_RESOURCE(Animation, m_mirroredFrom));
+    create_mirrored_animation(FIND_RESOURCE(Animation, EngineTypes::ANIMATION, m_mirroredFrom));
 }
 
 void Animation::create_mirrored_animation(const Animation* orginalAnim)
 {
 #ifdef HAVOK_COMPILE
     destroy();
-    AnimRig* rig = FIND_RESOURCE(AnimRig, m_rigName);
+    AnimRig* rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, m_rigName);
     orginalAnim->m_animation->addReference();
     hkaMirroredAnimation* anim = new hkaMirroredAnimation(orginalAnim->m_animation, orginalAnim->m_binding, rig->m_mirroredSkeleton);
     m_binding = anim->createMirroredBinding();

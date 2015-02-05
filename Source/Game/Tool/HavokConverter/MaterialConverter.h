@@ -1,6 +1,5 @@
 #pragma once
 #include "ComponentConverter.h"
-#include "Material.h"
 
 class SamplerConverter;
 class ModelConverter;
@@ -16,7 +15,7 @@ public:
     MaterialConverter(ActorConverter* ownner);
     ~MaterialConverter();
 
-    virtual std::string getTypeName() const { return Material::get_name(); };
+    virtual std::string getTypeName() const { return EngineNames::MATERIAL; };
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
 

@@ -8,7 +8,7 @@ public:
     SamplerConverter(ActorConverter* ownner);
     ~SamplerConverter();
 
-    virtual std::string getTypeName() const { return "texture"; };
+    virtual std::string getTypeName() const { return EngineNames::TEXTURE; };
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
 

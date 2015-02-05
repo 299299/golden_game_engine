@@ -58,8 +58,6 @@ ENGINE_NATIVE_ALIGN(struct) MatSampler
 
 ENGINE_NATIVE_ALIGN(struct) Material
 {
-    DECLARE_RESOURCE(material);
-
     void lookup();
     void bringin();
     void change_texture(int slot, StringId tex);

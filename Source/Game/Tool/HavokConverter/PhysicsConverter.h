@@ -1,6 +1,5 @@
 #pragma once
 #include "ComponentConverter.h"
-#include "PhysicsInstance.h"
 
 class PhysicsConverter   : public ComponentConverter
 {
@@ -9,9 +8,7 @@ public:
     PhysicsConverter(ActorConverter* ownner);
     ~PhysicsConverter();
 
-    virtual std::string getTypeName() const { return PhysicsResource::get_name(); };
-    virtual std::string getFormatExt() const { return PhysicsResource::get_name(); };
-    
+    virtual std::string getTypeName() const { return EngineNames::PHYSICS; };
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
     virtual void postProcess();
