@@ -112,23 +112,79 @@ const char*   physics_type_names[] =
 
 const char* g_anim_ease_type_names[] =
 {
-  "smooth","linear", "fast", 0  
+  "smooth","linear", "fast", 0
 };
 
 const char* g_anim_motion_blending_type_names[] =
 {
     "default",
-    "ignore_src_rotation", 
-    "ignore_dst_rotation", 
-    "ignore_src_motion", 
-    "ignore_dst_motion", 
-    0  
+    "ignore_src_rotation",
+    "ignore_dst_rotation",
+    "ignore_src_motion",
+    "ignore_dst_motion",
+    0
 };
 
 const char* g_anim_node_names[] =
 {
     "value", "lerp", "additive", 0
 };
+
+EngineNames::ANIMATION = "animation";
+EngineNames::ANIMATION_STATES = "states";
+EngineNames::MESH = "mesh";
+EngineNames::MATERIAL = "material";
+EngineNames::TEXTURE = "texture";
+EngineNames::TEXTURE_2D = "tex_2d";
+EngineNames::TEXTURE_3D = "tex_3d";
+EngineNames::ANIMATION_RIG = "rig";
+EngineNames::SHADER = "shader";
+EngineNames::PROGRAM = "program";
+EngineNames::SHADING_ENV = "shading_env";
+EngineNames::PHYSICS_CONFIG = "physics_config";
+EngineNames::MODEL = "model";
+EngineNames::LIGHT = "light";
+EngineNames::ACTOR = "actor";
+EngineNames::LEVEL = "level";
+
+EngineTypes::ANIMATION = 0;
+EngineTypes::ANIMATION_STATES = 0;
+EngineTypes::MESH = 0;
+EngineTypes::MATERIAL = 0;
+EngineTypes::TEXTURE = 0;
+EngineTypes::TEXTURE_2D = 0;
+EngineTypes::TEXTURE_3D = 0;
+EngineTypes::ANIMATION_RIG = 0;
+EngineTypes::SHADER = 0;
+EngineTypes::PROGRAM = 0;
+EngineTypes::SHADING_ENV = 0;
+EngineTypes::PHYSICS_CONFIG = 0;
+EngineTypes::MODEL = 0;
+EngineTypes::LIGHT = 0;
+EngineTypes::ACTOR = 0;
+EngineTypes::LEVEL = 0;
+
+#define INIT_ENGINE_TYPE(_name) EngineTypes::##_name = stringid_caculate(EngineNames::##_name);
+
+void init_engine_type_names()
+{
+    INIT_ENGINE_TYPE(ANIMATION);
+    INIT_ENGINE_TYPE(ANIMATION_STATES);
+    INIT_ENGINE_TYPE(MESH);
+    INIT_ENGINE_TYPE(MATERIAL);
+    INIT_ENGINE_TYPE(TEXTURE);
+    INIT_ENGINE_TYPE(TEXTURE_2D);
+    INIT_ENGINE_TYPE(TEXTURE_3D);
+    INIT_ENGINE_TYPE(ANIMATION_RIG);
+    INIT_ENGINE_TYPE(SHADER);
+    INIT_ENGINE_TYPE(PROGRAM);
+    INIT_ENGINE_TYPE(SHADING_ENV);
+    INIT_ENGINE_TYPE(PHYSICS_CONFIG);
+    INIT_ENGINE_TYPE(MODEL);
+    INIT_ENGINE_TYPE(LIGHT);
+    INIT_ENGINE_TYPE(ACTOR);
+    INIT_ENGINE_TYPE(LEVEL);
+}
 
 //======================================================
 // RESOURCES
@@ -185,20 +241,11 @@ extern void* load_resource_material(const char*, uint32_t);
 extern void  lookup_resource_material(void*);
 extern void  bringin_resource_material(void*);
 //-----------------------------------------------------------------
-extern void  lookup_resource_model( void* );
-//-----------------------------------------------------------------
 extern void* load_resource_physics( const char*, uint32_t );
 extern void  destroy_resource_physics( void* );
 //-----------------------------------------------------------------
 extern void* load_resource_proxy( const char*, uint32_t);
 extern void  destroy_resource_proxy( void * );
-//-----------------------------------------------------------------
-extern void* load_resource_ragdoll( const char*, uint32_t );
-extern void  destroy_resource_ragdoll(void*);
-//-----------------------------------------------------------------
-extern void  lookup_resource_lookat_ik(void*);
-extern void  lookup_resource_reach_ik(void*);
-extern void  lookup_resource_foot_ik(void*);
 //-----------------------------------------------------------------
 extern void  lookup_resource_shading_enviroment( void* );
 //-----------------------------------------------------------------
@@ -228,10 +275,6 @@ ResourceFactory g_resourceFactories[] =
     {0, 0, 0, 0, 0, PhysicsConfig::get_name()},
     {load_resource_physics, destroy_resource_physics, 0, 0, 0, PhysicsResource::get_name()},
     {load_resource_proxy, destroy_resource_proxy, 0, 0, 0, ProxyResource::get_name()},
-    {load_resource_ragdoll, destroy_resource_ragdoll, 0, 0, 0, RagdollResource::get_name()},
-    {0, 0, lookup_resource_lookat_ik, 0, 0, LookAtResource::get_name()},
-    {0, 0, lookup_resource_reach_ik, 0, 0, ReachResource::get_name()},
-    {0, 0, lookup_resource_foot_ik, 0, 0, FootResource::get_name()},
     {0, 0, lookup_resource_shading_enviroment, 0, 0, ShadingEnviroment::get_name()},
     {load_resource_level, 0, lookup_resource_level, 0, 0, Level::get_name()},
     {load_resource_actor, 0, lookup_resource_actor, 0, 0, ActorResource::get_name()},

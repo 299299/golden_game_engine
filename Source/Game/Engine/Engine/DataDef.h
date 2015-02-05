@@ -18,7 +18,6 @@ enum SubsystemTickStatus
     kTickFinishedJobs,
 };
 
-
 enum IKMask
 {
     kIKNone         = 0,
@@ -27,7 +26,6 @@ enum IKMask
     kIKReachRight   = (1 << 2),
     kIKFoot         = (1 << 3)
 };
-
 
 enum ViewId
 {
@@ -118,5 +116,20 @@ namespace EngineTypes
 
 namespace EngineNames
 {
-    extern const char* ANIMATION;
+    extern const char*  ANIMATION;
+    extern const char*  ANIMATION_STATES;
+    extern const char*  MESH;
+    extern const char*  MATERIAL;
+    extern const char*  TEXTURE;
+    extern const char*  TEXTURE_2D;
+    extern const char*  TEXTURE_3D;
+    extern const char*  ANIMATION_RIG;
+    extern const char*  SHADER;
+    extern const char*  PROGRAM;
+    extern const char*  SHADING_ENV;
+    extern const char*  PHYSICS_CONFIG;
+    extern const char*  MODEL;
+    extern const char*  LIGHT;
+    extern const char*  ACTOR;
+    extern const char*  LEVEL;
 };
