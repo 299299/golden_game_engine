@@ -1,4 +1,5 @@
 #include "ActorCompiler.h"
+#include "Actor.h"
 
 ActorCompiler::ActorCompiler()
 {

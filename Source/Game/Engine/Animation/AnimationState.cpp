@@ -160,6 +160,7 @@ void AnimationState::remove_from_skeleton( hkaAnimatedSkeleton* s )
 
 void AnimationState::get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut)
 {
+#ifdef HAVOK_COMPILE
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
     for(uint32_t i=0; i<_num; ++i)
@@ -170,6 +171,7 @@ void AnimationState::get_root_motion(float deltaTime, hkQsTransformf& deltaMotio
         ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
         deltaMotionOut.setMulEq(t);
     }
+#endif
 }
 
 int AnimationStateLayer::find_state(StringId name)
@@ -325,6 +327,7 @@ void AnimationStateLayer::fireEvent( StringId name )
 
 void AnimationStateLayer::get_root_motion( float deltaTime, hkQsTransformf& deltaMotionOut )
 {
+#ifdef HAVOK_COMPILE
     int _state = m_state;
     switch(_state)
     {
@@ -343,10 +346,12 @@ void AnimationStateLayer::get_root_motion( float deltaTime, hkQsTransformf& delt
     default:
         break;
     }
+#endif
 }
 
 void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut )
 {
+#ifdef HAVOK_COMPILE
     int _state = (int)m_curTransition->m_motionBlendingType;
     switch (_state)
     {
@@ -379,6 +384,7 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
         }
         break;
     }
+#endif
 }
 
 void* load_animation_state_layer(const char* data, uint32_t size)

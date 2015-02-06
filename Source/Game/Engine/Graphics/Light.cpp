@@ -42,7 +42,7 @@ void LightWorld::update( float dt )
     {
         Light& l = lights[i];
         if(l.m_flag & kNodeInvisible) continue;
-        if(l.m_resource->m_hasShadow && !m_shadowLight) m_shadowLight = &l;
+        if(l.m_hasShadow && !m_shadowLight) m_shadowLight = &l;
         m_drawLights[m_numLightsToDraw++] = &l;
     }
 }
@@ -68,7 +68,7 @@ void LightWorld::submit_lights(ShadingEnviroment* env)
         Vec4& info = s_lightInfo[i];
         Vec3& color = s_lightColor[i];
         Vec3& vec = s_lightVec[i];
-        s_lightType[i] = Light->m_type;
+        s_lightType[i] = light->m_type;
         bx::vec3Move(color.m_vec, light->m_color);
         if(s_lightType[i] == kLightDirectional) bx::vec3Move(vec.m_vec, light->m_dir);
         else vec3_make(vec.m_vec, light->m_transform[12], light->m_transform[13], light->m_transform[14]);

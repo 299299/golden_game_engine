@@ -80,6 +80,28 @@ enum MotionBlendingType
     kMotionBlendingIgnoreDstMotion,
 };
 
+enum HumanBodypart
+{
+    kBodyHead,
+    kBodyNeck,
+    kBodyShoulder_L,
+    kBodyArm_L,
+    kBodyForeArm_L,
+    kBodyHand_L,
+    kBodyShoulder_R,
+    kBodyArm_R,
+    kBodyForeArm_R,
+    kBodyHand_R,
+    kBodyHip,
+    kBodyUpLeg_L,
+    kBodyLeg_L,
+    kBodyFoot_L,
+    kBodyUpLeg_R,
+    kBodyLeg_R,
+    kBodyFoot_R,
+    kBodyPartMax
+};
+
 struct BlendNodeType
 {
     enum

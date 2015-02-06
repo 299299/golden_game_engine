@@ -57,7 +57,7 @@ int Animation::find_first_trigger( StringId name ) const
 {
     uint32_t num = m_numTriggers;
     AnimationTrigger* head = m_triggers;
-    for(int i=0; i<num; ++i)
+    for(uint32_t i=0; i<num; ++i)
     {
         if(head[i].m_name == name)
             return i;

@@ -166,6 +166,7 @@ private:
     ResourcePackage* find_package(StringId name);
     void push_request(ResourceRequest* request);
 
+public:
     bool is_running() const { return m_running != 0; };
     void set_running(int r) { m_running = r;};
 };

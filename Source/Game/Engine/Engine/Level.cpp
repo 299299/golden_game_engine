@@ -3,6 +3,7 @@
 #include "MathDefs.h"
 #include "Log.h"
 #include "Actor.h"
+#include "DataDef.h"
 
 void transform_object(hkQsTransform& m, const float* t, const float* r, const float* s)
 {

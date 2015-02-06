@@ -14,7 +14,7 @@ LightCompiler::~LightCompiler()
 bool LightCompiler::readJSON( const jsonxx::Object& root )
 {
     BaseCompiler::readJSON(root);
-    LightResource light;
+    Light light;
     memset(&light, 0x00, sizeof(light));
 
     extern const char*  g_lightTypeNames[];

@@ -1,6 +1,7 @@
 #include "CharacterConverter.h"
 #include "ModelConverter.h"
 #include "AnimRigConverter.h"
+#include "AnimRig.h"
 
 CharacterConverter::CharacterConverter()
     :m_ac(0)

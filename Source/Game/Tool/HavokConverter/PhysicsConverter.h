@@ -8,7 +8,7 @@ public:
     PhysicsConverter(ActorConverter* ownner);
     ~PhysicsConverter();
 
-    virtual std::string getTypeName() const { return EngineNames::PHYSICS; };
+    virtual std::string getTypeName() const { return ""; };
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
     virtual void postProcess();

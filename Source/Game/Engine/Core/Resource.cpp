@@ -81,7 +81,7 @@ void ResourcePackage::load_group(int index)
 {
     TIMELOG("%s %d", BX_FUNCTION, index);
 
-    if(!is_running())
+    if(!g_resourceMgr.is_running())
         return;
 
     ResourceGroup& group = m_groups[index];
@@ -101,7 +101,7 @@ void ResourcePackage::load_group(int index)
 
     for (uint32_t i=0; i<num; ++i)
     {
-        if(!is_running())
+        if(!g_resourceMgr.is_running())
             return;
 
         if(get_status() == kResourceRequestUnload)
@@ -137,7 +137,7 @@ void ResourcePackage::load_group_bundled(int index)
 {
     TIMELOG("%s load group %d", BX_FUNCTION, index);
 
-    if(!is_running())
+    if(!g_resourceMgr.is_running())
         return;
 
     ResourceGroup& group = m_groups[index];
@@ -153,7 +153,7 @@ void ResourcePackage::load_group_bundled(int index)
 
     for (uint32_t i=0; i<num; ++i)
     {
-        if(!is_running())
+        if(!g_resourceMgr.is_running())
             return;
         if(get_status() == kResourceRequestUnload)
             return;

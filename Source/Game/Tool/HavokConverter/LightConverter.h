@@ -15,5 +15,4 @@ public:
 
 private:
     hkxLight*                   m_light;
-    LightResource               m_resource;
 };

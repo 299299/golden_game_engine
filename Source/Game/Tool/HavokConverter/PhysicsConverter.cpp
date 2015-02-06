@@ -1,5 +1,6 @@
 #include "PhysicsConverter.h"
 #include "ActorConverter.h"
+#include "PhysicsInstance.h"
 
 PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

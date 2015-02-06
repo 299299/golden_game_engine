@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "Resource.h"
 #include "Log.h"
+#include "DataDef.h"
 #include <bx/string.h>
 
 void Shader::bringin()

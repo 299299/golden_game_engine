@@ -21,6 +21,6 @@ private:
 private:
     RigSkinData*                         m_skin;
     std::string                          m_rigFileName;
-    StringArray                         m_boneNames;
+    StringArray                          m_boneNames;
     int                                  m_bodyPart[kBodyPartMax];
 };

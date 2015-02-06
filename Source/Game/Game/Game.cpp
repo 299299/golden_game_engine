@@ -16,6 +16,7 @@
 #include "PlayerState.h"
 #include "RenderCamera.h"
 #include "Actor.h"
+#include "DataDef.h"
 #include <bx/bx.h>
 #include <bx/commandline.h>
 
@@ -75,15 +76,15 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
     Graphics::ready();
     g_debugDrawMgr.ready();
-    PhysicsConfig* cfg = (PhysicsConfig*)g_resourceMgr.find_resource(
+    g_physicsWorld.create_world(
+        (PhysicsConfig*)g_resourceMgr.find_resource(
         EngineTypes::PHYSICS_CONFIG,
-        stringid_caculate("core/global"));
-    g_physicsWorld.create_world(cfg);
+        stringid_caculate("core/global"))
+        );
     g_physicsWorld.create_plane(500.0f);
-    ShadingEnviroment* env = (ShadingEnviroment*)(g_resourceMgr.find_resource(
+    g_actorWorld.m_shading_env = (ShadingEnviroment*)(g_resourceMgr.find_resource(
         EngineTypes::SHADING_ENV,
         stringid_caculate("core/common/default")));
-    g_actorWorld.m_shading_env = env;
 
     if(package_name)
         g_resourceMgr.load_package_and_wait(package_name);

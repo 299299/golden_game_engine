@@ -1,6 +1,7 @@
 #pragma once
 #include "StringId.h"
 #include "Prerequisites.h"
+#include "DataDef.h"
 
 class   hkaSkeleton;
 class   hkaMirroredSkeleton;
@@ -10,28 +11,6 @@ struct  AnimationTrigger;
 class   hkaDefaultAnimationControl;
 struct  Animation;
 struct  hk_anim_ctrl;
-
-enum HumanBodypart
-{
-    kBodyHead,
-    kBodyNeck,
-    kBodyShoulder_L,
-    kBodyArm_L,
-    kBodyForeArm_L,
-    kBodyHand_L,
-    kBodyShoulder_R,
-    kBodyArm_R,
-    kBodyForeArm_R,
-    kBodyHand_R,
-    kBodyHip,
-    kBodyUpLeg_L,
-    kBodyLeg_L,
-    kBodyFoot_L,
-    kBodyUpLeg_R,
-    kBodyLeg_R,
-    kBodyFoot_R,
-    kBodyPartMax
-};
 
 struct BoneAttachment
 {

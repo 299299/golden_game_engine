@@ -7,7 +7,7 @@ public:
     MaterialCompiler();
     ~MaterialCompiler();
 
-    virtual std::string getFormatExt() const { return EngineNames::MATERIAL };
+    virtual std::string getFormatExt() const { return EngineNames::MATERIAL; };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
 };

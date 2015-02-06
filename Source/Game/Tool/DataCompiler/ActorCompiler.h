@@ -7,7 +7,7 @@ public:
     ActorCompiler();
     ~ActorCompiler();
 
-    virtual std::string getFormatExt() const { return EngineNames::ACTOR };
+    virtual std::string getFormatExt() const { return EngineNames::ACTOR; };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
 };

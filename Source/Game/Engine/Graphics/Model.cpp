@@ -14,7 +14,7 @@
 void Model::submit()
 {
     const Mesh* mesh = m_mesh;
-    const SubMesh* submeshes = m_submeshes;
+    const SubMesh* submeshes = mesh->m_submeshes;
     bool bSkinning = mesh->m_numJoints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
     int num = bSkinning ? mesh->m_numJoints : 1;
@@ -253,7 +253,7 @@ Id create_model(const void* data, ActorId32)
 {
     Model* inst;
     Id modelId = m_models.create(&inst);
-    inst->init(modelResource);
+    //inst->init(modelResource);
     memcpy(inst, data, sizeof(Model));
     return modelId;
 }

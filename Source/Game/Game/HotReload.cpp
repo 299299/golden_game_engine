@@ -81,8 +81,10 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
 {
     AnimRig* oldCompResource = (AnimRig*)oldResource;
     AnimRig* newCompResource = (AnimRig*)newResource;
-    ComponentFactory* fac = g_componentMgr.find_factory(AnimRig::get_type());
+    ComponentFactory* fac = g_componentMgr.find_factory(EngineTypes::ANIMATION_RIG);
     uint32_t componentNum = fac->num_components();
+
+#if 0
     AnimRigInstance* components = (AnimRigInstance*)fac->get_components();
     LOGI("component %s instance num = %d", EngineNames::ANIMATION_RIG, componentNum);
     for(size_t i=0; i<componentNum; ++i)
@@ -93,6 +95,8 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
             components[i].init(newCompResource, components[i].m_actor);
         }
     }
+#endif
+
 }
 
 void reload_animation_resource(void* oldResource, void* newResource)
@@ -317,7 +321,7 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(EngineTypes::ACTOR, reload_actor_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::MATERIAL, reload_material_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::SHADER, reload_shader_resource);
-    g_resourceMgr.register_reload_callback(EngineTypes::SHADER_PROGRAM, reload_program_resource);
+    g_resourceMgr.register_reload_callback(EngineTypes::PROGRAM, reload_program_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::LEVEL, reload_level_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION, reload_animation_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION_RIG, reload_anim_rig_resource);
