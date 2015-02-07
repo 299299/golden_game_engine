@@ -26,7 +26,6 @@ void Material::bringin()
 {
     uint32_t num = m_numSamplers;
     MatSampler* head = m_samplers;
-
     for (uint32_t i=0; i<num; ++i)
     {
         Texture* tex = head[i].m_texture;
@@ -90,10 +89,11 @@ void Material::submit_shadow() const
     bgfx::setState(SHADOW_RENDER_STATE);
 }
 
-void* load_resource_material(const char* data, uint32_t size)
+void* load_resource_material(void* data, uint32_t size)
 {
+    char* p = (char*)data;
     Material* m = (Material*)data;
-    m->m_samplers = (MatSampler*)(data + sizeof(Material));
+    m->m_samplers = (MatSampler*)(p + sizeof(Material));
     return m;
 }
 

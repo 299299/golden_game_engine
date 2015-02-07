@@ -60,11 +60,12 @@ const uint16_t* Mesh::get_index_data( uint32_t index ) const
     return (const uint16_t*)(pThis + m_submeshes[index].m_indexOffset);
 }
 
-void* load_resource_mesh(const char* data, uint32_t size)
+void* load_resource_mesh(void* data, uint32_t size) 
 {
     Mesh* pMesh = (Mesh*)data;
-    pMesh->m_submeshes = (SubMesh*)(data + pMesh->m_subMeshOffset);
-    pMesh->m_jointMatrix = (Matrix*)(data + pMesh->m_jointOffset);
+    char* p = (char*)data;
+    pMesh->m_submeshes = (SubMesh*)(p + pMesh->m_subMeshOffset);
+    pMesh->m_jointMatrix = (Matrix*)(p + pMesh->m_jointOffset);
     return pMesh;
 }
 

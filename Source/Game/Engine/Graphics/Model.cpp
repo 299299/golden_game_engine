@@ -133,20 +133,18 @@ bool Model::check_intersection( const float* rayOrig, const float* rayDir, float
     return intersection;
 }
 
-#if 0
-void lookup_resource_model( void * resource )
+void lookup_model_component( void * resource )
 {
-    ModelResource* model = (ModelResource*)resource;
-    model->m_mesh = FIND_RESOURCE(Mesh,  model->m_meshName);
+    Model* model = (Model*)resource;
+    model->m_mesh = FIND_RESOURCE(Mesh, EngineTypes::MESH, model->m_meshName);
     uint32_t num = model->m_numMaterials;
     Material** head = model->m_materials;
     StringId* matNames = model->m_materialNames;
     for(uint32_t i=0; i<num;++i)
     {
-        head[i] = FIND_RESOURCE(Material, matNames[i]);
+        head[i] = FIND_RESOURCE(Material, EngineTypes::MATERIAL, matNames[i]);
     }
 }
-#endif
 
 ModelWorld g_modelWorld;
 static IdArray<Model>      m_models;

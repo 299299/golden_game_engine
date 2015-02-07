@@ -43,3 +43,6 @@ ENGINE_NATIVE_ALIGN(struct) Mesh
 };
 
 
+void* load_resource_mesh(void* data, uint32_t size);
+void  bringin_resource_mesh(void* resource);
+void  bringout_resource_mesh(void* resource);

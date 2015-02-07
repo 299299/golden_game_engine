@@ -46,13 +46,15 @@ struct ModelWorld
     void                    cull_models(const Frustum& frust);
     void                    cull_shadows(const Frustum& lightFrust);
 
-    Model**                         m_modelsToDraw;
-    uint32_t                        m_numModels;
-    Model**                         m_shadowsToDraw;
-    uint32_t                        m_numShadows;
+    Model**                 m_modelsToDraw;
+    uint32_t                m_numModels;
+    Model**                 m_shadowsToDraw;
+    uint32_t                m_numShadows;
 
 private:
     void                    reset();
 };
 
 extern ModelWorld g_modelWorld;
+
+void lookup_model_component( void * resource );

@@ -20,7 +20,7 @@ enum ResourceStatus
     kResourceStatusMax
 };
 
-typedef void* (*__RESOURCE_LOAD)(const char*, uint32_t);
+typedef void* (*__RESOURCE_LOAD)(void*, uint32_t);
 typedef void  (*__RESOURCE_DESTROY)(void*);
 typedef void  (*__RESOURCE_BRINGIN)(void*);
 typedef void  (*__RESOURCE_LOOKUP)(void*);
