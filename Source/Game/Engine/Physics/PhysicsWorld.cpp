@@ -467,6 +467,7 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
     PROFILE(sync_proxy_actors);
     check_status();
 
+#if 0
 #ifdef HAVOK_COMPILE
     StringId physics_type = ProxyResource::get_type();
 
@@ -483,6 +484,7 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
         transform_vec3(t.m_translation, pos);
         actor.set_transform_ignore_type(t, physics_type);
     }
+#endif
 #endif
 }
 

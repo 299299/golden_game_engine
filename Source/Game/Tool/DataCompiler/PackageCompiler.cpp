@@ -36,8 +36,6 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     StringArray filesInFolder;
     scan_dir(filesInFolder, input.c_str(), "*", SCAN_FILES, true);
 
-    extern int get_resource_order(const char*);
-
     size_t numResources = filesInFolder.size();
     uint32_t memSize = sizeof(ResourcePackage);
     memSize += sizeof(ResourceInfo) * numResources;
@@ -48,7 +46,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     {
         const std::string& fileName = filesInFolder[i];
         std::string ext = getFileExt(fileName);
-        int order = get_resource_order(ext.c_str());
+        int order = g_resourceMgr.get_resource_order(stringid_caculate(ext.c_str()));
         if(order < -1)
         {
             LOGW("not engine resource %s.", fileName.c_str());

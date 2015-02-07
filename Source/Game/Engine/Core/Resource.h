@@ -54,6 +54,7 @@ struct ResourceFactory
     __RESOURCE_BRINGIN          m_bringInFunc;
     __RESOURCE_BRINGOUT         m_bringOutFunc;
     const char*                 m_name;
+    int                         m_order;
 };
 
 ENGINE_NATIVE_ALIGN(struct) ResourcePackage
@@ -133,6 +134,7 @@ struct ResourceManager
     // Factory API
     ResourceFactory* find_factory(StringId type);
     void register_factory(const ResourceFactory& factory);
+    int get_resource_order(StringId type);
 
     //--------------------------------------------------------------------
     // Package API

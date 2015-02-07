@@ -4,6 +4,7 @@
 #include "ActorConverter.h"
 #include "MathDefs.h"
 #include "Model.h"
+#include "Mesh.h"
 
 ModelConverter::ModelConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

@@ -461,7 +461,7 @@ void* ResourceManager::io_work_loop( void* p )
     hkWorkerThreadContext context(RESOURCE_WORKER_THREAD_ID);
     ResourceManager* mgr = (ResourceManager*)p;
     hkSemaphore* pSemaphore = mgr->m_semaphore;
-    while(is_running())
+    while(mgr->is_running())
     {
         pSemaphore->acquire();
         mgr->process_request();
@@ -802,6 +802,12 @@ void ResourceManager::reload_resource(StringId type, bool bFireCallbacks)
             reload_resource(type, info.m_name, name, bFireCallbacks);
         }
     }
+}
+
+int ResourceManager::get_resource_order( StringId type )
+{
+    ResourceFactory* fac = find_factory(type);
+    return fac ? fac->m_order : -1;
 }
 
 

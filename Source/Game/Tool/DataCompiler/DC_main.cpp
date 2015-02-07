@@ -2,6 +2,7 @@
 #include "ToolUtils.h"
 #include "DC_Config.h"
 #include "Mesh.h"
+#include "Resource.h"
 //=================================================================
 #include "AnimationCompiler.h"
 #include "AnimationStateCompiler.h"
@@ -108,9 +109,8 @@ void DC_Config::add_child_compile( BaseCompiler* compiler )
 
 static int compare_less_resource(const std::string& nameA, const std::string& nameB)
 {
-    extern int get_resource_order(const char*);
-    int orderA = get_resource_order(getFileExt(nameA).c_str());
-    int orderB = get_resource_order(getFileExt(nameB).c_str());
+    int orderA = g_resourceMgr.get_resource_order(stringid_caculate(getFileExt(nameA).c_str()));
+    int orderB = g_resourceMgr.get_resource_order(stringid_caculate(getFileExt(nameB).c_str()));
     return orderA < orderB;
 }
 
