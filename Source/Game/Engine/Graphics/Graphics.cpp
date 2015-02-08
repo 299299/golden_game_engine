@@ -9,6 +9,7 @@
 #include "ShadingEnviroment.h"
 #include "Material.h"
 #include "Light.h"
+#include "Mesh.h"
 #include "Model.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -16,6 +17,7 @@
 #include "Win32Context.h"
 #include "Utils.h"
 #include "Gui.h"
+#include "Component.h"
 //============================================
 #include <bx/fpumath.h>
 #include <bgfxplatform.h>
@@ -76,9 +78,9 @@ bool                        g_hdr = true;
 //==============================================================
 static bgfxCallback         g_bgfxCallback;
 static uint32_t             g_resetFlag = BGFX_RESET_MSAA_X4|BGFX_RESET_VSYNC;
-static bgfx::UniformHandle  g_engineUniforms[MAX_UNIFORM_NUM];
+static bgfx::UniformHandle* g_engineUniforms;
 static uint32_t             g_numEngineUniforms = 0;
-static FrameBuffer          g_frameBuffers[MAX_FRAMEBUFFER_NUM];
+static FrameBuffer*         g_frameBuffers;
 static uint32_t             g_numFrameBuffers = 0;
 
 void postProcessInit();
@@ -124,6 +126,7 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
 
 void createUniforms()
 {
+    g_engineUniforms = COMMON_ALLOC(bgfx::UniformHandle, MAX_UNIFORM_NUM);
     extern const char*  g_textureNames[];
     g_uniformPerFrame.m_time = createEngineUniform("u_time", bgfx::UniformType::Uniform1f);
     g_uniformPerFrame.m_ambientSkyColor = createEngineUniform("u_ambientSkyColor", bgfx::UniformType::Uniform3fv);
@@ -164,9 +167,44 @@ void createUniforms()
     g_postProcess.m_fade = createEngineUniform("u_fade", bgfx::UniformType::Uniform1f);
 }
 
+void register_factories()
+{
+    ResourceFactory _mesh = {load_resource_mesh, 0, 0, bringin_resource_mesh, bringout_resource_mesh, EngineNames::MESH, 0};
+    g_resourceMgr.register_factory(_mesh);
+
+    ResourceFactory _texture = {load_resource_texture, 0, 0, 0, bringout_resource_texture, EngineNames::TEXTURE, 0};
+    g_resourceMgr.register_factory(_texture);
+
+    ResourceFactory _texture2d = {load_resource_texture2d, 0, 0, bringin_resource_texture2d, bringout_resource_texture2d, EngineNames::TEXTURE_2D, 0};
+    g_resourceMgr.register_factory(_texture2d);
+
+    ResourceFactory _texture3d = {load_resource_texture3d, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, EngineNames::TEXTURE_3D, 0};
+    g_resourceMgr.register_factory(_texture3d);  
+
+    ResourceFactory _shader = {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, EngineNames::SHADER, 0};
+    g_resourceMgr.register_factory(_shader); 
+
+    ResourceFactory _program = {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, EngineNames::PROGRAM, 1};
+    g_resourceMgr.register_factory(_program);
+
+    ResourceFactory _material = {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, EngineNames::MATERIAL, 2 };
+    g_resourceMgr.register_factory(_material);
+
+    ResourceFactory _shadingEnv = {0,0,lookup_resource_shading_enviroment,0,0,EngineNames::SHADING_ENV, 4};
+    g_resourceMgr.register_factory(_shadingEnv);
+
+    ComponentFactory _model = {create_model, destroy_model, get_model, num_all_model, get_all_model, transform_model, lookup_model_component};
+    g_componentMgr.register_factory(_model, EngineTypes::MODEL);
+
+    ComponentFactory _light = {create_light, destroy_light, get_light, num_all_light, get_all_light, transform_light};
+    g_componentMgr.register_factory(_light, EngineTypes::LIGHT);
+}
+
 void Graphics::init(void* hwnd, bool bFullScreen)
 {
     TIMELOG("Graphics::Init");
+    register_factories();
+
 #ifdef HAVOK_COMPILE
     bgfx::winSetHwnd((HWND)hwnd);
 #else
@@ -187,6 +225,7 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, BGFX_COLOR, 1.0f, 0);
     bgfx::setViewClear(kBackgroundViewId, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, BGFX_COLOR, 1.0f, 0);
 
+    g_frameBuffers = COMMON_ALLOC(FrameBuffer, MAX_FRAMEBUFFER_NUM);
     PosTexCoord0Vertex::init();
     createUniforms();
     postProcessInit();
@@ -263,10 +302,12 @@ void Graphics::shutdown()
     {
         bgfx::destroyFrameBuffer(g_frameBuffers[i].m_handle);
     }
+    COMMON_DEALLOC(g_frameBuffers);
     for(uint32_t i=0; i<g_numEngineUniforms; ++i)
     {
         bgfx::destroyUniform(g_engineUniforms[i]);
     }
+    COMMON_DEALLOC(g_engineUniforms);
     g_guiMgr.shutdown();
     g_modelWorld.shutdown();
     g_lightWorld.shutdown();

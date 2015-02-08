@@ -14,7 +14,7 @@ struct AnimRig;
 struct AnimRigInstance;
 struct Actor;
 struct AnimationEvent;
-struct hkaSampleBlendJob;
+class hkaSampleBlendJob;
 
 struct AnimationConfig
 {

@@ -20,12 +20,12 @@ enum ResourceStatus
     kResourceStatusMax
 };
 
-typedef void* (*__RESOURCE_LOAD)(void*, uint32_t);
-typedef void  (*__RESOURCE_DESTROY)(void*);
-typedef void  (*__RESOURCE_BRINGIN)(void*);
-typedef void  (*__RESOURCE_LOOKUP)(void*);
-typedef void  (*__RESOURCE_BRINGOUT)(void*);
-typedef void  (*__RESOURCE_RELOAD)(void*, void*);
+typedef void* (*func_load_resource_t)(void*, uint32_t);
+typedef void  (*func_destroy_resource_t)(void*);
+typedef void  (*func_bringin_resource_t)(void*);
+typedef void  (*func_lookup_resource_t)(void*);
+typedef void  (*func_bringout_resource_t)(void*);
+typedef void  (*func_reload_resource_t)(void*, void*);
 
 ENGINE_NATIVE_ALIGN(struct) ResourceInfo
 {
@@ -48,11 +48,11 @@ ENGINE_NATIVE_ALIGN(struct) ResourceGroup
 
 struct ResourceFactory
 {
-    __RESOURCE_LOAD             m_loadFunc;
-    __RESOURCE_DESTROY          m_destroyFunc;
-    __RESOURCE_LOOKUP           m_lookupFunc;
-    __RESOURCE_BRINGIN          m_bringInFunc;
-    __RESOURCE_BRINGOUT         m_bringOutFunc;
+    func_load_resource_t        m_loadFunc;
+    func_destroy_resource_t     m_destroyFunc;
+    func_lookup_resource_t      m_lookupFunc;
+    func_bringin_resource_t     m_bringInFunc;
+    func_bringout_resource_t    m_bringOutFunc;
     const char*                 m_name;
     int                         m_order;
 };
@@ -154,7 +154,7 @@ struct ResourceManager
 #ifdef RESOURCE_RELOAD
     void* reload_resource(StringId type, StringId name, const char* pathName, bool bFireCallbacks = true);
     void  destroy_reload_resources();
-    void  register_reload_callback(StringId type, __RESOURCE_RELOAD func);
+    void  register_reload_callback(StringId type, func_reload_resource_t func);
     void  reload_resource(StringId type, bool bFireCallbacks = true);
 #endif
 

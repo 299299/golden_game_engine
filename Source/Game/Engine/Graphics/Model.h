@@ -7,6 +7,7 @@
 struct Material;
 struct Mesh;
 struct Frustum;
+class hkQsTransformf;
 
 struct Model
 {
@@ -57,4 +58,10 @@ private:
 
 extern ModelWorld g_modelWorld;
 
-void lookup_model_component( void * resource );
+void lookup_model_component( void * );
+Id create_model(const void*, ActorId32);
+void destroy_model(Id);
+void* get_model(Id);
+uint32_t num_all_model();
+void* get_all_model();
+void transform_model(Id, const hkQsTransformf&);

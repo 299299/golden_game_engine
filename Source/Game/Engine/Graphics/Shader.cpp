@@ -42,10 +42,10 @@ void ShaderProgram::lookup()
     if(!m_ps) LOGE("ps[%s] lookup error", stringid_lookup(m_psName));
 }
 
-void* load_resource_shader(const char* data, uint32_t size)
+void* load_resource_shader(void* data, uint32_t size)
 {
     Shader* shader = (Shader*)data;
-    shader->m_blob = (char*)(data + sizeof(Shader));
+    shader->m_blob = (char*)data + sizeof(Shader);
     shader->m_handle.idx = bgfx::invalidHandle;
     return shader;
 }

@@ -35,3 +35,9 @@ ENGINE_NATIVE_ALIGN(struct) ShaderProgram
 };
 
 ShaderProgram* find_shader(const char* name);
+void* load_resource_shader(void* data, uint32_t size);
+void bringin_resource_shader(void* resource);
+void bringout_resource_shader(void* resource);
+void lookup_resource_shader_program(void* resource);
+void bringin_resource_shader_program(void* resource);
+void bringout_resource_shader_program(void* resource);

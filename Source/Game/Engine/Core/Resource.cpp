@@ -94,7 +94,7 @@ void ResourcePackage::load_group(int index)
     group.m_resources = (ResourceInfo*)(pThis + group.m_resourceInfoOffset);
 
     char fileName[256];
-    __RESOURCE_LOAD loadFunc = group.m_factory->m_loadFunc;
+    func_load_resource_t loadFunc = group.m_factory->m_loadFunc;
 
     uint32_t num = group.m_numResources;
     ResourceInfo* resources = group.m_resources;
@@ -148,7 +148,7 @@ void ResourcePackage::load_group_bundled(int index)
     char* pThis = (char*)this;
     group.m_factory = fac;
     group.m_resources = (ResourceInfo*)(pThis + group.m_resourceInfoOffset);
-    __RESOURCE_LOAD loadFunc = group.m_factory->m_loadFunc;
+    func_load_resource_t loadFunc = group.m_factory->m_loadFunc;
     uint32_t num = group.m_numResources;
 
     for (uint32_t i=0; i<num; ++i)
@@ -185,7 +185,7 @@ void ResourcePackage::lookup_all_resources()
     for(uint32_t i=0; i<num; ++i)
     {
         ResourceGroup& group = groups[i];
-        __RESOURCE_LOOKUP func_ = group.m_factory->m_lookupFunc;
+        func_lookup_resource_t func_ = group.m_factory->m_lookupFunc;
         if(!func_) continue;
 
         uint32_t num_res = group.m_numResources;
@@ -205,7 +205,7 @@ void ResourcePackage::destroy_all_resources()
     for(uint32_t i=0; i<m_numGroups; ++i)
     {
         ResourceGroup& group = m_groups[i];
-        __RESOURCE_DESTROY func_ = group.m_factory->m_destroyFunc;
+        func_destroy_resource_t func_ = group.m_factory->m_destroyFunc;
         if(!func_) continue;
 
         uint32_t num = group.m_numResources;
@@ -219,7 +219,7 @@ void ResourcePackage::destroy_all_resources()
 
 void ResourcePackage::bringin_group_resource(ResourceGroup& group, int start, int end)
 {
-    __RESOURCE_BRINGIN func_ = group.m_factory->m_bringInFunc;
+    func_bringin_resource_t func_ = group.m_factory->m_bringInFunc;
     ResourceInfo* resources = group.m_resources;
     for(int i=start; i<end; ++i)
         func_(resources[i].m_ptr);
@@ -277,7 +277,7 @@ void ResourcePackage::bringout_all_resources()
     for(uint32_t i=0; i<num; ++i)
     {
         ResourceGroup& group = groups[i];
-        __RESOURCE_BRINGOUT func_ = group.m_factory->m_bringOutFunc;
+        func_bringout_resource_t func_ = group.m_factory->m_bringOutFunc;
         if(!func_) continue;
 
         uint32_t res_num = group.m_numResources;
@@ -681,7 +681,7 @@ struct ResouceData
 };
 typedef std::unordered_map<hkUint64, ResouceData> ReloadResourceMap;
 ReloadResourceMap  g_reloadResources;
-typedef std::unordered_map<uint32_t, std::vector<__RESOURCE_RELOAD> > ReloadCallbackMap;
+typedef std::unordered_map<uint32_t, std::vector<func_reload_resource_t> > ReloadCallbackMap;
 ReloadCallbackMap g_reloadCallbacks;
 //===================================================================================
 void ResourceManager::destroy_reload_resources()
@@ -695,12 +695,12 @@ void ResourceManager::destroy_reload_resources()
     }
     g_reloadResources.clear();
 }
-void  ResourceManager::register_reload_callback(StringId type, __RESOURCE_RELOAD func)
+void  ResourceManager::register_reload_callback(StringId type, func_reload_resource_t func)
 {
     ReloadCallbackMap::iterator iter = g_reloadCallbacks.find(type);
     if(iter == g_reloadCallbacks.end())
     {
-        std::vector<__RESOURCE_RELOAD> callbacks;
+        std::vector<func_reload_resource_t> callbacks;
         callbacks.push_back(func);
         g_reloadCallbacks[type] = callbacks;
     }
@@ -767,7 +767,7 @@ void* ResourceManager::reload_resource( StringId type, StringId name, const char
         ReloadCallbackMap::iterator iter1 = g_reloadCallbacks.find(type);
         if(iter1 != g_reloadCallbacks.end())
         {
-            const std::vector<__RESOURCE_RELOAD>& callbacks = iter1->second;
+            const std::vector<func_reload_resource_t>& callbacks = iter1->second;
             for(size_t i=0; i<callbacks.size(); ++i)
             {
                 callbacks[i](oldResource, newResource);

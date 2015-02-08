@@ -46,3 +46,11 @@ private:
 };
 
 extern LightWorld g_lightWorld;
+
+
+Id create_light(const void*, ActorId32);
+void destroy_light(Id);
+void* get_light(Id);
+uint32_t num_all_light();
+void* get_all_light();
+void transform_light(Id, const hkQsTransformf&);

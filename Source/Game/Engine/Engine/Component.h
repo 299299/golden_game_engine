@@ -2,6 +2,8 @@
 #include "StringId.h"
 #include "GameConfig.h"
 
+class hkQsTransformf;
+
 struct ComponentData
 {
     StringId        m_componentType;
@@ -9,22 +11,23 @@ struct ComponentData
     char*           m_data;
 };
 
-typedef Id      (*func_create_component)(const void*, ActorId32);
-typedef void    (*func_destroy_component)(Id);
-typedef void*   (*func_get_component)(Id);
-typedef uint32_t(*func_num_components)();
-typedef void*   (*func_get_components)();
-class hkQsTransformf;
-typedef void    (*func_transform_component)(Id, const hkQsTransformf&);
+typedef Id      (*func_create_component_t)(const void*, ActorId32);
+typedef void    (*func_destroy_component_t)(Id);
+typedef void*   (*func_get_component_t)(Id);
+typedef uint32_t(*func_num_components_t)();
+typedef void*   (*func_get_components_t)();
+typedef void    (*func_transform_component_t)(Id, const hkQsTransformf&);
+typedef void    (*func_load_component_data_t)(void*);
 
 struct ComponentFactory
 {
-    func_create_component       m_create_component;
-    func_destroy_component      m_destroy_component;
-    func_get_component          m_get_component;
-    func_num_components         m_num_conmponents;
-    func_get_components         m_get_components;
-    func_transform_component    m_transform_component;
+    func_create_component_t       m_create_component;
+    func_destroy_component_t      m_destroy_component;
+    func_get_component_t          m_get_component;
+    func_num_components_t         m_num_conmponents;
+    func_get_components_t         m_get_components;
+    func_transform_component_t    m_transform_component;
+    func_load_component_data_t    m_load_component_data;
 
     Id create_component(const void* res, ActorId32 id)
     {
@@ -50,6 +53,11 @@ struct ComponentFactory
     void* get_components()
     {
         return m_get_components();
+    }
+    void load_component_data(void* data)
+    {
+        if(m_load_component_data)
+            m_load_component_data(data);
     }
 };
 

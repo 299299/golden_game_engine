@@ -53,7 +53,7 @@ void Raw3DTexture::bringout()
     m_handle.idx = bgfx::invalidHandle;
 }
 
-void* load_resource_texture(const char* data, uint32_t size)
+void* load_resource_texture(void* data, uint32_t size)
 {
     Texture* texture = (Texture*)data;
     texture->m_blob = (char*)data + sizeof(Texture);
@@ -66,7 +66,7 @@ void  bringout_resource_texture(void* resource)
     texture->bringout();
 }
 
-void* load_resource_texture2d( const char* data, uint32_t size)
+void* load_resource_texture2d( void* data, uint32_t size)
 {
     Raw2DTexture* tex = (Raw2DTexture*)data;
     tex->m_blob = (char*)data + sizeof(Raw2DTexture);
@@ -85,7 +85,7 @@ void bringout_resource_texture2d( void* resource )
     tex2d->bringout();
 }
 
-void* load_resource_texture3d( const char* data, uint32_t size)
+void* load_resource_texture3d( void* data, uint32_t size)
 {
     Raw3DTexture* tex = (Raw3DTexture*)data;
     tex->m_blob = (char*)data + sizeof(Raw3DTexture);
