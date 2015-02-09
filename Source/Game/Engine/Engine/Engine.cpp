@@ -159,6 +159,11 @@ void Engine::subsystem_init()
     if(!m_cfg.m_headless) g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
     else g_engineMode = 1;
 
+    Graphics::register_factories();
+    PhysicsWorld::register_factories();
+    AnimationSystem::register_factories();
+    ActorWorld::register_factories();
+
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init(MAX_PHYSICS, MAX_PROXY);
 

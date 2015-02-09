@@ -3,6 +3,10 @@
 #include "DC_Config.h"
 #include "Mesh.h"
 #include "Resource.h"
+#include "Graphics.h"
+#include "Actor.h"
+#include "AnimationSystem.h"
+#include "PhysicsWorld.h"
 //=================================================================
 #include "AnimationCompiler.h"
 #include "AnimationStateCompiler.h"
@@ -312,6 +316,11 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
 #ifdef DC_DUMP_PROFILE
     g_profiler.init(TOTAL_BLOCK_NUM);
 #endif
+
+    Graphics::register_factories();
+    PhysicsWorld::register_factories();
+    AnimationSystem::register_factories();
+    ActorWorld::register_factories();
 
     g_config = new DC_Config;
     const char* inputChar = cmdline->findOption('i');

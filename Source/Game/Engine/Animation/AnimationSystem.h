@@ -35,6 +35,8 @@ struct AnimationSystem
     void    skin_actors(Actor* actors, uint32_t num);
     void    update_animations(float dt);
 
+    static void register_factories();
+
     uint32_t                m_numAnimEvts;
     AnimationEvent*         m_events;
 };

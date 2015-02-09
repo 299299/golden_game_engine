@@ -388,5 +388,10 @@ void ActorWorld::draw()
     Graphics::draw(m_shading_env);
 }
 
+void ActorWorld::register_factories()
+{
+
+}
+
 
 

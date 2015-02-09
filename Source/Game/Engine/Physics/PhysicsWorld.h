@@ -72,6 +72,8 @@ struct PhysicsWorld
     void sync_proxy_actors(Actor* actors, uint32_t num);
     void update_character_proxies(float timeStep);
 
+    static void register_factories();
+
 private:
     void kickin_raycast_jobs();
     void post_simulation();

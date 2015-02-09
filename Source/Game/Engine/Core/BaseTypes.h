@@ -102,3 +102,7 @@ struct Id
         }\
         return -1;
 
+
+#ifndef INTERNAL
+#define INTERNAL static
+#endif

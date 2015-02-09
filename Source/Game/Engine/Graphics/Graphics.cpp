@@ -83,10 +83,10 @@ static uint32_t             g_numEngineUniforms = 0;
 static FrameBuffer*         g_frameBuffers;
 static uint32_t             g_numFrameBuffers = 0;
 
-void postProcessInit();
-void postProcessSubmit(ShadingEnviroment* env);
+INTERNAL void postProcessInit();
+INTERNAL void postProcessSubmit(ShadingEnviroment* env);
 
-bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enum type, int num = 1)
+INTERNAL bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enum type, int num = 1)
 {
     if(!name){
         bgfx::UniformHandle handle = BGFX_INVALID_HANDLE;
@@ -98,7 +98,7 @@ bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enu
     return handle;
 }
 
-FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, uint32_t numTextures, FrameBufferTexture* textures)
+INTERNAL FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, uint32_t numTextures, FrameBufferTexture* textures)
 {
     ENGINE_ASSERT(g_numFrameBuffers < MAX_FRAMEBUFFER_NUM, "g_numEngineUniforms < MAX_UNIFORM_NUM");
     FrameBuffer* fb = g_frameBuffers + g_numFrameBuffers;
@@ -115,7 +115,7 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, ui
     fb->create();
     return fb;
 }
-FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
+INTERNAL FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
                                bgfx::TextureFormat::Enum format,
                                uint32_t texFlags = BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP)
 {
@@ -124,7 +124,7 @@ FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
     return createFrameBuffer(w, h, wDiv, hDiv, scaled, 1, texInfo);
 }
 
-void createUniforms()
+INTERNAL void createUniforms()
 {
     g_engineUniforms = COMMON_ALLOC(bgfx::UniformHandle, MAX_UNIFORM_NUM);
     extern const char*  g_textureNames[];
@@ -167,7 +167,7 @@ void createUniforms()
     g_postProcess.m_fade = createEngineUniform("u_fade", bgfx::UniformType::Uniform1f);
 }
 
-void register_factories()
+void Graphics::register_factories()
 {
     ResourceFactory _mesh = {load_resource_mesh, 0, 0, bringin_resource_mesh, bringout_resource_mesh, EngineNames::MESH, 0};
     g_resourceMgr.register_factory(_mesh);
@@ -203,7 +203,6 @@ void register_factories()
 void Graphics::init(void* hwnd, bool bFullScreen)
 {
     TIMELOG("Graphics::Init");
-    register_factories();
 
 #ifdef HAVOK_COMPILE
     bgfx::winSetHwnd((HWND)hwnd);
@@ -265,7 +264,7 @@ void Graphics::ready()
     g_debugDrawMgr.ready();
 }
 
-void postProcessInit()
+INTERNAL void postProcessInit()
 {
     int width = g_win32Context.m_width;
     int height = g_win32Context.m_height;
@@ -326,7 +325,7 @@ void Graphics::update(ShadingEnviroment* env, float dt)
     if(g_lightWorld.m_shadowLight) g_modelWorld.cull_shadows(g_lightWorld.m_shadowFrustum);
 }
 
-void submitPerFrameUniforms()
+INTERNAL void submitPerFrameUniforms()
 {
     extern float g_totalSeconds;
     bgfx::setUniform(g_uniformPerFrame.m_time, &g_totalSeconds);
@@ -402,7 +401,7 @@ void Graphics::frame_end()
     g_guiMgr.frame_end();
 }
 
-void postProcessSubmit(ShadingEnviroment* env)
+INTERNAL void postProcessSubmit(ShadingEnviroment* env)
 {
     if(!env) return;
     int width = g_win32Context.m_width;

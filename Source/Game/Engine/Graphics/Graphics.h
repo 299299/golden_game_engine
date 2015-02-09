@@ -100,4 +100,5 @@ struct Graphics
     static void screenspace_quad(float _textureWidth, float _textureHeight, float _width = 1.0f, float _height = 1.0f);
     static void set_texture(int slot, bgfx::TextureHandle handle);
     static void set_texture(int slot, bgfx::FrameBufferHandle handle);
+    static void register_factories();
 };

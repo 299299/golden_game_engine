@@ -69,6 +69,9 @@ void MemorySystem::init(const MemoryConfig& cfg)
         load_string_table(STRING_TABLE_FILE);
     }
 #endif
+
+    extern void init_engine_type_names();
+    init_engine_type_names();
 }
 
 void MemorySystem::shutdown()

@@ -501,6 +501,11 @@ void PhysicsWorld::update_character_proxies(float timeStep)
     }
 }
 
+void PhysicsWorld::register_factories()
+{
+
+}
+
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------

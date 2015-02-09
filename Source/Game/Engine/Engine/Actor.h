@@ -76,6 +76,8 @@ struct ActorWorld
 
     ShadingEnviroment*      m_shading_env;
 
+    static void register_factories();
+
 private:
     void        clear_actors(Actor* actors, uint32_t num);
 };

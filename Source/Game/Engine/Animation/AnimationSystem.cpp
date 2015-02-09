@@ -217,6 +217,11 @@ void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
 #endif
 }
 
+void AnimationSystem::register_factories()
+{
+
+}
+
 
 //-----------------------------------------------------------------
 //
