@@ -13,7 +13,7 @@ public:
     BaseCompiler();
     virtual ~BaseCompiler() {};
 
-    virtual std::string getFormatExt() const = 0;
+    virtual std::string getFormatExt() const { return ""; };
     virtual bool process(const std::string& input, const std::string& output);
     virtual void go();
 
@@ -30,6 +30,9 @@ public:
     virtual bool checkProcessing();
     virtual bool parseWithJson() const { return false; };
     virtual void checkModifyTime();
+
+    virtual const void* getCompiledData() const { return 0; };
+    virtual uint32_t getCompiledDataSize() const { return 0;};
 
     std::vector<ResourceDependency>                 m_dependencies;
 

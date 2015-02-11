@@ -2,6 +2,7 @@
 #include "Thread.h"
 #include "MemorySystem.h"
 #include "DataDef.h"
+#include "Component.h"
 #include "Profiler.h"
 #include "Log.h"
 #include "IdArray.h"
@@ -232,7 +233,11 @@ void AnimationSystem::register_factories()
     ResourceFactory _states = { load_animation_state_layer, 0, lookup_animation_state_layer, 0, 0, EngineNames::ANIMATION_STATES, 3};
     g_resourceMgr.register_factory(_states);
 
-    ComponentFactory _comp_rig = {}
+    ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, 0};
+    g_componentMgr.register_factory(_comp_rig, EngineTypes::ANIMATION_RIG);
+
+    ComponentFactory _comp_states = { create_anim_statelayer, destroy_anim_statelayer, get_anim_statelayer, num_all_anim_statelayer, get_all_anim_statelayer, 0, lookup_animation_state_layer};
+    g_componentMgr.register_factory(_comp_states, EngineTypes::ANIMATION_STATES);
 }
 
 

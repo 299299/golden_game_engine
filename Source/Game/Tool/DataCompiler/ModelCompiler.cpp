@@ -1,11 +1,10 @@
 #include "ModelCompiler.h"
 #include "MaterialCompiler.h"
 #include "Mesh.h"
-#include "Model.h"
 
 ModelCompiler::ModelCompiler()
 {
-
+    memset(&m_model, 0x00, sizeof(m_model));
 }
 
 ModelCompiler::~ModelCompiler()
@@ -16,23 +15,21 @@ ModelCompiler::~ModelCompiler()
 bool ModelCompiler::readJSON( const jsonxx::Object& root )
 {
     BaseCompiler::readJSON(root);
-    Model model;
-    memset(&model, 0x00, sizeof(model));
 
     std::string meshFile = m_pathPrefix + root.get<std::string>("mesh");
-    model.m_meshName = stringid_caculate(meshFile.c_str());
+    m_model.m_meshName = stringid_caculate(meshFile.c_str());
     addDependency("mesh", name_to_file_path(meshFile, EngineNames::MESH));
     extern const char* g_viewGroupNames[];
-    model.m_viewId = json_to_enum(root, "view_group", g_viewGroupNames, kSceneViewId);
+    m_model.m_viewId = json_to_enum(root, "view_group", g_viewGroupNames, kSceneViewId);
 
     extern const char* g_modelFlagNames[];
-    model.m_flag = json_to_flags(root, "flags", g_modelFlagNames);
+    m_model.m_flag = json_to_flags(root, "flags", g_modelFlagNames);
 
     if(root.has<jsonxx::Array>("materials"))
     {
         const jsonxx::Array& materialsValue = root.get<jsonxx::Array>("materials");
-        model.m_numMaterials = materialsValue.size();
-        for(uint32_t i=0; i<model.m_numMaterials; ++i)
+        m_model.m_numMaterials = materialsValue.size();
+        for(uint32_t i=0; i<m_model.m_numMaterials; ++i)
         {
             std::string materialFile;
             if(materialsValue.has<jsonxx::Object>(i))
@@ -50,10 +47,10 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
                 materialFile = materialsValue.get<std::string>(i);
             }
             materialFile = m_pathPrefix + materialFile;
-            model.m_materialNames[i] = stringid_caculate(materialFile.c_str());
+            m_model.m_materialNames[i] = stringid_caculate(materialFile.c_str());
             addDependency("material", name_to_file_path(materialFile, EngineNames::MATERIAL));
         }
     }
 
-    return write_file(m_output, &model, sizeof(model));
+    return true;
 }

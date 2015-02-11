@@ -246,7 +246,6 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
     }
 
 #if 1
-    extern void* load_animation_state_layer(const char*, uint32_t);
     AnimationStateLayer* l = (AnimationStateLayer*)load_animation_state_layer(mem.m_buf, mem.m_size);
     ENGINE_ASSERT(l->m_numStates == numStates, "AnimationStateLayer load check");
     for(uint32_t i=0; i<numStates; ++i)
