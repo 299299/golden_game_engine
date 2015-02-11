@@ -196,7 +196,7 @@ void Graphics::register_factories()
     ComponentFactory _model = {create_model, destroy_model, get_model, num_all_model, get_all_model, transform_model, lookup_model_component};
     g_componentMgr.register_factory(_model, EngineTypes::MODEL);
 
-    ComponentFactory _light = {create_light, destroy_light, get_light, num_all_light, get_all_light, transform_light};
+    ComponentFactory _light = {create_light, destroy_light, get_light, num_all_light, get_all_light, transform_light, 0};
     g_componentMgr.register_factory(_light, EngineTypes::LIGHT);
 }
 

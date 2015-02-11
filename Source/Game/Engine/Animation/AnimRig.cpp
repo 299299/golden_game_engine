@@ -23,25 +23,20 @@
 //          RESOURCE
 //------------------------------------------------------------------------------------------------
 
-void* load_resource_anim_rig(const char* data, uint32_t size)
+void* load_resource_anim_rig(void* data, uint32_t size)
 {
     AnimRig* rig = (AnimRig*)data;
-    const char* offset = data;
+    char* offset = (char*)data;
     offset += sizeof(AnimRig);
     //joint names
     rig->m_jointNames = (StringId*)(offset);
     offset += sizeof(StringId) * rig->m_jointNum;
     //bone attachments
     rig->m_attachments = (BoneAttachment*)offset;
-    offset = data + rig->m_havokDataOffset;
+    offset = (char*)data + rig->m_havokDataOffset;
     rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
     if(rig->m_mirrored) rig->create_mirrored_skeleton();
     return rig;
-}
-void  lookup_resource_anim_rig(void * resource)
-{
-    AnimRig* rig = (AnimRig*)resource;
-    // FIXME:TODO
 }
 void  destroy_resource_anim_rig(void * resource)
 {
@@ -85,7 +80,6 @@ void AnimRig::create_mirrored_skeleton()
 }
 
 
-#if 0
 void AnimRigInstance::init( const void* resource , ActorId32 actor)
 {
     m_actor = actor;
@@ -156,7 +150,7 @@ void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 void AnimRigInstance::test_animation(const char* name)
 {
 #ifdef HAVOK_COMPILE
-    Animation* anim = FIND_RESOURCE_NAMED(Animation, name);
+    Animation* anim = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, StringId(name));
     if(!anim) return;
     for(int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
     {
@@ -172,5 +166,5 @@ void AnimRigInstance::test_animation(const char* name)
     ac->removeReference();
 #endif
 }
-#endif
+
 

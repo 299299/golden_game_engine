@@ -3,6 +3,7 @@
 #include "AnimControl.h"
 #include "AnimRig.h"
 #include "Resource.h"
+#include "DataDef.h"
 
 enum LayerState
 {
@@ -189,6 +190,8 @@ void AnimationStateLayer::lookup()
     {
         _states[i].lookup();
     }
+    m_rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, m_rigName);
+    ENGINE_ASSERT(m_rig, "Animtion Rig Not Found!");
 }
 
 void AnimationStateLayer::init( const void* resource, ActorId32 id )
@@ -387,7 +390,7 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
 #endif
 }
 
-void* load_animation_state_layer(const char* data, uint32_t size)
+void* load_animation_state_layer(void* data, uint32_t size)
 {
     AnimationStateLayer* _layer = (AnimationStateLayer*)data;
     char* _p = (char*)data;

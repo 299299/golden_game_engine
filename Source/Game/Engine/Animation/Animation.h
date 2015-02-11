@@ -46,6 +46,12 @@ ENGINE_NATIVE_ALIGN(struct) Animation
     uint32_t                        m_numTriggers;
 };
 
+
+void* load_resource_animation( void*, uint32_t);
+void destroy_resource_animation( void * );
+void lookup_resource_animation( void * );
+
+
 //======================================================================
 //          HELPER API
 //======================================================================

@@ -115,10 +115,10 @@ uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* e
 
 
 
-void* load_resource_animation( const char* data, uint32_t size)
+void* load_resource_animation( void* data, uint32_t size)
 {
     Animation* anim = (Animation*)data;
-    anim->m_triggers = (AnimationTrigger*)(data + sizeof(Animation));
+    anim->m_triggers = (AnimationTrigger*)((char*)data + sizeof(Animation));
     char* p = (char*)data + anim->m_havokDataOffset;
 #ifdef HAVOK_COMPILE
     hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havokDataSize);

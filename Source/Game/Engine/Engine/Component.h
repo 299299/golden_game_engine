@@ -17,7 +17,7 @@ typedef void*   (*func_get_component_t)(Id);
 typedef uint32_t(*func_num_components_t)();
 typedef void*   (*func_get_components_t)();
 typedef void    (*func_transform_component_t)(Id, const hkQsTransformf&);
-typedef void    (*func_load_component_data_t)(void*);
+typedef void    (*func_lookup_component_data_t)(void*);
 
 struct ComponentFactory
 {
@@ -27,7 +27,7 @@ struct ComponentFactory
     func_num_components_t         m_num_conmponents;
     func_get_components_t         m_get_components;
     func_transform_component_t    m_transform_component;
-    func_load_component_data_t    m_load_component_data;
+    func_lookup_component_data_t  m_lookup_component_data;
 
     Id create_component(const void* res, ActorId32 id)
     {
@@ -54,10 +54,10 @@ struct ComponentFactory
     {
         return m_get_components();
     }
-    void load_component_data(void* data)
+    void lookup_component_data(void* data)
     {
-        if(m_load_component_data)
-            m_load_component_data(data);
+        if(m_lookup_component_data)
+            m_lookup_component_data(data);
     }
 };
 

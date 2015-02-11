@@ -40,7 +40,17 @@ struct AnimationSystem
     uint32_t                m_numAnimEvts;
     AnimationEvent*         m_events;
 };
+
 extern AnimationSystem g_animMgr;
 
+Id create_anim_rig( const void*, ActorId32);
+void destroy_anim_rig( Id );
+void* get_anim_rig( Id );
+uint32_t num_all_anim_rig();
+void* get_all_anim_rig();
 
-
+Id create_anim_statelayer( const void*, ActorId32);
+void destroy_anim_statelayer( Id );
+void* get_anim_statelayer( Id );
+uint32_t num_all_anim_statelayer();
+void* get_all_anim_statelayer();

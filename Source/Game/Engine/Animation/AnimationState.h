@@ -85,6 +85,8 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
     uint32_t                    m_numStates;
     StringId*                   m_stateNames;
     AnimationState*             m_states;
+    AnimRig*                    m_rig;
+    StringId                    m_rigName;
 
     /*
         HOT DATA
@@ -118,5 +120,5 @@ private:
 };
 
 
-extern const char* ANIMATION_STATES_NAME;
-extern StringId    ANIMATION_STATES_TYPE;
+void* load_animation_state_layer(void* data, uint32_t);
+void  lookup_animation_state_layer(void*);
