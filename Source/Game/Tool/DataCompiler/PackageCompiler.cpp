@@ -3,11 +3,6 @@
 
 #define NATIVE_MEMORY_ALIGN 16
 
-bool is_package_resoure(const std::string& ext)
-{
-
-}
-
 PackageCompiler::PackageCompiler()
 {
 

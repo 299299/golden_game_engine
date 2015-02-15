@@ -6,9 +6,10 @@ class hkQsTransformf;
 
 struct ComponentData
 {
-    StringId        m_componentType;
-    uint32_t        m_dataSize;
-    char*           m_data;
+    StringId        m_type;
+    int             m_index;
+    uint32_t        m_size;
+    uint32_t        m_offset;
 };
 
 typedef Id      (*func_create_component_t)(const void*, ActorId32);

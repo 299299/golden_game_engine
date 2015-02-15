@@ -44,3 +44,5 @@
 #define FRAME_MEMORY_SIZE       SIZE_MB(5)
 
 #define MAX_COMPONENT_TYPES     64
+
+#define MAX_COMPONET_PER_ACTOR  16

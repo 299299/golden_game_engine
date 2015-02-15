@@ -413,6 +413,12 @@ void lookup_animation_state_layer(void* resource)
     _layer->lookup();
 }
 
+void lookup_animation_state_component( void* data)
+{
+    AnimationStateData* p = (AnimationStateData*)data;
+    p->m_layer = FIND_RESOURCE(AnimationStateLayer, EngineTypes::ANIMATION_STATES, p->m_name);
+}
+
 
 
 

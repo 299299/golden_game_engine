@@ -2,48 +2,35 @@
 #include "StringId.h"
 #include "Prerequisites.h"
 #include "Utils.h"
+#include "GameConfig.h"
 
 struct ShadingEnviroment;
 struct ComponentFactory;
+struct ComponentData;
 
 ENGINE_NATIVE_ALIGN(struct) ActorResource
 {
-    StringId*           m_resourceNames;
-    StringId*           m_resourceTypes;
-    ComponentFactory**  m_factories;
-    void**              m_resources;
-    uint32_t            m_numComponents;
+    uint32_t            m_component_data_offset;
+    uint32_t            m_num_components;
     uint32_t            m_class;
-    Fact                m_fact;
 };
 
 ENGINE_NATIVE_ALIGN(struct) Actor
 {
     hkQsTransform               m_transform;
-    Id                          m_components[16]; //-> hack!
+    Id                          m_components[MAX_COMPONET_PER_ACTOR];
     const ActorResource*        m_resource;
     char*                       m_values;
     ActorId32                   m_id;
 
-    void    init(const ActorResource* resource, const hkQsTransform& t, ActorId32 id);
-    void    destroy();
-    void    set_transform(const hkQsTransform& t);
-    void    set_transform_ignore_type(const hkQsTransform& t, StringId type);
-    void*   get_first_component_of(StringId type);
-    int     get_first_component_index_of(StringId type);
+    void        init(void* resource, const hkQsTransform& t, ActorId32 id);
+    void        destroy();
+    void        set_transform(const hkQsTransform& t);
+    void        set_transform_ignore_type(const hkQsTransform& t, StringId type);
+    void*       get_first_component_of(StringId type);
+    int         get_first_component_index_of(StringId type);
     uint32_t    get_components_of(StringId type, void** comps, uint32_t buflen);
     uint32_t    get_component_indices_of(StringId type, int* indices, uint32_t buflen);
-
-    bool    has_key(StringId k) const;
-    uint32_t value_type(StringId k);
-    bool    get_key(StringId k, int& v) const;
-    bool    get_key(StringId k, float& v) const;
-    bool    get_key(StringId k, StringId& v) const;
-    bool    get_key(StringId k, float* v) const;
-    bool    set_key(StringId k, int v);
-    bool    set_key(StringId k, float v);
-    bool    set_key(StringId k, StringId v);
-    bool    set_key(StringId k, const float* v);
 };
 
 struct ActorConfig
@@ -62,7 +49,7 @@ struct ActorWorld
     void        clear_actors(uint32_t type);
 
     ActorId32   create_actor(StringId resourceName, const hkQsTransform& t);
-    ActorId32   create_actor(const void* actorResource, const hkQsTransform& t);
+    ActorId32   create_actor(void* actorResource, const hkQsTransform& t);
     void        destroy_actor(ActorId32 id);
     Actor*      get_actor(ActorId32 id);
     uint32_t    num_actors(uint32_t type);
@@ -83,3 +70,5 @@ private:
 };
 
 extern ActorWorld g_actorWorld;
+
+void  lookup_resource_actor(void*);

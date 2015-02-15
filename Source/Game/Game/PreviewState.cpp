@@ -12,6 +12,7 @@
 #include "Resource.h"
 #include "Win32Context.h"
 #include "AnimRig.h"
+#include "Component.h"
 #include <bx/string.h>
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
@@ -76,7 +77,8 @@ static void actor_information_imgui(const char* _name, int _x, int _y, int _texH
     ImguiTextAlign::Enum _align = ImguiTextAlign::Left;
     uint32_t _argb = imguiRGBA(255, 125, 125);
     char _buf[256];
-    uint32_t _num = _res->m_numComponents;
+    uint32_t _num = _res->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
     int _class = _res->m_class;
     extern const char* g_actorClassNames[];
     bx::snprintf(_buf, sizeof(_buf), "[%s] [%s] has [%d] components: ", g_actorClassNames[_class], _name, _num);
@@ -85,10 +87,8 @@ static void actor_information_imgui(const char* _name, int _x, int _y, int _texH
     for(uint32_t i=0; i<_num; ++i)
     {
         _y += _texHeight;
-        StringId _comp_name = _res->m_resourceNames[i];
-        StringId _comp_type = _res->m_resourceTypes[i];
-        bx::snprintf(_buf, sizeof(_buf), "%s component type:%s name:%s",
-            _indent, stringid_lookup(_comp_type), stringid_lookup(_comp_name));
+        StringId _comp_type = data[i].m_type;
+        bx::snprintf(_buf, sizeof(_buf), "%s component type:%s", _indent, stringid_lookup(_comp_type));
         imguiDrawText(_x, _y, _align, _buf, _argb);
     }
 }

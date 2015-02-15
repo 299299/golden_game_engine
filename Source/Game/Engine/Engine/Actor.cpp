@@ -50,40 +50,18 @@ struct ActorId
     }
 };
 
-void* load_resource_actor(const char* data, uint32_t size)
-{
-    ActorResource* actor = (ActorResource*)data;
-    uint32_t num = actor->m_numComponents;
-    char* p = (char*)data;
-    p += sizeof(ActorResource);
-    actor->m_resourceNames = (StringId*)p;
-    p += sizeof(StringId) * num;
-    actor->m_resourceTypes = (StringId*)p;
-    p += sizeof(StringId) * num;
-    actor->m_factories = (ComponentFactory**)p;
-    p += sizeof(void*) * num;
-    actor->m_resources = (void**)p;
-    p += sizeof(void*) * num;
-    Fact& fact = actor->m_fact;
-    fact.m_keys = (Key*)(p);
-    p += sizeof(actor->m_fact.m_num_keys * sizeof(Key));
-    fact.m_values = p;
-    return actor;
-}
-
-
 void lookup_resource_actor(void* resource)
 {
     ActorResource* actor = (ActorResource*)resource;
-    uint32_t num = actor->m_numComponents;
-    StringId* types = actor->m_resourceTypes;
-    StringId* names = actor->m_resourceNames;
-    void** resources = actor->m_resources;
-    ComponentFactory** facs = actor->m_factories;
-    for (uint32_t i=0; i<actor->m_numComponents; ++i)
+    char* p = (char*)resource;
+    ComponentData* comp_data = (ComponentData*)(p + actor->m_component_data_offset);
+    uint32_t num = actor->m_num_components;
+    for (uint32_t i=0; i<num; ++i)
     {
-        resources[i] = g_resourceMgr.find_resource(types[i], names[i]);
-        facs[i] = g_componentMgr.find_factory(types[i]);
+        ComponentData& data = comp_data[i];
+        ComponentFactory* fac = g_componentMgr.get_factory(data.m_index);
+        ENGINE_ASSERT_ARGS(fac, "Can not find component factory %d", data.m_index);
+        fac->lookup_component_data(p + data.m_offset);
     }
 }
 
@@ -92,13 +70,13 @@ void Actor::set_transform( const hkQsTransform& t )
     m_transform = t;
 
     const ActorResource* resource = m_resource;
-    uint32_t num = resource->m_numComponents;
+    uint32_t num = resource->m_num_components;
     Id* id = m_components;
-    ComponentFactory** facs = resource->m_factories;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
 
     for (uint32_t i=0; i<num; ++i)
     {
-        facs[i]->transform_component(id[i], t);
+        g_componentMgr.get_factory(data[i].m_index)->transform_component(id[i], t);
     }
 }
 
@@ -107,40 +85,38 @@ void Actor::set_transform_ignore_type( const hkQsTransform& t, StringId type )
     m_transform = t;
 
     const ActorResource* resource = m_resource;
-    uint32_t num = resource->m_numComponents;
+    uint32_t num = resource->m_num_components;
     Id* id = m_components;
-    ComponentFactory** facs = resource->m_factories;
-    StringId* types = resource->m_resourceTypes;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
 
     for (uint32_t i=0; i<num; ++i)
     {
-        if(type != types[i])
-            facs[i]->transform_component(id[i], t);
+        if(data[i].m_type == type)
+            continue;
+        g_componentMgr.get_factory(data[i].m_index)->transform_component(id[i], t);
     }
 }
 
-void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId32 id)
+void Actor::init( void* resource, const hkQsTransform& t, ActorId32 id)
 {
-    m_resource = resource;
+    m_resource = (const ActorResource*)resource;
 #ifdef HAVOK_COMPILE
     m_transform.setIdentity();
 #endif
     m_values = 0;
     m_id = id;
-    uint32_t num = resource->m_numComponents;
-    ComponentFactory** facs = resource->m_factories;
+
+    const ActorResource* actorResource = m_resource;
+    uint32_t num = actorResource->m_num_components;
+    char* p = (char*)resource;
+    ComponentData* data = (ComponentData*)((char*)resource + actorResource->m_component_data_offset);
+    Id* ids = m_components;
 
     for (uint32_t i=0; i<num; ++i)
     {
-        const void* res = resource->m_resources[i];
-        if(res) m_components[i] = facs[i]->create_component(res, id);
-    }
-
-    const Fact& fact = m_resource->m_fact;
-    if(fact.m_value_size)
-    {
-        m_values = COMMON_ALLOC(char, fact.m_value_size);
-        memcpy(m_values, fact.m_values, fact.m_value_size);
+        ComponentData* _d = data + i;
+        char* _data = p + _d->m_offset;
+        ids[i] = g_componentMgr.get_factory(_d->m_index)->create_component(_data, m_id);
     }
 
     set_transform(t);
@@ -148,31 +124,33 @@ void Actor::init( const ActorResource* resource, const hkQsTransform& t, ActorId
 
 void Actor::destroy()
 {
-    uint32_t num = m_resource->m_numComponents;
-    ComponentFactory** facs = m_resource->m_factories;
+    const ActorResource* resource = m_resource;
+    uint32_t num = resource->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
     Id* comps = m_components;
     for (uint32_t i=0; i<num; ++i)
     {
-        facs[i]->destroy_component(comps[i]);
+        g_componentMgr.get_factory(data[i].m_index)->destroy_component(comps[i]);
     }
-    COMMON_DEALLOC(m_values);
 }
 
 void* Actor::get_first_component_of( StringId type )
 {
     int index = get_first_component_index_of(type);
     if(index < 0) return NULL;
-    return m_resource->m_factories[index]->get_component(m_components[index]);
+    const ActorResource* resource = m_resource;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
+    return g_componentMgr.get_factory(data[index].m_index)->get_component(m_components[index]);
 }
 
 int Actor::get_first_component_index_of(StringId type)
 {
-    const ActorResource* res = m_resource;
-    uint32_t num = res->m_numComponents;
-    StringId* types = res->m_resourceTypes;
+    const ActorResource* resource = m_resource;
+    uint32_t num = resource->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
     for (uint32_t i=0; i<num; ++i)
     {
-        if(types[i] == type)
+        if(data[i].m_type == type)
             return i;
     }
     return -1;
@@ -181,15 +159,15 @@ int Actor::get_first_component_index_of(StringId type)
 uint32_t Actor::get_components_of( StringId type, void** comps, uint32_t buflen )
 {
     uint32_t ret = 0;
-    const ActorResource* res = m_resource;
-    uint32_t num = res->m_numComponents;
-    StringId* types = res->m_resourceTypes;
+    const ActorResource* resource = m_resource;
+    uint32_t num = resource->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
     for (uint32_t i=0; i<num; ++i)
     {
-        if(types[i] == type)
+        if(data[i].m_type == type)
         {
             Id id = m_components[i];
-            ComponentFactory* fac = res->m_factories[i];
+            ComponentFactory* fac = g_componentMgr.get_factory(data[i].m_index);
             comps[ret++] = fac->get_component(id);
             if(ret >= buflen)
                 return ret;
@@ -201,12 +179,12 @@ uint32_t Actor::get_components_of( StringId type, void** comps, uint32_t buflen 
 uint32_t Actor::get_component_indices_of( StringId type, int* indices, uint32_t buflen )
 {
     uint32_t ret = 0;
-    const ActorResource* res = m_resource;
-    uint32_t num = res->m_numComponents;
-    StringId* types = res->m_resourceTypes;
+    const ActorResource* resource = m_resource;
+    uint32_t num = resource->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)resource + resource->m_component_data_offset);
     for (uint32_t i=0; i<num; ++i)
     {
-        if(types[i] == type)
+        if(data[i].m_type == type)
         {
             indices[ret++] = buflen;
             if(ret >= buflen)
@@ -215,59 +193,6 @@ uint32_t Actor::get_component_indices_of( StringId type, int* indices, uint32_t 
     }
     return ret;
 }
-
-bool Actor::has_key(StringId k) const
-{
-    return m_resource->m_fact.has_key(k);
-}
-
-uint32_t Actor::value_type(StringId k)
-{
-    return m_resource->m_fact.value_type(k);
-}
-
-bool Actor::get_key(StringId k, int& v) const
-{
-    return m_resource->m_fact.get_key(m_values, k, v);
-}
-
-bool Actor::get_key(StringId k, float& v) const
-{
-    return m_resource->m_fact.get_key(m_values, k, v);
-}
-
-bool Actor::get_key(StringId k, StringId& v) const
-{
-    return m_resource->m_fact.get_key(m_values, k, v);
-}
-
-bool Actor::get_key(StringId k, float* v) const
-{
-    return m_resource->m_fact.get_key(m_values, k, v);
-}
-
-bool Actor::set_key(StringId k, int v)
-{
-    return m_resource->m_fact.set_key(m_values, k, v);
-}
-
-bool Actor::set_key(StringId k, float v)
-{
-    return m_resource->m_fact.set_key(m_values, k, v);
-}
-
-bool Actor::set_key(StringId k, StringId v)
-{
-    return m_resource->m_fact.set_key(m_values, k, v);
-}
-
-bool Actor::set_key(StringId k, const float* v)
-{
-    return m_resource->m_fact.set_key(m_values, k, v);
-}
-
-
-
 
 ActorWorld g_actorWorld;
 typedef IdArray<Actor> ActorBucket;
@@ -312,7 +237,7 @@ void ActorWorld::clear_actors(uint32_t type)
     clear_actors(g_actorBuckets[type].begin(), g_actorBuckets[type].size());
 }
 
-ActorId32 ActorWorld::create_actor( const void* res , const hkQsTransform& t)
+ActorId32 ActorWorld::create_actor( void* res , const hkQsTransform& t)
 {
     const ActorResource* actorResource = (const ActorResource*)res;
     if(!actorResource) return INVALID_U32;
@@ -321,7 +246,7 @@ ActorId32 ActorWorld::create_actor( const void* res , const hkQsTransform& t)
     Actor* actor;
     Id indexId = g_actorBuckets[classId].create(&actor);
     ActorId32 ret = ActorId::pack_actor_id(classId, indexId);
-    actor->init(actorResource, t, ret);
+    actor->init(res, t, ret);
     return ret;
 }
 

@@ -93,7 +93,7 @@ struct Id
        }
 
 #define FIND_IN_ARRAY_RET(_array, _len, _find)\
-        for(int i=0; i<_len; ++i)\
+        for(int i=0; i<(int)_len; ++i)\
         {\
             if(_array[i] == _find)\
             {\

@@ -236,7 +236,7 @@ void AnimationSystem::register_factories()
     ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, 0};
     g_componentMgr.register_factory(_comp_rig, EngineTypes::ANIMATION_RIG);
 
-    ComponentFactory _comp_states = { create_anim_statelayer, destroy_anim_statelayer, get_anim_statelayer, num_all_anim_statelayer, get_all_anim_statelayer, 0, lookup_animation_state_layer};
+    ComponentFactory _comp_states = { create_anim_statelayer, destroy_anim_statelayer, get_anim_statelayer, num_all_anim_statelayer, get_all_anim_statelayer, 0, lookup_animation_state_component};
     g_componentMgr.register_factory(_comp_states, EngineTypes::ANIMATION_STATES);
 }
 
