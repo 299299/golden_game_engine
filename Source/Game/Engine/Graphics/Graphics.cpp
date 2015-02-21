@@ -193,7 +193,7 @@ void Graphics::register_factories()
     ResourceFactory _shadingEnv = {0,0,lookup_resource_shading_enviroment,0,0,EngineNames::SHADING_ENV, 4};
     g_resourceMgr.register_factory(_shadingEnv);
 
-    ComponentFactory _model = {create_model, destroy_model, get_model, num_all_model, get_all_model, transform_model, lookup_model_component};
+    ComponentFactory _model = {create_model, destroy_model, get_model, num_all_model, get_all_model, transform_model, lookup_model_instance_data};
     g_componentMgr.register_factory(_model, EngineTypes::MODEL);
 
     ComponentFactory _light = {create_light, destroy_light, get_light, num_all_light, get_all_light, transform_light, 0};

@@ -230,13 +230,13 @@ void AnimationSystem::register_factories()
     ResourceFactory _animation = {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, EngineNames::ANIMATION, 2};
     g_resourceMgr.register_factory(_animation);
 
-    ResourceFactory _states = { load_animation_state_layer, 0, lookup_animation_state_layer, 0, 0, EngineNames::ANIMATION_STATES, 3};
+    ResourceFactory _states = { load_animation_state, 0, lookup_animation_state, 0, 0, EngineNames::ANIMATION_STATES, 3};
     g_resourceMgr.register_factory(_states);
 
-    ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, 0};
+    ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, lookup_anim_rig_instance_data};
     g_componentMgr.register_factory(_comp_rig, EngineTypes::ANIMATION_RIG);
 
-    ComponentFactory _comp_states = { create_anim_statelayer, destroy_anim_statelayer, get_anim_statelayer, num_all_anim_statelayer, get_all_anim_statelayer, 0, lookup_animation_state_component};
+    ComponentFactory _comp_states = { create_anim_state, destroy_anim_state, get_anim_state, num_all_anim_state, get_all_anim_state, 0, lookup_anim_state_instance_data};
     g_componentMgr.register_factory(_comp_states, EngineTypes::ANIMATION_STATES);
 }
 
@@ -277,7 +277,13 @@ void* get_all_anim_rig()
     return m_rigs.begin();
 }
 
-Id create_anim_statelayer( const void* resource, ActorId32 id)
+void lookup_anim_rig_instance_data( void* resource )
+{
+    ComponentInstanceData* data = (ComponentInstanceData*)resource;
+    data->m_resource = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, data->m_name);
+}
+
+Id create_anim_state( const void* resource, ActorId32 id)
 {
     check_status();
     AnimationStateLayer* inst;
@@ -286,7 +292,7 @@ Id create_anim_statelayer( const void* resource, ActorId32 id)
     return animId;
 }
 
-void destroy_anim_statelayer( Id id )
+void destroy_anim_state( Id id )
 {
     check_status();
     if(!m_stateLayers.has(id)) return;
@@ -294,20 +300,26 @@ void destroy_anim_statelayer( Id id )
     m_stateLayers.destroy(id);
 }
 
-void* get_anim_statelayer( Id id )
+void* get_anim_state( Id id )
 {
     if(!m_stateLayers.has(id)) return 0;
     return m_stateLayers.get(id);
 }
 
-uint32_t num_all_anim_statelayer()
+uint32_t num_all_anim_state()
 {
     return m_stateLayers.size();
 }
 
-void* get_all_anim_statelayer()
+void* get_all_anim_state()
 {
     return m_rigs.begin();
+}
+
+void lookup_anim_state_instance_data( void* resource )
+{
+    ComponentInstanceData* data = (ComponentInstanceData*)resource;
+    data->m_resource = FIND_RESOURCE(AnimationStateLayer, EngineTypes::ANIMATION_STATES, data->m_name);
 }
 //-----------------------------------------------------------------
 //
@@ -370,6 +382,11 @@ void draw_debug_animation()
     }
 #endif
 }
+
+
+
+
+
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------

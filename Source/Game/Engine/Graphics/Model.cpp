@@ -133,19 +133,6 @@ bool Model::check_intersection( const float* rayOrig, const float* rayDir, float
     return intersection;
 }
 
-void lookup_model_component( void * resource )
-{
-    Model* model = (Model*)resource;
-    model->m_mesh = FIND_RESOURCE(Mesh, EngineTypes::MESH, model->m_meshName);
-    uint32_t num = model->m_numMaterials;
-    Material** head = model->m_materials;
-    StringId* matNames = model->m_materialNames;
-    for(uint32_t i=0; i<num;++i)
-    {
-        head[i] = FIND_RESOURCE(Material, EngineTypes::MATERIAL, matNames[i]);
-    }
-}
-
 ModelWorld g_modelWorld;
 static IdArray<Model>      m_models;
 
@@ -287,6 +274,22 @@ void transform_model(Id id, const hkQsTransform& t)
     ADD_BITS(model->m_flag, kNodeTransformDirty);
 #endif
 }
+
+void lookup_model_instance_data( void * resource )
+{
+    Model* model = (Model*)resource;
+    model->m_mesh = FIND_RESOURCE(Mesh, EngineTypes::MESH, model->m_meshName);
+    uint32_t num = model->m_numMaterials;
+    Material** head = model->m_materials;
+    StringId* matNames = model->m_materialNames;
+    for(uint32_t i=0; i<num;++i)
+    {
+        head[i] = FIND_RESOURCE(Material, EngineTypes::MATERIAL, matNames[i]);
+    }
+}
+
+
+#ifndef _RETAIL
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
@@ -305,3 +308,4 @@ void draw_debug_models()
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
+#endif

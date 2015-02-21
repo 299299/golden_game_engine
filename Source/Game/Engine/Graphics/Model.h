@@ -58,7 +58,7 @@ private:
 
 extern ModelWorld g_modelWorld;
 
-void lookup_model_component( void * );
+void lookup_model_instance_data( void * );
 Id create_model(const void*, ActorId32);
 void destroy_model(Id);
 void* get_model(Id);

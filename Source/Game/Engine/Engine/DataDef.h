@@ -155,3 +155,9 @@ namespace EngineNames
     extern const char*  ACTOR;
     extern const char*  LEVEL;
 };
+
+struct ComponentInstanceData
+{
+    StringId    m_name;
+    void*       m_resource;
+};

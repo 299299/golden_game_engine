@@ -390,7 +390,7 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
 #endif
 }
 
-void* load_animation_state_layer(void* data, uint32_t size)
+void* load_animation_state(void* data, uint32_t size)
 {
     AnimationStateLayer* _layer = (AnimationStateLayer*)data;
     char* _p = (char*)data;
@@ -407,18 +407,11 @@ void* load_animation_state_layer(void* data, uint32_t size)
     return _layer;
 }
 
-void lookup_animation_state_layer(void* resource)
+void lookup_animation_state(void* resource)
 {
     AnimationStateLayer* _layer = (AnimationStateLayer*)resource;
     _layer->lookup();
 }
-
-void lookup_animation_state_component( void* data)
-{
-    AnimationStateData* p = (AnimationStateData*)data;
-    p->m_layer = FIND_RESOURCE(AnimationStateLayer, EngineTypes::ANIMATION_STATES, p->m_name);
-}
-
 
 
 

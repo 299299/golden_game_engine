@@ -33,9 +33,9 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     for(size_t i=0; i<compsValue.size(); ++i)
     {
         const std::string& type =  compsValue.get<jsonxx::Object>(i).get<std::string>("type");
-        int comp_index = g_componentMgr.find_factory(stringid_caculate(type.c_str()));
-        ENGINE_ASSERT(comp_index >= 0, "Component type %s not valid ", type.c_str());
-        if(comp_index >= 0)
+        ComponentFactory* fac = g_componentMgr.find_factory(stringid_caculate(type.c_str()));
+        ENGINE_ASSERT(fac, "Component type %s not valid ", type.c_str());
+        if(fac)
             ++numComps;
     }
 
@@ -58,7 +58,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         const jsonxx::Object& compValue = compsValue.get<jsonxx::Object>(i);
         const std::string& type = compValue.get<std::string>("type");
 
-        int comp_index = g_componentMgr.find_factory(stringid_caculate(type.c_str()));
+        int comp_index = g_componentMgr.find_factory_index(stringid_caculate(type.c_str()));
         if(comp_index < 0)
             continue;
 
@@ -70,6 +70,6 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         ++index;
     }
 
-    ENGINE_ASSERT((values == (mem.m_buf + memSize)), "offset address");
+    //ENGINE_ASSERT((values == (mem.m_buf + memSize)), "offset address");
     return write_file(m_output, mem.m_buf, memSize);
 } 

@@ -82,11 +82,13 @@ void AnimRig::create_mirrored_skeleton()
 
 void AnimRigInstance::init( const void* resource , ActorId32 actor)
 {
+    AnimRigData* data = (AnimRigData*)resource;
+    AnimRig* rig = (AnimRig*)data->m_resource;
     m_actor = actor;
     m_attachmentTransforms = 0;
-    m_resource = (const AnimRig*)resource;
+    m_resource = (const AnimRig*)rig;
 #ifdef HAVOK_COMPILE
-    const hkaSkeleton* skeleton = m_resource->m_skeleton;
+    const hkaSkeleton* skeleton = rig->m_skeleton;
     //uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(skeleton);
     uint32_t pose_size = sizeof(hkaPose);
     pose_size = NEXT_MULTIPLE_OF(16, pose_size);

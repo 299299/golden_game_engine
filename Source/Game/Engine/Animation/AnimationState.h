@@ -120,12 +120,5 @@ private:
 };
 
 
-void* load_animation_state_layer(void* data, uint32_t);
-void  lookup_animation_state_layer(void*);
-
-struct AnimationStateData
-{
-    StringId                    m_name;
-    AnimationStateLayer*        m_layer;
-};
-void lookup_animation_state_component(void*);
+void* load_animation_state(void* data, uint32_t);
+void  lookup_animation_state(void*);
