@@ -36,8 +36,10 @@ enum ViewId
     kHDRBrightViewId,
     kHDRBlurViewIdStart,
     kCombineViewId = kHDRBlurViewIdStart + N_PASSES * 2,
-    kGUIViewId = 31,
-    kNumOfViewId
+    // ...
+    // OTHERS VIEW ID
+    // ...
+    kGUIViewId = 255,
 };
 
 enum SceneNodeFlag

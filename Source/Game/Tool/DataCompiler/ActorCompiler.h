@@ -10,4 +10,6 @@ public:
     virtual std::string getFormatExt() const { return EngineNames::ACTOR; };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
+
+    std::vector<BaseCompiler*>      m_components;
 };

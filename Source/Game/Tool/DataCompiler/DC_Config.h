@@ -49,7 +49,7 @@ struct DC_Config
     bool                            m_slient;
     bool                            m_bundled;
 
-    void add_child_compile(BaseCompiler* compiler);
+    void add_compiler(BaseCompiler* compiler);
     void post_process();
     BaseCompiler* create_compiler(const std::string& ext);
     bool is_engine_ext(const std::string& ext);

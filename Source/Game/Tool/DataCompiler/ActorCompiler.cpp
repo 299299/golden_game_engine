@@ -1,6 +1,36 @@
 #include "ActorCompiler.h"
 #include "Actor.h"
 #include "Component.h"
+#include "DataDef.h"
+#include "ModelCompiler.h"
+#include "LightCompiler.h"
+#include "PhysicsCompiler.h"
+
+class ComponentCompiler : public BaseCompiler
+{
+public:
+    virtual bool parseWithJson() const { return true; };
+    virtual bool readJSON(const jsonxx::Object& root) 
+    { 
+        m_data.m_name = json_to_stringid(root, "name");
+        return m_data.m_name != 0; 
+    };
+    virtual const void* getCompiledData() const { return &m_data; };
+    virtual uint32_t getCompiledDataSize() const { return sizeof(m_data);};
+
+    ComponentInstanceData m_data;
+};
+
+static BaseCompiler* create_component_compiler(StringId _type)
+{
+    if(_type == EngineTypes::MODEL)
+        return new ModelCompiler;
+    else if(_type == EngineTypes::LIGHT)
+        return new LightCompiler;
+    else 
+        return NULL;
+}
+
 
 ActorCompiler::ActorCompiler()
 {
@@ -33,10 +63,19 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     for(size_t i=0; i<compsValue.size(); ++i)
     {
         const std::string& type =  compsValue.get<jsonxx::Object>(i).get<std::string>("type");
-        ComponentFactory* fac = g_componentMgr.find_factory(stringid_caculate(type.c_str()));
-        ENGINE_ASSERT(fac, "Component type %s not valid ", type.c_str());
-        if(fac)
-            ++numComps;
+        StringId compType = stringid_caculate(type.c_str());
+        int comp_index = g_componentMgr.find_factory_index(compType);
+        if(comp_index < 0) 
+        {
+            g_config->m_error.add_error("can not find any component type of %s", type.c_str());
+            continue;
+        }
+
+        BaseCompiler* comp = create_component_compiler(compType);
+        if(!comp)
+            continue;
+
+        m_components.push_back(comp);
     }
 
     uint32_t memSize = sizeof(ActorResource) + numComps * sizeof(ComponentData);

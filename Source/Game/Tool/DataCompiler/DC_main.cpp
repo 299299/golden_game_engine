@@ -92,23 +92,18 @@ DC_Config::~DC_Config()
     {
         delete m_compilers[i];
     }
-    for(size_t i=0; i<m_childCompilers.size(); ++i)
-    {
-        delete m_childCompilers[i];
-    }
     for(size_t i=0; i<m_levels.size(); ++i)
     {
         delete m_levels[i];
     }
     m_levels.clear();
     m_compilers.clear();
-    m_childCompilers.clear();
 }
 
-void DC_Config::add_child_compile( BaseCompiler* compiler )
+void DC_Config::add_compiler( BaseCompiler* compiler )
 {
     bx::LwMutexScope _l(m_childLock);
-    m_childCompilers.push_back(compiler);
+    m_compilers.push_back(compiler);
 }
 
 static int compare_less_resource(const std::string& nameA, const std::string& nameB)
@@ -123,10 +118,6 @@ void DC_Config::post_process()
     for(size_t i=0; i<m_compilers.size(); ++i)
     {
         m_compilers[i]->postProcess();
-    }
-    for(size_t i=0; i<m_childCompilers.size(); ++i)
-    {
-        m_childCompilers[i]->postProcess();
     }
     for(size_t i=0; i<m_levels.size(); ++i)
     {

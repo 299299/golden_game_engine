@@ -78,7 +78,7 @@ BaseCompiler* BaseCompiler::createChildCompiler( const std::string& type, const 
     if(!_ok) 
         m_subCompilerError = true;
     compiler->m_processed = _ok;
-    g_config->add_child_compile(compiler);
+    g_config->add_compiler(compiler);
     return compiler;
 }
 
