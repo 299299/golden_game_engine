@@ -21,7 +21,7 @@ void Gui::frame_start()
         , 0
         , g_win32Context.m_width
         , g_win32Context.m_height
-        , kGUIViewId);
+        , (uint8_t)kGUIViewId);
 
     bgfx::dbgTextClear(0, g_smallDebugDraw);
     g_dbgTexIndex = 0;

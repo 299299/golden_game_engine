@@ -503,7 +503,8 @@ void PhysicsWorld::update_character_proxies(float timeStep)
 
 void PhysicsWorld::register_factories()
 {
-
+    ResourceFactory _fac = {0,0,0,0,0,EngineNames::PHYSICS_CONFIG,0};
+    g_resourceMgr.register_factory(_fac);
 }
 
 //-----------------------------------------------------------------

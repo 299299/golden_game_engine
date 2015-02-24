@@ -140,10 +140,9 @@ bool ShaderIncludeCompiler::process(const std::string& input, const std::string&
         ShaderCompiler* shader = new ShaderCompiler;
         shader->m_input = shaderFile;
         shader->m_output = input_to_output(shaderFile);
-        shader->checkModifyTime();
         shader->preProcess();
         shader->go();
-        g_config->add_child_compile(shader);
+        g_config->add_compiler(shader);
     }
 
     m_processed = true;
@@ -152,7 +151,7 @@ bool ShaderIncludeCompiler::process(const std::string& input, const std::string&
 
 bool ShaderIncludeCompiler::checkProcessing()
 {
-    if(!g_config->m_database.isFileChanged(m_input, m_modifyTime))
+    if(!g_config->is_file_changed(m_input, m_modifyTime))
     {
         LOGI("file [%s] not change, ignore.", m_input.c_str())
         return false;

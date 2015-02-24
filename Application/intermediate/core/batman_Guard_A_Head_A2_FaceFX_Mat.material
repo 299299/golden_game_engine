@@ -1,0 +1,19 @@
+{
+	"flags": [
+	],
+	"name": "core\/batman_Guard_A_Head_A2_FaceFX_Mat",
+	"samplers": [
+		{
+			"flags": [
+			],
+			"name": "u_texColor",
+			"texture": {
+				"format": "DXT5",
+				"input": "Guard_A_Head_A2_FaceFX_Mat",
+				"name": "core\/Guard_A_Head_A2_FaceFX_Mat" 
+			} 
+		} 
+	],
+	"shader": "skin_diff",
+	"shadow_shader": "skin_shadow" 
+} 

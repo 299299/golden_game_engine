@@ -85,7 +85,7 @@ BaseCompiler* BaseCompiler::createChildCompiler( const std::string& type, const 
 bool BaseCompiler::checkProcessing()
 {
     if(m_mode != 0) return true;
-    bool bFileChanged = g_config->m_database.isFileChanged(m_input, m_modifyTime);
+    bool bFileChanged = g_config->is_file_changed(m_input, m_modifyTime);
     bool bOutputExist = isFileExist(m_output);
     if(bOutputExist && !bFileChanged)
     {
@@ -113,13 +113,5 @@ bool BaseCompiler::process( const std::string& input, const std::string& output 
         g_config->m_error.add_error("json parse error %s", input.c_str());
         return false;
     }
-
-    m_processed = readJSON(o);
-    return m_processed;
+    return m_processed = readJSON(o);
 }
-
-void BaseCompiler::checkModifyTime()
-{
-    g_config->m_database.isFileChanged(m_input, m_modifyTime);
-}
-

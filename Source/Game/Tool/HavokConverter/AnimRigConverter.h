@@ -17,10 +17,12 @@ public:
 private:
     void process(RigSkinData* skin);
     int findBodyPart(const std::string& boneName, const char** arrayBones);
-	virtual void fillAttributes(jsonxx::Object& object) const;
+    void writeRig(const std::string& fileName);
+    jsonxx::Object getRigJson() const;
 private:
     RigSkinData*                         m_skin;
     std::string                          m_rigFileName;
+    std::string                          m_rigJson;
     StringArray                          m_boneNames;
     int                                  m_bodyPart[kBodyPartMax];
 };

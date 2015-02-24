@@ -13,12 +13,13 @@
 #include "Win32Context.h"
 #include "AnimRig.h"
 #include "Component.h"
+#include "Level.h"
 #include <bx/string.h>
+#include <bx/commandline.h>
 
 static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
 static bool g_show_profile = false;
 static bool g_draw_debug_graphics = false;
-extern ActorId32 g_previewActor;
 extern DebugFPSCamera  g_fpsCamera;
 
 static void swith_graphics_debug(uint32_t flag)
@@ -30,9 +31,9 @@ static void swith_graphics_debug(uint32_t flag)
     bgfx::setDebug(g_bgfx_debug);
 }
 
-typedef void on_imgui_button_cb(const char*);
+typedef void on_imgui_button_cb(const char*, void*);
 
-static void list_resources_gui(const char* type, int x, int y, int w, int h, on_imgui_button_cb cb)
+static void list_resources_gui(const char* type, int x, int y, int w, int h, on_imgui_button_cb cb, void* userdata)
 {
     static int32_t _scroll = 0;
     static bool _enabled = true;
@@ -49,29 +50,29 @@ static void list_resources_gui(const char* type, int x, int y, int w, int h, on_
         ResourceInfo* _info = _resources[i];
         const char* _name = stringid_lookup(_info->m_name);
         if(imguiButton(_name))
-            cb(_name);
+            cb(_name, userdata);
     }
     imguiEndScrollArea();
 }
 
-static void on_button_animation(const char* _name)
+static void on_button_animation(const char* _name, void* userdata)
 {
-    Actor* actor = g_actorWorld.get_actor(g_previewActor);
-#if 0
+    PreviewState* state = (PreviewState*)userdata;
+    Actor* actor = g_actorWorld.get_actor(state->m_previewActor);
     if(actor)
     {
-        AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(AnimRig::get_type());
+        AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_RIG);
         if(rig)
         {
             rig->test_animation(_name);
         }
     }
-#endif
 }
 
-static void actor_information_imgui(const char* _name, int _x, int _y, int _texHeight)
+static void actor_information_imgui(ActorId32 _actorId, int _x, int _y, int _texHeight)
 {
-    ActorResource* _res = (ActorResource*)g_resourceMgr.find_resource(EngineTypes::ACTOR, stringid_caculate(_name));
+    Actor* _actor = g_actorWorld.get_actor(_actorId);
+    const ActorResource* _res = _actor->m_resource;
     if(!_res)
         return;
     ImguiTextAlign::Enum _align = ImguiTextAlign::Left;
@@ -81,7 +82,7 @@ static void actor_information_imgui(const char* _name, int _x, int _y, int _texH
     ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
     int _class = _res->m_class;
     extern const char* g_actorClassNames[];
-    bx::snprintf(_buf, sizeof(_buf), "[%s] [%s] has [%d] components: ", g_actorClassNames[_class], _name, _num);
+    bx::snprintf(_buf, sizeof(_buf), "[%s] [%x] has [%d] components: ", g_actorClassNames[_class], _actorId, _num);
     imguiDrawText(_x, _y, _align, _buf, _argb);
     const char* _indent = "    ";
     for(uint32_t i=0; i<_num; ++i)
@@ -94,6 +95,8 @@ static void actor_information_imgui(const char* _name, int _x, int _y, int _texH
 }
 
 PreviewState::PreviewState()
+    :m_previewActor(0)
+    ,m_previewLevel(0)
 {
 
 }
@@ -148,8 +151,8 @@ void PreviewState::step( float dt )
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
 
-    actor_information_imgui("core/batman", 0, 25, 15);
-    list_resources_gui(EngineNames::ANIMATION, 0, 100, 200, 200, on_button_animation);
+    actor_information_imgui(m_previewActor, 0, 25, 15);
+    list_resources_gui(EngineNames::ANIMATION, 0, 100, 200, 200, on_button_animation, this);
 }
 
 void PreviewState::on_enter( GameState* prev_state )
@@ -159,4 +162,28 @@ void PreviewState::on_enter( GameState* prev_state )
     float at[] = {0,0,0};
     g_camera.update(eye, at);
     g_fpsCamera.set(eye, at);
+}
+
+void PreviewState::process_cmd_args( void* p )
+{
+    bx::CommandLine* cmd = (bx::CommandLine*)p;
+    const char* actor_name = cmd->findOption("actor");
+    const char* level_name = cmd->findOption("level");
+
+    if(actor_name)
+    {
+        LOGD("loading actor %s \n", actor_name);
+        hkQsTransform t;
+#ifdef HAVOK_COMPILE
+        t.setIdentity();
+#endif
+        m_previewActor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
+        LOGD("created actor = %x", m_previewActor);
+    }
+    if(level_name)
+    {
+        LOGD("loading level %s \n", level_name);
+        m_previewLevel = (Level*)g_resourceMgr.find_resource(EngineTypes::LEVEL, stringid_caculate(level_name));
+        if(m_previewLevel) m_previewLevel->load();
+    }
 }

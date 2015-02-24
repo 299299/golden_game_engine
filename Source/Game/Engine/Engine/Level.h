@@ -52,3 +52,5 @@ ENGINE_NATIVE_ALIGN(struct) Level
 };
 
 
+void*  load_resource_level(void*, uint32_t);
+void   lookup_resource_level(void*);

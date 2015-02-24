@@ -401,3 +401,11 @@ void MeshConverter::dumpVerterx( char* blob )
         vStart += getVertexStride();
     }
 }
+
+void MeshConverter::postProcess()
+{
+    if(!m_material)
+        return;
+    std::string materialFileName = m_material->getOutputFileName();
+    m_material->serializeToFile(materialFileName);
+}

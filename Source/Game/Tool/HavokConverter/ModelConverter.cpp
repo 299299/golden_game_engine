@@ -216,7 +216,7 @@ ModelConverter::serializeToJson() const
     {
         MaterialConverter* m = m_meshes[i]->getMaterial();
         if(!m) continue;
-        matObject << m->serializeToJson();
+        matObject << m->getResourceName();
     }
     modelObject << "materials" << matObject;
 

@@ -29,7 +29,6 @@ public:
 
     virtual bool checkProcessing();
     virtual bool parseWithJson() const { return false; };
-    virtual void checkModifyTime();
 
     virtual const void* getCompiledData() const { return 0; };
     virtual uint32_t getCompiledDataSize() const { return 0;};

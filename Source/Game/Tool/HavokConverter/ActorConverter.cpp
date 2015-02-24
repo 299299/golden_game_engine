@@ -38,29 +38,21 @@ ActorConverter::serializeToJson() const
     rootObject << "asset_path" << srcFile;
 
     jsonxx::Array compsObject;
-    const std::string pack_key("packed");
     for(size_t i=0; i<m_components.size(); ++i)
     {
-        jsonxx::Object obj = m_components[i]->serializeToJson();
-        if(!obj.has<bool>(pack_key)) obj << pack_key << true;
-        compsObject << obj;
+        compsObject << m_components[i]->serializeToJson();
     }
     rootObject << "components" << compsObject;
 
-    jsonxx::Array dataObject;
-    {
-        //todo
-    }
-    rootObject << "data" << dataObject;
     return rootObject;
 }
 
-void ActorConverter::serializeToFile(const char* fileName)
+void ActorConverter::serializeToFile(const std::string& fileName)
 {
     std::ofstream s(fileName);
     if(!s.good())
     {
-        g_hc_config->m_error.add_error("serializeToFile to %s IO error.", fileName);
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName);
         return;
     }
     s << serializeToJson().json();

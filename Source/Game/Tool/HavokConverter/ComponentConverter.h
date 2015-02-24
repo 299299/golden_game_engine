@@ -13,10 +13,12 @@ public:
 
     virtual std::string getTypeName() const = 0;
     virtual std::string getResourceName() const;
+    virtual std::string getOutputFileName() const;
 
     virtual void process(void* pData, int hint = 0) = 0;
     virtual void postProcess() { };
     virtual jsonxx::Object serializeToJson() const { return jsonxx::Object(); };
+    virtual void serializeToFile(const std::string& fileName);
     virtual void setName(const std::string& name) { m_name = name; };
     const std::string& getName() const { return m_name; };
     virtual void fillAttributes(jsonxx::Object& object) const;

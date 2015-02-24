@@ -27,7 +27,10 @@ static BaseCompiler* create_component_compiler(StringId _type)
         return new ModelCompiler;
     else if(_type == EngineTypes::LIGHT)
         return new LightCompiler;
-    else 
+    else if(_type == EngineTypes::ANIMATION_STATES ||
+            _type == EngineTypes::ANIMATION_RIG)
+        return new ComponentCompiler;
+    else
         return NULL;
 }
 
@@ -56,13 +59,13 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     m_pathPrefix = root.get<std::string>("prefix", "");
 
-    uint32_t numOfData = 0;
     uint32_t numComps = 0;
     jsonxx::Array compsValue = root.get<jsonxx::Array>("components");
 
     for(size_t i=0; i<compsValue.size(); ++i)
     {
-        const std::string& type =  compsValue.get<jsonxx::Object>(i).get<std::string>("type");
+        const jsonxx::Object& comp_json = compsValue.get<jsonxx::Object>(i);
+        const std::string& type =  comp_json.get<std::string>("type");
         StringId compType = stringid_caculate(type.c_str());
         int comp_index = g_componentMgr.find_factory_index(compType);
         if(comp_index < 0) 
@@ -75,40 +78,57 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         if(!comp)
             continue;
 
+        comp->m_pathPrefix = m_pathPrefix;
+        bool bOk = comp->readJSON(comp_json);
+        if(!bOk) {
+            delete comp;
+            continue;
+        }
+
         m_components.push_back(comp);
+        ++numComps;
+        
+        ComponentData data;
+        data.m_index = comp_index;
+        data.m_type = compType;
+        data.m_size = comp->getCompiledDataSize();
+        m_components_data.push_back(data);
+
+        g_config->add_compiler(comp);
     }
 
-    uint32_t memSize = sizeof(ActorResource) + numComps * sizeof(ComponentData);
-    memSize = NEXT_MULTIPLE_OF(16, memSize);
+    uint32_t head_size = sizeof ActorResource + numComps * sizeof ComponentData;
+    uint32_t mem_size = head_size;
+    for (uint32_t i=0; i<numComps; ++i)
+    {
+        mem_size += m_components[i]->getCompiledDataSize();
+    }
 
-    MemoryBuffer mem(memSize);
+    uint32_t ac_size = mem_size;
+    mem_size = NEXT_MULTIPLE_OF(16, mem_size);
+
+    MemoryBuffer mem(mem_size);
     char* offset = mem.m_buf;
 
     ActorResource* actor = (ActorResource*)mem.m_buf;
-    offset += sizeof(ActorResource);
     extern const char* g_actorClassNames[];
     actor->m_class = json_to_enum(root, "class", g_actorClassNames, 0);
     actor->m_num_components = numComps;
-    actor->m_component_data_offset = sizeof(ActorResource);
+    actor->m_component_data_offset = sizeof ActorResource;
+    offset += actor->m_component_data_offset;
+    ComponentData* data_array = (ComponentData*)(offset);
+    offset += numComps * sizeof ComponentData;
 
-    int index = 0;
-    for(size_t i=0; i<compsValue.size(); ++i)
+    for(size_t i=0; i<numComps; ++i)
     {
-        const jsonxx::Object& compValue = compsValue.get<jsonxx::Object>(i);
-        const std::string& type = compValue.get<std::string>("type");
-
-        int comp_index = g_componentMgr.find_factory_index(stringid_caculate(type.c_str()));
-        if(comp_index < 0)
-            continue;
-
-        LOGD("processing actor %s component %s", m_input.c_str(), type.c_str());
-        
-        
-        
-        createChildCompiler(type, compValue);
-        ++index;
+        BaseCompiler* comp = m_components[i];
+        ComponentData& data = data_array[i];
+        data = m_components_data[i];
+        data.m_offset = (int)(offset - mem.m_buf);
+        memcpy(offset, comp->getCompiledData(), comp->getCompiledDataSize());
+        offset += data.m_size;
     }
 
-    //ENGINE_ASSERT((values == (mem.m_buf + memSize)), "offset address");
-    return write_file(m_output, mem.m_buf, memSize);
+    ENGINE_ASSERT((offset == (mem.m_buf + ac_size)), "offset address");
+    return write_file(m_output, mem.m_buf, mem_size);
 } 

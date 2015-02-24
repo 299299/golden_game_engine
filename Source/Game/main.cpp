@@ -29,7 +29,7 @@ void showHelp()
         "--compile will data compile first than run the game \n"
         "-----------------------------------------\n"
         "Havok Converter options\n"
-        "-m specific convert mode\n"
+        "-m specific convert mode(model, skin, animation, level)\n"
         "-f specific input hkx file\n"
         "-o specific output folder\n"
         "--slient do not show error msg box\n"
@@ -41,6 +41,7 @@ void showHelp()
         "-o output folder\n"
         "-m compile mode default 0\n"
         "-t set num of threads to compile\n"
+        "-b to force recompile\n"
         "--bundle bundle all resource to package file\n"
         "--slient do not show error msg box\n"
         "--ignore_texture to ignore converting all dds \n");

@@ -26,7 +26,7 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
     }
 
     bool fileExist = isFileExist(output);
-    bool fileChanged = g_config->m_database.isFileChanged(input, m_modifyTime);
+    bool fileChanged = g_config->is_file_changed(input, m_modifyTime);
     if(fileExist && !fileChanged)
     {
         m_skipped = true;

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #define MAX_GAME_STATES     (32)
 
 class GameState
@@ -17,6 +16,7 @@ public:
     virtual void render();
     virtual void on_enter(GameState* prev_state) {};
     virtual void on_exit(GameState* next_state) {};
+    virtual void process_cmd_args(void* cmdLine) {};
 };
 
 class GameFSM
@@ -36,6 +36,7 @@ public:
     void step(float dt);
     void post_step(float dt);
     void render();
+    GameState* get_state() { return m_state; };
 
 private:
     GameState*          m_state;

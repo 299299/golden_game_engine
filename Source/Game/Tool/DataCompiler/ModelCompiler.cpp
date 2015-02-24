@@ -40,7 +40,7 @@ bool ModelCompiler::readJSON( const jsonxx::Object& root )
                 compiler->m_outputFolder = getFilePath(m_output);
                 if(!compiler->readJSON(matValue)) m_subCompilerError = true;
                 materialFile = compiler->m_name;
-                g_config->add_child_compile(compiler);
+                g_config->add_compiler(compiler);
             }
             else
             {

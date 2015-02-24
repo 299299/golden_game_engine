@@ -52,11 +52,11 @@ void Level::lookup()
     }
 }
 
-void*  load_resource_level(const char* data, uint32_t size)
+void*  load_resource_level(void* data, uint32_t size)
 {
     Level* level = (Level*)data;
-    level->m_objects = (LevelObject*)(data + level->m_objectOffset);
-    level->m_resources = (LevelActorResource*)(data + level->m_resourceOffset);
+    level->m_objects = (LevelObject*)((char*)data + level->m_objectOffset);
+    level->m_resources = (LevelActorResource*)((char*)data + level->m_resourceOffset);
     return level;
 }
 

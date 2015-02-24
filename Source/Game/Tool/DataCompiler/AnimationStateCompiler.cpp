@@ -228,6 +228,7 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
     AnimationStateLayer* layer = (AnimationStateLayer*)mem.m_buf;
     layer->m_numStates = numStates;
     layer->m_memorySize = memSize;
+    layer->m_rigName = json_to_stringid(root, "rig");
     char* p = mem.m_buf;
     p += sizeof(AnimationStateLayer);
     layer->m_stateNames = (StringId*)p;

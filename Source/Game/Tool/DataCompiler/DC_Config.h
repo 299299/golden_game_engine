@@ -48,13 +48,17 @@ struct DC_Config
     bool                            m_ignoreTextures;
     bool                            m_slient;
     bool                            m_bundled;
+    bool                            m_forceRecompile;
 
     void add_compiler(BaseCompiler* compiler);
     void post_process();
     BaseCompiler* create_compiler(const std::string& ext);
     bool is_engine_ext(const std::string& ext);
     bool is_type_valid(const std::string& type);
+    bool is_file_changed(const std::string& fileName, uint32_t& modifyTime);
 };
+
+
 
 
 extern DC_Config* g_config;

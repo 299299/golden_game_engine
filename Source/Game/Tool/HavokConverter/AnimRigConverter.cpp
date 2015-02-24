@@ -85,9 +85,46 @@ void AnimRigConverter::postProcess()
             g_hc_config->m_error.add_error("%s write error.", BX_FUNCTION);
     }
 #endif
+
+    {
+        m_rigJson = m_ownner->m_config->m_exportFolder + m_name + ".rig";
+        writeRig(m_rigJson);
+    }
 }
 
 jsonxx::Object AnimRigConverter::serializeToJson() const
+{
+    jsonxx::Object rigObject;
+    rigObject << "name" << getResourceName();
+    rigObject << "type" << getTypeName();
+    return rigObject;
+}
+
+int AnimRigConverter::findBodyPart( const std::string& boneName, const char** arrayBones )
+{
+    std::string boneNameLower = boneName;
+    toLower(boneNameLower);
+    for (int i=0; i<kBodyPartMax; ++i)
+    {
+        std::string::size_type pos = boneNameLower.find(arrayBones[i]);
+        if(pos != std::string::npos)
+            return i;
+    }
+    return -1;
+}
+
+void AnimRigConverter::writeRig( const std::string& fileName )
+{
+    std::ofstream s(fileName);
+    if(!s.good())
+    {
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName);
+        return;
+    }
+    s << getRigJson().json();
+}
+
+jsonxx::Object AnimRigConverter::getRigJson() const
 {
     extern const char* g_humanBodyNames[];
 
@@ -137,48 +174,5 @@ jsonxx::Object AnimRigConverter::serializeToJson() const
     }
     obj << "attachments" << attachments;
 #endif
-
-    fillAttributes(obj);
     return obj;
-}
-
-int AnimRigConverter::findBodyPart( const std::string& boneName, const char** arrayBones )
-{
-    std::string boneNameLower = boneName;
-    toLower(boneNameLower);
-    for (int i=0; i<kBodyPartMax; ++i)
-    {
-        std::string::size_type pos = boneNameLower.find(arrayBones[i]);
-        if(pos != std::string::npos)
-            return i;
-    }
-    return -1;
-}
-
-void AnimRigConverter::fillAttributes( jsonxx::Object& object ) const
-{
-    if(!m_node) return;
-
-#ifdef HAVOK_COMPILE
-    const hkxAttributeGroup* group = m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES);
-    if(!group) return;
-    fill_object_attributes(object, group);
-    const char* animSetName = 0;
-    hkResult result = group->getStringValue("anim_set", true, animSetName);
-    if(result != HK_SUCCESS) return;
-    //HACK HERE!
-    std::string animSetFile("../pipeline/bones/");
-    animSetFile += animSetName;
-    animSetFile += "_animset.json";
-    FileReader reader(animSetFile.c_str());
-    if (!reader.m_size) return;
-    jsonxx::Value obj;
-    if(!obj.parse(reader.m_buf))
-    {
-        g_hc_config->m_error.add_error("anim-set %s json parse error.", animSetFile.c_str());
-        return;
-    }
-    object<<"animation-set"<<obj;
-#endif
-
 }

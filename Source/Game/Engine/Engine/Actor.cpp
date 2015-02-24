@@ -2,15 +2,14 @@
 #include "Component.h"
 #include "IdArray.h"
 #include "Resource.h"
-#include "Model.h"
-#include "Light.h"
-#include "Graphics.h"
+#include "Level.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
 #include "MemorySystem.h"
 #include "memory.h"
 #include "Utils.h"
 #include "DataDef.h"
+#include "Graphics.h"
 
 struct ActorId
 {
@@ -303,7 +302,7 @@ void ActorWorld::step( float dt )
 
 void ActorWorld::post_step( float dt )
 {
-    //g_physicsWorld.sync_rigidbody_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
+    g_physicsWorld.sync_rigidbody_actors(g_actorBuckets[kProp].begin(), g_actorBuckets[kProp].size());
     g_physicsWorld.sync_proxy_actors(g_actorBuckets[kCharacter].begin(), g_actorBuckets[kCharacter].size());
 }
 
@@ -315,7 +314,11 @@ void ActorWorld::draw()
 
 void ActorWorld::register_factories()
 {
+    ResourceFactory _actor = {0, 0, lookup_resource_actor, 0, 0, EngineNames::ACTOR, 10};
+    g_resourceMgr.register_factory(_actor);
 
+    ResourceFactory _level = {load_resource_level, 0, lookup_resource_level, 0, 0, EngineNames::LEVEL, 11};
+    g_resourceMgr.register_factory(_level);
 }
 
 

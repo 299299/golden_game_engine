@@ -122,7 +122,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
                 if(!compiler->readJSON(o.get<jsonxx::Object>("texture")))
                     m_subCompilerError = true;
                 textureFile = compiler->m_name;
-                g_config->add_child_compile(compiler);
+                g_config->add_compiler(compiler);
             }
             else if(o.has<std::string>("texture"))
             {

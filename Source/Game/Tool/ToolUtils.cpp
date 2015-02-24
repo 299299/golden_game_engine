@@ -808,7 +808,6 @@ std::string input_to_output( const std::string& inputName )
     return ret;
 }
 
-
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
 {
     //bx::LwMutexScope _l(&m_lock);
@@ -878,11 +877,11 @@ void ToolError::add_error( const char* fmt, ... )
 {
     bx::LwMutexScope _l(m_lock);
     ++m_num_error;
-    if(m_error_msgs.size() >= 20) return;
     char buffer[1024];
+    memset(buffer, 0x00, sizeof buffer);
     va_list args;
     va_start(args, fmt);
-    bx::vsnprintf(buffer, sizeof(buffer), fmt, args);
+    bx::vsnprintf(buffer, sizeof buffer, fmt, args);
     va_end(args);
     LOGE(buffer);
     m_error_msgs.push_back(buffer);
@@ -891,8 +890,9 @@ void ToolError::add_error( const char* fmt, ... )
 void ToolError::show_error()
 {
     if(!m_num_error) return;
+    size_t show_num = m_num_error > 5 ? 5 : m_num_error;
     std::string str;
-    for(size_t i=0; i<m_error_msgs.size(); ++i)
+    for(size_t i=0; i<show_num; ++i)
     {
        str += m_error_msgs[i];
        str += "\n";

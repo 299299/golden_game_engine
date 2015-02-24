@@ -358,6 +358,7 @@ ResourceInfo* ResourcePackage::find_resource( StringId type, StringId name ) con
 
 void ResourceManager::init()
 {
+    m_running = 1;
     m_numFactories = 0;
     m_numPackages = 0;
     m_numRequests = 0;

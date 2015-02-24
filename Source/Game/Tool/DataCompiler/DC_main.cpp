@@ -37,6 +37,7 @@ DC_Config::DC_Config()
 ,m_ignoreTextures(false) //--> for speed up data compile
 ,m_slient(false)
 ,m_bundled(false)
+,m_forceRecompile(false)
 {
     const char* g_resourceTypeNames[] =
     {
@@ -124,24 +125,27 @@ void DC_Config::post_process()
         m_levels[i]->postProcess();
     }
 
-    std::ofstream ofs(DC_RESULT);
-    if(!ofs.good())
-        return;
-    ofs.clear();
-
-    StringArray _results;
-    _results.resize(m_processedCompilers.size());
-    for(size_t i=0; i<_results.size(); ++i)
+    if (!m_forceRecompile)
     {
-        _results[i] = m_processedCompilers[i]->m_output;
-    }
+        std::ofstream ofs(DC_RESULT);
+        if(!ofs.good())
+            return;
+        ofs.clear();
 
-    std::sort(_results.begin(), _results.end(), compare_less_resource);
+        StringArray _results;
+        _results.resize(m_processedCompilers.size());
+        for(size_t i=0; i<_results.size(); ++i)
+        {
+            _results[i] = m_processedCompilers[i]->m_output;
+        }
 
-    for(size_t i=0; i<_results.size(); ++i)
-    {
-        LOGD("---> processed ---> %s", _results[i].c_str());
-        ofs << _results[i] << std::endl;
+        std::sort(_results.begin(), _results.end(), compare_less_resource);
+
+        for(size_t i=0; i<_results.size(); ++i)
+        {
+            LOGD("---> processed ---> %s", _results[i].c_str());
+            ofs << _results[i] << std::endl;
+        }
     }
 }
 
@@ -166,6 +170,12 @@ bool DC_Config::is_engine_ext( const std::string& ext )
     CompilerBuildMap::iterator iter = m_compilerBuilder.find(key);
     if(iter == m_compilerBuilder.end()) return false;
     return true;
+}
+
+bool DC_Config::is_file_changed( const std::string& fileName, uint32_t& modifyTime )
+{
+    bool bRet = m_database.isFileChanged(fileName, modifyTime);
+    return  m_forceRecompile ? true : bRet;
 }
 
 int32_t thread_compile(void* _userData)
@@ -198,7 +208,7 @@ void level_processing()
         std::string output = input_to_output(input);
         LevelCompiler* level = new LevelCompiler;
         g_config->m_levels.push_back(level);
-        if(!g_config->m_database.isFileChanged(input, modifyTime) && isFileExist(output))
+        if(!g_config->is_file_changed(input, modifyTime) && isFileExist(output))
             level->m_skipped = true;
         level->m_input = input;
         level->m_output = output;
@@ -323,6 +333,7 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_config->m_ignoreTextures = cmdline->hasArg("ignore_texture");
     g_config->m_slient = cmdline->hasArg("slient");
     g_config->m_bundled = cmdline->hasArg("bundle");
+    g_config->m_forceRecompile = cmdline->hasArg('b');
 
     create_folder("data");
     g_config->m_database.load(DC_DATABASE);

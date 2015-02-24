@@ -8,15 +8,12 @@
 #include "DebugDraw.h"
 #include "Graphics.h"
 #include "Utils.h"
-#include "Level.h"
-#include "AnimRig.h"
 #include "PhysicsWorld.h"
 #include "ShadingEnviroment.h"
 #include "PreviewState.h"
 #include "PlayerState.h"
-#include "RenderCamera.h"
-#include "Actor.h"
 #include "DataDef.h"
+#include "Actor.h"
 #include <bx/bx.h>
 #include <bx/commandline.h>
 
@@ -30,8 +27,6 @@ int game_main(int argc, bx::CommandLine* cmdline)
         run_data_compile();
     }
 
-    const char* actor_name = 0;
-    const char* level_name = 0;
     const char* package_name = 0;
     const char* state_name = 0;
 
@@ -48,10 +43,6 @@ int game_main(int argc, bx::CommandLine* cmdline)
     name = cmdline->findOption('h');
     if(name) cfg.m_windowHeight = atoi(name);
     cfg.m_headless = cmdline->hasArg("headless");
-    name = cmdline->findOption("actor");
-    if(name) actor_name = name;
-    name = cmdline->findOption("level");
-    if(name) level_name = name;
     name = cmdline->findOption('t');
     if(name) cfg.m_windowTitle = name;
     package_name = cmdline->findOption("package");
@@ -89,24 +80,13 @@ int game_main(int argc, bx::CommandLine* cmdline)
     if(package_name)
         g_resourceMgr.load_package_and_wait(package_name);
 
-    if(actor_name)
-    {
-        LOGD("loading actor %s \n", actor_name);
-        hkQsTransform t;
-#ifdef HAVOK_COMPILE
-        t.setIdentity();
-#endif
-        g_previewActor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
-        LOGD("created actor = %d", g_previewActor);
-    }
-    if(level_name)
-    {
-        LOGD("loading level %s \n", level_name);
-        Level* level = (Level*)g_resourceMgr.find_resource(EngineTypes::LEVEL, stringid_caculate(level_name));
-        if(level) level->load();
-    }
+    if(state_name)
+        g_gameFSM.change_state(state_name);
 
-    if(state_name) g_gameFSM.change_state(state_name);
+    GameState* _state = g_gameFSM.get_state();
+    if(_state)
+        _state->process_cmd_args(&cmdline);
+    
 
     g_engine.run();
 
