@@ -82,7 +82,7 @@ void AnimRig::create_mirrored_skeleton()
 
 void AnimRigInstance::init( const void* resource , ActorId32 actor)
 {
-    AnimRigData* data = (AnimRigData*)resource;
+    ComponentInstanceData* data = (ComponentInstanceData*)resource;
     AnimRig* rig = (AnimRig*)data->m_resource;
     m_actor = actor;
     m_attachmentTransforms = 0;
@@ -152,7 +152,7 @@ void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 void AnimRigInstance::test_animation(const char* name)
 {
 #ifdef HAVOK_COMPILE
-    Animation* anim = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, StringId(name));
+    Animation* anim = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, stringid_caculate(name));
     if(!anim) return;
     for(int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
     {

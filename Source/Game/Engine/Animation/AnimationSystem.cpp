@@ -280,7 +280,7 @@ void* get_all_anim_rig()
 void lookup_anim_rig_instance_data( void* resource )
 {
     ComponentInstanceData* data = (ComponentInstanceData*)resource;
-    data->m_resource = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, data->m_name);
+    data->m_resource = g_resourceMgr.find_resource(EngineTypes::ANIMATION_RIG, data->m_name);
 }
 
 Id create_anim_state( const void* resource, ActorId32 id)

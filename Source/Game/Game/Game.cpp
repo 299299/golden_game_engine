@@ -67,15 +67,9 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
     Graphics::ready();
     g_debugDrawMgr.ready();
-    g_physicsWorld.create_world(
-        (PhysicsConfig*)g_resourceMgr.find_resource(
-        EngineTypes::PHYSICS_CONFIG,
-        stringid_caculate("core/global"))
-        );
+    g_physicsWorld.create_world(FIND_RESOURCE(PhysicsConfig, EngineTypes::PHYSICS_CONFIG, stringid_caculate("core/global")));
     g_physicsWorld.create_plane(500.0f);
-    g_actorWorld.m_shading_env = (ShadingEnviroment*)(g_resourceMgr.find_resource(
-        EngineTypes::SHADING_ENV,
-        stringid_caculate("core/common/default")));
+    g_actorWorld.m_shading_env = FIND_RESOURCE(ShadingEnviroment, EngineTypes::SHADING_ENV, stringid_caculate("core/common/default"));
 
     if(package_name)
         g_resourceMgr.load_package_and_wait(package_name);
@@ -85,7 +79,7 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
     GameState* _state = g_gameFSM.get_state();
     if(_state)
-        _state->process_cmd_args(&cmdline);
+        _state->process_cmd_args(cmdline);
     
 
     g_engine.run();

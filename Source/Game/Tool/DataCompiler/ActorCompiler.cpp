@@ -9,6 +9,7 @@
 class ComponentCompiler : public BaseCompiler
 {
 public:
+    ComponentCompiler() { memset(&m_data, 0x00, sizeof m_data); };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root) 
     { 

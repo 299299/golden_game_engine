@@ -364,8 +364,11 @@ void Graphics::draw(ShadingEnviroment* env)
 #endif
 
     submitPerFrameUniforms();
-    g_lightWorld.submit_lights(env);
-    if(env) env->submit();
+    if(env) 
+    {
+        g_lightWorld.submit_lights(env);
+        env->submit();
+    }
     g_modelWorld.submit_models();
     if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();
     g_debugDrawMgr.draw();

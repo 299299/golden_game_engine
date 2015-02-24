@@ -38,12 +38,6 @@ ENGINE_NATIVE_ALIGN(struct) AnimRig
     bool                            m_mirrored;
 };
 
-struct AnimRigData
-{
-    void*                           m_resource;
-    StringId                        m_name;
-};
-
 ENGINE_NATIVE_ALIGN(struct) AnimRigInstance
 {
     const AnimRig*                  m_resource;

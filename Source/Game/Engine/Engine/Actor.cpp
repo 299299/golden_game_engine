@@ -108,7 +108,7 @@ void Actor::init( void* resource, const hkQsTransform& t, ActorId32 id)
     const ActorResource* actorResource = m_resource;
     uint32_t num = actorResource->m_num_components;
     char* p = (char*)resource;
-    ComponentData* data = (ComponentData*)((char*)resource + actorResource->m_component_data_offset);
+    ComponentData* data = (ComponentData*)(p + actorResource->m_component_data_offset);
     Id* ids = m_components;
 
     for (uint32_t i=0; i<num; ++i)
