@@ -15,7 +15,6 @@
 #include "IK.h"
 #include "Ragdoll.h"
 #include "AnimRig.h"
-#include "ProxyInstance.h"
 #include "Actor.h"
 #include "AnimationState.h"
 #ifdef HAVOK_COMPILE
@@ -233,10 +232,10 @@ void AnimationSystem::register_factories()
     ResourceFactory _states = { load_animation_state, 0, lookup_animation_state, 0, 0, EngineNames::ANIMATION_STATES, 3};
     g_resourceMgr.register_factory(_states);
 
-    ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, lookup_anim_rig_instance_data};
+    ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, lookup_anim_rig_instance_data, 0};
     g_componentMgr.register_factory(_comp_rig, EngineTypes::ANIMATION_RIG);
 
-    ComponentFactory _comp_states = { create_anim_state, destroy_anim_state, get_anim_state, num_all_anim_state, get_all_anim_state, 0, lookup_anim_state_instance_data};
+    ComponentFactory _comp_states = { create_anim_state, destroy_anim_state, get_anim_state, num_all_anim_state, get_all_anim_state, 0, lookup_anim_state_instance_data, 1};
     g_componentMgr.register_factory(_comp_states, EngineTypes::ANIMATION_STATES);
 }
 
@@ -343,9 +342,9 @@ void draw_debug_animation()
 
         {
             //draw debug pose
-            if(g_engineMode == 0) 
+            if(g_engineMode == 0)
                 draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
-            else 
+            else
                 draw_pose_vdb(*pose, t);
         }
 

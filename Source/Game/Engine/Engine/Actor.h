@@ -20,7 +20,6 @@ ENGINE_NATIVE_ALIGN(struct) Actor
     hkQsTransform               m_transform;
     Id                          m_components[MAX_COMPONET_PER_ACTOR];
     const ActorResource*        m_resource;
-    char*                       m_values;
     ActorId32                   m_id;
 
     void        init(void* resource, const hkQsTransform& t, ActorId32 id);

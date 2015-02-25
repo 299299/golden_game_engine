@@ -133,107 +133,39 @@ bool check_unique_process()
     return true;
 }
 
-uint32_t Fact::value_type(StringId k) const
-{
-    Key key;
-    if(!get_key(k, key)) return ValueType::UNKNOW;
-    return key.m_type;
-}
-
-bool Fact::has_key(StringId k) const
+int Fact::get_key_index(StringId k) const
 {
     uint32_t num = m_num_keys;
-    Key* head = m_keys;
-    for(uint32_t i=0; i<num; ++i)
-    {
-        if(head[i].m_name == k) return true;
-    }
-    return false;
+    StringId* head = (StringId*)((char*)this + m_name_offset);
+    FIND_IN_ARRAY_RET(head, num, k);
 }
 
-bool Fact::get_key(StringId k, Key& out_k) const
+void Fact::get_value(StringId k, void* value_buf, void* value_out, uint32_t size) const
 {
-    uint32_t num = m_num_keys;
-    Key* head = m_keys;
-    for(uint32_t i=0; i<num; ++i)
-    {
-        if(head[i].m_name == k)
-        {
-            out_k = head[i];
-            return true;
-        }
-    }
-    return false;
+    int index = get_key_index(k);
+    if(index < 0)
+        return;
+
+    Key* key = (Key*)((char*)this + m_key_offset) + index;
+    ENGINE_ASSERT_ARGS(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
+    memcpy(value_out, (char*)value_buf + key->m_offset, size);
 }
 
-bool Fact::get_key(char* values, StringId k, int& v) const
+void Fact::set_value(StringId k, void* value_buf, const void* value_in, uint32_t size)
 {
-    Key key;
-    bool has = get_key(k, key);
-    if(!has) return false;
-    v = *(int*)(values + key.m_offset);
-    return has;
+    int index = get_key_index(k);
+    if(index < 0)
+        return;
+
+    Key* key = (Key*)((char*)this + m_key_offset) + index;
+    ENGINE_ASSERT_ARGS(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
+    memcpy((char*)value_buf + key->m_offset, value_in, size);
 }
 
-bool Fact::get_key(char* values, StringId k, float& v) const
+void Fact::fill_default_values(void* value_buf)
 {
-    Key key;
-    bool has = get_key(k, key);
-    if(!has) return false;
-    v = *(float*)(values + key.m_offset);
-    return has;
+    memcpy(value_buf, (char*)this + m_value_offset, m_value_size);
 }
-
-bool Fact::get_key(char* values, StringId k, StringId& v) const
-{
-    Key key;
-    bool has = get_key(k, key);
-    if(!has) return false;
-    v = *(StringId*)(values + key.m_offset);
-    return has;
-}
-
-bool Fact::get_key(char* values, StringId k, float* v) const
-{
-    Key key;
-    bool has = get_key(k, key);
-    if(!has) return false;
-    memcpy(v, values + key.m_offset, sizeof(float)*4);
-    return has;
-}
-
-bool Fact::set_key(char* values, StringId k, int v) const
-{
-    Key key;
-    if(!get_key(k, key)) return false;
-    *(int*)(values + key.m_offset) = v;
-    return false;
-}
-
-bool Fact::set_key(char* values, StringId k, float v) const
-{
-    Key key;
-    if(!get_key(k, key)) return false;
-    *(float*)(values + key.m_offset) = v;
-    return true;
-}
-
-bool Fact::set_key(char* values, StringId k, StringId v) const
-{
-    Key key;
-    if(!get_key(k, key)) return false;
-    *(StringId*)(values + key.m_offset) = v;
-    return true;
-}
-
-bool Fact::set_key(char* values, StringId k, const float* v) const
-{
-    Key key;
-    if(!get_key(k, key)) return false;
-    memcpy(values + key.m_offset, v, sizeof(float) * 4);
-    return true;
-}
-
 
 void CommandMachine::init(int max_commands, int max_callbacks)
 {

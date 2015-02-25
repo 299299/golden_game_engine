@@ -22,7 +22,7 @@ public:
     ComponentInstanceData m_data;
 };
 
-static BaseCompiler* create_component_compiler(StringId _type)
+INTERNAL BaseCompiler* create_component_compiler(StringId _type)
 {
     if(_type == EngineTypes::MODEL)
         return new ModelCompiler;
@@ -33,6 +33,13 @@ static BaseCompiler* create_component_compiler(StringId _type)
         return new ComponentCompiler;
     else
         return NULL;
+}
+
+INTERNAL int compare_less_component(const ComponentCompilerData& o1, const ComponentCompilerData& o2)
+{
+    ComponentFactory* fac1 = g_componentMgr.get_factory(o1.m_data.m_index);
+    ComponentFactory* fac2 = g_componentMgr.get_factory(o2.m_data.m_index);
+    return fac1->m_order < fac2->m_order;
 }
 
 
@@ -86,14 +93,14 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
             continue;
         }
 
-        m_components.push_back(comp);
-        ++numComps;
+        ComponentCompilerData _data;
+        _data.m_compiler = comp;
+        _data.m_data.m_index = comp_index;
+        _data.m_data.m_type = compType;
+        _data.m_data.m_size = comp->getCompiledDataSize();
 
-        ComponentData data;
-        data.m_index = comp_index;
-        data.m_type = compType;
-        data.m_size = comp->getCompiledDataSize();
-        m_components_data.push_back(data);
+        m_components.push_back(_data);
+        ++numComps;
 
         g_config->add_compiler(comp);
     }
@@ -102,7 +109,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     uint32_t mem_size = head_size;
     for (uint32_t i=0; i<numComps; ++i)
     {
-        mem_size += m_components[i]->getCompiledDataSize();
+        mem_size += m_components[i].m_compiler->getCompiledDataSize();
     }
 
     uint32_t ac_size = mem_size;
@@ -122,11 +129,13 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     for(size_t i=0; i<numComps; ++i)
     {
-        BaseCompiler* comp = m_components[i];
+        ComponentCompilerData& comp_data = m_components[i];
         ComponentData& data = data_array[i];
-        data = m_components_data[i];
+        data = comp_data.m_data;
         data.m_offset = (int)(offset - mem.m_buf);
-        memcpy(offset, comp->getCompiledData(), comp->getCompiledDataSize());
+        memcpy(offset,
+            comp_data.m_compiler->getCompiledData(),
+            comp_data.m_compiler->getCompiledDataSize());
         offset += data.m_size;
     }
 

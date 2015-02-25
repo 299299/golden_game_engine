@@ -25,29 +25,22 @@ struct ValueType
 
 struct Key
 {
-    StringId    m_name;
-    uint32_t    m_type;
+    uint32_t    m_size;
     uint32_t    m_offset;
 };
 
 struct Fact
 {
-    Key*            m_keys;
+    uint32_t        m_name_offset;
+    uint32_t        m_key_offset;
     uint32_t        m_num_keys;
-    char*           m_values; //--> default values
+    uint32_t        m_value_offset; // default values
     uint32_t        m_value_size;
 
-    uint32_t value_type(StringId k) const;
-    bool has_key(StringId k) const;
-    bool get_key(StringId k, Key& out_k) const;
-    bool get_key(char* values, StringId k, int& v) const;
-    bool get_key(char* values, StringId k, float& v) const;
-    bool get_key(char* values, StringId k, StringId& v) const;
-    bool get_key(char* values, StringId k, float* v) const;
-    bool set_key(char* values, StringId k, int v) const;
-    bool set_key(char* values, StringId k, float v) const;
-    bool set_key(char* values, StringId k, StringId v) const;
-    bool set_key(char* values, StringId k, const float* v) const;
+    int  get_key_index(StringId k) const;
+    void get_value(StringId k, void* value_buf, void* value_out, uint32_t size) const;
+    void set_value(StringId k, void* value_buf, const void* value_in, uint32_t size);
+    void fill_default_values(void* value_buf);
 };
 
 

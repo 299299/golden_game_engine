@@ -737,6 +737,108 @@ bool json_to_bool( const jsonxx::Object& o,const char* name, bool def/*=false*/ 
     return o.get<bool>(name);
 }
 
+Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_mem_t func)
+{
+    if(!o.has<jsonxx::Array>(name))
+        return 0;
+
+    const jsonxx::Array& array = o.get<jsonxx::Array>(name);
+    uint32_t value_size = 0;
+    const std::map<std::string, jsonxx::Value*>& kv = o.kv_map();
+    std::map<std::string, jsonxx::Value*>::const_iterator it = kv.begin();
+    for(; it != kv.end(); ++it)
+    {
+        jsonxx::Value* v = it->second;
+        if(!v)
+            continue;
+
+        switch(v->type_)
+        {
+        case jsonxx::Value::NUMBER_:
+            value_size += sizeof(int);
+            break;
+        case jsonxx::Value::STRING_:
+            value_size += sizeof(StringId);
+            break;
+        case jsonxx::Value::BOOL_:
+            value_size += sizeof(int);
+            break;
+        case jsonxx::Value::ARRAY_:
+            // assume in this case all value is number
+            value_size += (sizeof(int) * v->get<jsonxx::Array>().size());
+            break;
+        case jsonxx::Value::OBJECT_:
+            if(func)
+                value_size += func(v->get<jsonxx::Object>(), NULL);
+            break;
+        default:
+            // TODO not supported types
+            continue;
+        }
+    }
+
+    uint32_t num_of_keys = array.size();
+    uint32_t memory_size = sizeof(Fact) + num_of_keys * (sizeof(StringId) + sizeof(Key)) + value_size;
+    char* p = (char*)malloc(memory_size);
+    memset(p, 0x00, memory_size);
+
+    Fact* f = (Fact*)p;
+    f->m_num_keys = num_of_keys;
+    f->m_value_size = value_size;
+    f->m_name_offset = sizeof(Fact);
+    f->m_key_offset = sizeof(Fact) + num_of_keys * (sizeof(StringId));
+    f->m_value_offset = sizeof(Fact) + num_of_keys * (sizeof(StringId) + sizeof(Key));
+
+    char* values = p + f->m_value_offset;
+    StringId* names = (StringId*)(p + f->m_name_offset);
+    Key* keys = (Key*)(p + f->m_key_offset);
+    int index = 0;
+
+    for(it = kv.begin(); it != kv.end(); ++it)
+    {
+        jsonxx::Value* v = it->second;
+        const std::string& k = it->first;
+
+        if(!v)
+            continue;
+
+        uint32_t size = 4;
+        switch(v->type_)
+        {
+        case jsonxx::Value::NUMBER_:
+            *((float*)values) = (float)v->get<jsonxx::Number>();
+            break;
+        case jsonxx::Value::STRING_:
+            *((StringId*)values) = stringid_caculate(v->get<std::string>().c_str());
+            break;
+        case jsonxx::Value::BOOL_:
+            *((int*)values) = v->get<bool>() == true;
+            break;
+        case jsonxx::Value::ARRAY_:
+            {
+                const jsonxx::Array& data_array = v->get<jsonxx::Array>();
+                json_to_floats(data_array, (float*)values, data_array.size());
+            }
+            break;
+        case jsonxx::Value::OBJECT_:
+            if(func)
+                size = func(v->get<jsonxx::Object>(), values);
+            break;
+        default:
+            // TODO not supported types
+            continue;
+        }
+
+        names[index] = stringid_caculate(k.c_str());
+        keys[index].m_size = size;
+        keys[index].m_offset = values - p + f->m_value_offset;
+        values += size;
+        ++index;
+    }
+
+    return f;
+}
+
 //========================================================================
 //  RESOURCE DB
 //

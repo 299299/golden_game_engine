@@ -130,6 +130,7 @@ struct IdArray
     uint16_t            m_freelist;
     uint16_t            m_next_id;
     uint16_t            m_size;
+    char                m_padding[2];
 };
 
 struct CIdArray
@@ -176,11 +177,11 @@ struct CIdArray
         return id.index < m_capacity && m_sparse[id.index].id == id.id;
     }
 
-    Id create(char** ptr)
+    Id create(void** ptr)
     {
         ENGINE_ASSERT(m_size < m_capacity, "Object list full");
 
-        // Obtain a new id                                                                                                                                                                   
+        // Obtain a new id
         Id id;
         id.id = m_next_id++;
 
@@ -213,8 +214,8 @@ struct CIdArray
         const uint32_t last = m_size - 1;
         ENGINE_ASSERT(last >= m_sparse_to_dense[id.index], "Swapping with previous item");
 
-        char* dst = get_by_index(m_sparse_to_dense[id.index]);
-        char* src = get_by_index(m_objects[last]);
+        char* dst = (char*)get_by_index(m_sparse_to_dense[id.index]);
+        char* src = (char*)get_by_index(m_objects[last]);
         memcpy(dst, src, m_object_size);
 
         // Update tables
@@ -225,18 +226,18 @@ struct CIdArray
         m_size--;
     }
 
-    char* get(Id id)
+    void* get(Id id)
     {
         ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
         return get_by_index(m_sparse_to_dense[id.index]);
     }
-    char* get_by_index(uint32_t index)
+    void* get_by_index(uint32_t index)
     {
         return m_objects + index * m_object_size;
     }
     uint32_t size() const { return m_size; };
-    const char* begin() const { return m_objects; };
-    char* begin() { return m_objects; };
+    const void* begin() const { return m_objects; };
+    void* begin() { return m_objects; };
 
     Id*                 m_sparse;
     uint16_t*           m_sparse_to_dense;

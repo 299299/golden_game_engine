@@ -2,6 +2,12 @@
 #include "BaseCompiler.h"
 #include "Component.h"
 
+struct ComponentCompilerData
+{
+    BaseCompiler*           m_compiler;
+    ComponentData           m_data;
+};
+
 class ActorCompiler : public BaseCompiler
 {
 public:
@@ -12,7 +18,5 @@ public:
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
 
-    std::vector<BaseCompiler*>          m_components;
-    std::vector<ComponentData>          m_components_data;
-
+    std::vector<ComponentCompilerData>          m_components;
 };

@@ -84,7 +84,6 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
     ComponentFactory* fac = g_componentMgr.find_factory(EngineTypes::ANIMATION_RIG);
     uint32_t componentNum = fac->num_components();
 
-#if 0
     AnimRigInstance* components = (AnimRigInstance*)fac->get_components();
     LOGI("component %s instance num = %d", EngineNames::ANIMATION_RIG, componentNum);
     for(size_t i=0; i<componentNum; ++i)
@@ -95,7 +94,6 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
             components[i].init(newCompResource, components[i].m_actor);
         }
     }
-#endif
 
 }
 
@@ -377,13 +375,6 @@ void resource_hot_reload_update(float dt)
         LOGE("can not find any reload ext for %s type", _ext);
         return;
     }
-
-#if 0
-    char _name[256];
-    memset(_name, 0, sizeof _name);
-    strncpy(_name, _buf, _dot);
-    g_resourceMgr.reload_resource(_type, stringid_caculate(_name), _buf);
-#endif
 
     run_data_compile();
 

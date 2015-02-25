@@ -29,6 +29,7 @@ struct ComponentFactory
     func_get_components_t         m_get_components;
     func_transform_component_t    m_transform_component;
     func_lookup_component_data_t  m_lookup_component_data;
+    int                           m_order;
 
     Id create_component(const void* res, ActorId32 id)
     {

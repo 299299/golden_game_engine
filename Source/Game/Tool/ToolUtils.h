@@ -76,6 +76,9 @@ StringId    json_to_stringid(const jsonxx::Object& o, const char* name, StringId
 int         json_to_enum(const jsonxx::Object& o, const char* name, const char** enumnames, int def = -1);
 bool        json_to_bool(const jsonxx::Object& o,const char* name, bool def=false);
 
+typedef uint32_t (*func_fact_object_mem_t)(const jsonxx::Object& o, char* p);
+Fact*       json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_mem_t f);
+
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase
 {

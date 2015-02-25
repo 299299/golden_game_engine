@@ -4,6 +4,7 @@
 #include "AnimRig.h"
 #include "Resource.h"
 #include "DataDef.h"
+#include "Actor.h"
 
 enum LayerState
 {
@@ -211,6 +212,13 @@ void AnimationStateLayer::init( const void* resource, ActorId32 id )
     m_easeInCtrl = new hk_anim_ctrl(NULL);
     m_easeOutCtrl = new hk_anim_ctrl(NULL);
     m_state = kLayerDefault;
+
+    Actor* actor = g_actorWorld.get_actor(id);
+    ENGINE_ASSERT_ARGS(actor, "actor not exist %x", id);
+    AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_RIG);
+    ENGINE_ASSERT(rig, "actor must have anim-rig component");
+    m_skeleton = rig->m_skeleton;
+    ENGINE_ASSERT(m_skeleton, "rig skeleton not created!");
 }
 
 void AnimationStateLayer::update( float dt )

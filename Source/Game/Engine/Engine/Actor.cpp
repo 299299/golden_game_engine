@@ -102,7 +102,6 @@ void Actor::init( void* resource, const hkQsTransform& t, ActorId32 id)
 #ifdef HAVOK_COMPILE
     m_transform.setIdentity();
 #endif
-    m_values = 0;
     m_id = id;
 
     const ActorResource* actorResource = m_resource;

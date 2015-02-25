@@ -179,10 +179,10 @@ void Graphics::register_factories()
     g_resourceMgr.register_factory(_texture2d);
 
     ResourceFactory _texture3d = {load_resource_texture3d, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, EngineNames::TEXTURE_3D, 0};
-    g_resourceMgr.register_factory(_texture3d);  
+    g_resourceMgr.register_factory(_texture3d);
 
     ResourceFactory _shader = {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, EngineNames::SHADER, 0};
-    g_resourceMgr.register_factory(_shader); 
+    g_resourceMgr.register_factory(_shader);
 
     ResourceFactory _program = {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, EngineNames::PROGRAM, 1};
     g_resourceMgr.register_factory(_program);
@@ -193,10 +193,10 @@ void Graphics::register_factories()
     ResourceFactory _shadingEnv = {0,0,lookup_resource_shading_enviroment,0,0,EngineNames::SHADING_ENV, 4};
     g_resourceMgr.register_factory(_shadingEnv);
 
-    ComponentFactory _model = {create_model, destroy_model, get_model, num_all_model, get_all_model, transform_model, lookup_model_instance_data};
+    ComponentFactory _model = {create_model, destroy_model, get_model, num_all_model, get_all_model, transform_model, lookup_model_instance_data, 0};
     g_componentMgr.register_factory(_model, EngineTypes::MODEL);
 
-    ComponentFactory _light = {create_light, destroy_light, get_light, num_all_light, get_all_light, transform_light, 0};
+    ComponentFactory _light = {create_light, destroy_light, get_light, num_all_light, get_all_light, transform_light, 0, 0};
     g_componentMgr.register_factory(_light, EngineTypes::LIGHT);
 }
 
@@ -364,7 +364,7 @@ void Graphics::draw(ShadingEnviroment* env)
 #endif
 
     submitPerFrameUniforms();
-    if(env) 
+    if(env)
     {
         g_lightWorld.submit_lights(env);
         env->submit();
@@ -574,10 +574,6 @@ namespace bgfx
     void rendererDestroyD3D9() {};
     struct RendererContextI* rendererCreateD3D12()  { return 0;};
     void rendererDestroyD3D12() {};
-
-#ifndef HAVOK_COMPILE
-    void x11SetDisplayWindow(::Display* _display, ::Window _window) {}
-#endif
 };
 
 
