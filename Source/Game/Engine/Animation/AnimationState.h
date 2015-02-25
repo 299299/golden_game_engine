@@ -92,8 +92,8 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
         HOT DATA
     */
     float                       m_weight;
-    AnimationState*             m_curState;
-    AnimationState*             m_lastState;
+    int                         m_curStateIndex;
+    int                         m_lastStateIndex;
     AnimationTranstion*         m_curTransition;
     hk_anim_ctrl*               m_easeInCtrl;
     hk_anim_ctrl*               m_easeOutCtrl;
@@ -107,15 +107,15 @@ ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
     void update(float dt);
     void destroy();
 
-    void fireEvent(StringId name);
-    void changeState(StringId name);
+    void fire_event(StringId name);
+    void change_state(StringId name);
     void get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut);
 
 private:
-    void changeState(AnimationTranstion* t);
-    void updateDefault(float dt);
-    void updateCrossFading(float dt);
-    void updateWaitingForAlign(float dt);
+    void change_state(AnimationTranstion* t);
+    void update_default(float dt);
+    void update_crossfading(float dt);
+    void update_waitingalign(float dt);
     void get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
 };
 

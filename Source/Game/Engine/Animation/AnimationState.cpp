@@ -212,6 +212,8 @@ void AnimationStateLayer::init( const void* resource, ActorId32 id )
     m_easeInCtrl = new hk_anim_ctrl(NULL);
     m_easeOutCtrl = new hk_anim_ctrl(NULL);
     m_state = kLayerDefault;
+    m_curStateIndex = -1;
+    m_lastStateIndex = -1;
 
     Actor* actor = g_actorWorld.get_actor(id);
     ENGINE_ASSERT_ARGS(actor, "actor not exist %x", id);
@@ -219,6 +221,8 @@ void AnimationStateLayer::init( const void* resource, ActorId32 id )
     ENGINE_ASSERT(rig, "actor must have anim-rig component");
     m_skeleton = rig->m_skeleton;
     ENGINE_ASSERT(m_skeleton, "rig skeleton not created!");
+
+    change_state(m_stateNames[0]);
 }
 
 void AnimationStateLayer::update( float dt )
@@ -227,26 +231,28 @@ void AnimationStateLayer::update( float dt )
     switch(_state)
     {
     case kLayerDefault:
-        updateDefault(dt);
+        update_default(dt);
         break;
     case kLayerCrossFading:
-        updateCrossFading(dt);
+        update_crossfading(dt);
         break;
     case kLayerWaitingAlign:
-        updateWaitingForAlign(dt);
+        update_waitingalign(dt);
         break;
     default:
         break;
     }
 }
 
-void AnimationStateLayer::updateDefault( float dt )
+void AnimationStateLayer::update_default( float dt )
 {
-    if (m_curState)
-        m_curState->update(m_weight, dt);
+    int _index = m_curStateIndex;
+    if(_index < 0)
+        return;
+    m_states[_index].update(m_weight, dt);
 }
 
-void AnimationStateLayer::updateCrossFading( float dt )
+void AnimationStateLayer::update_crossfading( float dt )
 {
     hk_anim_ctrl* c1 = m_easeInCtrl;
     hk_anim_ctrl* c2 = m_easeOutCtrl;
@@ -256,8 +262,13 @@ void AnimationStateLayer::updateCrossFading( float dt )
     float _w = m_weight;
     float _w1 = c1->getWeight() * _w;
     float _w2 = c2->getWeight() * _w;
-    m_curState->update(_w1, dt);
-    m_lastState->update(_w2, dt);
+
+    AnimationState* _states = m_states;
+    AnimationState* _cur_state = _states + m_curStateIndex;
+    AnimationState* _last_state = _states + m_lastStateIndex;
+
+    _cur_state->update(_w1, dt);
+    _last_state->update(_w2, dt);
 
 #ifdef HAVOK_COMPILE
     hk_anim_ctrl::EaseStatus status1 = c1->getEaseStatus();
@@ -268,13 +279,13 @@ void AnimationStateLayer::updateCrossFading( float dt )
         // crossfading finished!
         m_state = kLayerDefault;
         m_curTransition = NULL;
-        m_lastState->remove_from_skeleton(m_skeleton);
-        m_lastState = NULL;
+        _last_state->remove_from_skeleton(m_skeleton);
+        _last_state = NULL;
     }
 #endif
 }
 
-void AnimationStateLayer::updateWaitingForAlign(float dt)
+void AnimationStateLayer::update_waitingalign(float dt)
 {
     // FIXME:TODO
 }
@@ -291,23 +302,26 @@ void AnimationStateLayer::destroy()
     SAFE_REMOVEREF(m_easeOutCtrl);
 }
 
-void AnimationStateLayer::changeState(AnimationTranstion* t)
+void AnimationStateLayer::change_state(AnimationTranstion* t)
 {
-    int _index = t->m_dstStateIndex;
-    AnimationState* newState = _index >= 0 ? m_states + _index : 0;
-    if(m_curState == newState)
+    int _new_index = t->m_dstStateIndex;
+    int _old_index = m_curStateIndex;
+
+    if(_new_index == _old_index)
         return;
-    AnimationState* oldState = m_curState;
-    if(oldState)
-    {
-        oldState->on_exit(newState, t);
-    }
-    if(newState)
-    {
-        newState->on_enter(m_skeleton, oldState, t);
-    }
-    m_lastState = oldState;
-    m_curState = newState;
+
+    AnimationState* _states = m_states;
+    AnimationState* _new_state = _new_index >= 0 ? m_states + _new_index : 0;
+    AnimationState* _old_state = _old_index >= 0 ? m_states + _old_index : 0;
+
+    if(_old_state)
+        _old_state->on_exit(_new_state, t);
+
+    if(_new_state)
+        _new_state->on_enter(m_skeleton, _old_state, t);
+
+    m_lastStateIndex = _old_index;
+    m_curStateIndex = _new_index;
     m_curTransition = t;
     m_state = kLayerCrossFading;
     float _time = t->m_duration;
@@ -316,24 +330,26 @@ void AnimationStateLayer::changeState(AnimationTranstion* t)
     m_easeOutCtrl->ease_out(_time, _easeType);
 }
 
-void AnimationStateLayer::changeState( StringId name )
+void AnimationStateLayer::change_state( StringId name )
 {
     int _index = find_state(name);
     if(_index < 0)
         return;
     static AnimationTranstion t = { 0.1f,  (uint16_t)-1, kEaseCurveSmooth, kMotionBlendingDefault};
     t.m_dstStateIndex = _index;
-    changeState(&t);
+    change_state(&t);
 }
 
-void AnimationStateLayer::fireEvent( StringId name )
+void AnimationStateLayer::fire_event( StringId name )
 {
-    if(!m_curState)
+    int _cur_index = m_curStateIndex;
+    if(_cur_index < 0)
         return;
-    int _index = m_curState->find_transition(name);
+    AnimationState* _cur_state = m_states + _cur_index;
+    int _index = _cur_state->find_transition(name);
     if(_index < 0)
         return;
-    changeState(m_curState->m_transitions + _index);
+    change_state(_cur_state->m_transitions + _index);
 }
 
 void AnimationStateLayer::get_root_motion( float deltaTime, hkQsTransformf& deltaMotionOut )
@@ -362,6 +378,10 @@ void AnimationStateLayer::get_root_motion( float deltaTime, hkQsTransformf& delt
 
 void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut )
 {
+    AnimationState* _states = m_states;
+    AnimationState* _cur_state = _states + m_curStateIndex;
+    AnimationState* _last_state = _states + m_lastStateIndex;
+
 #ifdef HAVOK_COMPILE
     int _state = (int)m_curTransition->m_motionBlendingType;
     switch (_state)
@@ -371,16 +391,16 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
         m_skeleton->getDeltaReferenceFrame(deltaTime, deltaMotionOut);
         break;
     case kMotionBlendingIgnoreSrcMotion:
-        m_curState->get_root_motion(deltaTime, deltaMotionOut);
+        _cur_state->get_root_motion(deltaTime, deltaMotionOut);
         break;
     case kMotionBlendingIgnoreDstMotion:
-        m_lastState->get_root_motion(deltaTime, deltaMotionOut);
+        _last_state->get_root_motion(deltaTime, deltaMotionOut);
         break;
     case kMotionBlendingIgnoreSrcRotation:
         {
             hkQsTransformf motionSrc, motionDst;
-            m_curState->get_root_motion(deltaTime, motionDst);
-            m_lastState->get_root_motion(deltaTime, motionSrc);
+            _cur_state->get_root_motion(deltaTime, motionDst);
+            _last_state->get_root_motion(deltaTime, motionSrc);
             motionSrc.m_rotation.setIdentity();
             deltaMotionOut.setMul(motionSrc, motionDst);
         }
@@ -388,8 +408,8 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
     case kMotionBlendingIgnoreDstRotation:
         {
             hkQsTransformf motionSrc, motionDst;
-            m_curState->get_root_motion(deltaTime, motionDst);
-            m_lastState->get_root_motion(deltaTime, motionSrc);
+            _cur_state->get_root_motion(deltaTime, motionDst);
+            _last_state->get_root_motion(deltaTime, motionSrc);
             motionDst.m_rotation.setIdentity();
             deltaMotionOut.setMul(motionSrc, motionDst);
         }

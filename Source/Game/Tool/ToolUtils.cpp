@@ -821,8 +821,7 @@ Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_m
             }
             break;
         case jsonxx::Value::OBJECT_:
-            if(func)
-                size = func(v->get<jsonxx::Object>(), values);
+            size = func ? func(v->get<jsonxx::Object>(), values) : 0;
             break;
         default:
             // TODO not supported types

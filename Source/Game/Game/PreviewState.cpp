@@ -14,15 +14,18 @@
 #include "AnimRig.h"
 #include "Component.h"
 #include "Level.h"
+#include "AnimationState.h"
 #include <bx/string.h>
 #include <bx/commandline.h>
 
-static uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
-static bool g_show_profile = false;
-static bool g_draw_debug_graphics = false;
+
+typedef void on_imgui_button_cb(const char*, void*);
+INTERNAL uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
+INTERNAL bool g_show_profile = false;
+INTERNAL bool g_draw_debug_graphics = false;
 extern DebugFPSCamera  g_fpsCamera;
 
-static void swith_graphics_debug(uint32_t flag)
+INTERNAL void swith_graphics_debug(uint32_t flag)
 {
     bool is_wireframe = HAS_BITS(g_bgfx_debug,flag);
     is_wireframe = !is_wireframe;
@@ -31,9 +34,7 @@ static void swith_graphics_debug(uint32_t flag)
     bgfx::setDebug(g_bgfx_debug);
 }
 
-typedef void on_imgui_button_cb(const char*, void*);
-
-static void list_resources_gui(const char* type, int x, int y, int w, int h, on_imgui_button_cb cb, void* userdata)
+INTERNAL void list_resources_gui(const char* type, int x, int y, int w, int h, on_imgui_button_cb cb, void* userdata)
 {
     static int32_t _scroll = 0;
     static bool _enabled = true;
@@ -55,7 +56,7 @@ static void list_resources_gui(const char* type, int x, int y, int w, int h, on_
     imguiEndScrollArea();
 }
 
-static void on_button_animation(const char* _name, void* userdata)
+INTERNAL void on_button_animation(const char* _name, void* userdata)
 {
     PreviewState* state = (PreviewState*)userdata;
     Actor* actor = g_actorWorld.get_actor(state->m_previewActor);
@@ -69,7 +70,7 @@ static void on_button_animation(const char* _name, void* userdata)
     }
 }
 
-static void actor_information_imgui(ActorId32 _actorId, int _x, int _y, int _texHeight)
+INTERNAL void actor_information_imgui(ActorId32 _actorId, int _x, int _y, int _texHeight)
 {
     Actor* _actor = g_actorWorld.get_actor(_actorId);
     const ActorResource* _res = _actor->m_resource;
@@ -92,6 +93,33 @@ static void actor_information_imgui(ActorId32 _actorId, int _x, int _y, int _tex
         bx::snprintf(_buf, sizeof(_buf), "%s component type:%s", _indent, stringid_lookup(_comp_type));
         imguiDrawText(_x, _y, _align, _buf, _argb);
     }
+}
+
+INTERNAL void anim_state_debug_imgui(void* component, int _x, int _y , int _texHeight)
+{
+    AnimationStateLayer* _layer = (AnimationStateLayer*)component;
+    StringId* _names = _layer->m_stateNames;
+    AnimationState* _states = _layer->m_states;
+    int _cur_index = _layer->m_curStateIndex;
+    StringId _cur_name = _cur_index >= 0 ? _names[_cur_index] : 0;
+    imguiLabel("cur state = %s", stringid_lookup(_cur_name));
+
+    if(_cur_index >= 0)
+    {
+        AnimationState* _cur_state = _states + _cur_index;
+        StringId* _t_names = _cur_state->m_transitionNames;
+        uint32_t _t_num = _cur_state->m_numTransitions;
+        for(uint32_t i=0; i<_t_num; ++i)
+        {
+            StringId _t_name = _t_names[i];
+            bool _clicked = imguiButton(stringid_lookup(_t_name));
+            if(_clicked)
+            {
+                _layer->fire_event(_t_name);
+            }
+        }
+    }
+
 }
 
 PreviewState::PreviewState()
