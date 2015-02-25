@@ -141,6 +141,7 @@ bool ShaderIncludeCompiler::process(const std::string& input, const std::string&
         shader->m_input = shaderFile;
         shader->m_output = input_to_output(shaderFile);
         shader->preProcess();
+        g_config->is_file_changed(shader->m_input, shader->m_modifyTime);
         shader->go();
         g_config->add_compiler(shader);
     }

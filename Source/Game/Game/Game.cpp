@@ -18,7 +18,6 @@
 #include <bx/commandline.h>
 
 
-ActorId32 g_previewActor = 0;
 int game_main(int argc, bx::CommandLine* cmdline)
 {
     if(cmdline->hasArg("compile"))
@@ -29,6 +28,7 @@ int game_main(int argc, bx::CommandLine* cmdline)
 
     const char* package_name = 0;
     const char* state_name = 0;
+    GameState* _state = 0;
 
     EngineConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
@@ -77,10 +77,10 @@ int game_main(int argc, bx::CommandLine* cmdline)
     if(state_name)
         g_gameFSM.change_state(state_name);
 
-    GameState* _state = g_gameFSM.get_state();
+    _state = g_gameFSM.get_state();
     if(_state)
         _state->process_cmd_args(cmdline);
-    
+
 
     g_engine.run();
 

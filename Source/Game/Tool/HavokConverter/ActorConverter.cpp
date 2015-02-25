@@ -52,7 +52,7 @@ void ActorConverter::serializeToFile(const std::string& fileName)
     std::ofstream s(fileName);
     if(!s.good())
     {
-        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName);
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName.c_str());
         return;
     }
     s << serializeToJson().json();

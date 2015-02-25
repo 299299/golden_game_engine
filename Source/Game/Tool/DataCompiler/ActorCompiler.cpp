@@ -11,10 +11,10 @@ class ComponentCompiler : public BaseCompiler
 public:
     ComponentCompiler() { memset(&m_data, 0x00, sizeof m_data); };
     virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const jsonxx::Object& root) 
-    { 
+    virtual bool readJSON(const jsonxx::Object& root)
+    {
         m_data.m_name = json_to_stringid(root, "name");
-        return m_data.m_name != 0; 
+        return m_data.m_name != 0;
     };
     virtual const void* getCompiledData() const { return &m_data; };
     virtual uint32_t getCompiledDataSize() const { return sizeof(m_data);};
@@ -69,7 +69,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         const std::string& type =  comp_json.get<std::string>("type");
         StringId compType = stringid_caculate(type.c_str());
         int comp_index = g_componentMgr.find_factory_index(compType);
-        if(comp_index < 0) 
+        if(comp_index < 0)
         {
             g_config->m_error.add_error("can not find any component type of %s", type.c_str());
             continue;
@@ -88,7 +88,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
         m_components.push_back(comp);
         ++numComps;
-        
+
         ComponentData data;
         data.m_index = comp_index;
         data.m_type = compType;
@@ -98,7 +98,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         g_config->add_compiler(comp);
     }
 
-    uint32_t head_size = sizeof ActorResource + numComps * sizeof ComponentData;
+    uint32_t head_size = sizeof(ActorResource) + numComps * sizeof(ComponentData);
     uint32_t mem_size = head_size;
     for (uint32_t i=0; i<numComps; ++i)
     {
@@ -115,10 +115,10 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     extern const char* g_actorClassNames[];
     actor->m_class = json_to_enum(root, "class", g_actorClassNames, 0);
     actor->m_num_components = numComps;
-    actor->m_component_data_offset = sizeof ActorResource;
+    actor->m_component_data_offset = sizeof(ActorResource);
     offset += actor->m_component_data_offset;
     ComponentData* data_array = (ComponentData*)(offset);
-    offset += numComps * sizeof ComponentData;
+    offset += numComps * sizeof(ComponentData);
 
     for(size_t i=0; i<numComps; ++i)
     {
@@ -132,4 +132,4 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     ENGINE_ASSERT((offset == (mem.m_buf + ac_size)), "offset address");
     return write_file(m_output, mem.m_buf, mem_size);
-} 
+}
