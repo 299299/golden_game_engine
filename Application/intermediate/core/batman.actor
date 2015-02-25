@@ -5,17 +5,21 @@
 		{
 			"materials": [
 				"core\/batman_Guard_NoRain_Mat",
-				"core\/batman_Guard_A_Head_A2_FaceFX_Mat" 
+				"core\/batman_Guard_A_Head_A2_FaceFX_Mat"
 			],
 			"mesh": "core\/batman",
 			"name": "core\/batman",
-			"type": "model" 
+			"type": "model"
 		},
 		{
 			"name": "core\/batman",
-			"type": "rig" 
-		} 
+			"type": "rig"
+		},
+		{
+			"name": "core\/batman_locomotion",
+			"type": "states"
+		}
 	],
 	"name": "batman",
-	"source_file": "havok\/batman.hkt" 
-} 
+	"source_file": "havok\/batman.hkt"
+}

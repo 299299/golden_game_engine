@@ -94,15 +94,6 @@ void accurate_sleep(uint32_t milliSeconds)
 #endif
 }
 
-const char* g_fact_keynames[] =
-{
-    "int", "float", "string", "float4", 0
-};
-uint32_t g_fact_valuesizes[] =
-{
-    sizeof(int), sizeof(float), sizeof(StringId), sizeof(float)*4, 0
-};
-
 void msg_box( const char* fmt, ... )
 {
     char buf[256];

@@ -98,6 +98,11 @@ bool BaseCompiler::checkProcessing()
 
 bool BaseCompiler::process( const std::string& input, const std::string& output )
 {
+    ENGINE_ASSERT(parseWithJson(), "NOT A JSON PARSER COMPILER!");
+
+    if(m_processed)
+        return true;
+
     std::ifstream ifs(input.c_str());
     if(!ifs.good())
     {

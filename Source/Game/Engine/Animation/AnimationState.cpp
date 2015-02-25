@@ -197,7 +197,8 @@ void AnimationStateLayer::lookup()
 
 void AnimationStateLayer::init( const void* resource, ActorId32 id )
 {
-    const AnimationStateLayer* _layer = (const AnimationStateLayer*)resource;
+    ComponentInstanceData* _data = (ComponentInstanceData*)resource;
+    const AnimationStateLayer* _layer = (const AnimationStateLayer*)_data->m_resource;
     memcpy(this, resource, _layer->m_memorySize);
     // TADA!
     uint32_t _num = m_numStates;

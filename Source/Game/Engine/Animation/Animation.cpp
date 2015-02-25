@@ -29,15 +29,18 @@
 void Animation::destroy()
 {
 #ifdef HAVOK_COMPILE
-    if(!m_mirroredFrom) return;
-    if(m_binding) hkaMirroredAnimation::destroyMirroredBinding(m_binding);
+    if(!m_mirroredFrom) 
+        return;
+    if(m_binding) 
+        hkaMirroredAnimation::destroyMirroredBinding(m_binding);
     SAFE_REMOVEREF(m_animation);
 #endif
 }
 
 void Animation::lookup()
 {
-    if(!m_mirroredFrom) return;
+    if(!m_mirroredFrom) 
+        return;
     create_mirrored_animation(FIND_RESOURCE(Animation, EngineTypes::ANIMATION, m_mirroredFrom));
 }
 

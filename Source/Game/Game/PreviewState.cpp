@@ -19,85 +19,13 @@
 #include <bx/commandline.h>
 
 
-typedef void on_imgui_button_cb(const char*, void*);
-INTERNAL uint32_t g_bgfx_debug = BGFX_DEBUG_TEXT;
-INTERNAL bool g_show_profile = false;
-INTERNAL bool g_draw_debug_graphics = false;
 extern DebugFPSCamera  g_fpsCamera;
 
-INTERNAL void swith_graphics_debug(uint32_t flag)
-{
-    bool is_wireframe = HAS_BITS(g_bgfx_debug,flag);
-    is_wireframe = !is_wireframe;
-    if(is_wireframe) ADD_BITS(g_bgfx_debug, flag);
-    else REMOVE_BITS(g_bgfx_debug, flag);
-    bgfx::setDebug(g_bgfx_debug);
-}
 
-INTERNAL void list_resources_gui(const char* type, int x, int y, int w, int h, on_imgui_button_cb cb, void* userdata)
-{
-    static int32_t _scroll = 0;
-    static bool _enabled = true;
-    imguiBeginScrollArea(type, x, y, w, h, &_scroll);
-    _enabled = imguiBeginScroll(600, &_scroll, _enabled);
-    static ResourceInfo* _resources[64];
-    uint32_t _len = g_resourceMgr.find_resources_type_of(
-        stringid_caculate(type),
-        _resources,
-        BX_COUNTOF(_resources));
 
-    for(uint32_t i=0; i<_len; ++i)
-    {
-        ResourceInfo* _info = _resources[i];
-        const char* _name = stringid_lookup(_info->m_name);
-        if(imguiButton(_name))
-            cb(_name, userdata);
-    }
-    imguiEndScrollArea();
-}
-
-INTERNAL void on_button_animation(const char* _name, void* userdata)
+INTERNAL void anim_state_debug_imgui(void* _component, ComponentData* _data)
 {
-    PreviewState* state = (PreviewState*)userdata;
-    Actor* actor = g_actorWorld.get_actor(state->m_previewActor);
-    if(actor)
-    {
-        AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_RIG);
-        if(rig)
-        {
-            rig->test_animation(_name);
-        }
-    }
-}
-
-INTERNAL void actor_information_imgui(ActorId32 _actorId, int _x, int _y, int _texHeight)
-{
-    Actor* _actor = g_actorWorld.get_actor(_actorId);
-    const ActorResource* _res = _actor->m_resource;
-    if(!_res)
-        return;
-    ImguiTextAlign::Enum _align = ImguiTextAlign::Left;
-    uint32_t _argb = imguiRGBA(255, 125, 125);
-    char _buf[256];
-    uint32_t _num = _res->m_num_components;
-    ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
-    int _class = _res->m_class;
-    extern const char* g_actorClassNames[];
-    bx::snprintf(_buf, sizeof(_buf), "[%s] [%x] has [%d] components: ", g_actorClassNames[_class], _actorId, _num);
-    imguiDrawText(_x, _y, _align, _buf, _argb);
-    const char* _indent = "    ";
-    for(uint32_t i=0; i<_num; ++i)
-    {
-        _y += _texHeight;
-        StringId _comp_type = data[i].m_type;
-        bx::snprintf(_buf, sizeof(_buf), "%s component type:%s", _indent, stringid_lookup(_comp_type));
-        imguiDrawText(_x, _y, _align, _buf, _argb);
-    }
-}
-
-INTERNAL void anim_state_debug_imgui(void* component, int _x, int _y , int _texHeight)
-{
-    AnimationStateLayer* _layer = (AnimationStateLayer*)component;
+    AnimationStateLayer* _layer = (AnimationStateLayer*)_component;
     StringId* _names = _layer->m_stateNames;
     AnimationState* _states = _layer->m_states;
     int _cur_index = _layer->m_curStateIndex;
@@ -123,10 +51,17 @@ INTERNAL void anim_state_debug_imgui(void* component, int _x, int _y , int _texH
 }
 
 PreviewState::PreviewState()
-    :m_previewActor(0)
-    ,m_previewLevel(0)
+    :m_preview_actor(0)
+    ,m_preview_level(0)
+    ,m_bgfx_debug(BGFX_DEBUG_TEXT)
+    ,m_show_profile(false)
+    ,m_draw_debug_graphics(false)
+    ,m_num_component_gui(0)
 {
+    memset(m_component_gui, 0x00, sizeof(m_component_gui));
 
+    ComponentDebugDrawGUI _states_gui = {EngineTypes::ANIMATION_STATES,  anim_state_debug_imgui};
+    m_component_gui[m_num_component_gui++] = _states_gui;
 }
 
 PreviewState::~PreviewState()
@@ -142,11 +77,11 @@ void PreviewState::step( float dt )
 #ifdef HAVOK_COMPILE
     if(g_win32Context.is_key_just_pressed(VK_F1))
     {
-        g_show_profile = !g_show_profile;
+        m_show_profile = !m_show_profile;
     }
     else if(g_win32Context.is_key_just_pressed(VK_F2))
     {
-        g_draw_debug_graphics = !g_draw_debug_graphics;
+        m_draw_debug_graphics = !m_draw_debug_graphics;
     }
     else if(g_win32Context.is_key_just_pressed(VK_F3))
     {
@@ -158,11 +93,11 @@ void PreviewState::step( float dt )
     }
 #endif
 
-    if(g_show_profile)
+    if(m_show_profile)
     {
         g_profiler.dump();
     }
-    if(g_draw_debug_graphics)
+    if(m_draw_debug_graphics)
     {
         extern void draw_debug_models();
         extern void draw_debug_lights();
@@ -179,8 +114,7 @@ void PreviewState::step( float dt )
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
 
-    actor_information_imgui(m_previewActor, 0, 25, 15);
-    list_resources_gui(EngineNames::ANIMATION, 0, 100, 200, 200, on_button_animation, this);
+    draw_actor_info(m_preview_actor, 0, 25, 400, 600);
 }
 
 void PreviewState::on_enter( GameState* prev_state )
@@ -205,13 +139,80 @@ void PreviewState::process_cmd_args( void* p )
 #ifdef HAVOK_COMPILE
         t.setIdentity();
 #endif
-        m_previewActor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
-        LOGD("created actor = %x", m_previewActor);
+        m_preview_actor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
+        LOGD("created actor = %x", m_preview_actor);
     }
     if(level_name)
     {
         LOGD("loading level %s \n", level_name);
-        m_previewLevel = (Level*)g_resourceMgr.find_resource(EngineTypes::LEVEL, stringid_caculate(level_name));
-        if(m_previewLevel) m_previewLevel->load();
+        m_preview_level = (Level*)g_resourceMgr.find_resource(EngineTypes::LEVEL, stringid_caculate(level_name));
+        if(m_preview_level) 
+            m_preview_level->load();
     }
+}
+
+void PreviewState::swith_graphics_debug( uint32_t flag )
+{
+    if(!HAS_BITS(m_bgfx_debug,flag)) 
+        ADD_BITS(m_bgfx_debug, flag);
+    else 
+        REMOVE_BITS(m_bgfx_debug, flag);
+    bgfx::setDebug(m_bgfx_debug);
+}
+
+void PreviewState::draw_actor_info(ActorId32 _actorId, int _x, int _y, int _w, int _h)
+{
+    Actor* _actor = g_actorWorld.get_actor(_actorId);
+    if(!_actor)
+        return;
+
+    const ActorResource* _res = _actor->m_resource;
+    if(!_res)
+        return;
+
+    static int32_t _scroll = 0;
+    static bool _enabled = true;
+
+    char _buf[256];
+    bx::snprintf(_buf, sizeof(_buf), "Actor %x", _actorId);
+
+    imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
+    _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
+   
+    uint32_t _num = _res->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
+    int _class = _res->m_class;
+    extern const char* g_actorClassNames[];
+    imguiLabel("[%s] [%x] has [%d] components: ", g_actorClassNames[_class], _actorId, _num);
+    const char* _indent = "    ";
+
+    for(uint32_t i=0; i<_num; ++i)
+    {
+        StringId _comp_type = data[i].m_type;
+        ComponentDebugDrawGUI* _gui = find_component_gui(_comp_type);
+        imguiSeparatorLine();
+        imguiLabel("%s component type:%s", _indent, stringid_lookup(_comp_type));
+        int _index = data->m_index;
+        ComponentFactory* _fac = g_componentMgr.get_factory(_index);
+        void* _component = _fac->get_component(_actor->m_components[i]);
+
+        if(_gui)
+        {
+            _gui->m_function(_component, data + i);
+        }
+    }
+
+    imguiEndScrollArea();
+}
+
+ComponentDebugDrawGUI* PreviewState::find_component_gui( StringId _type )
+{
+    int _num = m_num_component_gui;
+    ComponentDebugDrawGUI* _head = m_component_gui;
+    for (int i=0; i<_num; ++i)
+    {
+        if(_head[i].m_name == _type)
+            return _head + i;
+    }
+    return 0;
 }

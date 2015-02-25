@@ -793,6 +793,7 @@ Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_m
     StringId* names = (StringId*)(p + f->m_name_offset);
     Key* keys = (Key*)(p + f->m_key_offset);
     int index = 0;
+    char* value_start = values;
 
     for(it = kv.begin(); it != kv.end(); ++it)
     {
@@ -830,7 +831,7 @@ Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_m
 
         names[index] = stringid_caculate(k.c_str());
         keys[index].m_size = size;
-        keys[index].m_offset = values - p + f->m_value_offset;
+        keys[index].m_offset = (uint32_t)(values - value_start);
         values += size;
         ++index;
     }

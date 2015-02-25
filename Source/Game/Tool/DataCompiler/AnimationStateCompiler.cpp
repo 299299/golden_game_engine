@@ -84,6 +84,7 @@ struct RuntimeAnimationState
         m_memorySize = (sizeof(AnimationTranstion) + sizeof(StringId)) * m_transitions.size() +
                        (sizeof(AnimationNode) + sizeof(StringId)) * m_nodes.size() +
                        sizeof(AnimationData) * m_animations.size();
+
         m_state.m_loop = json_to_bool(o, "looped");
         m_state.m_numTransitions = m_transitions.size();
         m_state.m_numNodes = m_nodes.size();
@@ -224,6 +225,8 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
     }
 
     memSize = NEXT_MULTIPLE_OF(16, memSize);
+    LOGI("%s animation states memory size = %d", m_input.c_str(), memSize);
+
     MemoryBuffer mem(memSize);
     AnimationStateLayer* layer = (AnimationStateLayer*)mem.m_buf;
     layer->m_numStates = numStates;
@@ -248,7 +251,8 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
 
 #if 1
     AnimationStateLayer* l = (AnimationStateLayer*)load_animation_state(mem.m_buf, mem.m_size);
-    ENGINE_ASSERT(l->m_numStates == numStates, "AnimationStateLayer load check");
+    ENGINE_ASSERT(l->m_numStates == numStates && l->m_memorySize == memSize && l->m_rigName == layer->m_rigName, 
+        "AnimationStateLayer load check");
     for(uint32_t i=0; i<numStates; ++i)
     {
         const AnimationState& state = l->m_states[i];
