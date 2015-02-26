@@ -84,12 +84,14 @@ void LightWorld::submit_lights(ShadingEnviroment* env)
     bgfx::setUniform(g_uniformLights.m_info, s_lightInfo, num);
     bgfx::setUniform(g_uniformLights.m_type, s_lightType, num);
 
-    if(!m_shadowLight) return;
+    if(!m_shadowLight)
+        return;
+
     extern ShadowMap g_shadowMap;
     bgfx::setViewRect(kShadowViewId, 0, 0, g_shadowMap.m_shadowMapSize, g_shadowMap.m_shadowMapSize);
     bgfx::setViewFrameBuffer(kShadowViewId, g_shadowMap.m_shadowMapFB->m_handle);
     bgfx::setViewTransform(kShadowViewId, m_shadowView, m_shadowProj);
-    bgfx::setUniform(g_shadowMap.m_paramUniform, env->m_shadowParams);
+    bgfx::setUniform(g_shadowMap.m_paramUniform, env->m_shadow_params);
 
     const float mtxCrop[16] =
     {

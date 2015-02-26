@@ -17,33 +17,25 @@ void ShadingEnviroment::update( float dt )
 void ShadingEnviroment::submit()
 {
     extern UniformPerFrame      g_uniformPerFrame;
-
-    bgfx::setUniform(g_uniformPerFrame.m_ambientSkyColor, m_ambientSkyColor);
-    bgfx::setUniform(g_uniformPerFrame.m_ambientGroundColor, m_ambientGroundColor);
-    bgfx::setUniform(g_uniformPerFrame.m_fogParams, m_fogParams);
-
-    //bgfx::setUniform(g_postProcess.m_ppUniform, m_ppParams);
-    //bgfx::setUniform(g_postProcess.m_bloomUniform, m_bloomParams);
+    bgfx::setUniform(g_uniformPerFrame.m_ambientSkyColor, m_ambient_sky_color);
+    bgfx::setUniform(g_uniformPerFrame.m_ambientGroundColor, m_ambient_ground_color);
+    bgfx::setUniform(g_uniformPerFrame.m_fogParams, m_fog_params);
 }
 
-void ShadingEnviroment::lookup()
+bgfx::TextureHandle ShadingEnviroment::get_colorgrading_tex() const
 {
-    uint32_t num = m_numColorgradingTextures;
-    Raw3DTexture** head = m_colorGradingTextures;
-    StringId* names = m_colorgradingTextureNames;
+    return m_color_grading_textures[m_colorgrading_index]->m_handle;
+}
+
+void lookup_resource_shading_enviroment( void* resource )
+{
+    ShadingEnviroment* env = (ShadingEnviroment*)resource;
+    uint32_t num = env->m_num_colorgrading_textures;
+    Raw3DTexture** head = env->m_color_grading_textures;
+    StringId* names = env->m_color_grading_texturenames;
     for (uint32_t i=0; i<num; ++i)
     {
         head[i] = FIND_RESOURCE(Raw3DTexture, EngineTypes::TEXTURE_3D, names[i]);
         ENGINE_ASSERT(head[i], "can not find color-grading texture.");
     }
-}
-
-bgfx::TextureHandle ShadingEnviroment::get_colorgrading_tex() const
-{
-    return m_colorGradingTextures[m_colorGradingIndex]->m_handle;
-}
-
-void lookup_resource_shading_enviroment( void* resource )
-{
-    ((ShadingEnviroment*)resource)->lookup();
 }

@@ -194,9 +194,10 @@ void reload_texture_3d_resource(void* oldResource, void* newResource)
     for(uint32_t i=0; i<numOfEnv; ++i)
     {
         ShadingEnviroment* env = GET_RESOURCE(ShadingEnviroment);
-        for (uint32_t j = 0; j < env->m_numColorgradingTextures; ++j)
+        for (uint32_t j = 0; j < env->m_num_colorgrading_textures; ++j)
         {
-            if(env->m_colorGradingTextures[j] == oldTex) env->m_colorGradingTextures[j] = newTex;
+            if(env->m_color_grading_textures[j] == oldTex)
+                env->m_color_grading_textures[j] = newTex;
         }
     }
 }

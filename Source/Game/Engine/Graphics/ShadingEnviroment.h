@@ -16,37 +16,18 @@ ENGINE_NATIVE_ALIGN(struct) ShadingEnviroment
 
     bgfx::TextureHandle get_colorgrading_tex() const;
 
-    float                               m_ambientSkyColor[3];
-    float                               m_ambientGroundColor[3];
-    float                               m_fogParams[4];
+    float                               m_ambient_sky_color[3];
+    float                               m_ambient_ground_color[3];
+    float                               m_fog_params[4];
 
-    // x -->  exposure
-    // y -->  bloomThreshold
-    // z -->  bloomWidth
-    // w -->  bloomIntensity
-    float                               m_bloomParams[4];
+    float                               m_shadow_area_size;
+    float                               m_shadow_far;
+    float                               m_shadow_params[3];
 
-
-    // x --> focusDistance
-    // y --> focusRange
-    // z -->  dof blur width
-    // w,w --> focusFalloff
-    float                               m_dofParams[4];
-
-
-    // xy -->  blur direction
-    // z -->  defocus
-    // w --> film gain noise
-    float                               m_ppParams[4];
-
-    float                               m_shadowAreaSize;
-    float                               m_shadowFar;
-    float                               m_shadowParams[3];
-
-    uint32_t                            m_numColorgradingTextures;
-    int                                 m_colorGradingIndex;
-    Raw3DTexture*                       m_colorGradingTextures[MAX_COLOR_GRADING_NUM];
-    StringId                            m_colorgradingTextureNames[MAX_COLOR_GRADING_NUM];
+    uint32_t                            m_num_colorgrading_textures;
+    int                                 m_colorgrading_index;
+    Raw3DTexture*                       m_color_grading_textures[MAX_COLOR_GRADING_NUM];
+    StringId                            m_color_grading_texturenames[MAX_COLOR_GRADING_NUM];
 };
 
 void  lookup_resource_shading_enviroment(void* resource);
