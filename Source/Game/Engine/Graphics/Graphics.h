@@ -3,6 +3,8 @@
 #include "ShaderInc.h"
 #include <bgfx.h>
 
+struct Shader;
+
 struct UniformPerFrame
 {
     bgfx::UniformHandle                 m_time;
@@ -60,25 +62,6 @@ struct ShadowMap
     bgfx::UniformHandle                 m_lightMtx;
     bgfx::UniformHandle                 m_paramUniform;
     int                                 m_shadowMapSize;
-};
-
-
-struct PostProcess
-{
-    float                               m_view[16];
-    float                               m_proj[16];
-
-    bgfx::ProgramHandle                 m_brightShader;
-    bgfx::ProgramHandle                 m_blurShader;
-    bgfx::ProgramHandle                 m_combineShader;
-
-    bgfx::UniformHandle                 m_ppUniform;
-    bgfx::UniformHandle                 m_bloomUniform;
-    bgfx::UniformHandle                 m_fade;
-
-    FrameBuffer*                        m_colorFB;
-    FrameBuffer*                        m_brightFB;
-    FrameBuffer*                        m_blurFB[N_PASSES][2]; // hblur + vblur
 };
 
 struct ShadingEnviroment;

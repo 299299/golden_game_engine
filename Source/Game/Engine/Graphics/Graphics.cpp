@@ -71,7 +71,6 @@ UniformPerFrame             g_uniformPerFrame;
 UniformPerObject            g_uniformPerObject;
 UniformPerLight             g_uniformLights;
 ShadowMap                   g_shadowMap;
-PostProcess                 g_postProcess;
 bool                        g_hdr = true;
 //==============================================================
 //      INNER GLOBAL VARIABLES
@@ -82,9 +81,6 @@ static bgfx::UniformHandle* g_engineUniforms;
 static uint32_t             g_numEngineUniforms = 0;
 static FrameBuffer*         g_frameBuffers;
 static uint32_t             g_numFrameBuffers = 0;
-
-INTERNAL void postProcessInit();
-INTERNAL void postProcessSubmit(ShadingEnviroment* env);
 
 INTERNAL bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enum type, int num = 1)
 {
@@ -155,10 +151,6 @@ INTERNAL void createUniforms()
 
     g_shadowMap.m_lightMtx = createEngineUniform("u_lightMtx", bgfx::UniformType::Uniform4x4fv);
     g_shadowMap.m_paramUniform = createEngineUniform("u_shadowParams", bgfx::UniformType::Uniform3fv);
-
-    g_postProcess.m_ppUniform = createEngineUniform("u_ppParams",  bgfx::UniformType::Uniform4fv);
-    g_postProcess.m_bloomUniform = createEngineUniform("u_bloomParams",  bgfx::UniformType::Uniform4fv);
-    g_postProcess.m_fade = createEngineUniform("u_fade", bgfx::UniformType::Uniform1f);
 }
 
 void Graphics::register_factories()
@@ -172,7 +164,7 @@ void Graphics::register_factories()
     ResourceFactory _texture3d = {0, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, EngineNames::TEXTURE_3D, 0};
     g_resourceMgr.register_factory(_texture3d);
 
-    ResourceFactory _shader = {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, EngineNames::SHADER, 0};
+    ResourceFactory _shader = {0, 0, 0, bringin_resource_shader, bringout_resource_shader, EngineNames::SHADER, 0};
     g_resourceMgr.register_factory(_shader);
 
     ResourceFactory _program = {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, EngineNames::PROGRAM, 1};
@@ -218,7 +210,6 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     g_frameBuffers = COMMON_ALLOC(FrameBuffer, MAX_FRAMEBUFFER_NUM);
     PosTexCoord0Vertex::init();
     createUniforms();
-    postProcessInit();
 
     g_camera.init();
     g_debugDrawMgr.init();
@@ -249,42 +240,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
 void Graphics::ready()
 {
     TIMELOG("Graphics::PostInit");
-    g_postProcess.m_blurShader = find_shader("hdr_blur")->m_handle;
-    g_postProcess.m_brightShader = find_shader("hdr_bright")->m_handle;
-    g_postProcess.m_combineShader = find_shader("hdr_combine")->m_handle;
     g_debugDrawMgr.ready();
 }
-
-INTERNAL void postProcessInit()
-{
-    int width = g_win32Context.m_width;
-    int height = g_win32Context.m_height;
-
-    int smSize = SHADOWMAP_SIZE;
-    g_shadowMap.m_shadowMapSize = smSize;
-    g_shadowMap.m_shadowMapFB = createFrameBuffer(smSize, smSize, 1, 1, false, bgfx::TextureFormat::D16, BGFX_TEXTURE_COMPARE_LEQUAL);
-
-    uint32_t msaa = (g_resetFlag & BGFX_RESET_MSAA_MASK)>>BGFX_RESET_MSAA_SHIFT;
-    uint32_t msaaMask = (msaa+1)<<BGFX_TEXTURE_RT_MSAA_SHIFT;
-    bgfx::TextureFormat::Enum fboFmt = bgfx::TextureFormat::RGBA16F;
-    FrameBufferTexture mainRtTextures[] =
-    {
-        {fboFmt, msaaMask|BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP},
-        {bgfx::TextureFormat::D16, BGFX_TEXTURE_RT_BUFFER_ONLY|msaaMask}
-    };
-    g_postProcess.m_colorFB = createFrameBuffer(width, height, 1, 1, true, BX_COUNTOF(mainRtTextures), mainRtTextures);
-    int base = 2;
-    for (int i = 0; i < N_PASSES; i++) {
-        g_postProcess.m_blurFB[i][0] = createFrameBuffer(max(width / base, 1), max(height / base, 1), base, base, true, fboFmt);
-        g_postProcess.m_blurFB[i][1] = createFrameBuffer(max(width / base, 1), max(height / base, 1), base, base, true, fboFmt);
-        base *= 2;
-    }
-
-    g_postProcess.m_brightFB = createFrameBuffer(width/2, height/2, 1, 1, true, fboFmt);
-    bx::mtxIdentity(g_postProcess.m_view);
-    bx::mtxOrtho(g_postProcess.m_proj, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f);
-}
-
 
 void Graphics::shutdown()
 {
@@ -347,13 +304,6 @@ void Graphics::draw(ShadingEnviroment* env)
     bgfx::setViewTransform(kSceneViewId, view, proj);
     bgfx::setViewTransform(kDebugDrawViewId, view, proj);
 
-#ifdef HDR
-    bgfx::FrameBufferHandle handle = g_postProcess.m_colorFB->m_handle;
-    bgfx::setViewFrameBuffer(kBackgroundViewId, handle);
-    bgfx::setViewFrameBuffer(kSceneViewId, handle);
-    bgfx::setViewFrameBuffer(kDebugDrawViewId, handle);
-#endif
-
     submitPerFrameUniforms();
     if(env)
     {
@@ -363,10 +313,6 @@ void Graphics::draw(ShadingEnviroment* env)
     g_modelWorld.submit_models();
     if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();
     g_debugDrawMgr.draw();
-#ifdef HDR
-    postProcessSubmit(env);
-#endif
-
     PROFILE(bgfx_frame);
     bgfx::frame();
 }
@@ -393,72 +339,6 @@ void Graphics::frame_start()
 void Graphics::frame_end()
 {
     g_guiMgr.frame_end();
-}
-
-INTERNAL void postProcessSubmit(ShadingEnviroment* env)
-{
-    if(!env) return;
-    int width = g_win32Context.m_width;
-    int height = g_win32Context.m_height;
-
-    bgfx::TextureHandle colorTex = g_postProcess.m_colorFB->m_textures[0];
-    //bgfx::TextureHandle depthTex = g_postProcess.m_colorFB->m_textures[1];
-
-    const float* view = g_postProcess.m_view;
-    const float* proj = g_postProcess.m_proj;
-    float* dirParams = env->m_ppParams;
-    bgfx::setViewTransform(kHDRBrightViewId, view, proj);
-    bgfx::setViewTransform(kCombineViewId, view, proj);
-
-    FrameBuffer* fb = g_postProcess.m_brightFB;
-    fb->begin(kHDRBrightViewId);
-    Graphics::set_texture(TEX_COLOR_SLOT, colorTex);
-    bgfx::setProgram(g_postProcess.m_brightShader);
-    fb->end(kHDRBrightViewId);
-
-    FrameBuffer* current = fb;
-    for (uint32_t i = 0; i < N_PASSES; ++i)
-    {
-        FrameBuffer* hfb = g_postProcess.m_blurFB[i][0];
-        FrameBuffer* vfb = g_postProcess.m_blurFB[i][1];
-
-        uint32_t hViewId = kHDRBlurViewIdStart + i*2 + 0;
-        uint32_t vViewId = kHDRBlurViewIdStart + i*2 + 1;
-        bgfx::setViewTransform(hViewId, view, proj);
-        bgfx::setViewTransform(vViewId, view, proj);
-
-        // horizontalBlur
-        hfb->begin(hViewId);
-        Graphics::set_texture(TEX_COLOR_SLOT, current->m_handle);
-        bgfx::setProgram(g_postProcess.m_blurShader);
-        dirParams[0] = 1.0f;
-        dirParams[1] = 0.0f;
-        bgfx::setUniform(g_postProcess.m_ppUniform, dirParams);
-        hfb->end(hViewId);
-
-        //verticalBlur
-        vfb->begin(vViewId);
-        Graphics::set_texture(TEX_COLOR_SLOT, hfb->m_handle);
-        bgfx::setProgram(g_postProcess.m_blurShader);
-        dirParams[0] = 0.0f;
-        dirParams[1] = 1.0f;
-        bgfx::setUniform(g_postProcess.m_ppUniform, dirParams);
-        vfb->end(vViewId);
-
-        current = vfb;
-    }
-
-    bgfx::setViewRect(kCombineViewId, 0, 0, width, height);
-    Graphics::set_texture(TEX_COLOR_SLOT, colorTex);
-    for (int i = 1; i <= N_PASSES; ++i)
-    {
-        Graphics::set_texture(i, g_postProcess.m_blurFB[i-1][1]->m_handle);
-    }
-    Graphics::set_texture(N_PASSES+1, env->get_colorgrading_tex());
-    bgfx::setProgram(g_postProcess.m_combineShader);
-    bgfx::setState(BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE);
-    Graphics::screenspace_quad((float)width, (float)height);
-    bgfx::submit(kCombineViewId);
 }
 
 void FrameBuffer::resize( int w, int h )

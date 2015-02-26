@@ -67,7 +67,7 @@ void DebugDrawManager::shutdown()
 void DebugDrawManager::ready()
 {
     m_ready = true;
-    m_shader = find_shader("debug")->m_handle;
+    m_shader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, stringid_caculate("core/shaders/debug"));
 }
 
 void DebugDrawManager::frame_start()
@@ -125,7 +125,7 @@ void DebugDrawManager::draw( uint32_t lineNum, DebugLine* lines, bool bDepth)
         va.m_abgr = vb.m_abgr = line.m_color;
     }
 
-    bgfx::setProgram(m_shader);
+    bgfx::setProgram(m_shader->m_handle);
     bgfx::setState(bDepth ? DEPTH_LINE_RENDER_STATE : NO_DEPTH_LINE_RENDER_STATE);
     bgfx::setVertexBuffer(&tvb, 0, numVertices);
     bgfx::submit(kDebugDrawViewId);

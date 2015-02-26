@@ -5,6 +5,7 @@
 struct Frustum;
 struct DebugLine;
 struct DebugText;
+struct ShaderProgram;
 
 struct DebugDrawManager
 {
@@ -34,7 +35,7 @@ struct DebugDrawManager
     uint32_t                m_numLines[2];
     uint32_t                m_numTexts;
 
-    bgfx::ProgramHandle     m_shader;
+    ShaderProgram*          m_shader;
     bool                    m_ready;
 
 private:

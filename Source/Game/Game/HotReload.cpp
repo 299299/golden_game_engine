@@ -219,18 +219,11 @@ void reload_mesh_resource(void* oldResource, void* newResource)
 
 void reload_program_resource(void* oldResource, void* newResource)
 {
-#define CHECK_SHADER_HANDLE(shader)  if(shader.idx == oldHandle.idx) shader.idx = newHandle.idx;
-
     ShaderProgram* oldProgram = (ShaderProgram*)oldResource;
     ShaderProgram* newProgram = (ShaderProgram*)newResource;
 
-    bgfx::ProgramHandle oldHandle = oldProgram->m_handle;
-    bgfx::ProgramHandle newHandle = newProgram->m_handle;
-
-    extern PostProcess          g_postProcess;
-    CHECK_SHADER_HANDLE(g_postProcess.m_brightShader);
-    CHECK_SHADER_HANDLE(g_postProcess.m_blurShader);
-    CHECK_SHADER_HANDLE(g_postProcess.m_combineShader);
+    if(g_debugDrawMgr.m_shader == oldProgram)
+        g_debugDrawMgr.m_shader = newProgram;
 
     uint32_t numOfMaterials = FIND_RESOURCES(EngineTypes::MATERIAL);
     LOGD("total num of materials = %d", numOfMaterials);
@@ -246,9 +239,6 @@ void reload_program_resource(void* oldResource, void* newResource)
 
 void reload_shader_resource(void* oldResource, void* newResource)
 {
-#define CHECK_PROGRAM_HANDLE(shader)  if(shader.idx == oldHandle.idx) shader.idx = newHandle.idx;
-
-    extern PostProcess          g_postProcess;
     Shader* oldShader = (Shader*)oldResource;
     Shader* newShader = (Shader*)newResource;
 
@@ -259,17 +249,12 @@ void reload_shader_resource(void* oldResource, void* newResource)
         ShaderProgram* program = GET_RESOURCE(ShaderProgram);
         if(program->m_vs == oldShader || program->m_ps == oldShader)
         {
-            bgfx::ProgramHandle oldHandle = program->m_handle;
-            program->bringout();
-            if(program->m_vs == oldShader) program->m_vs = newShader;
-            if(program->m_ps == oldShader) program->m_ps = newShader;
-            program->bringin();
-            bgfx::ProgramHandle newHandle = program->m_handle;
-
-            CHECK_PROGRAM_HANDLE(g_postProcess.m_brightShader);
-            CHECK_PROGRAM_HANDLE(g_postProcess.m_blurShader);
-            CHECK_PROGRAM_HANDLE(g_postProcess.m_combineShader);
-            CHECK_PROGRAM_HANDLE(g_debugDrawMgr.m_shader);
+            bringout_resource_shader_program(program);
+            if(program->m_vs == oldShader)
+                program->m_vs = newShader;
+            if(program->m_ps == oldShader)
+                program->m_ps = newShader;
+            bringin_resource_shader_program(program);
         }
     }
 }

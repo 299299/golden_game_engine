@@ -28,7 +28,6 @@ ShaderCompiler::~ShaderCompiler()
 
 bool ShaderCompiler::process(const std::string& input, const std::string& output)
 {
-#ifdef WIN32
     std::string fileName = getFileName(input);
     char firstChar = fileName[0];
     if(firstChar != 'v' && firstChar != 'f')
@@ -38,7 +37,8 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
     }
 
     FileReader shaderReader(input);
-    if(!shaderReader.m_size) return false;
+    if(!shaderReader.m_size)
+        return false;
 
     //find first line with def.
     const char* defMark = "[def=";
@@ -64,21 +64,16 @@ bool ShaderCompiler::process(const std::string& input, const std::string& output
         uint32_t memSize = outputReader.m_size + sizeof(Shader);
         MemoryBuffer mem(memSize);
         Shader* shader = (Shader*)mem.m_buf;
-        shader->m_size = outputReader.m_size;
-        shader->m_blob = mem.m_buf + sizeof(Shader);
+        shader->m_data_size = outputReader.m_size;
+        shader->m_data_offset = sizeof(Shader);
         shader->m_handle.idx = bgfx::invalidHandle;
-        shader->m_name = stringid_caculate(getFileName(m_input).c_str());
-        memcpy(shader->m_blob, outputReader.m_buf, outputReader.m_size);
+        memcpy(mem.m_buf + shader->m_data_offset, outputReader.m_buf, outputReader.m_size);
         m_processed = write_file(output, shader, memSize);
     }
 
     //delete the temp file of shaderc compiled.
     delete_file(tmp_output);
     return m_processed;
-#else
-    m_processed = true;
-    return m_processed;
-#endif
 }
 
 ProgramCompiler::ProgramCompiler()
