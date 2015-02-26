@@ -19,12 +19,6 @@ struct UniformPerObject
     bgfx::UniformHandle                 m_uv;
     bgfx::UniformHandle                 m_diffuse;
     bgfx::UniformHandle                 m_specular;
-    bgfx::UniformHandle                 m_rimColorInfo;
-    bgfx::UniformHandle                 m_translucencyInfo;
-    bgfx::UniformHandle                 m_opacityParams;
-    bgfx::UniformHandle                 m_skinRampOuterColor;
-    bgfx::UniformHandle                 m_skinRampMediumColor;
-    bgfx::UniformHandle                 m_skinRampInnerColor;
     bgfx::UniformHandle                 m_params1;
 };
 
@@ -35,7 +29,7 @@ struct UniformPerLight
     bgfx::UniformHandle                 m_info;
     bgfx::UniformHandle                 m_type;
 };
-    
+
 
 struct FrameBufferTexture
 {
@@ -57,7 +51,7 @@ struct FrameBuffer
     void resize(int w, int h);
     void begin(uint32_t viewId);
     void end(uint32_t viewId);
-        
+
 };
 
 struct ShadowMap

@@ -88,10 +88,11 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
     LOGI("component %s instance num = %d", EngineNames::ANIMATION_RIG, componentNum);
     for(size_t i=0; i<componentNum; ++i)
     {
-        if(components[i].m_resource == oldCompResource)
+        AnimRigInstance* rig = components + i;
+        if(rig->m_resource == oldCompResource)
         {
-            components[i].destroy();
-            components[i].init(newCompResource, components[i].m_actor);
+            rig->destroy();
+            rig->init(newCompResource, components[i].m_actor);
         }
     }
 
@@ -142,13 +143,15 @@ void reload_material_resource(void* oldResource, void* newResource)
     Material* oldMat = (Material*)oldResource;
     Material* newMat = (Material*)newResource;
 
-#if 0
-    uint32_t numOfModels = FIND_RESOURCES(EngineTypes::MODEL);
-    LOGD("total num of model resources = %d", numOfModels);
-    for(uint32_t i=0; i<numOfModels; ++i)
+    uint32_t model_num = num_all_model();
+    Model* models = (Model*)get_all_model();
+
+    for(size_t i=0; i<model_num; ++i)
     {
-        ModelResource* model = GET_RESOURCE(ModelResource);
-        for(uint32_t j=0; j<model->m_numMaterials; ++j)
+        Model* model = models + i;
+        uint32_t mat_num = model->m_numMaterials;
+
+        for(uint32_t j=0; j<mat_num; ++j)
         {
             if(model->m_materials[j] == oldMat)
             {
@@ -156,24 +159,6 @@ void reload_material_resource(void* oldResource, void* newResource)
             }
         }
     }
-
-    numOfModels = g_modelWorld.m_numModels;
-
-    ComponentFactory* fac = g_componentMgr.find_factory(ModelResource::get_type());
-    ModelInstance* models = (ModelInstance*)fac->get_components();
-    LOGD("total num of model instances = %d", numOfModels);
-    for(uint32_t i=0; i<numOfModels; ++i)
-    {
-        ModelInstance& model = models[i];
-        for(uint32_t j=0; j<model.m_numMaterials; ++j)
-        {
-            if(model.m_materials[j] == oldMat)
-            {
-                model.m_materials[j] = newMat;
-            }
-        }
-    }
-#endif
 }
 void reload_texture_resource(void* oldResource, void* newResource)
 {
@@ -185,15 +170,17 @@ void reload_texture_resource(void* oldResource, void* newResource)
     for(uint32_t i=0; i<numOfMaterials; ++i)
     {
         Material* mat = GET_RESOURCE(Material);
-        for(uint32_t j=0; j<mat->m_numSamplers; ++j)
+        MatSampler* samplers = (MatSampler*)((char*)mat + mat->m_sampler_offset);
+        uint32_t numOfSamplers = mat->m_num_samplers;
+
+        for(uint32_t j=0; j<numOfSamplers; ++j)
         {
-            MatSampler& sampler = mat->m_samplers[j];
-            if(sampler.m_texture == oldTex)
+            if(samplers[j].m_texture == oldTex)
             {
-                sampler.m_texture = newTex;
+                samplers[j].m_texture = newTex;
             }
         }
-        mat->bringin();
+        bringin_resource_material(mat);
     }
 }
 void reload_texture_3d_resource(void* oldResource, void* newResource)
@@ -217,17 +204,19 @@ void reload_mesh_resource(void* oldResource, void* newResource)
     Mesh* oldMesh = (Mesh*)oldResource;
     Mesh* newMesh = (Mesh*)newResource;
 
-#if 0
-    uint32_t numOfModels = FIND_RESOURCES(EngineTypes::MESH);
-    LOGD("total num of model resources = %d", numOfModels);
-    for(uint32_t i=0; i<numOfModels; ++i)
+    uint32_t model_num = num_all_model();
+    Model* models = (Model*)get_all_model();
+
+    for(size_t i=0; i<model_num; ++i)
     {
-        ModelResource* model = GET_RESOURCE(ModelResource);
+        Model* model = models + i;
         if(model->m_mesh == oldMesh)
+        {
             model->m_mesh = newMesh;
+        }
     }
-#endif
 }
+
 void reload_program_resource(void* oldResource, void* newResource)
 {
 #define CHECK_SHADER_HANDLE(shader)  if(shader.idx == oldHandle.idx) shader.idx = newHandle.idx;
@@ -250,8 +239,8 @@ void reload_program_resource(void* oldResource, void* newResource)
         Material* mat = GET_RESOURCE(Material);
         if(mat->m_shader == oldProgram)
             mat->m_shader = newProgram;
-        if(mat->m_shadowShader == oldProgram)
-            mat->m_shadowShader = newProgram;
+        if(mat->m_shadow_shader == oldProgram)
+            mat->m_shadow_shader = newProgram;
     }
 }
 

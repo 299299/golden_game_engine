@@ -26,10 +26,11 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     }
 
     uint32_t memSize = sizeof(Material) + sizeof(MatSampler) * samplerNum;
+    uint32_t ac_size = memSize;
+    memSize = NATIVE_ALGIN_SIZE(memSize);
+
     MemoryBuffer mem(memSize);
     Material* m = (Material*)mem.m_buf;
-
-    m->m_numSamplers = samplerNum;
 
     vec3_make(m->m_diffuse, 255, 255, 255);
     vec3_make(m->m_specular, 255, 255, 255);
@@ -39,7 +40,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     if(!programFile.empty())
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
-        m->m_shaderName = stringid_caculate(programName);
+        m->m_shader_name = stringid_caculate(programName);
         addDependency("shader", name_to_file_path(programName, EngineNames::PROGRAM));
     }
 
@@ -47,7 +48,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     if(!programFile.empty())
     {
         bx::snprintf(programName, sizeof(programName), PROGRAM_PATH"%s", programFile.c_str());
-        m->m_shadowShaderName = stringid_caculate(programName);
+        m->m_shadow_shader_name = stringid_caculate(programName);
         addDependency("shadow shader", name_to_file_path(programName, EngineNames::PROGRAM));
     }
 
@@ -74,13 +75,13 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
         m->m_specular[i] /= 255;
     }
 
-    m->m_offsetAndRepeat[0] = 0;
-    m->m_offsetAndRepeat[1] = 0;
-    m->m_offsetAndRepeat[2] = 1;
-    m->m_offsetAndRepeat[3] = 1;
+    m->m_offset_repeat[0] = 0;
+    m->m_offset_repeat[1] = 0;
+    m->m_offset_repeat[2] = 1;
+    m->m_offset_repeat[3] = 1;
 
-    json_to_floats(root, "uv_offset", m->m_offsetAndRepeat, 2);
-    json_to_floats(root, "uv_repeat", m->m_offsetAndRepeat + 2, 2);
+    json_to_floats(root, "uv_offset", m->m_offset_repeat, 2);
+    json_to_floats(root, "uv_repeat", m->m_offset_repeat + 2, 2);
 
     m->m_params1[0] = json_to_float(root, "blend_normal", 0.4f);
     m->m_params1[1] = json_to_float(root, "normal_height", 1.0f);
@@ -91,13 +92,16 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     extern uint32_t g_textureFlags[];
     extern uint32_t g_textureFlagNum;
 
+    m->m_sampler_offset = sizeof(Material);
+    m->m_num_samplers = samplerNum;
+
     if(samplerNum)
     {
-        m->m_samplers = (MatSampler*)(mem.m_buf + sizeof(Material));
-        for(unsigned i=0; i<m->m_numSamplers; ++i)
+        MatSampler * samplers = (MatSampler*)(mem.m_buf + m->m_sampler_offset);
+        for(unsigned i=0; i<samplerNum; ++i)
         {
             const jsonxx::Object& o = samplersValue.get<jsonxx::Object>(i);
-            MatSampler& sampler = m->m_samplers[i];
+            MatSampler& sampler = samplers[i];
             sampler.m_type = json_to_enum(o, "name", g_textureNames);
             sampler.m_flags = 0;
             uint32_t flags = json_to_flags(o, "flags", g_textureFlagNames);
@@ -128,7 +132,7 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
             {
                 textureFile = o.get<std::string>("texture");
             }
-            sampler.m_textureName = stringid_caculate(textureFile.c_str());
+            sampler.m_texture_name = stringid_caculate(textureFile.c_str());
             addDependency("texture", name_to_file_path(textureFile, EngineNames::TEXTURE));
         }
     }
@@ -158,47 +162,9 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
         {
             const jsonxx::Object& o = flagsValue.get<jsonxx::Object>(i);
             int type = json_to_enum(o, "name", g_matFlagNames);
-            if(type < 0) continue;
+            if(type < 0)
+                continue;
             flags |= (1 << type);
-
-            switch(type)
-            {
-            case kFlagRimLighting:
-                {
-                    m->m_rimColor.m_rimFresnelMin = json_to_float(o, "rimFresnelMin", 0.8f);
-                    m->m_rimColor.m_rimFresnelMax = json_to_float(o, "rimFresnelMax", 1.0f);
-                    m->m_rimColor.m_rimBrightness = json_to_float(o, "rimBrightness", 0.0f);
-                }
-                break;
-            case kFlagTranslucency:
-                {
-                    TranslucencyInfo& translucency = m->m_translucency;
-                    vec3_make(translucency.m_rampOuterColor, 1.0f, 0.64f, 0.25f);
-                    vec3_make(translucency.m_rampMediumColor, 1.0f, 0.21f, 0.14f);
-                    vec3_make(translucency.m_rampInnerColor, 0.25f, 0.05f, 0.02f);
-                    json_to_floats(o, "ramp_outer_color",translucency.m_rampOuterColor, 3);
-                    json_to_floats(o, "ramp_medium_color",translucency.m_rampMediumColor, 3);
-                    json_to_floats(o, "ramp_inner_color",translucency.m_rampInnerColor, 3);
-                    translucency.m_info[0] = json_to_float(o, "distortion", 0.2f);
-                    translucency.m_info[1] = json_to_float(o, "power", 3.0f);
-                    translucency.m_info[2] = json_to_float(o, "scale", 1.0f);
-                    translucency.m_info[3] = json_to_float(o, "min", 0.0f);
-                }
-                break;
-            case kFlagOpacity:
-                {
-                    m->m_opacityParams[0] = json_to_float(o, "opacity", 1.0f);
-                    m->m_opacityParams[1] = json_to_float(o, "fresnel_min", 0.0f);
-                    m->m_opacityParams[2] = json_to_float(o, "fresnel_max", 0.0f);
-
-                    //if opacity is on
-                    //default to alpha blending render state.
-                    renderState |= BGFX_STATE_BLEND_ADD;
-                    renderState |= BGFX_STATE_BLEND_ALPHA;
-                }
-            default:
-                break;
-            }
         }
     }
 

@@ -7,104 +7,78 @@
 #include "DataDef.h"
 #include <bx/bx.h>
 
-void Material::lookup()
-{
-    m_shader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, m_shaderName);
-    if(m_shadowShaderName)
-        m_shadowShader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, m_shadowShaderName);
-
-    uint32_t num = m_numSamplers;
-    MatSampler* head = m_samplers;
-
-    for (uint32_t i=0; i<num; ++i)
-    {
-        head[i].m_texture = FIND_RESOURCE(Texture, EngineTypes::TEXTURE, head[i].m_textureName);
-    }
-}
-
-void Material::bringin()
-{
-    uint32_t num = m_numSamplers;
-    MatSampler* head = m_samplers;
-    for (uint32_t i=0; i<num; ++i)
-    {
-        Texture* tex = head[i].m_texture;
-        if(!tex) continue;
-        tex->bringin(head[i].m_flags);
-    }
-}
-
-void Material::change_texture( int slot, StringId tex )
-{
-    MatSampler& sampler = m_samplers[slot];
-    Texture* texture = FIND_RESOURCE(Texture, EngineTypes::TEXTURE, tex);
-    if(!texture)
-        return;
-    sampler.m_texture = texture;
-    texture->bringin(sampler.m_flags);
-}
-
-void Material::submit() const
-{
-    if(!m_shader)
-        return;
-    bgfx::setProgram(m_shader->m_handle);
-    uint32_t num = m_numSamplers;
-    for (uint32_t i=0; i<num; ++i)
-    {
-        const MatSampler& sampler = m_samplers[i];
-        if(!sampler.m_texture)
-            continue;
-        Graphics::set_texture(sampler.m_type, sampler.m_texture->m_handle);
-    }
-    // Set shadow map.
-    extern ShadowMap g_shadowMap;
-    Graphics::set_texture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
-
-    extern UniformPerObject     g_uniformPerObject;
-    bgfx::setUniform(g_uniformPerObject.m_uv, m_offsetAndRepeat);
-    bgfx::setUniform(g_uniformPerObject.m_diffuse, m_diffuse);
-    bgfx::setUniform(g_uniformPerObject.m_specular, m_specular);
-    bgfx::setUniform(g_uniformPerObject.m_params1, m_params1);
-    if(m_flags & kFlagRimLighting)
-        bgfx::setUniform(g_uniformPerObject.m_rimColorInfo, &m_rimColor);
-    if(m_flags & kFlagTranslucency)
-    {
-        bgfx::setUniform(g_uniformPerObject.m_skinRampOuterColor, m_translucency.m_rampOuterColor);
-        bgfx::setUniform(g_uniformPerObject.m_skinRampMediumColor, m_translucency.m_rampMediumColor);
-        bgfx::setUniform(g_uniformPerObject.m_skinRampInnerColor, m_translucency.m_rampInnerColor);
-        bgfx::setUniform(g_uniformPerObject.m_translucencyInfo, m_translucency.m_info);
-    }
-    if(m_flags & kFlagOpacity)
-        bgfx::setUniform(g_uniformPerObject.m_opacityParams, m_opacityParams);
-    bgfx::setState(m_state);
-}
-
-void Material::submit_shadow() const
-{
-    if(!m_shadowShader)
-        return;
-
-    bgfx::setProgram(m_shadowShader->m_handle);
-    bgfx::setState(SHADOW_RENDER_STATE);
-}
-
-void* load_resource_material(void* data, uint32_t size)
-{
-    char* p = (char*)data;
-    Material* m = (Material*)data;
-    m->m_samplers = (MatSampler*)(p + sizeof(Material));
-    return m;
-}
+#define SHADOW_RENDER_STATE  (BGFX_STATE_ALPHA_WRITE|BGFX_STATE_DEPTH_WRITE|BGFX_STATE_DEPTH_TEST_LESS|BGFX_STATE_CULL_CCW)
 
 void lookup_resource_material(void * resource)
 {
     Material* mat = (Material*)resource;
-    mat->lookup();
+    mat->m_shader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, mat->m_shader_name);
+    StringId _shadow_shader_name = mat->m_shadow_shader_name;
+    if(_shadow_shader_name != 0)
+        mat->m_shadow_shader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, _shadow_shader_name);
+
+    uint32_t _num = mat->m_num_samplers;
+    MatSampler* _samplers = (MatSampler*)((char*)resource + mat->m_sampler_offset);
+
+    for (uint32_t i=0; i<_num; ++i)
+    {
+        MatSampler* _sample = _samplers + i;
+        _sample->m_texture = FIND_RESOURCE(Texture, EngineTypes::TEXTURE, _sample->m_texture_name);
+    }
 }
 
 void bringin_resource_material( void* resource )
 {
     Material* mat = (Material*)resource;
-    mat->bringin();
+    uint32_t _num = mat->m_num_samplers;
+    MatSampler* _samplers = (MatSampler*)((char*)resource + mat->m_sampler_offset);
+
+    for (uint32_t i=0; i<_num; ++i)
+    {
+        MatSampler* _sample = _samplers + i;
+        Texture* _tex = _sample->m_texture;
+        if(!_tex)
+            continue;
+        _tex->bringin(_sample->m_flags);
+    }
+}
+
+
+void submit_material(Material* m)
+{
+    if(!m->m_shader)
+        return;
+
+    bgfx::setProgram(m->m_shader->m_handle);
+    uint32_t _num = m->m_num_samplers;
+    MatSampler* _samplers = (MatSampler*)((char*)m + m->m_sampler_offset);
+
+    for (uint32_t i=0; i<_num; ++i)
+    {
+        MatSampler* _sample = _samplers + i;
+        Texture* _tex = _sample->m_texture;
+        if(!_tex)
+            continue;
+        Graphics::set_texture(_sample->m_type, _tex->m_handle);
+    }
+
+    // Set shadow map.
+    extern ShadowMap g_shadowMap;
+    Graphics::set_texture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
+
+    extern UniformPerObject     g_uniformPerObject;
+    bgfx::setUniform(g_uniformPerObject.m_uv, m->m_offset_repeat);
+    bgfx::setUniform(g_uniformPerObject.m_diffuse, m->m_diffuse);
+    bgfx::setUniform(g_uniformPerObject.m_specular, m->m_specular);
+    bgfx::setUniform(g_uniformPerObject.m_params1, m->m_params1);
+    bgfx::setState(m->m_state);
+}
+
+void submit_material_shadow(Material* m)
+{
+    ShaderProgram* _shadow = m->m_shadow_shader;
+    if(!_shadow)
+        return;
+    bgfx::setProgram(_shadow->m_handle);
+    bgfx::setState(SHADOW_RENDER_STATE);
 }

@@ -146,13 +146,7 @@ INTERNAL void createUniforms()
 
     g_uniformPerObject.m_diffuse = createEngineUniform("u_diffuseColor", bgfx::UniformType::Uniform4fv);
     g_uniformPerObject.m_specular = createEngineUniform("u_specularColor", bgfx::UniformType::Uniform4fv);
-    g_uniformPerObject.m_rimColorInfo = createEngineUniform("u_rimColorInfo", bgfx::UniformType::Uniform3fv);
-    g_uniformPerObject.m_translucencyInfo = createEngineUniform("u_translucentInfo", bgfx::UniformType::Uniform4fv);
-    g_uniformPerObject.m_skinRampOuterColor = createEngineUniform("u_skinRampOuterColor", bgfx::UniformType::Uniform3fv);
-    g_uniformPerObject.m_skinRampMediumColor = createEngineUniform("u_skinRampMediumColor", bgfx::UniformType::Uniform3fv);
-    g_uniformPerObject.m_skinRampInnerColor = createEngineUniform("u_skinRampInnerColor", bgfx::UniformType::Uniform3fv);
     g_uniformPerObject.m_params1 = createEngineUniform("u_matParams1", bgfx::UniformType::Uniform4fv);
-    g_uniformPerObject.m_opacityParams = createEngineUniform("u_opacityParams", bgfx::UniformType::Uniform3fv);
 
     g_uniformLights.m_color = createEngineUniform("u_lightColor", bgfx::UniformType::Uniform3fv, BGFX_CONFIG_MAX_LIGHTS);
     g_uniformLights.m_info = createEngineUniform("u_lightInfo", bgfx::UniformType::Uniform4fv, BGFX_CONFIG_MAX_LIGHTS);
@@ -187,7 +181,7 @@ void Graphics::register_factories()
     ResourceFactory _program = {0, 0, lookup_resource_shader_program, bringin_resource_shader_program, bringout_resource_shader_program, EngineNames::PROGRAM, 1};
     g_resourceMgr.register_factory(_program);
 
-    ResourceFactory _material = {load_resource_material, 0, lookup_resource_material, bringin_resource_material, 0, EngineNames::MATERIAL, 2 };
+    ResourceFactory _material = {0, 0, lookup_resource_material, bringin_resource_material, 0, EngineNames::MATERIAL, 2 };
     g_resourceMgr.register_factory(_material);
 
     ResourceFactory _shadingEnv = {0,0,lookup_resource_shading_enviroment,0,0,EngineNames::SHADING_ENV, 4};

@@ -26,7 +26,7 @@ void Model::submit()
     for (uint32_t i=0; i<mat_num; ++i)
     {
         bgfx::setTransform(t, num);
-        head[i]->submit();
+        submit_material(head[i]);
         submit_submesh(submeshes + i);
         bgfx::submit(viewId);
     }
@@ -46,7 +46,7 @@ void Model::submit_shadow()
     for (uint32_t i=0; i<mat_num; ++i)
     {
         bgfx::setTransform(t, num);
-        head[i]->submit_shadow();
+        submit_material_shadow(head[i]);
         submit_submesh(submeshes + i);
         bgfx::submit(kShadowViewId);
     }

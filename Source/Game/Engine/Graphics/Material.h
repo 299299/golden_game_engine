@@ -3,8 +3,6 @@
 #include <bgfx.h>
 
 
-#define SHADOW_RENDER_STATE  (BGFX_STATE_ALPHA_WRITE|BGFX_STATE_DEPTH_WRITE|BGFX_STATE_DEPTH_TEST_LESS|BGFX_STATE_CULL_CCW)
-
 enum TextureFlag
 {
     kTex_U_Mirror           = (1 << 0),
@@ -31,26 +29,12 @@ enum MaterialFlag
 
 struct Texture;
 struct ShaderProgram;
-struct RimColorInfo
-{
-    float           m_rimFresnelMin;
-    float           m_rimFresnelMax;
-    float           m_rimBrightness;
-};
-
-struct TranslucencyInfo
-{
-    float           m_rampOuterColor[3];
-    float           m_rampMediumColor[3];
-    float           m_rampInnerColor[3];
-    float           m_info[4];
-};
 
 ENGINE_NATIVE_ALIGN(struct) MatSampler
 {
     Texture*                m_texture;
     uint32_t                m_flags;
-    StringId                m_textureName;
+    StringId                m_texture_name;
 
     uint8_t                 m_type;
     char                    m_padding[3];
@@ -58,35 +42,29 @@ ENGINE_NATIVE_ALIGN(struct) MatSampler
 
 ENGINE_NATIVE_ALIGN(struct) Material
 {
-    void lookup();
-    void bringin();
-    void change_texture(int slot, StringId tex);
-    void submit() const;
-    void submit_shadow() const;
-
-    float                               m_offsetAndRepeat[4];
+    float                               m_offset_repeat[4];
     float                               m_diffuse[4];
     float                               m_specular[4];
     float                               m_params1[4];
-    float                               m_opacityParams[3];
 
     uint64_t                            m_state;
-    MatSampler*                         m_samplers;
-
-    RimColorInfo                        m_rimColor;
-    TranslucencyInfo                    m_translucency;
 
     ShaderProgram*                      m_shader;
-    ShaderProgram*                      m_shadowShader;
-    StringId                            m_shaderName;
-    StringId                            m_shadowShaderName;
+    ShaderProgram*                      m_shadow_shader;
+    StringId                            m_shader_name;
+    StringId                            m_shadow_shader_name;
 
-    uint8_t                             m_numSamplers;
+    uint32_t                            m_sampler_offset;
+    uint32_t                            m_memory_size;
+
+    uint8_t                             m_num_samplers;
     uint8_t                             m_flags;
     char                                m_padding[2];
 };
 
 
-void* load_resource_material(void* data, uint32_t size);
 void lookup_resource_material(void * resource);
 void bringin_resource_material( void* resource );
+
+void submit_material(Material* m);
+void submit_material_shadow(Material* m);
