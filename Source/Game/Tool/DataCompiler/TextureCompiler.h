@@ -27,11 +27,3 @@ public:
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
 };
-
-class Texture2DCompiler : public BaseCompiler
-{
-public:
-    virtual std::string getFormatExt() const { return EngineNames::TEXTURE_2D; };
-    virtual bool parseWithJson() const { return true; };
-    virtual bool readJSON(const jsonxx::Object& root);
-};

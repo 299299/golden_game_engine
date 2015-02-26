@@ -124,7 +124,6 @@ namespace EngineTypes
     extern StringId     MESH;
     extern StringId     MATERIAL;
     extern StringId     TEXTURE;
-    extern StringId     TEXTURE_2D;
     extern StringId     TEXTURE_3D;
     extern StringId     ANIMATION_RIG;
     extern StringId     SHADER;
@@ -145,7 +144,6 @@ namespace EngineNames
     extern const char*  MESH;
     extern const char*  MATERIAL;
     extern const char*  TEXTURE;
-    extern const char*  TEXTURE_2D;
     extern const char*  TEXTURE_3D;
     extern const char*  ANIMATION_RIG;
     extern const char*  SHADER;

@@ -39,7 +39,7 @@ void bringin_resource_material( void* resource )
         Texture* _tex = _sample->m_texture;
         if(!_tex)
             continue;
-        _tex->bringin(_sample->m_flags);
+        bringin_resource_texture(_tex, _sample->m_flags);
     }
 }
 

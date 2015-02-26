@@ -83,10 +83,6 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
     json_to_floats(root, "uv_offset", m->m_offset_repeat, 2);
     json_to_floats(root, "uv_repeat", m->m_offset_repeat + 2, 2);
 
-    m->m_params1[0] = json_to_float(root, "blend_normal", 0.4f);
-    m->m_params1[1] = json_to_float(root, "normal_height", 1.0f);
-    m->m_params1[2] = json_to_float(root, "emissive_intensity", 1.0f);
-
     extern const char*  g_textureNames[];
     extern const char* g_textureFlagNames[];
     extern uint32_t g_textureFlags[];

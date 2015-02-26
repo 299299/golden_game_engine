@@ -63,7 +63,7 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
         MemoryBuffer mem(memSize);
         Texture* tex = (Texture*)mem.m_buf;
         tex->m_handle.idx = bgfx::invalidHandle;
-        tex->m_size = texutreReader.m_size;
+        tex->m_data_size = texutreReader.m_size;
         memcpy(mem.m_buf + sizeof(Texture), texutreReader.m_buf, texutreReader.m_size);
         write_file(output, mem.m_buf, memSize);
     }
@@ -91,7 +91,8 @@ bool DDSCompiler::process( const std::string& input, const std::string& output )
     MemoryBuffer mem(memSize);
     Texture* tex = (Texture*)mem.m_buf;
     tex->m_handle.idx = bgfx::invalidHandle;
-    tex->m_size = ddsReader.m_size;
+    tex->m_data_size = ddsReader.m_size;
+    tex->m_data_offset = sizeof(Texture);
     memcpy(mem.m_buf + sizeof(Texture), ddsReader.m_buf, ddsReader.m_size);
     return write_file(output, mem.m_buf, memSize);
 }
@@ -114,23 +115,19 @@ bool Texture3DCompiler::readJSON(const jsonxx::Object& root)
     uint32_t memSize = sizeof(Raw3DTexture) + COLOR_LUT_SIZE*COLOR_LUT_SIZE*COLOR_LUT_SIZE*4;
     MemoryBuffer mem(memSize);
     Raw3DTexture* tex3d = (Raw3DTexture*)mem.m_buf;
-    tex3d->m_blob = mem.m_buf + sizeof(Raw3DTexture);
+    char* data = mem.m_buf + sizeof(Raw3DTexture);
     tex3d->m_width = 16;
     tex3d->m_height = 16;
     tex3d->m_depth = 16;
     tex3d->m_format = bgfx::TextureFormat::BGRA8;
-    tex3d->m_size = memSize - sizeof(Raw3DTexture);
+    tex3d->m_data_size = memSize - sizeof(Raw3DTexture);
     tex3d->m_handle.idx = bgfx::invalidHandle;
-    lut2d_to_3d(image, (uint8_t*)tex3d->m_blob);
+    tex3d->m_data_offset = sizeof(Raw3DTexture);
+    lut2d_to_3d(image, (uint8_t*)data);
     std::string outputLut = m_output;
     std::string outputPath = getFilePath(m_output);
     std::string fileName = getFileName(outputLut);
     outputLut = outputPath + "/" + fileName + "." + std::string(EngineNames::TEXTURE_3D);
     stbi_image_free(image);
     return write_file(outputLut, mem.m_buf, memSize);
-}
-
-bool Texture2DCompiler::readJSON( const jsonxx::Object& root )
-{
-    return false;
 }

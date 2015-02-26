@@ -137,7 +137,6 @@ namespace EngineNames
     const char* MESH = "mesh";
     const char* MATERIAL = "material";
     const char* TEXTURE = "texture";
-    const char* TEXTURE_2D = "tex_2d";
     const char* TEXTURE_3D = "tex_3d";
     const char* ANIMATION_RIG = "rig";
     const char* SHADER = "shader";
@@ -180,7 +179,6 @@ void init_engine_type_names()
     INIT_ENGINE_TYPE(MESH);
     INIT_ENGINE_TYPE(MATERIAL);
     INIT_ENGINE_TYPE(TEXTURE);
-    INIT_ENGINE_TYPE(TEXTURE_2D);
     INIT_ENGINE_TYPE(TEXTURE_3D);
     INIT_ENGINE_TYPE(ANIMATION_RIG);
     INIT_ENGINE_TYPE(SHADER);

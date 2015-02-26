@@ -166,13 +166,10 @@ void Graphics::register_factories()
     ResourceFactory _mesh = {0, 0, 0, bringin_resource_mesh, bringout_resource_mesh, EngineNames::MESH, 0};
     g_resourceMgr.register_factory(_mesh);
 
-    ResourceFactory _texture = {load_resource_texture, 0, 0, 0, bringout_resource_texture, EngineNames::TEXTURE, 0};
+    ResourceFactory _texture = {0, 0, 0, 0, bringout_resource_texture, EngineNames::TEXTURE, 0};
     g_resourceMgr.register_factory(_texture);
 
-    ResourceFactory _texture2d = {load_resource_texture2d, 0, 0, bringin_resource_texture2d, bringout_resource_texture2d, EngineNames::TEXTURE_2D, 0};
-    g_resourceMgr.register_factory(_texture2d);
-
-    ResourceFactory _texture3d = {load_resource_texture3d, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, EngineNames::TEXTURE_3D, 0};
+    ResourceFactory _texture3d = {0, 0, 0, bringin_resource_texture3d, bringout_resource_texture3d, EngineNames::TEXTURE_3D, 0};
     g_resourceMgr.register_factory(_texture3d);
 
     ResourceFactory _shader = {load_resource_shader, 0, 0, bringin_resource_shader, bringout_resource_shader, EngineNames::SHADER, 0};
