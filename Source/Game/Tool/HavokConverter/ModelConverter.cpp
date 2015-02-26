@@ -124,26 +124,29 @@ void ModelConverter::writeMesh(const std::string& fileName)
         memorySize += mesh->getIndexBufferSize();
     }
     memorySize += m_joints.size() * sizeof(Matrix);
-    //LOGI("mesh memory size = %d.", memorySize);
+    uint32_t ac_size = memorySize;
+    memorySize = NEXT_MULTIPLE_OF(NATIVE_ALIGN_VALUE, memorySize);
+    LOGI("mesh memory size = %d.", memorySize);
     MemoryBuffer mem(memorySize);
     char* p = mem.m_buf;
     char* head = p;
     Mesh* pMesh = (Mesh*)p;
+    pMesh->m_memory_size = memorySize;
     pMesh->m_decl = m_meshes[0]->getDecl();
-    pMesh->m_numSubMeshes = m_meshes.size();
-    pMesh->m_numJoints = m_joints.size();
+    pMesh->m_num_submeshes = m_meshes.size();
+    pMesh->m_num_joints = m_joints.size();
     p  += sizeof(Mesh);
     SubMesh* submeshes = (SubMesh*)p;
-    pMesh->m_subMeshOffset = p - head;
+    pMesh->m_submesh_offset = (uint32_t)(p - head);
     p  += sizeof(SubMesh) * m_meshes.size();
     float min[3], max[3];
-    for(uint32_t i=0; i<pMesh->m_numSubMeshes; ++i)
+    for(uint32_t i=0; i<pMesh->m_num_submeshes; ++i)
     {
         MeshConverter* mesh = m_meshes[i];
         SubMesh& subMesh = submeshes[i];
-        subMesh.m_vertexSize = mesh->getVertexBufferSize();
-        subMesh.m_indexSize = mesh->getIndexBufferSize();
-        subMesh.m_vertexOffset = p - head;
+        subMesh.m_vertex_size = mesh->getVertexBufferSize();
+        subMesh.m_index_size = mesh->getIndexBufferSize();
+        subMesh.m_vertex_offset = (uint32_t)(p - head);
         subMesh.m_vbh.idx = bgfx::invalidHandle;
         subMesh.m_ibh.idx = bgfx::invalidHandle;
 
@@ -160,16 +163,18 @@ void ModelConverter::writeMesh(const std::string& fileName)
             memcpy(min, subMesh.m_aabb.m_min, sizeof(min));
             memcpy(max, subMesh.m_aabb.m_max, sizeof(max));
         }
+        else
+        {
+            min[0] = bx::fmin(subMesh.m_aabb.m_min[0], min[0]);
+            min[1] = bx::fmin(subMesh.m_aabb.m_min[1], min[1]);
+            min[2] = bx::fmin(subMesh.m_aabb.m_min[2], min[2]);
+            max[0] = bx::fmax(subMesh.m_aabb.m_min[0], max[0]);
+            max[1] = bx::fmax(subMesh.m_aabb.m_max[1], max[1]);
+            max[2] = bx::fmax(subMesh.m_aabb.m_max[2], max[2]);
+        }
 
-        min[0] = bx::fmin(subMesh.m_aabb.m_min[0], min[0]);
-        min[1] = bx::fmin(subMesh.m_aabb.m_min[1], min[1]);
-        min[2] = bx::fmin(subMesh.m_aabb.m_min[2], min[2]);
-        max[0] = bx::fmax(subMesh.m_aabb.m_min[0], max[0]);
-        max[1] = bx::fmax(subMesh.m_aabb.m_max[1], max[1]);
-        max[2] = bx::fmax(subMesh.m_aabb.m_max[2], max[2]);
-
-        p += subMesh.m_vertexSize;
-        subMesh.m_indexOffset = p - head;
+        p += subMesh.m_vertex_size;
+        subMesh.m_index_offset = (uint32_t)(p - head);
 
         //------------------------------------------------------------------------------
         mesh->writeIndexBuffer(p);
@@ -181,12 +186,12 @@ void ModelConverter::writeMesh(const std::string& fileName)
     pMesh->m_aabb.m_max[0] = max[0];
     pMesh->m_aabb.m_max[1] = max[1];
     pMesh->m_aabb.m_max[2] = max[2];
-    pMesh->m_jointOffset = p - head;
+    pMesh->m_joint_offset = (uint32_t)(p - head);
     if(!m_joints.empty())
         memcpy(p, &m_joints[0], m_joints.size() * sizeof(Matrix));
     p += m_joints.size() * sizeof(Matrix);
 
-    ENGINE_ASSERT((head + memorySize) == p, "error offset");
+    ENGINE_ASSERT((head + ac_size) == p, "error offset");
     write_file(fileName, head, memorySize);
 #endif
 }

@@ -106,3 +106,5 @@ struct Id
 #ifndef INTERNAL
 #define INTERNAL static
 #endif
+
+#define NATIVE_ALIGN_VALUE  16

@@ -103,6 +103,8 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         ++numComps;
 
         g_config->add_compiler(comp);
+
+        std::sort(m_components.begin(), m_components.end(), compare_less_component);
     }
 
     uint32_t head_size = sizeof(ActorResource) + numComps * sizeof(ComponentData);

@@ -169,7 +169,7 @@ INTERNAL void createUniforms()
 
 void Graphics::register_factories()
 {
-    ResourceFactory _mesh = {load_resource_mesh, 0, 0, bringin_resource_mesh, bringout_resource_mesh, EngineNames::MESH, 0};
+    ResourceFactory _mesh = {0, 0, 0, bringin_resource_mesh, bringout_resource_mesh, EngineNames::MESH, 0};
     g_resourceMgr.register_factory(_mesh);
 
     ResourceFactory _texture = {load_resource_texture, 0, 0, 0, bringout_resource_texture, EngineNames::TEXTURE, 0};

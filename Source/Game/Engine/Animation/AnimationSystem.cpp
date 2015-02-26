@@ -148,10 +148,10 @@ void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
 
         hkaPose* pose = rig->m_pose;
         const Mesh* mesh = model->m_mesh;
-        if(!mesh->m_numJoints) continue;
+        if(!mesh->m_num_joints) continue;
 
         const hkQsTransform& t = actor.m_transform;
-        const Matrix* invMats = model->m_mesh->m_jointMatrix;
+        const Matrix* invMats = (const Matrix*)((char*)mesh + mesh->m_joint_offset);
 
 #ifdef HAVOK_COMPILE
         const hkQsTransform* poseMS = pose->getSyncedPoseModelSpace().begin();

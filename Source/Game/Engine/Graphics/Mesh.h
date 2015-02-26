@@ -10,39 +10,32 @@ ENGINE_NATIVE_ALIGN(struct) SubMesh
     bgfx::VertexBufferHandle        m_vbh;
     bgfx::IndexBufferHandle         m_ibh;
 
-    uint32_t                        m_vertexOffset;
-    uint32_t                        m_vertexSize;
-    uint32_t                        m_indexOffset;
-    uint32_t                        m_indexSize;
-
-    void submit() const;
+    uint32_t                        m_vertex_offset;
+    uint32_t                        m_vertex_size;
+    uint32_t                        m_index_offset;
+    uint32_t                        m_index_size;
 };
 
 ENGINE_NATIVE_ALIGN(struct) Mesh
 {
-    void bringin();
-    void bringout();
+    bgfx::VertexDecl                m_decl;
+    Aabb                            m_aabb;
 
-    uint32_t  get_vertex_num(uint32_t index) const;
-    const void* get_vertex_data(uint32_t index) const;
-    uint32_t get_index_num(uint32_t index) const;
-    const uint16_t* get_index_data(uint32_t index) const;
+    uint32_t                        m_memory_size;
+    uint32_t                        m_submesh_offset;
+    uint32_t                        m_joint_offset;
 
-    bgfx::VertexDecl            m_decl;
-    Aabb                        m_aabb;
-
-    uint32_t                    m_subMeshOffset;
-    uint32_t                    m_jointOffset;
-
-    SubMesh*                    m_submeshes;
-    Matrix*                     m_jointMatrix;
-
-    uint8_t                     m_numSubMeshes;
-    uint8_t                     m_numJoints;
-    char                        m_padding[2];
+    uint8_t                         m_num_submeshes;
+    uint8_t                         m_num_joints;
+    char                            m_padding[2];
 };
 
 
-void* load_resource_mesh(void* data, uint32_t size);
 void  bringin_resource_mesh(void* resource);
 void  bringout_resource_mesh(void* resource);
+
+uint32_t get_mesh_vertex_num(const Mesh* mesh, uint32_t index);
+const void* get_mesh_vertex_data(const Mesh* mesh, uint32_t index);
+uint32_t get_mesh_index_num(const Mesh* mesh, uint32_t index);
+const uint16_t* get_mesh_index_data(const Mesh* mesh, uint32_t index);
+void submit_submesh(const SubMesh* submesh);

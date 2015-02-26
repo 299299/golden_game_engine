@@ -14,10 +14,10 @@
 void Model::submit()
 {
     const Mesh* mesh = m_mesh;
-    const SubMesh* submeshes = mesh->m_submeshes;
-    bool bSkinning = mesh->m_numJoints > 0;
+    const SubMesh* submeshes = (const SubMesh*)((char*)mesh + mesh->m_submesh_offset);
+    bool bSkinning = mesh->m_num_joints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
-    int num = bSkinning ? mesh->m_numJoints : 1;
+    int num = bSkinning ? mesh->m_num_joints : 1;
     uint8_t viewId = m_viewId;
 
     uint32_t mat_num = m_numMaterials;
@@ -27,7 +27,7 @@ void Model::submit()
     {
         bgfx::setTransform(t, num);
         head[i]->submit();
-        submeshes[i].submit();
+        submit_submesh(submeshes + i);
         bgfx::submit(viewId);
     }
 }
@@ -35,10 +35,10 @@ void Model::submit()
 void Model::submit_shadow()
 {
     const Mesh* mesh = m_mesh;
-    const SubMesh* submeshes = mesh->m_submeshes;
-    bool bSkinning = mesh->m_numJoints > 0;
+    const SubMesh* submeshes = (const SubMesh*)((char*)mesh + mesh->m_submesh_offset);
+    bool bSkinning = mesh->m_num_joints > 0;
     float* t = bSkinning ? m_skinMatrix : m_transform;
-    int num = bSkinning ? mesh->m_numJoints : 1;
+    int num = bSkinning ? mesh->m_num_joints : 1;
 
     uint32_t mat_num = m_numMaterials;
     Material** head = m_materials;
@@ -47,14 +47,15 @@ void Model::submit_shadow()
     {
         bgfx::setTransform(t, num);
         head[i]->submit_shadow();
-        submeshes[i].submit();
+        submit_submesh(submeshes + i);
         bgfx::submit(kShadowViewId);
     }
 }
 
 void Model::update()
 {
-    if(!HAS_BITS(m_flag, kNodeTransformDirty)) return;
+    if(!HAS_BITS(m_flag, kNodeTransformDirty))
+        return;
     const Mesh* mesh = m_mesh;
     const Aabb& modelAabb = mesh->m_aabb;
     transform_aabb(m_aabb.m_min, m_aabb.m_max, m_transform, modelAabb.m_min, modelAabb.m_max);
@@ -63,11 +64,14 @@ void Model::update()
 
 float* Model::alloc_skinning_mat()
 {
-    m_skinMatrix = FRAME_ALLOC(float, m_mesh->m_numJoints * 16);
-    return m_skinMatrix;
+    return m_skinMatrix = FRAME_ALLOC(float, m_mesh->m_num_joints * 16);
 }
 
-bool Model::check_intersection( const float* rayOrig, const float* rayDir, float* intsPos, float* outNormal ) const
+bool Model::check_intersection(
+    const float* rayOrig,
+    const float* rayDir,
+    float* intsPos,
+    float* outNormal ) const
 {
     if(!ray_aabb_intersection(rayOrig, rayDir, m_aabb.m_min, m_aabb.m_max))
         return false;
@@ -95,14 +99,14 @@ bool Model::check_intersection( const float* rayOrig, const float* rayDir, float
     uint16_t posOffset = decl.getOffset(bgfx::Attrib::Position);
     uint32_t posSize = sizeof(float) * 3;
 
-    uint32_t num = mesh->m_numSubMeshes;
+    uint32_t num = mesh->m_num_submeshes;
 
     for(uint32_t i=0; i<num; ++i)
     {
-        const char* vertData = (const char*)mesh->get_vertex_data(i);
-        uint32_t vertNum = mesh->get_vertex_num(i);
-        const uint16_t* indexData = mesh->get_index_data(i);
-        uint32_t indexNum = mesh->get_index_num(i);
+        const char* vertData = (const char*)get_mesh_vertex_data(mesh, i);
+        uint32_t vertNum = get_mesh_vertex_num(mesh, i);
+        const uint16_t* indexData = get_mesh_index_data(mesh, i);
+        uint32_t indexNum = get_mesh_index_num(mesh, i);
         for( uint32_t j = 0; j < indexNum; j += 3 )
         {
             uint16_t index0 = indexData[j + 0];
@@ -134,7 +138,7 @@ bool Model::check_intersection( const float* rayOrig, const float* rayDir, float
 }
 
 ModelWorld g_modelWorld;
-static IdArray<Model>      m_models;
+INTERNAL IdArray<Model>      m_models;
 
 void ModelWorld::init(int max_model)
 {

@@ -1,82 +1,73 @@
 #include "Mesh.h"
 #include "Log.h"
 
-void SubMesh::submit() const
-{
-    bgfx::setIndexBuffer(m_ibh);
-    bgfx::setVertexBuffer(m_vbh);
-}
-
-void Mesh::bringin()
-{
-    char* pThis = (char*)this;
-    uint32_t num = m_numSubMeshes;
-    SubMesh* head = m_submeshes;
-
-    for(uint32_t i=0; i<num; ++i)
-    {
-        SubMesh& subMesh = head[i];
-        const bgfx::Memory* vmem = bgfx::makeRef(pThis + subMesh.m_vertexOffset, subMesh.m_vertexSize);
-        const bgfx::Memory* imem = bgfx::makeRef(pThis + subMesh.m_indexOffset, subMesh.m_indexSize);
-        subMesh.m_vbh = bgfx::createVertexBuffer(vmem, m_decl);
-        subMesh.m_ibh = bgfx::createIndexBuffer(imem);
-    }
-}
-
-void Mesh::bringout()
-{
-    uint32_t num = m_numSubMeshes;
-    SubMesh* head = m_submeshes;
-    
-    for(uint32_t i=0; i<num; ++i)
-    {
-        SubMesh& subMesh = head[i];
-        if(bgfx::isValid(subMesh.m_vbh)) bgfx::destroyVertexBuffer(subMesh.m_vbh);
-        subMesh.m_vbh.idx = bgfx::invalidHandle; 
-        if(bgfx::isValid(subMesh.m_ibh)) bgfx::destroyIndexBuffer(subMesh.m_ibh);
-        subMesh.m_ibh.idx = bgfx::invalidHandle;
-    }
-}
-
-const void* Mesh::get_vertex_data( uint32_t index ) const
-{
-    char* pThis = (char*)this;
-    return pThis + m_submeshes[index].m_vertexOffset;
-}
-
-uint32_t Mesh::get_vertex_num( uint32_t index ) const
-{
-    return m_submeshes[index].m_vertexSize / m_decl.getStride();
-}
-
-uint32_t Mesh::get_index_num( uint32_t index ) const
-{
-    return m_submeshes[index].m_indexSize / sizeof(uint16_t);
-}
-
-const uint16_t* Mesh::get_index_data( uint32_t index ) const
-{
-    char* pThis = (char*)this;
-    return (const uint16_t*)(pThis + m_submeshes[index].m_indexOffset);
-}
-
-void* load_resource_mesh(void* data, uint32_t size) 
-{
-    Mesh* pMesh = (Mesh*)data;
-    char* p = (char*)data;
-    pMesh->m_submeshes = (SubMesh*)(p + pMesh->m_subMeshOffset);
-    pMesh->m_jointMatrix = (Matrix*)(p + pMesh->m_jointOffset);
-    return pMesh;
-}
 
 void  bringin_resource_mesh(void* resource)
 {
     Mesh* pMesh = (Mesh*)resource;
-    pMesh->bringin();
+    char* p = (char*)resource;
+    uint32_t num = pMesh->m_num_submeshes;
+    SubMesh* submeshes = (SubMesh*)(p + pMesh->m_submesh_offset);
+
+    for(uint32_t i=0; i<num; ++i)
+    {
+        SubMesh& _sub_mesh = submeshes[i];
+        _sub_mesh.m_vbh = bgfx::createVertexBuffer(
+            bgfx::makeRef(p + _sub_mesh.m_vertex_offset, _sub_mesh.m_vertex_size),
+            pMesh->m_decl);
+        _sub_mesh.m_ibh = bgfx::createIndexBuffer(
+            bgfx::makeRef(p + _sub_mesh.m_index_offset, _sub_mesh.m_index_size));
+    }
 }
 
 void  bringout_resource_mesh(void* resource)
 {
     Mesh* pMesh = (Mesh*)resource;
-    pMesh->bringout();
+    char* p = (char*)resource;
+    uint32_t num = pMesh->m_num_submeshes;
+    SubMesh* submeshes = (SubMesh*)(p + pMesh->m_submesh_offset);
+
+    for(uint32_t i=0; i<num; ++i)
+    {
+        SubMesh& _sub_mesh = submeshes[i];
+        if(bgfx::isValid(_sub_mesh.m_vbh))
+            bgfx::destroyVertexBuffer(_sub_mesh.m_vbh);
+        _sub_mesh.m_vbh.idx = bgfx::invalidHandle;
+        if(bgfx::isValid(_sub_mesh.m_ibh))
+            bgfx::destroyIndexBuffer(_sub_mesh.m_ibh);
+        _sub_mesh.m_ibh.idx = bgfx::invalidHandle;
+    }
+}
+
+
+uint32_t get_mesh_vertex_num(const Mesh* mesh, uint32_t index)
+{
+    SubMesh* submeshes = (SubMesh*)((char*)mesh + mesh->m_submesh_offset);
+    return submeshes[index].m_vertex_size / mesh->m_decl.getStride();
+}
+
+const void* get_mesh_vertex_data(const Mesh* mesh, uint32_t index)
+{
+    char* p = (char*)mesh;
+    SubMesh* submeshes = (SubMesh*)(p + mesh->m_submesh_offset);
+    return p + submeshes[index].m_vertex_offset;
+}
+
+uint32_t get_mesh_index_num(const Mesh* mesh, uint32_t index)
+{
+    SubMesh* submeshes = (SubMesh*)((char*)mesh + mesh->m_submesh_offset);
+    return submeshes[index].m_index_size / sizeof(uint16_t);
+}
+
+const uint16_t* get_mesh_index_data(const Mesh* mesh, uint32_t index)
+{
+    char* p = (char*)mesh;
+    SubMesh* submeshes = (SubMesh*)(p + mesh->m_submesh_offset);
+    return (const uint16_t*)(p + submeshes[index].m_index_offset);
+}
+
+void submit_submesh(const SubMesh* submesh)
+{
+    bgfx::setVertexBuffer(submesh->m_vbh);
+    bgfx::setIndexBuffer(submesh->m_ibh);
 }

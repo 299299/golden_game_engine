@@ -31,9 +31,9 @@ struct Model
     void update();
     float* alloc_skinning_mat();
     bool check_intersection( const float* rayOrig,
-                            const float* rayDir,
-                            float* intsPos,
-                            float* outNormal ) const;
+                             const float* rayDir,
+                             float* intsPos,
+                             float* outNormal ) const;
 };
 
 struct ModelWorld
