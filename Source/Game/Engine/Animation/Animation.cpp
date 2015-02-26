@@ -26,40 +26,25 @@
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
 #endif
 
-void Animation::destroy()
+INTERNAL void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim)
 {
 #ifdef HAVOK_COMPILE
-    if(!m_mirroredFrom) 
-        return;
-    if(m_binding) 
-        hkaMirroredAnimation::destroyMirroredBinding(m_binding);
-    SAFE_REMOVEREF(m_animation);
-#endif
-}
-
-void Animation::lookup()
-{
-    if(!m_mirroredFrom) 
-        return;
-    create_mirrored_animation(FIND_RESOURCE(Animation, EngineTypes::ANIMATION, m_mirroredFrom));
-}
-
-void Animation::create_mirrored_animation(const Animation* orginalAnim)
-{
-#ifdef HAVOK_COMPILE
-    destroy();
-    AnimRig* rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, m_rigName);
+    destroy_resource_animation(newAnim);
+    AnimRig* rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, newAnim->m_rigName);
     orginalAnim->m_animation->addReference();
-    hkaMirroredAnimation* anim = new hkaMirroredAnimation(orginalAnim->m_animation, orginalAnim->m_binding, rig->m_mirroredSkeleton);
-    m_binding = anim->createMirroredBinding();
-    m_animation = anim;
+    hkaMirroredAnimation* anim = new hkaMirroredAnimation(
+        orginalAnim->m_animation,
+        orginalAnim->m_binding,
+        rig->m_mirroredSkeleton);
+    newAnim->m_binding = anim->createMirroredBinding();
+    newAnim->m_animation = anim;
 #endif
 }
 
 int Animation::find_first_trigger( StringId name ) const
 {
-    uint32_t num = m_numTriggers;
-    AnimationTrigger* head = m_triggers;
+    uint32_t num = m_num_triggers;
+    const AnimationTrigger* head = get_triggers();
     for(uint32_t i=0; i<num; ++i)
     {
         if(head[i].m_name == name)
@@ -70,12 +55,13 @@ int Animation::find_first_trigger( StringId name ) const
 
 int Animation::find_next_closest_trigger(float time, bool bLoop) const
 {
-    int num = m_numTriggers;
-    AnimationTrigger* head = m_triggers;
+    int num = m_num_triggers;
+    const AnimationTrigger* head = get_triggers();
     if(!num || time >= get_length()) return -1;
     for(int i = 0; i < num; ++i)
     {
-        if(head[i].m_time >= time) return i;
+        if(head[i].m_time >= time)
+            return i;
     }
     return bLoop ? 0 : -1;
 }
@@ -100,8 +86,8 @@ float Animation::get_length() const
 
 uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* events ) const
 {
-    uint32_t num = m_numTriggers;
-    AnimationTrigger* head = m_triggers;
+    uint32_t num = m_num_triggers;
+    const AnimationTrigger* head = get_triggers();
     uint32_t retNum = 0;
     uint32_t startIndex = -1;
     for(uint32_t i=0; i<num; ++i)
@@ -117,14 +103,20 @@ uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* e
 }
 
 
+const AnimationTrigger* Animation::get_triggers() const
+{
+    char* p = (char*)this;
+    const AnimationTrigger* t = (const AnimationTrigger*)(p + m_trigger_offset);
+    return t;
+}
+
 
 void* load_resource_animation( void* data, uint32_t size)
 {
     Animation* anim = (Animation*)data;
-    anim->m_triggers = (AnimationTrigger*)((char*)data + sizeof(Animation));
-    char* p = (char*)data + anim->m_havokDataOffset;
+    char* p = (char*)data + anim->m_havok_data_offset;
 #ifdef HAVOK_COMPILE
-    hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havokDataSize);
+    hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havok_data_size);
     anim->m_animation = ac->m_animations[0];
     anim->m_binding = ac->m_bindings[0];
 #endif
@@ -133,26 +125,34 @@ void* load_resource_animation( void* data, uint32_t size)
 
 void destroy_resource_animation( void * resource )
 {
+#ifdef HAVOK_COMPILE
     Animation* anim = (Animation*)resource;
-    anim->destroy();
+    if(!anim->m_mirrored_from)
+        return;
+    if(anim->m_binding)
+        hkaMirroredAnimation::destroyMirroredBinding(anim->m_binding);
+    SAFE_REMOVEREF(anim->m_animation);
+#endif
 }
 
 void lookup_resource_animation( void * resource )
 {
     Animation* anim = (Animation*)resource;
-    anim->lookup();
+    if(anim->m_mirrored_from != 0)
+        create_mirrored_animation(
+            FIND_RESOURCE(Animation, EngineTypes::ANIMATION, anim->m_mirrored_from), anim);
 }
 
 //======================================================================
 //          HELPER API
 //======================================================================
-hkReal caculate_motion_velocity(hkaDefaultAnimationControl* ac)
+float caculate_motion_velocity(hkaDefaultAnimationControl* ac)
 {
 #ifdef HAVOK_COMPILE
     hkaAnimation* animation = ac->getAnimationBinding()->m_animation;
     hkQsTransform animMotion;
     animation->getExtractedMotionReferenceFrame(animation->m_duration, animMotion );
-    return hkReal(animMotion.m_translation.length3()) / animation->m_duration;
+    return float(animMotion.m_translation.length3()) / animation->m_duration;
 #else
     return 0.0f;
 #endif

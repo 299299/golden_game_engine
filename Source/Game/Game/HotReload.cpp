@@ -108,7 +108,8 @@ void reload_animation_resource(void* oldResource, void* newResource)
     for (uint32_t i = 0; i < numOfAnimations; ++i)
     {
         Animation* anim = GET_RESOURCE(Animation);
-        if(!anim->m_mirroredFrom) continue;
+        if(!anim->m_mirrored_from)
+            continue;
 
 #ifdef HAVOK_COMPILE
         hkaMirroredAnimation* mirrorAnim = (hkaMirroredAnimation*)anim->m_animation;

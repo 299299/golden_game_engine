@@ -75,23 +75,24 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         const jsonxx::Object& mirrorObject = root.get<jsonxx::Object>("mirrored");
         const std::string& mirrorFile = mirrorObject.get<std::string>("animation");
         const std::string& rigFile = mirrorObject.get<std::string>("rig");
-        anim->m_mirroredFrom = stringid_caculate(mirrorFile.c_str());
-        anim->m_rigName = stringid_caculate(rigFile.c_str());
+        anim->m_mirrored_from = stringid_caculate(mirrorFile.c_str());
+        anim->m_rig_name = stringid_caculate(rigFile.c_str());
         addDependency("mirror animation", name_to_file_path(mirrorFile, EngineNames::ANIMATION));
         addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION));
     }
 
-    anim->m_numTriggers = triggerNum;
+    anim->m_num_triggers = triggerNum;
     offset += sizeof(Animation);
-    anim->m_triggers = (AnimationTrigger*)offset;
+    anim->m_trigger_offset = sizeof(Animation);
+    AnimationTrigger* triggers = (AnimationTrigger*)offset;
     offset += (triggerNum * sizeof(triggerNum));
-    anim->m_havokDataOffset = havokOffset;
-    anim->m_havokDataSize = havokReader.m_size;
+    anim->m_havok_data_offset = havokOffset;
+    anim->m_havok_data_size = havokReader.m_size;
 
-    for (uint32_t i=0; i<anim->m_numTriggers; ++i)
+    for (uint32_t i=0; i<triggerNum; ++i)
     {
-        anim->m_triggers[i].m_name = stringid_caculate(trigger_data[i].m_name.c_str());
-        anim->m_triggers[i].m_time = trigger_data[i].m_time;
+        triggers[i].m_name = stringid_caculate(trigger_data[i].m_name.c_str());
+        triggers[i].m_time = trigger_data[i].m_time;
     }
 
     return write_file(m_output, mem.m_buf, memSize);
