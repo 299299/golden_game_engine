@@ -45,7 +45,7 @@ ENGINE_NATIVE_ALIGN(struct) Animation
 void* load_resource_animation( void*, uint32_t);
 void destroy_resource_animation( void * );
 void lookup_resource_animation( void * );
-
+void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim);
 
 //======================================================================
 //          HELPER API

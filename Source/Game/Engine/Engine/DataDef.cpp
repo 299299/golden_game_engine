@@ -127,7 +127,7 @@ const char* g_anim_motion_blending_type_names[] =
 
 const char* g_anim_node_names[] =
 {
-    "value", "lerp", "additive", 0
+    "value", "lerp", "additive", "select", 0
 };
 
 namespace EngineNames

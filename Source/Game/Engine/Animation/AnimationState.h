@@ -29,12 +29,11 @@ struct AnimationNode
 struct AnimationData
 {
     Animation*                  m_animation;
-    hk_anim_ctrl*               m_control;
     StringId                    m_name;
     float                       m_speed;
 };
 
-struct AnimationState
+struct AnimationState1
 {
     uint32_t                    m_numTransitions;
     StringId*                   m_transitionNames;
@@ -76,29 +75,47 @@ private:
     void update_node_recursive(AnimationNode* _node, float weight);
 };
 
-ENGINE_NATIVE_ALIGN(struct) AnimationStateLayer
+struct AnimationState
 {
-    /*
-        COLD DATA
-    */
-    uint32_t                    m_memorySize;
-    uint32_t                    m_numStates;
-    StringId*                   m_stateNames;
-    AnimationState*             m_states;
-    AnimRig*                    m_rig;
-    StringId                    m_rigName;
+    // TRANSITION FILED
+    uint32_t                    m_num_transitions;
+    uint32_t                    m_transition_name_offset;
+    uint32_t                    m_transition_offset;
 
-    /*
-        HOT DATA
-    */
-    float                       m_weight;
-    int                         m_curStateIndex;
-    int                         m_lastStateIndex;
-    AnimationTranstion*         m_curTransition;
-    hk_anim_ctrl*               m_easeInCtrl;
-    hk_anim_ctrl*               m_easeOutCtrl;
-    int                         m_state;
-    hkaAnimatedSkeleton*        m_skeleton;
+    // NODE FILED
+    uint32_t                    m_num_nodes;
+    uint32_t                    m_node_name_offset;
+
+    // ANIMATION FILED
+    uint32_t                    m_num_animations;
+    uint32_t                    m_animation_offset;
+
+    // PROPERTY
+    bool                        m_looped;
+    char                        m_padding[3];
+};
+
+const AnimationTranstion* get_transtions(const AnimationState* _state);
+const AnimationData* get_animations(const AnimationState* _state);
+
+ENGINE_NATIVE_ALIGN(struct) AnimationStates
+{
+    uint32_t                m_num_states;
+    uint32_t                m_state_offset;
+    uint32_t                m_dynamic_data_size;
+};
+
+struct AnimationStatesInstance
+{
+    const AnimationStates*              m_resource;
+    float                               m_weight;
+    int                                 m_curStateIndex;
+    int                                 m_lastStateIndex;
+    const AnimationTranstion*           m_curTransition;
+    hk_anim_ctrl*                       m_easeInCtrl;
+    hk_anim_ctrl*                       m_easeOutCtrl;
+    int                                 m_state;
+    hkaAnimatedSkeleton*                m_skeleton;
 
     int  find_state(StringId name);
     void lookup();
@@ -120,5 +137,5 @@ private:
 };
 
 
-void* load_animation_state(void* data, uint32_t);
-void  lookup_animation_state(void*);
+void* load_animation_states(void*, uint32_t);
+void  lookup_animation_states(void*);

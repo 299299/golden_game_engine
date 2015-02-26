@@ -116,8 +116,8 @@ void reload_animation_resource(void* oldResource, void* newResource)
         const hkaAnimationBinding* binding = mirrorAnim->getOriginalBinding();
         if(oldAnimation->m_binding == binding)
         {
-            anim->destroy();
-            anim->create_mirrored_animation(newAnimation);
+            destroy_resource_animation(anim);
+            create_mirrored_animation(newAnimation, anim);
         }
 #endif
     }

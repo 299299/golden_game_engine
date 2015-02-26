@@ -58,7 +58,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     AnimRig* rig = (AnimRig*)offset;
     rig->m_havok_data_offset = havokOffset;
     rig->m_havok_data_size = havokFileSize;
-    rig->m_joint_num = json_to_int(root, "joint_num");
+    rig->m_num_joints = json_to_int(root, "joint_num");
     rig->m_mirrored = root.get<bool>("mirrored", false);
     rig->m_joint_name_offset = sizeof(AnimRig);
 
@@ -95,7 +95,7 @@ bool AnimRigCompiler::readJSON(const jsonxx::Object& root)
     //                  bone attachments
     //-----------------------------------------------
     rig->m_attachment_offset = (uint32_t)(offset - mem.m_buf);
-    rig->m_attach_num = attachmentNum;
+    rig->m_num_attchments = attachmentNum;
     BoneAttachment* attachments = (BoneAttachment*)(mem.m_buf + rig->m_attachment_offset);
 
     if(attachmentNum)

@@ -33,8 +33,8 @@ ENGINE_NATIVE_ALIGN(struct) AnimRig
     uint32_t                        m_havok_data_offset;
     uint32_t                        m_havok_data_size;
 
-    uint16_t                        m_joint_num;
-    uint8_t                         m_attach_num;
+    uint16_t                        m_num_joints;
+    uint8_t                         m_num_attchments;
     bool                            m_mirrored;
 };
 
@@ -43,7 +43,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimRigInstance
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
-    float*                          m_attachment_transform;
+    float*                          m_attachment_transforms;
     char*                           m_blob;
     ActorId32                       m_actor;
 

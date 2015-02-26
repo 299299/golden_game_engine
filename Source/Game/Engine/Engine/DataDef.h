@@ -104,14 +104,16 @@ enum HumanBodypart
     kBodyPartMax
 };
 
-struct BlendNodeType
+struct AnimationNodeType
 {
     enum
     {
         Undefined = -1,
         Value,
         Lerp,
-        Additive
+        Additive,
+        Select,
+        Num
     };
 };
 

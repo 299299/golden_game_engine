@@ -44,7 +44,7 @@ void  destroy_resource_anim_rig(void * resource)
 
 int AnimRig::find_joint_index(StringId jointName) const
 {
-    int num = m_joint_num;
+    int num = m_num_joints;
     StringId* head = (StringId*)((char*)this + m_joint_name_offset);
     FIND_IN_ARRAY_RET(head, num, jointName);
 }
@@ -74,7 +74,7 @@ void AnimRigInstance::init( const void* resource , ActorId32 actor)
     ComponentInstanceData* data = (ComponentInstanceData*)resource;
     AnimRig* rig = (AnimRig*)data->m_resource;
     m_actor = actor;
-    m_attachment_transform = 0;
+    m_attachment_transforms = 0;
     m_resource = (const AnimRig*)rig;
 #ifdef HAVOK_COMPILE
     const hkaSkeleton* skeleton = rig->m_skeleton;
@@ -122,10 +122,10 @@ void AnimRigInstance::update(float dt)
 void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 {
 #ifdef HAVOK_COMPILE
-    uint32_t num = m_resource->m_attachNum;
-    m_attachment_transform = FRAME_ALLOC(float, num*16);
-    float* t = m_attachment_transform;
-    const BoneAttachment* attachments = m_resource->m_attachments;
+    uint32_t num = m_resource->m_num_attchments;
+    m_attachment_transforms = FRAME_ALLOC(float, num*16);
+    float* t = m_attachment_transforms;
+    const BoneAttachment* attachments = (const BoneAttachment*)((char*)m_resource + m_resource->m_attachment_offset);
     const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
     for (uint32_t i=0; i<num; ++i)
     {

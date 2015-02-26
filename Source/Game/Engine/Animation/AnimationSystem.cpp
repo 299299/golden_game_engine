@@ -361,9 +361,9 @@ void draw_debug_animation()
 
         {
             //draw debug attachment
-            uint32_t num_attach = res->m_attachNum;
-            const BoneAttachment* attachments = res->m_attachments;
-            const float* world_poses = rig.m_attachmentTransforms;
+            uint32_t num_attach = res->m_num_joints;
+            const BoneAttachment* attachments = (const BoneAttachment*)((char*)res + res->m_attachment_offset);
+            const float* world_poses = rig.m_attachment_transforms;
             if(world_poses)
             {
                 for (uint32_t i=0; i<num_attach; ++i)

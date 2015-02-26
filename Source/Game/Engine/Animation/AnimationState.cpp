@@ -442,6 +442,26 @@ void lookup_animation_state(void* resource)
     _layer->lookup();
 }
 
+const AnimationTranstion* get_transtions( const AnimationState* _state )
+{
+    return (const AnimationTranstion*)((char*)_state + _state->m_transition_offset);
+}
+
+const AnimationData* get_animations( const AnimationState* _state )
+{
+    return (const AnimationData*)((char*)_state + _state->m_animation_offset);
+}
+
+void* load_animation_states( void* data, uint32_t size)
+{
+
+}
+
+void lookup_animation_states( void* data)
+{
+
+}
+
 
 
 

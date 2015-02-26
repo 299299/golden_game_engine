@@ -133,7 +133,7 @@ void ReachInstance::do_reach(  const hkVector4& targetPosWS,
 #ifdef HAVOK_COMPILE
     bool reachOn = m_enabled;
     const ReachResource* res = m_resource;
-    const int* jointIndices = res->m_rig->m_humanJointIndices;
+    const int* jointIndices = res->m_rig->m_human_joint_indices;
     if (reachOn)
     {
         if (m_reachWeight > 0.0f)
@@ -195,7 +195,7 @@ void FootInstance::init(const void* resource)
 
 #ifdef HAVOK_COMPILE
     const FootResource* res = m_resource;
-    const int* jointIndices = res->m_rig->m_humanJointIndices;
+    const int* jointIndices = res->m_rig->m_human_joint_indices;
 
     hkaFootPlacementIkSolver::Setup setupData;
     hkaSkeleton* skel = m_resource->m_rig->m_skeleton;
@@ -256,7 +256,7 @@ void  FootInstance::do_foot(bool isStanding,
 #ifdef HAVOK_COMPILE
     bool footIkOn = m_enabled;
     const FootResource* res = m_resource;
-    const int* jointIndices = res->m_rig->m_humanJointIndices;
+    const int* jointIndices = res->m_rig->m_human_joint_indices;
 
     hkReal rightError;
     hkReal leftError;

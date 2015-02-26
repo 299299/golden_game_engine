@@ -178,7 +178,7 @@ void ModelConverter::writeMesh(const std::string& fileName)
 
         //------------------------------------------------------------------------------
         mesh->writeIndexBuffer(p);
-        p += subMesh.m_indexSize;
+        p += subMesh.m_index_size;
     }
     pMesh->m_aabb.m_min[0] = min[0];
     pMesh->m_aabb.m_min[1] = min[1];

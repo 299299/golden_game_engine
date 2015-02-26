@@ -26,16 +26,16 @@
 #include <Common/Serialize/Util/hkRootLevelContainer.h>
 #endif
 
-INTERNAL void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim)
+void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim)
 {
 #ifdef HAVOK_COMPILE
     destroy_resource_animation(newAnim);
-    AnimRig* rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, newAnim->m_rigName);
+    AnimRig* rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, newAnim->m_rig_name);
     orginalAnim->m_animation->addReference();
     hkaMirroredAnimation* anim = new hkaMirroredAnimation(
         orginalAnim->m_animation,
         orginalAnim->m_binding,
-        rig->m_mirroredSkeleton);
+        rig->m_mirrored_skeleton);
     newAnim->m_binding = anim->createMirroredBinding();
     newAnim->m_animation = anim;
 #endif
