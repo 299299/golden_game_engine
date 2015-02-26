@@ -14,9 +14,9 @@ struct  hk_anim_ctrl;
 
 struct BoneAttachment
 {
-    float               m_boneFromAttachment[16];
+    float               m_bone_from_attachment[16];
     StringId            m_name;
-    int                 m_boneIndex;
+    int                 m_bone_index;
 };
 
 ENGINE_NATIVE_ALIGN(struct) AnimRig
@@ -24,17 +24,17 @@ ENGINE_NATIVE_ALIGN(struct) AnimRig
     int  find_joint_index(StringId jointName) const;
     void create_mirrored_skeleton();
 
-    int                             m_humanJointIndices[kBodyPartMax];
+    int                             m_human_joint_indices[kBodyPartMax];
     hkaSkeleton*                    m_skeleton;
-    hkaMirroredSkeleton*            m_mirroredSkeleton;
-    BoneAttachment*                 m_attachments;
+    hkaMirroredSkeleton*            m_mirrored_skeleton;
 
-    StringId*                       m_jointNames;
-    uint32_t                        m_havokDataOffset;
-    uint32_t                        m_havokDataSize;
+    uint32_t                        m_joint_name_offset;
+    uint32_t                        m_attachment_offset;
+    uint32_t                        m_havok_data_offset;
+    uint32_t                        m_havok_data_size;
 
-    uint16_t                        m_jointNum;
-    uint8_t                         m_attachNum;
+    uint16_t                        m_joint_num;
+    uint8_t                         m_attach_num;
     bool                            m_mirrored;
 };
 
@@ -43,7 +43,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimRigInstance
     const AnimRig*                  m_resource;
     hkaPose*                        m_pose;
     hkaAnimatedSkeleton*            m_skeleton;
-    float*                          m_attachmentTransforms;
+    float*                          m_attachment_transform;
     char*                           m_blob;
     ActorId32                       m_actor;
 

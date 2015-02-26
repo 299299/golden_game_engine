@@ -37,7 +37,7 @@ void LookAtInstance::do_lookat(const hkVector4& targetPosWS,
 #ifdef HAVOK_COMPILE
     bool lookAtOn = m_enabled;
     const LookAtResource* res = m_resource;
-    const int* jointIndices = res->m_rig->m_humanJointIndices;
+    const int* jointIndices = res->m_rig->m_human_joint_indices;
 
     // Current transforms (MS) of the head and neck
     int headIdx = jointIndices[kBodyHead];

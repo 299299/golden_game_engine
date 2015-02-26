@@ -125,7 +125,7 @@ void ModelConverter::writeMesh(const std::string& fileName)
     }
     memorySize += m_joints.size() * sizeof(Matrix);
     uint32_t ac_size = memorySize;
-    memorySize = NEXT_MULTIPLE_OF(NATIVE_ALIGN_VALUE, memorySize);
+    memorySize = NATIVE_ALGIN_SIZE(memorySize);
     LOGI("mesh memory size = %d.", memorySize);
     MemoryBuffer mem(memorySize);
     char* p = mem.m_buf;

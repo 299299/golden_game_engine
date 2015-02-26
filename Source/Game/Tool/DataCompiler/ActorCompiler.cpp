@@ -115,7 +115,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     }
 
     uint32_t ac_size = mem_size;
-    mem_size = NEXT_MULTIPLE_OF(16, mem_size);
+    mem_size = NATIVE_ALGIN_SIZE(mem_size);
 
     MemoryBuffer mem(mem_size);
     char* offset = mem.m_buf;

@@ -61,7 +61,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     }
 
     uint32_t havokOffset = sizeof(Animation) + triggerNum * sizeof(triggerNum);
-    havokOffset = NEXT_MULTIPLE_OF(16, havokOffset);
+    havokOffset = NATIVE_ALGIN_SIZE(havokOffset);
     uint32_t memSize = havokOffset + havokReader.m_size;
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
 

@@ -224,7 +224,7 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         memSize += states[i].m_memorySize;
     }
 
-    memSize = NEXT_MULTIPLE_OF(16, memSize);
+    memSize = NATIVE_ALGIN_SIZE(memSize);
     LOGI("%s animation states memory size = %d", m_input.c_str(), memSize);
 
     MemoryBuffer mem(memSize);
@@ -251,7 +251,7 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
 
 #if 1
     AnimationStateLayer* l = (AnimationStateLayer*)load_animation_state(mem.m_buf, mem.m_size);
-    ENGINE_ASSERT(l->m_numStates == numStates && l->m_memorySize == memSize && l->m_rigName == layer->m_rigName, 
+    ENGINE_ASSERT(l->m_numStates == numStates && l->m_memorySize == memSize && l->m_rigName == layer->m_rigName,
         "AnimationStateLayer load check");
     for(uint32_t i=0; i<numStates; ++i)
     {

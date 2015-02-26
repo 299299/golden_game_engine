@@ -73,8 +73,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
 
         group->m_files.push_back(&fileName);
         uint32_t fileSize = (uint32_t)get_file_size(fileName);
-        fileSize = NEXT_MULTIPLE_OF(4, fileSize);
-        fileSize += NATIVE_MEMORY_ALIGN;
+        fileSize = NATIVE_ALGIN_SIZE(fileSize);
         totalFileSize += fileSize;
     }
 
@@ -86,8 +85,9 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     MemoryBuffer mem(memSize);
     ResourcePackage* package = (ResourcePackage*)mem.m_buf;
     package->m_bundled = bundled;
-    totalFileSize = NEXT_MULTIPLE_OF(16, totalFileSize);
-    if(!bundled) package->m_memBudget = totalFileSize;
+    totalFileSize = NATIVE_ALGIN_SIZE(totalFileSize);
+    if(!bundled)
+        package->m_memBudget = totalFileSize;
     package->m_name = stringid_caculate(output.c_str());
     package->m_numGroups = m_groups.size();
 
@@ -144,7 +144,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             if(bundled)
             {
                 info.m_size = get_file_size(fileName);
-                info.m_size = NEXT_MULTIPLE_OF(16, info.m_size);
+                info.m_size = NATIVE_ALGIN_SIZE(info.m_size);
                 info.m_offset = memOffset;
                 memOffset += info.m_size;
             }
@@ -172,7 +172,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             {
                 const std::string& fileName = *in_group->m_files[j];
                 FileReader reader(fileName);
-                uint32_t memSize = NEXT_MULTIPLE_OF(16, reader.m_size);
+                uint32_t memSize = NATIVE_ALGIN_SIZE(reader.m_size);
                 ENGINE_ASSERT_ARGS(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
                 fwrite(reader.m_buf, 1, reader.m_size, fp);
                 if(memSize > reader.m_size)

@@ -26,38 +26,27 @@
 void* load_resource_anim_rig(void* data, uint32_t size)
 {
     AnimRig* rig = (AnimRig*)data;
-    char* offset = (char*)data;
-    offset += sizeof(AnimRig);
-    //joint names
-    rig->m_jointNames = (StringId*)(offset);
-    offset += sizeof(StringId) * rig->m_jointNum;
-    //bone attachments
-    rig->m_attachments = (BoneAttachment*)offset;
-    offset = (char*)data + rig->m_havokDataOffset;
-    rig->m_skeleton = (hkaSkeleton*)load_havok_inplace((void*)offset, rig->m_havokDataSize);
-    if(rig->m_mirrored) rig->create_mirrored_skeleton();
+    rig->m_skeleton = (hkaSkeleton*)load_havok_inplace(
+        (char*)data + rig->m_havok_data_offset,
+        rig->m_havok_data_size);
+    if(rig->m_mirrored)
+        rig->create_mirrored_skeleton();
     return rig;
 }
 void  destroy_resource_anim_rig(void * resource)
 {
     AnimRig* rig = (AnimRig*)resource;
-    char* p = (char*)resource + rig->m_havokDataOffset;
 #ifdef HAVOK_COMPILE
-    SAFE_REMOVEREF(rig->m_mirroredSkeleton);
+    SAFE_REMOVEREF(rig->m_mirrored_skeleton);
 #endif
-    unload_havok_inplace(p, rig->m_havokDataSize);
+    unload_havok_inplace((char*)resource + rig->m_havok_data_offset, rig->m_havok_data_size);
 }
 
 int AnimRig::find_joint_index(StringId jointName) const
 {
-    int num = m_jointNum;
-    StringId* head = m_jointNames;
-    for(int i=0; i<num; ++i)
-    {
-        if(head[i] == jointName)
-            return i;
-    }
-    return -1;
+    int num = m_joint_num;
+    StringId* head = (StringId*)((char*)this + m_joint_name_offset);
+    FIND_IN_ARRAY_RET(head, num, jointName);
 }
 
 void AnimRig::create_mirrored_skeleton()
@@ -72,10 +61,10 @@ void AnimRig::create_mirrored_skeleton()
     ltag.pushBack( "-L-" ); rtag.pushBack( "-R-" );
     ltag.pushBack( "-LUp" ); rtag.pushBack( "-RUp" );
     ltag.pushBack( "Left" ); rtag.pushBack( "Right" );
-    m_mirroredSkeleton = new hkaMirroredSkeleton( m_skeleton );
-    m_mirroredSkeleton->computeBonePairingFromNames( ltag, rtag );
+    m_mirrored_skeleton = new hkaMirroredSkeleton( m_skeleton );
+    m_mirrored_skeleton->computeBonePairingFromNames( ltag, rtag );
     hkQuaternion v_mir( -1.0f, 0.0f, 0.0f, 0.0f );
-    m_mirroredSkeleton->setAllBoneInvariantsFromReferencePose( v_mir, 0.0f );
+    m_mirrored_skeleton->setAllBoneInvariantsFromReferencePose( v_mir, 0.0f );
 #endif
 }
 
@@ -85,13 +74,12 @@ void AnimRigInstance::init( const void* resource , ActorId32 actor)
     ComponentInstanceData* data = (ComponentInstanceData*)resource;
     AnimRig* rig = (AnimRig*)data->m_resource;
     m_actor = actor;
-    m_attachmentTransforms = 0;
+    m_attachment_transform = 0;
     m_resource = (const AnimRig*)rig;
 #ifdef HAVOK_COMPILE
     const hkaSkeleton* skeleton = rig->m_skeleton;
     //uint32_t pose_mem_size = hkaPose::getRequiredMemorySize(skeleton);
-    uint32_t pose_size = sizeof(hkaPose);
-    pose_size = NEXT_MULTIPLE_OF(16, pose_size);
+    uint32_t pose_size = NATIVE_ALGIN_SIZE(sizeof(hkaPose));
     uint32_t mem_size = sizeof(hkaSkeleton) + pose_size;
     m_blob = COMMON_ALLOC(char, mem_size);
     char* offset = m_blob;
@@ -117,6 +105,7 @@ void AnimRigInstance::update(float dt)
 {
 #ifdef HAVOK_COMPILE
     m_skeleton->stepDeltaTime(dt);
+#if 0
     for (int i=0; i<m_skeleton->getNumAnimationControls(); ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)m_skeleton->getAnimationControl(i);
@@ -127,24 +116,26 @@ void AnimRigInstance::update(float dt)
         }
     }
 #endif
+#endif
 }
 
 void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
 {
 #ifdef HAVOK_COMPILE
     uint32_t num = m_resource->m_attachNum;
-    m_attachmentTransforms = FRAME_ALLOC(float, num*16);
+    m_attachment_transform = FRAME_ALLOC(float, num*16);
+    float* t = m_attachment_transform;
     const BoneAttachment* attachments = m_resource->m_attachments;
     const hkArray<hkQsTransform>& poseInWorld = m_pose->getSyncedPoseModelSpace();
     for (uint32_t i=0; i<num; ++i)
     {
         const BoneAttachment& ba = attachments[i];
         hkQsTransform boneWS;
-        boneWS.setMul(worldFromModel, poseInWorld[ba.m_boneIndex]);
+        boneWS.setMul(worldFromModel, poseInWorld[ba.m_bone_index]);
         hkMatrix4 worldFromBone; worldFromBone.set(boneWS);
-        hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_boneFromAttachment);
+        hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_bone_from_attachment);
         hkMatrix4 worldFromAttachment; worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
-        transform_matrix(m_attachmentTransforms + i*16, worldFromAttachment);
+        transform_matrix(t + i*16, worldFromAttachment);
     }
 #endif
 }

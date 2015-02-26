@@ -6,8 +6,7 @@
 bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
 {
     BaseCompiler::readJSON(root);
-    uint32_t havokOffset = sizeof(PhysicsResource);
-    havokOffset = NEXT_MULTIPLE_OF(16, havokOffset);
+    uint32_t havokOffset = NATIVE_ALGIN_SIZE(sizeof(PhysicsResource));
 
     const std::string& havokFile = root.get<std::string>("havok_file");
     FileReader havokReader(havokFile);
