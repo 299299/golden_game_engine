@@ -5,10 +5,10 @@
 #define MAX_COLOR_GRADING_NUM               (6)
 
 struct Texture;
-struct Raw3DTexture;
+struct Texture3D;
 struct ShaderProgram;
 
-ENGINE_NATIVE_ALIGN(struct) ShadingEnviroment
+struct ShadingEnviroment
 {
     void update(float dt);
     void submit();
@@ -26,7 +26,7 @@ ENGINE_NATIVE_ALIGN(struct) ShadingEnviroment
 
     uint32_t                            m_num_colorgrading_textures;
     int                                 m_colorgrading_index;
-    Raw3DTexture*                       m_color_grading_textures[MAX_COLOR_GRADING_NUM];
+    Texture3D*                          m_color_grading_textures[MAX_COLOR_GRADING_NUM];
     StringId                            m_color_grading_texturenames[MAX_COLOR_GRADING_NUM];
 };
 

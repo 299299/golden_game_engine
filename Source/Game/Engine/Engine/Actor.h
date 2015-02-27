@@ -8,7 +8,7 @@ struct ShadingEnviroment;
 struct ComponentFactory;
 struct ComponentData;
 
-ENGINE_NATIVE_ALIGN(struct) ActorResource
+struct ActorResource
 {
     uint32_t            m_component_data_offset;
     uint32_t            m_num_components;

@@ -39,7 +39,7 @@ int ComponentManager::find_factory_index( StringId type )
     FIND_IN_ARRAY_RET(types, num, type);
 }
 
-ComponentFactory* ComponentManager::get_factory( int index )
+ComponentFactory* ComponentManager::get_factory( uint32_t index )
 {
     return &m_factories[index];
 }

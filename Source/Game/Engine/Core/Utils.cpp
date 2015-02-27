@@ -139,7 +139,7 @@ void Fact::get_value(StringId k, void* value_buf, void* value_out, uint32_t size
 
     Key* key = (Key*)((char*)this + m_key_offset) + index;
     ENGINE_ASSERT_ARGS(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
-    memcpy(value_out, (char*)value_buf + key->m_offset, size);
+    memcpy(value_out, (char*)value_buf + key->m_value_offset, size);
 }
 
 void Fact::set_value(StringId k, void* value_buf, const void* value_in, uint32_t size)
@@ -150,7 +150,7 @@ void Fact::set_value(StringId k, void* value_buf, const void* value_in, uint32_t
 
     Key* key = (Key*)((char*)this + m_key_offset) + index;
     ENGINE_ASSERT_ARGS(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
-    memcpy((char*)value_buf + key->m_offset, value_in, size);
+    memcpy((char*)value_buf + key->m_value_offset, value_in, size);
 }
 
 void Fact::fill_default_values(void* value_buf)

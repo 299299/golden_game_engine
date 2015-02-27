@@ -26,7 +26,7 @@ struct ValueType
 struct Key
 {
     uint32_t    m_size;
-    uint32_t    m_offset;
+    uint32_t    m_value_offset;
 };
 
 struct Fact

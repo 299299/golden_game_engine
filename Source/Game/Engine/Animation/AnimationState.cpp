@@ -419,29 +419,6 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
 #endif
 }
 
-void* load_animation_state(void* data, uint32_t size)
-{
-    AnimationStateLayer* _layer = (AnimationStateLayer*)data;
-    char* _p = (char*)data;
-    _p += sizeof(AnimationStateLayer);
-    _layer->m_stateNames = (StringId*)_p;
-    _p += sizeof(StringId) * _layer->m_numStates;
-    _layer->m_states = (AnimationState*)_p;
-
-    uint32_t _num = _layer->m_numStates;
-    for (uint32_t i=0; i<_num; ++i)
-    {
-        _layer->m_states[i].load((char*)data);
-    }
-    return _layer;
-}
-
-void lookup_animation_state(void* resource)
-{
-    AnimationStateLayer* _layer = (AnimationStateLayer*)resource;
-    _layer->lookup();
-}
-
 const AnimationTranstion* get_transtions( const AnimationState* _state )
 {
     return (const AnimationTranstion*)((char*)_state + _state->m_transition_offset);
@@ -450,6 +427,30 @@ const AnimationTranstion* get_transtions( const AnimationState* _state )
 const AnimationData* get_animations( const AnimationState* _state )
 {
     return (const AnimationData*)((char*)_state + _state->m_animation_offset);
+}
+
+int find_transition(const AnimationState* _state, StringId _name)
+{
+    StringId* _names = (StringId*)((char*)_state + _state->m_transition_name_offset);
+    uint32_t _num = _state->m_num_transitions;
+    FIND_IN_ARRAY_RET(_names, _num, _name);
+}
+
+int find_node(const AnimationState* _state, StringId _name)
+{
+    StringId* _names = (StringId*)((char*)_state + _state->m_node_name_offset);
+    uint32_t _num = _state->m_num_nodes;
+    FIND_IN_ARRAY_RET(_names, _num, _name);
+}
+
+void* get_node(const AnimationState* _state, uint32_t i)
+{
+    return (char*)_state + ((uint32_t*)((char*)_state + _state->m_node_key_offset))[i];
+}
+
+void update_node(const AnimationState* _state, uint32_t i)
+{
+
 }
 
 void* load_animation_states( void* data, uint32_t size)

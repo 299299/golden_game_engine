@@ -26,7 +26,7 @@ enum PhysicsSystemType
 };
 
 
-ENGINE_NATIVE_ALIGN(struct) PhysicsInstance
+struct PhysicsInstance
 {
     union
     {

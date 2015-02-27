@@ -3,7 +3,7 @@
 #include "MathDefs.h"
 #include <bgfx.h>
 
-ENGINE_NATIVE_ALIGN(struct) SubMesh
+struct SubMesh
 {
     Sphere                          m_sphere;
     Aabb                            m_aabb;
@@ -16,7 +16,7 @@ ENGINE_NATIVE_ALIGN(struct) SubMesh
     uint32_t                        m_index_size;
 };
 
-ENGINE_NATIVE_ALIGN(struct) Mesh
+struct Mesh
 {
     bgfx::VertexDecl                m_decl;
     Aabb                            m_aabb;

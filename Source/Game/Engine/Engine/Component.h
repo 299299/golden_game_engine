@@ -7,7 +7,7 @@ class hkQsTransformf;
 struct ComponentData
 {
     StringId        m_type;
-    int             m_index;
+    uint32_t        m_index;
     uint32_t        m_size;
     uint32_t        m_offset;
 };
@@ -71,7 +71,7 @@ struct ComponentManager
 
     ComponentFactory* find_factory(StringId type);
     int find_factory_index(StringId type);
-    ComponentFactory* get_factory(int index);
+    ComponentFactory* get_factory(uint32_t index);
     void register_factory(const ComponentFactory& fac, StringId type);
 
     ComponentFactory         m_factories[MAX_COMPONENT_TYPES];

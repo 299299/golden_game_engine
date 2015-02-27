@@ -112,17 +112,17 @@ bool Texture3DCompiler::readJSON(const jsonxx::Object& root)
         return false;
     }
 
-    uint32_t memSize = sizeof(Raw3DTexture) + COLOR_LUT_SIZE*COLOR_LUT_SIZE*COLOR_LUT_SIZE*4;
+    uint32_t memSize = sizeof(Texture3D) + COLOR_LUT_SIZE*COLOR_LUT_SIZE*COLOR_LUT_SIZE*4;
     MemoryBuffer mem(memSize);
-    Raw3DTexture* tex3d = (Raw3DTexture*)mem.m_buf;
-    char* data = mem.m_buf + sizeof(Raw3DTexture);
+    Texture3D* tex3d = (Texture3D*)mem.m_buf;
+    char* data = mem.m_buf + sizeof(Texture3D);
     tex3d->m_width = 16;
     tex3d->m_height = 16;
     tex3d->m_depth = 16;
     tex3d->m_format = bgfx::TextureFormat::BGRA8;
-    tex3d->m_data_size = memSize - sizeof(Raw3DTexture);
+    tex3d->m_data_size = memSize - sizeof(Texture3D);
     tex3d->m_handle.idx = bgfx::invalidHandle;
-    tex3d->m_data_offset = sizeof(Raw3DTexture);
+    tex3d->m_data_offset = sizeof(Texture3D);
     lut2d_to_3d(image, (uint8_t*)data);
     std::string outputLut = m_output;
     std::string outputPath = getFilePath(m_output);

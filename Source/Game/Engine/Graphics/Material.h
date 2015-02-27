@@ -30,7 +30,7 @@ enum MaterialFlag
 struct Texture;
 struct ShaderProgram;
 
-ENGINE_NATIVE_ALIGN(struct) MatSampler
+struct MatSampler
 {
     Texture*                m_texture;
     uint32_t                m_flags;
@@ -40,7 +40,7 @@ ENGINE_NATIVE_ALIGN(struct) MatSampler
     char                    m_padding[3];
 };
 
-ENGINE_NATIVE_ALIGN(struct) Material
+struct Material
 {
     float                               m_offset_repeat[4];
     float                               m_diffuse[4];

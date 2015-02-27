@@ -85,6 +85,8 @@ struct AnimationState
     // NODE FILED
     uint32_t                    m_num_nodes;
     uint32_t                    m_node_name_offset;
+    uint32_t                    m_node_key_offset;
+    uint32_t                    m_node_offset;
 
     // ANIMATION FILED
     uint32_t                    m_num_animations;
@@ -97,8 +99,12 @@ struct AnimationState
 
 const AnimationTranstion* get_transtions(const AnimationState* _state);
 const AnimationData* get_animations(const AnimationState* _state);
+int find_transition(const AnimationState* _state, StringId _name);
+int find_node(const AnimationState* _state, StringId _name);
+void* get_node(const AnimationState* _state, uint32_t i);
+void  update_node(const AnimationState* _state, uint32_t i);
 
-ENGINE_NATIVE_ALIGN(struct) AnimationStates
+struct AnimationStates
 {
     uint32_t                m_num_states;
     uint32_t                m_state_offset;

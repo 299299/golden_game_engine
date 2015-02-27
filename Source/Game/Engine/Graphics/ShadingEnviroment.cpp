@@ -31,11 +31,11 @@ void lookup_resource_shading_enviroment( void* resource )
 {
     ShadingEnviroment* env = (ShadingEnviroment*)resource;
     uint32_t num = env->m_num_colorgrading_textures;
-    Raw3DTexture** head = env->m_color_grading_textures;
+    Texture3D** head = env->m_color_grading_textures;
     StringId* names = env->m_color_grading_texturenames;
     for (uint32_t i=0; i<num; ++i)
     {
-        head[i] = FIND_RESOURCE(Raw3DTexture, EngineTypes::TEXTURE_3D, names[i]);
+        head[i] = FIND_RESOURCE(Texture3D, EngineTypes::TEXTURE_3D, names[i]);
         ENGINE_ASSERT(head[i], "can not find color-grading texture.");
     }
 }

@@ -33,7 +33,7 @@ void  bringout_resource_texture(void* resource)
 
 void bringin_resource_texture3d( void* resource )
 {
-    Raw3DTexture* tex3d = (Raw3DTexture*)resource;
+    Texture3D* tex3d = (Texture3D*)resource;
     if(bgfx::isValid(tex3d->m_handle))
         return;
     tex3d->m_handle = bgfx::createTexture3D(
@@ -49,6 +49,6 @@ void bringin_resource_texture3d( void* resource )
 
 void bringout_resource_texture3d( void* resource )
 {
-    Raw3DTexture* tex3d = (Raw3DTexture*)resource;
+    Texture3D* tex3d = (Texture3D*)resource;
     DESTROY_TEXTURE(tex3d->m_handle);
 }

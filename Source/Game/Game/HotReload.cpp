@@ -186,8 +186,8 @@ void reload_texture_resource(void* oldResource, void* newResource)
 }
 void reload_texture_3d_resource(void* oldResource, void* newResource)
 {
-    Raw3DTexture* oldTex = (Raw3DTexture*)oldResource;
-    Raw3DTexture* newTex = (Raw3DTexture*)newResource;
+    Texture3D* oldTex = (Texture3D*)oldResource;
+    Texture3D* newTex = (Texture3D*)newResource;
 
     uint32_t numOfEnv = FIND_RESOURCES(EngineTypes::SHADING_ENV);
     LOGD("total num of shading enviroment = %d", numOfEnv);
