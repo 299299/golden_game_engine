@@ -75,6 +75,27 @@ private:
     void update_node_recursive(AnimationNode* _node, float weight);
 };
 
+struct LerpNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
+    uint16_t                    m_left;
+    uint16_t                    m_right;
+};
+
+struct ValueNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
+};
+
+struct SelectNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
+    uint32_t                    m_num_children;
+};
+
 struct AnimationState
 {
     // TRANSITION FILED
@@ -102,7 +123,7 @@ const AnimationData* get_animations(const AnimationState* _state);
 int find_transition(const AnimationState* _state, StringId _name);
 int find_node(const AnimationState* _state, StringId _name);
 void* get_node(const AnimationState* _state, uint32_t i);
-void  update_node(const AnimationState* _state, uint32_t i);
+void  update_node(const AnimationState* _state, uint32_t i, float f, char* data);
 
 struct AnimationStates
 {

@@ -14,19 +14,6 @@ enum LayerState
     kLayerStateMax
 };
 
-int AnimationState::find_transition(StringId name)
-{
-    StringId* _names = m_transitionNames;
-    int _num = (int)m_numTransitions;
-    FIND_IN_ARRAY_RET(_names, _num, name);
-}
-
-int AnimationState::find_node(StringId name)
-{
-    StringId* _names = m_transitionNames;
-    int _num = (int)m_numTransitions;
-    FIND_IN_ARRAY_RET(_names, _num, name);
-}
 
 void AnimationState::on_enter( hkaAnimatedSkeleton* s, AnimationState* _lastState, AnimationTranstion* t )
 {
@@ -42,18 +29,6 @@ void AnimationState::on_enter( hkaAnimatedSkeleton* s, AnimationState* _lastStat
         ac->setOverflowCount(0);
         ac->add_to_skeleton(s);
     }
-}
-
-void AnimationState::on_exit( AnimationState* _nextState, AnimationTranstion* t )
-{
-
-}
-
-void AnimationState::update( float factor, float dt )
-{
-    if(!m_dirty)
-        return;
-    update_node_recursive(m_nodes, factor);
 }
 
 void AnimationState::lookup()
@@ -89,51 +64,6 @@ void AnimationState::destroy()
         AnimationData& animData = _data[i];
         SAFE_REMOVEREF(animData.m_control);
     }
-}
-
-void AnimationState::update_node_recursive( AnimationNode* _node, float weight )
-{
-    int _type = _node->m_type;
-    uint32_t _data0 = _node->m_data[0];
-    uint32_t _data1 = _node->m_data[1];
-    float _factor = _node->m_factor;
-    switch(_type)
-    {
-    case BlendNodeType::Value:
-        {
-            AnimationData& animData = m_animations[_data0];
-            hk_anim_ctrl* ac = animData.m_control;
-            ac->set_weight(weight);
-        }
-        break;
-    case BlendNodeType::Lerp:
-        {
-            AnimationNode* _child0 = m_nodes + _data0;
-            AnimationNode* _child1 = m_nodes + _data1;
-            update_node_recursive(_child0, weight * _factor);
-            update_node_recursive(_node, weight * (1.0f-_factor));
-        }
-        break;
-    case BlendNodeType::Additive:
-        {
-            AnimationNode* _child0 = m_nodes + _data0;
-            AnimationNode* _child1 = m_nodes + _data1;
-            update_node_recursive(_child0, weight * _factor);
-            update_node_recursive(_node, weight);
-        }
-        break;
-    default:
-        break;
-    }
-}
-
-void AnimationState::load( char* _p )
-{
-    m_transitionNames = (StringId*)(_p + m_transitionNameOffset);
-    m_transitions = (AnimationTranstion*)(_p + m_transitionOffset);
-    m_nodeNames = (StringId*)(_p + m_nodeNameOffset);
-    m_nodes = (AnimationNode*)(_p + m_nodesOffset);
-    m_animations = (AnimationData*)(_p + m_animDataOffset);
 }
 
 void AnimationState::add_to_skeleton( hkaAnimatedSkeleton* s )
@@ -448,9 +378,59 @@ void* get_node(const AnimationState* _state, uint32_t i)
     return (char*)_state + ((uint32_t*)((char*)_state + _state->m_node_key_offset))[i];
 }
 
-void update_node(const AnimationState* _state, uint32_t i)
+typedef void (*func_update_node_t)(const void*, const AnimationState*, float, char*);
+static func_update_node_t func[] =
 {
 
+};
+
+INTERNAL void update_node_recursive(const void* n, const AnimationState* s, float f, char* d)
+{
+    uint32_t type = *((uint32_t*)n);
+    func[type](n, s, f, d);
+}
+
+INTERNAL void update_lerp_node(const void* n, const AnimationState* s, float f, char* d)
+{
+    const LerpNode* lerp = (const LerpNode*)node;
+    float w = *((float*)(d + lerp->m_dynamic_data_offset));
+    update_node_recursive(get_node(s, lerp->m_left), f*w, d);
+    update_node_recursive(get_node(s, lerp->m_right), f*(1-w), d);
+}
+
+INTERNAL void update_additive_node(const void* n, const AnimationState* s, float f, char* d)
+{
+    const LerpNode* lerp = (const LerpNode*)node;
+    float w = *((float*) d + lerp->m_dynamic_data_offset);
+    update_node_recursive(get_node(s, lerp->m_left), f*w, d);
+    update_node_recursive(get_node(s, lerp->m_right), f*1, d);
+}
+
+INTERNAL void update_value_node(const void* n, const AnimationState* s, float f, char* d)
+{
+    const ValueNode* value = (const ValueNode*)n;
+    hk_anim_ctrl* ac = (hk_anim_ctrl*)(d + value->m_dynamic_data_offset);
+    ac->set_weight(f);
+}
+
+INTERNAL void update_select_node(const void* n, const AnimationState* s, float f, char* d)
+{
+    const SelectNode* select = (const SelectNode*)n;
+    int i = *((int*)(d + select->m_dynamic_data_offset));
+    uint32_t num = select->m_num_children;
+    uint32_t* indices = (uint32_t*)(char*)select + sizeof(SelectNode));
+    float weights[32];
+    memset(weights, 0x00, sizeof(weights));
+    weights[i] = 1.0f;
+    for (uint32_t i=0; i<num; ++i)
+    {
+        update_node_recursive(get_node(s, indices[i]), s, weights[i] * f, d);
+    }
+}
+
+void update_node(const AnimationState* state, uint32_t i, float f, char* data)
+{
+    update_node_recursive(get_node(state, i), f, data);
 }
 
 void* load_animation_states( void* data, uint32_t size)
