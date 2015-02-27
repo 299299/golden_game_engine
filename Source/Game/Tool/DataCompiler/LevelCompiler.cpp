@@ -79,29 +79,31 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
 
     uint32_t numOfResources = resourceNames.size();
     uint32_t memSize = sizeof(Level) + sizeof(LevelObject) * numOfActors + sizeof(LevelActorResource) * numOfResources;
+    memSize = NATIVE_ALGIN_SIZE(memSize);
+
     MemoryBuffer mem(memSize);
     char* offset = mem.m_buf;
 
     LOGI("num of entities = %d, num of actor resources = %d", numOfActors, numOfResources);
 
     Level* level = (Level*)mem.m_buf;
-    level->m_numObject = numOfActors;
-    level->m_numResources = numOfResources;
+    level->m_num_objects = numOfActors;
+    level->m_num_resources = numOfResources;
     //============================================================
     offset += sizeof(Level);
-    level->m_objects = (LevelObject*)offset;
-    level->m_objectOffset = (uint32_t)(offset - mem.m_buf);
+    LevelObject* objects = (LevelObject*)offset;
+    level->m_object_offset = (uint32_t)(offset - mem.m_buf);
     offset += (sizeof(LevelObject) * numOfActors);
     //============================================================
-    level->m_resources = (LevelActorResource*)offset;
-    level->m_resourceOffset = (uint32_t)(offset - mem.m_buf);
+    LevelActorResource* resources = (LevelActorResource*)offset;
+    level->m_resource_offset = (uint32_t)(offset - mem.m_buf);
     offset += (sizeof(LevelActorResource) * numOfResources);
     ENGINE_ASSERT(offset == mem.m_buf + memSize, "offset error.");
 
     for (uint32_t i = 0; i < numOfActors; ++i)
     {
         const jsonxx::Object& actorValue = actorsValue.get<jsonxx::Object>(i);
-        LevelObject& object = level->m_objects[i];
+        LevelObject& object = objects[i];
         object.m_resourceIndex = actorIndices[i];
         object.m_name = json_to_stringid(actorValue, "name");
         json_transform(actorValue, object.m_translation, object.m_rotation, object.m_scale);
@@ -109,7 +111,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
 
     for (uint32_t i = 0; i < numOfResources; ++i)
     {
-        level->m_resources[i].m_name = resourceNames[i];
+        resources[i].m_name = resourceNames[i];
     }
 
     return write_file(m_output, mem.m_buf, memSize);

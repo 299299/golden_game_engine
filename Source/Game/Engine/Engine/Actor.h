@@ -21,6 +21,7 @@ ENGINE_NATIVE_ALIGN(struct) Actor
     Id                          m_components[MAX_COMPONET_PER_ACTOR];
     const ActorResource*        m_resource;
     ActorId32                   m_id;
+    StringId                    m_name;
 
     void        init(void* resource, const hkQsTransform& t, ActorId32 id);
     void        destroy();

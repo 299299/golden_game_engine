@@ -316,9 +316,7 @@ void ActorWorld::register_factories()
     ResourceFactory _actor = {0, 0, lookup_resource_actor, 0, 0, EngineNames::ACTOR, 10};
     g_resourceMgr.register_factory(_actor);
 
-    ResourceFactory _level = {load_resource_level, 0, lookup_resource_level, 0, 0, EngineNames::LEVEL, 11};
+    ResourceFactory _level = {0, 0, lookup_resource_level, 0, 0, EngineNames::LEVEL, 11};
     g_resourceMgr.register_factory(_level);
 }
-
-
 
