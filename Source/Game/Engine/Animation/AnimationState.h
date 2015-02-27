@@ -16,65 +16,6 @@ struct AnimationTranstion
     uint8_t                     m_motionBlendingType;
 };
 
-struct AnimationNode
-{
-    float                       m_factor;
-    // animation node, data = animation index in state layer
-    // blend nod, data[0] = left child, data[1] = right child
-    uint16_t                    m_data[2];
-    uint8_t                     m_type;
-    char                        m_padding[3];
-};
-
-struct AnimationData
-{
-    Animation*                  m_animation;
-    StringId                    m_name;
-    float                       m_speed;
-};
-
-struct AnimationState1
-{
-    uint32_t                    m_numTransitions;
-    StringId*                   m_transitionNames;
-    AnimationTranstion*         m_transitions;
-    uint32_t                    m_numNodes;
-    StringId*                   m_nodeNames;
-    AnimationNode*              m_nodes;
-    uint32_t                    m_numAnimations;
-    AnimationData*              m_animations;
-
-    uint16_t                    m_transitionNameOffset;
-    uint16_t                    m_transitionOffset;
-
-    uint16_t                    m_nodeNameOffset;
-    uint16_t                    m_nodesOffset;
-
-    uint16_t                    m_animDataOffset;
-    bool                        m_loop;
-    bool                        m_dirty;
-
-    int find_transition(StringId name);
-    int find_node(StringId name);
-
-    // COLD FUNCTION
-    void lookup();
-    void load(char* _p);
-
-    // HOT FUNCTION
-    void init();
-    void destroy();
-    void on_enter(hkaAnimatedSkeleton* s, AnimationState* _lastState, AnimationTranstion* t);
-    void on_exit(AnimationState* _nextState, AnimationTranstion* t);
-    void update(float factor, float dt);
-    void add_to_skeleton(hkaAnimatedSkeleton* s);
-    void remove_from_skeleton(hkaAnimatedSkeleton* s);
-    void get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut);
-
-private:
-    void update_node_recursive(AnimationNode* _node, float weight);
-};
-
 struct LerpNode
 {
     uint32_t                    m_type;
