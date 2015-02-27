@@ -24,6 +24,14 @@ struct LerpNode
     uint16_t                    m_right;
 };
 
+struct AdditiveNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
+    uint16_t                    m_left;
+    uint16_t                    m_right;
+};
+
 struct ValueNode
 {
     uint32_t                    m_type;
@@ -37,6 +45,13 @@ struct SelectNode
     uint32_t                    m_num_children;
 };
 
+struct AnimationData
+{
+    Animation*                  m_animation;
+    StringId                    m_name;
+    float                       m_speed;
+};
+
 struct AnimationState
 {
     // TRANSITION FILED
@@ -44,15 +59,14 @@ struct AnimationState
     uint32_t                    m_transition_name_offset;
     uint32_t                    m_transition_offset;
 
+    // ANIMATION FILED
+    uint32_t                    m_num_animations;
+    uint32_t                    m_animation_offset;
+
     // NODE FILED
     uint32_t                    m_num_nodes;
     uint32_t                    m_node_name_offset;
     uint32_t                    m_node_key_offset;
-    uint32_t                    m_node_offset;
-
-    // ANIMATION FILED
-    uint32_t                    m_num_animations;
-    uint32_t                    m_animation_offset;
 
     // PROPERTY
     bool                        m_looped;
@@ -69,26 +83,28 @@ void  update_node(const AnimationState* _state, uint32_t i, float f, char* data)
 struct AnimationStates
 {
     uint32_t                m_num_states;
-    uint32_t                m_state_offset;
+    uint32_t                m_state_name_offset;
+    uint32_t                m_state_key_offset;
     uint32_t                m_dynamic_data_size;
 };
+
+int find_state(const AnimationStates* , StringId);
+const AnimationState* get_state(const AnimationStates* , int);
 
 struct AnimationStatesInstance
 {
     const AnimationStates*              m_resource;
     float                               m_weight;
-    int                                 m_curStateIndex;
-    int                                 m_lastStateIndex;
-    const AnimationTranstion*           m_curTransition;
-    hk_anim_ctrl*                       m_easeInCtrl;
-    hk_anim_ctrl*                       m_easeOutCtrl;
-    int                                 m_state;
+    const AnimationState*               m_state;
+    const AnimationState*               m_last_state;
+    const AnimationTranstion*           m_transition;
+    hk_anim_ctrl*                       m_ease_in_ctl;
+    hk_anim_ctrl*                       m_ease_out_ctrl;
+    int                                 m_status;
     hkaAnimatedSkeleton*                m_skeleton;
+    char*                               m_dynamic_data;
 
-    int  find_state(StringId name);
-    void lookup();
-
-    void init(const void* resource, ActorId32 id);
+    void init(const void*, ActorId32);
     void update(float dt);
     void destroy();
 
@@ -102,8 +118,7 @@ private:
     void update_crossfading(float dt);
     void update_waitingalign(float dt);
     void get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
+    void enter_state(AnimationTranstion* t, int last_state, hkaAnimatedSkeleton* s);
 };
 
-
-void* load_animation_states(void*, uint32_t);
 void  lookup_animation_states(void*);
