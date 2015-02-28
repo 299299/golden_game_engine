@@ -35,7 +35,7 @@ INTERNAL BaseCompiler* create_component_compiler(StringId _type)
         return NULL;
 }
 
-INTERNAL int compare_less_component(const ComponentCompilerData& o1, const ComponentCompilerData& o2)
+INTERNAL bool compare_less_component(const ComponentCompilerData& o1, const ComponentCompilerData& o2)
 {
     ComponentFactory* fac1 = g_componentMgr.get_factory(o1.m_data.m_index);
     ComponentFactory* fac2 = g_componentMgr.get_factory(o2.m_data.m_index);

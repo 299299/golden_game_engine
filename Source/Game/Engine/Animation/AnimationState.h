@@ -8,41 +8,25 @@ struct AnimRig;
 class  hkaAnimatedSkeleton;
 class  hkQsTransformf;
 
+#define NODE_SIZE           32
+#define MAX_CHILDREN_NUM    8
+
+// lerp node layout  ---> uint32 | uint32 | uint32 | uint32
+// type | offset_of_left_child | offset_of_right_child | offset_of_dynamic_factor
+
+// value node layout  ---> uint32 | uint32
+// type | offset_of_dynamic_animation_addr
+
+// select node layout ---> uint32 | uint32 | uint32 | uint16 | uint16...
+// note max 8 children
+// type | offset_of_index_addr | num_of_animations | child_node_offset_0 | child_node_offset_1...
+
 struct AnimationTranstion
 {
     float                       m_duration;
     uint16_t                    m_dstStateIndex;
     uint8_t                     m_easeType;
     uint8_t                     m_motionBlendingType;
-};
-
-struct LerpNode
-{
-    uint32_t                    m_type;
-    uint32_t                    m_dynamic_data_offset;
-    uint16_t                    m_left;
-    uint16_t                    m_right;
-};
-
-struct AdditiveNode
-{
-    uint32_t                    m_type;
-    uint32_t                    m_dynamic_data_offset;
-    uint16_t                    m_left;
-    uint16_t                    m_right;
-};
-
-struct ValueNode
-{
-    uint32_t                    m_type;
-    uint32_t                    m_dynamic_data_offset;
-};
-
-struct SelectNode
-{
-    uint32_t                    m_type;
-    uint32_t                    m_dynamic_data_offset;
-    uint32_t                    m_num_children;
 };
 
 struct AnimationData
@@ -66,26 +50,34 @@ struct AnimationState
     // NODE FILED
     uint32_t                    m_num_nodes;
     uint32_t                    m_node_name_offset;
-    uint32_t                    m_node_key_offset;
+    uint32_t                    m_node_offset;
 
     // PROPERTY
     bool                        m_looped;
     char                        m_padding[3];
 };
 
-const AnimationTranstion* get_transtions(const AnimationState* _state);
-const AnimationData* get_animations(const AnimationState* _state);
-int find_transition(const AnimationState* _state, StringId _name);
-int find_node(const AnimationState* _state, StringId _name);
-void* get_node(const AnimationState* _state, uint32_t i);
-void  update_node(const AnimationState* _state, uint32_t i, float f, char* data);
+const AnimationTranstion* get_transtions(const AnimationState*);
+const AnimationData* get_animations(const AnimationState*);
+const char* get_nodes(const AnimationState*);
+int find_transition(const AnimationState*, StringId);
+int find_node(const AnimationState*, StringId);
+const char* get_node(const AnimationState*, int i);
+void update_node(const AnimationState*, int i, float f, char* data);
+
+struct StateKey
+{
+    StringId                    m_name;
+    uint32_t                    m_offset;
+};
 
 struct AnimationStates
 {
-    uint32_t                m_num_states;
-    uint32_t                m_state_name_offset;
-    uint32_t                m_state_key_offset;
-    uint32_t                m_dynamic_data_size;
+    uint32_t                    m_num_states;
+    uint32_t                    m_state_key_offset;
+    uint32_t                    m_num_animations;
+    uint32_t                    m_animation_offset;
+    uint32_t                    m_dynamic_data_size;
 };
 
 int find_state(const AnimationStates* , StringId);

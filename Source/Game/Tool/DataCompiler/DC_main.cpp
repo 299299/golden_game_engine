@@ -105,7 +105,7 @@ void DC_Config::add_compiler( BaseCompiler* compiler )
     m_compilers.push_back(compiler);
 }
 
-static int compare_less_resource(const std::string& nameA, const std::string& nameB)
+INTERNAL bool compare_less_resource(const std::string& nameA, const std::string& nameB)
 {
     int orderA = g_resourceMgr.get_resource_order(stringid_caculate(getFileExt(nameA).c_str()));
     int orderB = g_resourceMgr.get_resource_order(stringid_caculate(getFileExt(nameB).c_str()));

@@ -6,6 +6,7 @@
 #include "DataDef.h"
 #include "Actor.h"
 
+
 enum LayerState
 {
     kLayerDefault,
@@ -31,18 +32,152 @@ void AnimationState::on_enter( hkaAnimatedSkeleton* s, AnimationState* _lastStat
     }
 }
 
-void AnimationState::lookup()
+
+
+const AnimationTranstion* get_transtions( const AnimationState* state )
 {
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    for (uint32_t i=0; i<_num; ++i)
+    return (const AnimationTranstion*)((char*)state + _state->m_transition_offset);
+}
+
+const AnimationData* get_animations( const AnimationState* state )
+{
+    return (const AnimationData*)((char*)state + state->m_animation_offset);
+}
+
+const char* get_nodes(const AnimationState* _state)
+{
+    return (const AnimationData*)((char*)state + state->m_node_offset);
+}
+
+const char* get_node(const AnimationState*, int i)
+{
+    return (const AnimationData*)((char*)state + state->m_node_offset) + i;
+}
+
+int find_transition(const AnimationState* state, StringId name)
+{
+    StringId* names = (StringId*)((char*)state + state->m_transition_name_offset);
+    uint32_t num = state->m_num_transitions;
+    FIND_IN_ARRAY_RET(names, num, name);
+}
+
+int find_node(const AnimationState* state, StringId name)
+{
+    StringId* node_keys = (StringId*)((char*)state + state->m_node_name_offset);
+    uint32_t num = _state->m_num_nodes;
+    FIND_IN_ARRAY_RET(node_keys, num, name);
+}
+
+typedef void (*func_update_node_t)(const char*, const AnimationState*, float, char*);
+static func_update_node_t node_func_table[AnimationNodeType::Num] =
+{
+    update_value_node,
+    update_lerp_node,
+    update_additive_node,
+    update_select_node,
+};
+
+INTERNAL void update_node_recursive(const char* n, const AnimationState* s, float f, char* d)
+{
+    const uint32_t* p = (const uint32_t*)n;
+    int type = *((uint32_t*)p);
+    node_func_table[type](p + 1, s, f, d);
+}
+
+INTERNAL void update_lerp_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    const uint32_t* p = (const uint32_t*)n;
+    int offset_of_left = *(p);
+    int offset_of_right = *(p + 1);
+    int offset_of_dynamic_data = *(p + 2);
+    float w = *((float*)(d + offset_of_dynamic_data));
+    update_node_recursive((char*)s + offset_of_left, f*w, d);
+    update_node_recursive((char*)s + offset_of_right, f*(1-w), d);
+}
+
+INTERNAL void update_additive_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    const uint32_t* p = (const uint32_t*)n;
+    int offset_of_additive = *(p);
+    int offset_of_main = *(p + 1);
+    int offset_of_dynamic_data = *(p + 2);
+    float w = *((float*)(d + offset_of_dynamic_data));
+    update_node_recursive((char*)s + offset_of_additive, f*w, d);
+    update_node_recursive((char*)s + offset_of_main, f, d);
+}
+
+INTERNAL void update_value_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    int animation_offset = *((uint32_t*)n);
+    hk_anim_ctrl* ac = (hk_anim_ctrl*)(d + animation_offset);
+    ac->set_weight(f);
+}
+
+INTERNAL void update_select_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    char* p = (char*)n;
+    int offset_of_dynamic_data = *((uint32_t*)n);
+    p += sizeof(uint32_t);
+    int num_of_children = *((uint32_t*)p);
+
+    ENGINE_ASSERT(num_of_children < MAX_CHILDREN_NUM, "Select node children num overflow.");
+
+    int i = *((int*)(d + offset_of_dynamic_data));
+    p += sizeof(uint32_t);
+
+    const uint16_t* head = (const uint16_t*)(p);
+
+    float weights[MAX_CHILDREN_NUM] = {0,0,0,0,0,0,0,0};
+    weights[i] = 1.0f;
+
+    for (uint32_t i=0; i<num_of_children; ++i)
     {
-        AnimationData& animData = _data[i];
-        animData.m_animation = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, animData.m_name);
+        update_node_recursive((char*)s + head[i], s, weights[i] * f, d);
     }
 }
 
-void AnimationState::init()
+void update_node(const AnimationState* state, int i, float f, char* data)
+{
+    update_node_recursive(get_node(state, i), f, data);
+}
+
+int find_state(const AnimationStates* states, StringId name)
+{
+    StringId* _names = (StringId*)((char*)states + states->m_state_name_offset);
+    uint32_t _num = _state->m_num_states;
+    FIND_IN_ARRAY_RET(_names, _num, name);
+}
+
+const AnimationState* get_state(const AnimationStates* states, int i)
+{
+    char* p = (char*)states;
+    uint32_t* offsets = p + states->m_state_key_offset;
+    return (const AnimationState*)(states + offsets[i]);
+}
+
+void lookup_animation_states( void* data)
+{
+    AnimationStates* states = (AnimationStates*)data;
+    char* p = (char*)states;
+    uint32_t num = states->m_num_states;
+    uint32_t* offsets = p + states->m_state_key_offset;
+    for(uint32_t i=0; i<num; ++i)
+    {
+        AnimationState* state = (AnimationState*)(p + offsets[i]);
+        AnimationData* anims = (AnimationData*)((char*)state + state->m_animation_offset);
+        uint32_t anim_num = state->m_num_animations;
+        for (uint32_t j=0; j<anim_num; ++j)
+        {
+            anims[j].m_animation = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, anims[j].m_name);
+        }
+    }
+}
+
+
+
+
+
+void AnimationStatesInstance::init()
 {
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
@@ -55,7 +190,7 @@ void AnimationState::init()
     }
 }
 
-void AnimationState::destroy()
+void AnimationStatesInstance::destroy()
 {
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
@@ -66,7 +201,7 @@ void AnimationState::destroy()
     }
 }
 
-void AnimationState::add_to_skeleton( hkaAnimatedSkeleton* s )
+void AnimationStatesInstance::add_to_skeleton( hkaAnimatedSkeleton* s )
 {
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
@@ -78,7 +213,7 @@ void AnimationState::add_to_skeleton( hkaAnimatedSkeleton* s )
     }
 }
 
-void AnimationState::remove_from_skeleton( hkaAnimatedSkeleton* s )
+void AnimationStatesInstance::remove_from_skeleton( hkaAnimatedSkeleton* s )
 {
     uint32_t _num = m_numAnimations;
     AnimationData* _data = m_animations;
@@ -90,7 +225,7 @@ void AnimationState::remove_from_skeleton( hkaAnimatedSkeleton* s )
     }
 }
 
-void AnimationState::get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut)
+void AnimationStatesInstance::get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut)
 {
 #ifdef HAVOK_COMPILE
     uint32_t _num = m_numAnimations;
@@ -106,7 +241,7 @@ void AnimationState::get_root_motion(float deltaTime, hkQsTransformf& deltaMotio
 #endif
 }
 
-void AnimationStateLayer::lookup()
+void AnimationStatesInstance::lookup()
 {
     uint32_t _num = m_numStates;
     AnimationState* _states = m_states;
@@ -118,7 +253,7 @@ void AnimationStateLayer::lookup()
     ENGINE_ASSERT(m_rig, "Animtion Rig Not Found!");
 }
 
-void AnimationStateLayer::init( const void* resource, ActorId32 id )
+void AnimationStatesInstance::init( const void* resource, ActorId32 id )
 {
     ComponentInstanceData* _data = (ComponentInstanceData*)resource;
     const AnimationStateLayer* _layer = (const AnimationStateLayer*)_data->m_resource;
@@ -177,7 +312,7 @@ void AnimationStatesInstance::update_default( float dt )
     update_node()
 }
 
-void AnimationStateLayer::update_crossfading( float dt )
+void AnimationStatesInstance::update_crossfading( float dt )
 {
     hk_anim_ctrl* c1 = m_easeInCtrl;
     hk_anim_ctrl* c2 = m_easeOutCtrl;
@@ -210,12 +345,12 @@ void AnimationStateLayer::update_crossfading( float dt )
 #endif
 }
 
-void AnimationStateLayer::update_waitingalign(float dt)
+void AnimationStatesInstance::update_waitingalign(float dt)
 {
     // FIXME:TODO
 }
 
-void AnimationStateLayer::destroy()
+void AnimationStatesInstance::destroy()
 {
     uint32_t _num = m_numStates;
     AnimationState* _states = m_states;
@@ -227,7 +362,7 @@ void AnimationStateLayer::destroy()
     SAFE_REMOVEREF(m_easeOutCtrl);
 }
 
-void AnimationStateLayer::change_state(AnimationTranstion* t)
+void AnimationStatesInstance::change_state(AnimationTranstion* t)
 {
     int _new_index = t->m_dstStateIndex;
     int _old_index = m_curStateIndex;
@@ -255,7 +390,7 @@ void AnimationStateLayer::change_state(AnimationTranstion* t)
     m_easeOutCtrl->ease_out(_time, _easeType);
 }
 
-void AnimationStateLayer::change_state( StringId name )
+void AnimationStatesInstance::change_state( StringId name )
 {
     int _index = find_state(name);
     if(_index < 0)
@@ -265,7 +400,7 @@ void AnimationStateLayer::change_state( StringId name )
     change_state(&t);
 }
 
-void AnimationStateLayer::fire_event( StringId name )
+void AnimationStatesInstance::fire_event( StringId name )
 {
     int _cur_index = m_curStateIndex;
     if(_cur_index < 0)
@@ -277,7 +412,7 @@ void AnimationStateLayer::fire_event( StringId name )
     change_state(_cur_state->m_transitions + _index);
 }
 
-void AnimationStateLayer::get_root_motion( float deltaTime, hkQsTransformf& deltaMotionOut )
+void AnimationStatesInstance::get_root_motion( float deltaTime, hkQsTransformf& deltaMotionOut )
 {
 #ifdef HAVOK_COMPILE
     int _state = m_state;
@@ -301,7 +436,7 @@ void AnimationStateLayer::get_root_motion( float deltaTime, hkQsTransformf& delt
 #endif
 }
 
-void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut )
+void AnimationStatesInstance::get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut )
 {
     AnimationState* _states = m_states;
     AnimationState* _cur_state = _states + m_curStateIndex;
@@ -342,130 +477,6 @@ void AnimationStateLayer::get_root_motion_crossfading(float deltaTime, hkQsTrans
     }
 #endif
 }
-
-const AnimationTranstion* get_transtions( const AnimationState* _state )
-{
-    return (const AnimationTranstion*)((char*)_state + _state->m_transition_offset);
-}
-
-const AnimationData* get_animations( const AnimationState* _state )
-{
-    return (const AnimationData*)((char*)_state + _state->m_animation_offset);
-}
-
-int find_transition(const AnimationState* _state, StringId _name)
-{
-    StringId* _names = (StringId*)((char*)_state + _state->m_transition_name_offset);
-    uint32_t _num = _state->m_num_transitions;
-    FIND_IN_ARRAY_RET(_names, _num, _name);
-}
-
-int find_node(const AnimationState* _state, StringId _name)
-{
-    StringId* _names = (StringId*)((char*)_state + _state->m_node_name_offset);
-    uint32_t _num = _state->m_num_nodes;
-    FIND_IN_ARRAY_RET(_names, _num, _name);
-}
-
-void* get_node(const AnimationState* _state, uint32_t i)
-{
-    return (char*)_state + ((uint32_t*)((char*)_state + _state->m_node_key_offset))[i];
-}
-
-typedef void (*func_update_node_t)(const void*, const AnimationState*, float, char*);
-static func_update_node_t func[AnimationNodeType::Num] =
-{
-    update_value_node,
-    update_lerp_node,
-    update_additive_node,
-    update_select_node,
-};
-
-INTERNAL void update_node_recursive(const void* n, const AnimationState* s, float f, char* d)
-{
-    func[*((uint32_t*)n)](n, s, f, d);
-}
-
-INTERNAL void update_lerp_node(const void* n, const AnimationState* s, float f, char* d)
-{
-    const LerpNode* lerp = (const LerpNode*)node;
-    float w = *((float*)(d + lerp->m_dynamic_data_offset));
-    update_node_recursive(get_node(s, lerp->m_left), f*w, d);
-    update_node_recursive(get_node(s, lerp->m_right), f*(1-w), d);
-}
-
-INTERNAL void update_additive_node(const void* n, const AnimationState* s, float f, char* d)
-{
-    const AdditiveNode* lerp = (const AdditiveNode*)node;
-    float w = *((float*) d + lerp->m_dynamic_data_offset);
-    update_node_recursive(get_node(s, lerp->m_left), f*w, d);
-    update_node_recursive(get_node(s, lerp->m_right), f*1, d);
-}
-
-INTERNAL void update_value_node(const void* n, const AnimationState* s, float f, char* d)
-{
-    const ValueNode* value = (const ValueNode*)n;
-    hk_anim_ctrl* ac = (hk_anim_ctrl*)(d + value->m_dynamic_data_offset);
-    ac->set_weight(f);
-}
-
-INTERNAL void update_select_node(const void* n, const AnimationState* s, float f, char* d)
-{
-    const SelectNode* select = (const SelectNode*)n;
-    int i = *((int*)(d + select->m_dynamic_data_offset));
-    uint32_t num = select->m_num_children;
-    uint32_t* indices = (uint32_t*)(char*)select + sizeof(SelectNode));
-    float weights[32];
-    memset(weights, 0x00, sizeof(weights));
-    weights[i] = 1.0f;
-    for (uint32_t i=0; i<num; ++i)
-    {
-        update_node_recursive(get_node(s, indices[i]), s, weights[i] * f, d);
-    }
-}
-
-void update_node(const AnimationState* state, uint32_t i, float f, char* data)
-{
-    update_node_recursive(get_node(state, i), f, data);
-}
-
-int find_state(const AnimationStates* states, StringId name)
-{
-    StringId* _names = (StringId*)((char*)states + states->m_state_name_offset);
-    uint32_t _num = _state->m_num_states;
-    FIND_IN_ARRAY_RET(_names, _num, name);
-}
-
-const AnimationState* get_state(const AnimationStates* states, int i)
-{
-    char* p = (char*)states;
-    uint32_t* offsets = p + states->m_state_key_offset;
-    return (const AnimationState*)(states + offsets[i]);
-}
-
-void lookup_animation_states( void* data)
-{
-    AnimationStates* states = (AnimationStates*)data;
-    char* p = (char*)states;
-    uint32_t num = states->m_num_states;
-    uint32_t* offsets = p + states->m_state_key_offset;
-    for(uint32_t i=0; i<num; ++i)
-    {
-        AnimationState* state = (AnimationState*)(p + offsets[i]);
-        AnimationData* anims = (AnimationData*)((char*)state + state->m_animation_offset);
-        uint32_t anim_num = state->m_num_animations;
-        for (uint32_t j=0; j<anim_num; ++j)
-        {
-            anims[j].m_animation = FIND_RESOURCE(Animation, EngineTypes::ANIMATION, anims[j].m_name);
-        }
-    }
-}
-
-
-
-
-
-
 
 
 

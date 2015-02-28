@@ -12,7 +12,7 @@ struct AnimTriggerData
     }
 };
 
-static bool compare_anim_trigger_less(const AnimTriggerData& data1, const AnimTriggerData& data2)
+INTERNAL bool compare_anim_trigger_less(const AnimTriggerData& data1, const AnimTriggerData& data2)
 {
     return data1.m_time < data2.m_time;
 }

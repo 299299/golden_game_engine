@@ -26,7 +26,7 @@ int PackageCompiler::findGroup(const std::string& ext) const
     return -1;
 }
 
-INTERNAL int compare_less_group(PackageGroup* grpA, PackageGroup* grpB)
+INTERNAL bool compare_less_group(PackageGroup* grpA, PackageGroup* grpB)
 {
     return grpA->m_order < grpB->m_order;
 }
