@@ -11,22 +11,12 @@ class  hkQsTransformf;
 #define NODE_SIZE           32
 #define MAX_CHILDREN_NUM    8
 
-// lerp node layout  ---> uint32 | uint32 | uint32 | uint32
-// type | offset_of_left_child | offset_of_right_child | offset_of_dynamic_factor
-
-// value node layout  ---> uint32 | uint32
-// type | offset_of_dynamic_animation_addr
-
-// select node layout ---> uint32 | uint32 | uint32 | uint16 | uint16...
-// note max 8 children
-// type | offset_of_index_addr | num_of_animations | child_node_offset_0 | child_node_offset_1...
-
 struct AnimationTranstion
 {
     float                       m_duration;
-    uint16_t                    m_dstStateIndex;
-    uint8_t                     m_easeType;
-    uint8_t                     m_motionBlendingType;
+    uint16_t                    m_next_state_index;
+    uint8_t                     m_ease_type;
+    uint8_t                     m_motion_blend_type;
 };
 
 struct AnimationData
@@ -34,6 +24,28 @@ struct AnimationData
     Animation*                  m_animation;
     StringId                    m_name;
     float                       m_speed;
+};
+
+struct BinaryNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_left_offset;
+    uint32_t                    m_right_offset;
+    uint32_t                    m_dynamic_data_offset;
+};
+
+struct ValueNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
+};
+
+struct SelectNode
+{
+    uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
+    uint32_t                    m_num_children;
+    uint16_t                    m_child_indices[MAX_CHILDREN_NUM];
 };
 
 struct AnimationState
@@ -46,6 +58,7 @@ struct AnimationState
     // ANIMATION FILED
     uint32_t                    m_num_animations;
     uint32_t                    m_animation_offset;
+    uint32_t                    m_dynamic_animation_offset;
 
     // NODE FILED
     uint32_t                    m_num_nodes;
@@ -53,6 +66,7 @@ struct AnimationState
     uint32_t                    m_node_offset;
 
     // PROPERTY
+    StringId                    m_name;
     bool                        m_looped;
     char                        m_padding[3];
 };
@@ -63,7 +77,6 @@ const char* get_nodes(const AnimationState*);
 int find_transition(const AnimationState*, StringId);
 int find_node(const AnimationState*, StringId);
 const char* get_node(const AnimationState*, int i);
-void update_node(const AnimationState*, int i, float f, char* data);
 
 struct StateKey
 {
@@ -75,8 +88,6 @@ struct AnimationStates
 {
     uint32_t                    m_num_states;
     uint32_t                    m_state_key_offset;
-    uint32_t                    m_num_animations;
-    uint32_t                    m_animation_offset;
     uint32_t                    m_dynamic_data_size;
 };
 
@@ -89,10 +100,10 @@ struct AnimationStatesInstance
     float                               m_weight;
     const AnimationState*               m_state;
     const AnimationState*               m_last_state;
-    const AnimationTranstion*           m_transition;
     hk_anim_ctrl*                       m_ease_in_ctl;
     hk_anim_ctrl*                       m_ease_out_ctrl;
     int                                 m_status;
+    int                                 m_motion_blend_type;
     hkaAnimatedSkeleton*                m_skeleton;
     char*                               m_dynamic_data;
 
@@ -102,15 +113,14 @@ struct AnimationStatesInstance
 
     void fire_event(StringId name);
     void change_state(StringId name);
-    void get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut);
+    void get_rootmotion(float deltaTime, hkQsTransformf& deltaMotionOut);
 
 private:
-    void change_state(AnimationTranstion* t);
+    void change_state(const AnimationTranstion* t);
     void update_default(float dt);
     void update_crossfading(float dt);
     void update_waitingalign(float dt);
-    void get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
-    void enter_state(AnimationTranstion* t, int last_state, hkaAnimatedSkeleton* s);
+    void get_rootmotion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
 };
 
 void  lookup_animation_states(void*);

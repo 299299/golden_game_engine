@@ -5,7 +5,7 @@
 #include "Resource.h"
 #include "DataDef.h"
 #include "Actor.h"
-
+#include "MemorySystem.h"
 
 enum LayerState
 {
@@ -15,28 +15,9 @@ enum LayerState
     kLayerStateMax
 };
 
-
-void AnimationState::on_enter( hkaAnimatedSkeleton* s, AnimationState* _lastState, AnimationTranstion* t )
-{
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    for (uint32_t i=0; i<_num; ++i)
-    {
-        AnimationData& animData = _data[i];
-        hk_anim_ctrl* ac = animData.m_control;
-        ac->setLocalTime(0.0f);
-        ac->setPlaybackSpeed(animData.m_speed);
-        ac->setUnderflowCount(0);
-        ac->setOverflowCount(0);
-        ac->add_to_skeleton(s);
-    }
-}
-
-
-
 const AnimationTranstion* get_transtions( const AnimationState* state )
 {
-    return (const AnimationTranstion*)((char*)state + _state->m_transition_offset);
+    return (const AnimationTranstion*)((char*)state + state->m_transition_offset);
 }
 
 const AnimationData* get_animations( const AnimationState* state )
@@ -44,14 +25,14 @@ const AnimationData* get_animations( const AnimationState* state )
     return (const AnimationData*)((char*)state + state->m_animation_offset);
 }
 
-const char* get_nodes(const AnimationState* _state)
+const char* get_nodes(const AnimationState* state)
 {
-    return (const AnimationData*)((char*)state + state->m_node_offset);
+    return ((char*)state + state->m_node_offset);
 }
 
-const char* get_node(const AnimationState*, int i)
+const char* get_node(const AnimationState* state, int i)
 {
-    return (const AnimationData*)((char*)state + state->m_node_offset) + i;
+    return get_nodes(state) + i * NODE_SIZE;
 }
 
 int find_transition(const AnimationState* state, StringId name)
@@ -64,10 +45,47 @@ int find_transition(const AnimationState* state, StringId name)
 int find_node(const AnimationState* state, StringId name)
 {
     StringId* node_keys = (StringId*)((char*)state + state->m_node_name_offset);
-    uint32_t num = _state->m_num_nodes;
+    uint32_t num = state->m_num_nodes;
     FIND_IN_ARRAY_RET(node_keys, num, name);
 }
 
+void update_node_recursive(const char*, const AnimationState*, float, char*);
+INTERNAL void update_lerp_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    const BinaryNode* node = (const BinaryNode*)n;
+    float w = *((float*)(d + node->m_dynamic_data_offset));
+    update_node_recursive((char*)s + node->m_left_offset, s, f*w, d);
+    update_node_recursive((char*)s + node->m_right_offset, s, f*(1-w), d);
+}
+
+INTERNAL void update_additive_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    const BinaryNode* node = (const BinaryNode*)n;
+    float w = *((float*)(d + node->m_dynamic_data_offset));
+    update_node_recursive((char*)s + node->m_left_offset, s, f*w, d);
+    update_node_recursive((char*)s + node->m_right_offset, s, f, d);
+}
+
+INTERNAL void update_value_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    const ValueNode* node = (const ValueNode*)n;
+    hk_anim_ctrl* ac = (hk_anim_ctrl*)(d + node->m_dynamic_data_offset);
+    ac->set_weight(f);
+}
+
+INTERNAL void update_select_node(const char* n, const AnimationState* s, float f, char* d)
+{
+    const SelectNode* node = (const SelectNode*)n;
+    int num_of_children = node->m_num_children;
+    int i = *((int*)(d + node->m_dynamic_data_offset));
+    const uint16_t* head = node->m_child_indices;
+    float weights[MAX_CHILDREN_NUM] = {0,0,0,0,0,0,0,0};
+    weights[i] = 1.0f;
+    for (int i=0; i<num_of_children; ++i)
+    {
+        update_node_recursive((char*)s + head[i], s, weights[i] * f, d);
+    }
+}
 typedef void (*func_update_node_t)(const char*, const AnimationState*, float, char*);
 static func_update_node_t node_func_table[AnimationNodeType::Num] =
 {
@@ -76,94 +94,127 @@ static func_update_node_t node_func_table[AnimationNodeType::Num] =
     update_additive_node,
     update_select_node,
 };
-
 INTERNAL void update_node_recursive(const char* n, const AnimationState* s, float f, char* d)
 {
-    const uint32_t* p = (const uint32_t*)n;
-    int type = *((uint32_t*)p);
-    node_func_table[type](p + 1, s, f, d);
+    node_func_table[*((const uint32_t*)n)](n, s, f, d);
 }
 
-INTERNAL void update_lerp_node(const char* n, const AnimationState* s, float f, char* d)
+
+INTERNAL void update_node(const AnimationState* s, int i, float f, char* data)
 {
-    const uint32_t* p = (const uint32_t*)n;
-    int offset_of_left = *(p);
-    int offset_of_right = *(p + 1);
-    int offset_of_dynamic_data = *(p + 2);
-    float w = *((float*)(d + offset_of_dynamic_data));
-    update_node_recursive((char*)s + offset_of_left, f*w, d);
-    update_node_recursive((char*)s + offset_of_right, f*(1-w), d);
+    update_node_recursive(get_node(s, i), s, f, data);
 }
 
-INTERNAL void update_additive_node(const char* n, const AnimationState* s, float f, char* d)
+INTERNAL void on_state_enter(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
 {
-    const uint32_t* p = (const uint32_t*)n;
-    int offset_of_additive = *(p);
-    int offset_of_main = *(p + 1);
-    int offset_of_dynamic_data = *(p + 2);
-    float w = *((float*)(d + offset_of_dynamic_data));
-    update_node_recursive((char*)s + offset_of_additive, f*w, d);
-    update_node_recursive((char*)s + offset_of_main, f, d);
-}
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+    const AnimationData* anim_datas = get_animations(state);
 
-INTERNAL void update_value_node(const char* n, const AnimationState* s, float f, char* d)
-{
-    int animation_offset = *((uint32_t*)n);
-    hk_anim_ctrl* ac = (hk_anim_ctrl*)(d + animation_offset);
-    ac->set_weight(f);
-}
-
-INTERNAL void update_select_node(const char* n, const AnimationState* s, float f, char* d)
-{
-    char* p = (char*)n;
-    int offset_of_dynamic_data = *((uint32_t*)n);
-    p += sizeof(uint32_t);
-    int num_of_children = *((uint32_t*)p);
-
-    ENGINE_ASSERT(num_of_children < MAX_CHILDREN_NUM, "Select node children num overflow.");
-
-    int i = *((int*)(d + offset_of_dynamic_data));
-    p += sizeof(uint32_t);
-
-    const uint16_t* head = (const uint16_t*)(p);
-
-    float weights[MAX_CHILDREN_NUM] = {0,0,0,0,0,0,0,0};
-    weights[i] = 1.0f;
-
-    for (uint32_t i=0; i<num_of_children; ++i)
+    for (int i=0; i<num; ++i)
     {
-        update_node_recursive((char*)s + head[i], s, weights[i] * f, d);
+        const AnimationData* anim_data = anim_datas + i;
+        hk_anim_ctrl* ac = anim_ctls + i;
+        ac->setPlaybackSpeed(anim_data->m_speed);
+        ac->ease_in(0.0f, kEaseCurveSmooth);
+        ac->add_to_skeleton(s);
     }
 }
 
-void update_node(const AnimationState* state, int i, float f, char* data)
+INTERNAL void add_state_from_skeleton(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
 {
-    update_node_recursive(get_node(state, i), f, data);
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = anim_ctls + i;
+        ac->remove_from_skeleton(s);
+    }
 }
+
+INTERNAL void remove_state_from_skeleton(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
+{
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = anim_ctls + i;
+        ac->remove_from_skeleton(s);
+    }
+}
+
+INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
+{
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+    const AnimationData* anim_datas = get_animations(state);
+
+    for (int i=0; i<num; ++i)
+    {
+        const AnimationData* anim_data = anim_datas + i;
+        hk_anim_ctrl* anim_ctl = anim_ctls + i;
+        hk_anim_ctrl* ac = new (anim_ctl) hk_anim_ctrl(anim_data->m_animation);
+        ac->set_loop(state->m_looped);
+    }
+}
+
+INTERNAL void destroy_state_dynamic_data(const AnimationState* state, char *d)
+{
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = anim_ctls + i;
+        SAFE_REMOVEREF(ac);
+    }
+}
+
+INTERNAL void state_get_rootmotion(const AnimationState* state, char *d, float deltaTime, hkQsTransformf& deltaMotionOut)
+{
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+
+    for (int i=0; i<num; ++i)
+    {
+        hkQsTransform t;
+        hk_anim_ctrl* ac = anim_ctls + i;
+        ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
+        deltaMotionOut.setMulEq(t);
+    }
+}
+
+
+//=============================================================================
 
 int find_state(const AnimationStates* states, StringId name)
 {
-    StringId* _names = (StringId*)((char*)states + states->m_state_name_offset);
-    uint32_t _num = _state->m_num_states;
-    FIND_IN_ARRAY_RET(_names, _num, name);
+    StateKey* keys = (StateKey*)((char*)states + states->m_state_key_offset);
+    int num = states->m_num_states;
+    for(int i=0; i<num; ++i)
+    {
+        if(keys[i].m_name == name)
+            return i;
+    }
+    return -1;
 }
 
 const AnimationState* get_state(const AnimationStates* states, int i)
 {
     char* p = (char*)states;
-    uint32_t* offsets = p + states->m_state_key_offset;
-    return (const AnimationState*)(states + offsets[i]);
+    StateKey* keys = (StateKey*)(p + states->m_state_key_offset);
+    return (const AnimationState*)(p + keys[i].m_offset);
 }
 
 void lookup_animation_states( void* data)
 {
     AnimationStates* states = (AnimationStates*)data;
     char* p = (char*)states;
-    uint32_t num = states->m_num_states;
-    uint32_t* offsets = p + states->m_state_key_offset;
-    for(uint32_t i=0; i<num; ++i)
+    int num = states->m_num_states;
+    StateKey* keys = (StateKey*)(p + states->m_state_key_offset);
+    for(int i=0; i<num; ++i)
     {
-        AnimationState* state = (AnimationState*)(p + offsets[i]);
+        AnimationState* state = (AnimationState*)(p + keys[i].m_offset);
         AnimationData* anims = (AnimationData*)((char*)state + state->m_animation_offset);
         uint32_t anim_num = state->m_num_animations;
         for (uint32_t j=0; j<anim_num; ++j)
@@ -173,106 +224,29 @@ void lookup_animation_states( void* data)
     }
 }
 
+//=============================================================================
 
-
-
-
-void AnimationStatesInstance::init()
+void AnimationStatesInstance::init(const void* resource, ActorId32 id)
 {
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    bool _looped = m_loop;
-    for(uint32_t i=0; i<_num; ++i)
-    {
-        AnimationData& animData = _data[i];
-        animData.m_control = new hk_anim_ctrl(animData.m_animation);
-        animData.m_control->set_loop(_looped);
-    }
-}
+    ComponentInstanceData* res = (ComponentInstanceData*)resource;
+    const AnimationStates* states = (const AnimationStates*)(res->m_resource);
 
-void AnimationStatesInstance::destroy()
-{
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    for(uint32_t i=0; i<_num; ++i)
+    m_resource = states;
+    int num = states->m_num_states;
+    int size = states->m_dynamic_data_size;
+    char* d = COMMON_ALLOC(char, size);
+    m_dynamic_data = d;
+    memset(d, 0x00, size);
+    StateKey* keys = (StateKey*)((char*)resource + states->m_state_key_offset);
+    for(int i=0; i<num; ++i)
     {
-        AnimationData& animData = _data[i];
-        SAFE_REMOVEREF(animData.m_control);
-    }
-}
-
-void AnimationStatesInstance::add_to_skeleton( hkaAnimatedSkeleton* s )
-{
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    for(uint32_t i=0; i<_num; ++i)
-    {
-        AnimationData& animData = _data[i];
-        hk_anim_ctrl* ac = animData.m_control;
-        ac->add_to_skeleton(s);
-    }
-}
-
-void AnimationStatesInstance::remove_from_skeleton( hkaAnimatedSkeleton* s )
-{
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    for(uint32_t i=0; i<_num; ++i)
-    {
-        AnimationData& animData = _data[i];
-        hk_anim_ctrl* ac = animData.m_control;
-        ac->remove_from_skeleton(s);
-    }
-}
-
-void AnimationStatesInstance::get_root_motion(float deltaTime, hkQsTransformf& deltaMotionOut)
-{
-#ifdef HAVOK_COMPILE
-    uint32_t _num = m_numAnimations;
-    AnimationData* _data = m_animations;
-    for(uint32_t i=0; i<_num; ++i)
-    {
-        AnimationData& animData = _data[i];
-        hk_anim_ctrl* ac = animData.m_control;
-        hkQsTransform t;
-        ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
-        deltaMotionOut.setMulEq(t);
-    }
-#endif
-}
-
-void AnimationStatesInstance::lookup()
-{
-    uint32_t _num = m_numStates;
-    AnimationState* _states = m_states;
-    for (uint32_t i=0; i<_num; ++i)
-    {
-        _states[i].lookup();
-    }
-    m_rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, m_rigName);
-    ENGINE_ASSERT(m_rig, "Animtion Rig Not Found!");
-}
-
-void AnimationStatesInstance::init( const void* resource, ActorId32 id )
-{
-    ComponentInstanceData* _data = (ComponentInstanceData*)resource;
-    const AnimationStateLayer* _layer = (const AnimationStateLayer*)_data->m_resource;
-    memcpy(this, resource, _layer->m_memorySize);
-    // TADA!
-    uint32_t _num = m_numStates;
-    AnimationState* _states = m_states;
-    for (uint32_t i=0; i<_num; ++i)
-    {
-        AnimationState* _state = _states + i;
-        _state->init();
-        _state->load((char*)_state);
+        const AnimationState* state = (const AnimationState*)((char*)resource + keys[i].m_offset);
+        init_state_dynamic_data(state, d);
     }
 
-    m_easeInCtrl = new hk_anim_ctrl(NULL);
-    m_easeOutCtrl = new hk_anim_ctrl(NULL);
-    m_state = kLayerDefault;
-    m_curStateIndex = -1;
-    m_lastStateIndex = -1;
+    m_ease_in_ctl = new hk_anim_ctrl(NULL);
+    m_ease_out_ctrl = new hk_anim_ctrl(NULL);
+    m_status = kLayerDefault;
 
     Actor* actor = g_actorWorld.get_actor(id);
     ENGINE_ASSERT_ARGS(actor, "actor not exist %x", id);
@@ -281,7 +255,24 @@ void AnimationStatesInstance::init( const void* resource, ActorId32 id )
     m_skeleton = rig->m_skeleton;
     ENGINE_ASSERT(m_skeleton, "rig skeleton not created!");
 
-    change_state(m_stateNames[0]);
+    change_state(keys[0].m_name);
+}
+
+void AnimationStatesInstance::destroy()
+{
+    const AnimationStates* states = m_resource;
+    int num = states->m_num_states;
+    char* p = (char*)(states);
+    StateKey* keys = (StateKey*)(p + states->m_state_key_offset);
+    char* d = m_dynamic_data;
+
+    for(int i=0; i<num; ++i)
+    {
+        const AnimationState* state = (const AnimationState*)(p + keys[i].m_offset);
+        destroy_state_dynamic_data(state, d);
+    }
+
+    COMMON_DEALLOC(d);
 }
 
 void AnimationStatesInstance::update( float dt )
@@ -305,30 +296,29 @@ void AnimationStatesInstance::update( float dt )
 
 void AnimationStatesInstance::update_default( float dt )
 {
-    int _index = m_state_index;
-    if(_index < 0)
+    if(!m_state)
         return;
-    m_states[_index].update(m_weight, dt);
-    update_node()
+
+    update_node(m_state, 0, m_weight, m_dynamic_data);
 }
 
 void AnimationStatesInstance::update_crossfading( float dt )
 {
-    hk_anim_ctrl* c1 = m_easeInCtrl;
-    hk_anim_ctrl* c2 = m_easeOutCtrl;
+    hk_anim_ctrl* c1 = m_ease_in_ctl;
+    hk_anim_ctrl* c2 = m_ease_out_ctrl;
     c1->update(dt);
     c2->update(dt);
 
-    float _w = m_weight;
-    float _w1 = c1->getWeight() * _w;
-    float _w2 = c2->getWeight() * _w;
+    float w = m_weight;
+    float w1 = c1->getWeight() * w;
+    float w2 = c2->getWeight() * w;
 
-    AnimationState* _states = m_states;
-    AnimationState* _cur_state = _states + m_curStateIndex;
-    AnimationState* _last_state = _states + m_lastStateIndex;
+    const AnimationState* cur_state = m_state;
+    const AnimationState* last_state = m_last_state;
 
-    _cur_state->update(_w1, dt);
-    _last_state->update(_w2, dt);
+    char* d = m_dynamic_data;
+    update_node(cur_state, 0, w1, d);
+    update_node(last_state, 0, w2, d);
 
 #ifdef HAVOK_COMPILE
     hk_anim_ctrl::EaseStatus status1 = c1->getEaseStatus();
@@ -337,10 +327,9 @@ void AnimationStatesInstance::update_crossfading( float dt )
        status2 == hk_anim_ctrl::EASED_OUT)
     {
         // crossfading finished!
-        m_state = kLayerDefault;
-        m_curTransition = NULL;
-        _last_state->remove_from_skeleton(m_skeleton);
-        _last_state = NULL;
+        m_status = kLayerDefault;
+        remove_state_from_skeleton(last_state, m_skeleton, d);
+        m_last_state = NULL;
     }
 #endif
 }
@@ -350,73 +339,62 @@ void AnimationStatesInstance::update_waitingalign(float dt)
     // FIXME:TODO
 }
 
-void AnimationStatesInstance::destroy()
+void AnimationStatesInstance::change_state(const AnimationTranstion* t)
 {
-    uint32_t _num = m_numStates;
-    AnimationState* _states = m_states;
-    for (uint32_t i=0; i<_num; ++i)
-    {
-        _states[i].destroy();
-    }
-    SAFE_REMOVEREF(m_easeInCtrl);
-    SAFE_REMOVEREF(m_easeOutCtrl);
-}
+    const AnimationState* new_state = get_state(m_resource, t->m_next_state_index);
+    const AnimationState* old_state = m_state;
 
-void AnimationStatesInstance::change_state(AnimationTranstion* t)
-{
-    int _new_index = t->m_dstStateIndex;
-    int _old_index = m_curStateIndex;
-
-    if(_new_index == _old_index)
+    if(new_state == old_state)
         return;
 
-    AnimationState* _states = m_states;
-    AnimationState* _new_state = _new_index >= 0 ? m_states + _new_index : 0;
-    AnimationState* _old_state = _old_index >= 0 ? m_states + _old_index : 0;
+#if 0
+    if(old_state)
+        on_state_exit(old_state, ...)
+#endif
 
-    if(_old_state)
-        _old_state->on_exit(_new_state, t);
+    if(new_state)
+        on_state_enter(new_state, m_skeleton, m_dynamic_data);
 
-    if(_new_state)
-        _new_state->on_enter(m_skeleton, _old_state, t);
+    m_last_state = old_state;
+    m_state = new_state;
+    m_status = kLayerCrossFading;
 
-    m_lastStateIndex = _old_index;
-    m_curStateIndex = _new_index;
-    m_curTransition = t;
-    m_state = kLayerCrossFading;
-    float _time = t->m_duration;
-    int _easeType = t->m_easeType;
-    m_easeInCtrl->ease_in(_time, _easeType);
-    m_easeOutCtrl->ease_out(_time, _easeType);
+    float duration = t->m_duration;
+    int type = t->m_ease_type;
+
+    m_ease_in_ctl->ease_in(duration, type);
+    m_ease_out_ctrl->ease_out(duration, type);
+    m_motion_blend_type = t->m_motion_blend_type;
 }
 
 void AnimationStatesInstance::change_state( StringId name )
 {
-    int _index = find_state(name);
-    if(_index < 0)
+    int index = find_state(m_resource, name);
+    if(index < 0)
         return;
     static AnimationTranstion t = { 0.1f,  (uint16_t)-1, kEaseCurveSmooth, kMotionBlendingDefault};
-    t.m_dstStateIndex = _index;
+    t.m_next_state_index = index;
     change_state(&t);
 }
 
 void AnimationStatesInstance::fire_event( StringId name )
 {
-    int _cur_index = m_curStateIndex;
-    if(_cur_index < 0)
+    const AnimationState* s = m_state;
+    if(!s)
         return;
-    AnimationState* _cur_state = m_states + _cur_index;
-    int _index = _cur_state->find_transition(name);
-    if(_index < 0)
+
+    int i = find_transition(s, name);
+    if(i<0)
         return;
-    change_state(_cur_state->m_transitions + _index);
+
+    change_state(get_transtions(s) + i);
 }
 
-void AnimationStatesInstance::get_root_motion( float deltaTime, hkQsTransformf& deltaMotionOut )
+void AnimationStatesInstance::get_rootmotion( float deltaTime, hkQsTransformf& deltaMotionOut )
 {
 #ifdef HAVOK_COMPILE
-    int _state = m_state;
-    switch(_state)
+    int status = m_status;
+    switch(status)
     {
     case kLayerDefault:
         {
@@ -425,7 +403,7 @@ void AnimationStatesInstance::get_root_motion( float deltaTime, hkQsTransformf& 
         break;
     case kLayerCrossFading:
         {
-            get_root_motion_crossfading(deltaTime, deltaMotionOut);
+            get_rootmotion_crossfading(deltaTime, deltaMotionOut);
         }
         break;
     case kLayerWaitingAlign:
@@ -436,31 +414,31 @@ void AnimationStatesInstance::get_root_motion( float deltaTime, hkQsTransformf& 
 #endif
 }
 
-void AnimationStatesInstance::get_root_motion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut )
+void AnimationStatesInstance::get_rootmotion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut )
 {
-    AnimationState* _states = m_states;
-    AnimationState* _cur_state = _states + m_curStateIndex;
-    AnimationState* _last_state = _states + m_lastStateIndex;
+    const AnimationState* cur_state = m_state;
+    const AnimationState* last_state = m_last_state;
+    char* d = m_dynamic_data;
 
 #ifdef HAVOK_COMPILE
-    int _state = (int)m_curTransition->m_motionBlendingType;
-    switch (_state)
+    int status = m_motion_blend_type;
+    switch (status)
     {
     case kMotionBlendingDefault:
     default:
         m_skeleton->getDeltaReferenceFrame(deltaTime, deltaMotionOut);
         break;
     case kMotionBlendingIgnoreSrcMotion:
-        _cur_state->get_root_motion(deltaTime, deltaMotionOut);
+        state_get_rootmotion(cur_state, d, deltaTime, deltaMotionOut);
         break;
     case kMotionBlendingIgnoreDstMotion:
-        _last_state->get_root_motion(deltaTime, deltaMotionOut);
+        state_get_rootmotion(last_state, d, deltaTime, deltaMotionOut);
         break;
     case kMotionBlendingIgnoreSrcRotation:
         {
             hkQsTransformf motionSrc, motionDst;
-            _cur_state->get_root_motion(deltaTime, motionDst);
-            _last_state->get_root_motion(deltaTime, motionSrc);
+            state_get_rootmotion(cur_state, d, deltaTime, deltaMotionOut);
+            state_get_rootmotion(last_state, d, deltaTime, deltaMotionOut);
             motionSrc.m_rotation.setIdentity();
             deltaMotionOut.setMul(motionSrc, motionDst);
         }
@@ -468,8 +446,8 @@ void AnimationStatesInstance::get_root_motion_crossfading(float deltaTime, hkQsT
     case kMotionBlendingIgnoreDstRotation:
         {
             hkQsTransformf motionSrc, motionDst;
-            _cur_state->get_root_motion(deltaTime, motionDst);
-            _last_state->get_root_motion(deltaTime, motionSrc);
+            state_get_rootmotion(cur_state, d, deltaTime, deltaMotionOut);
+            state_get_rootmotion(last_state, d, deltaTime, deltaMotionOut);
             motionDst.m_rotation.setIdentity();
             deltaMotionOut.setMul(motionSrc, motionDst);
         }

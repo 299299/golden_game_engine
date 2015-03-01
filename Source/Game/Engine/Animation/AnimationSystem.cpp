@@ -37,7 +37,7 @@
 
 AnimationSystem g_animMgr;
 static IdArray<AnimRigInstance>                    m_rigs;
-static IdArray<AnimationStateLayer>                m_stateLayers;
+static IdArray<AnimationStatesInstance>            m_stateLayers;
 static int                                         m_status = 0;
 static hkaSampleBlendJob                           m_jobs[MAX_ANIM_RIG];
 
@@ -199,7 +199,7 @@ void AnimationSystem::update_animations(float dt)
         rigs[i].update(dt);
     }
     num = m_stateLayers.size();
-    AnimationStateLayer* l = m_stateLayers.begin();
+    AnimationStatesInstance* l = m_stateLayers.begin();
     for(uint32_t i=0; i<num;++i)
     {
         l[i].update(dt);
@@ -229,7 +229,7 @@ void AnimationSystem::register_factories()
     ResourceFactory _animation = {load_resource_animation, destroy_resource_animation, lookup_resource_animation, 0, 0, EngineNames::ANIMATION, 2};
     g_resourceMgr.register_factory(_animation);
 
-    ResourceFactory _states = { load_animation_state, 0, lookup_animation_state, 0, 0, EngineNames::ANIMATION_STATES, 3};
+    ResourceFactory _states = { 0, 0, lookup_animation_states, 0, 0, EngineNames::ANIMATION_STATES, 3};
     g_resourceMgr.register_factory(_states);
 
     ComponentFactory _comp_rig = { create_anim_rig, destroy_anim_rig, get_anim_rig, num_all_anim_rig, get_all_anim_rig, 0, lookup_anim_rig_instance_data, 0};
@@ -285,7 +285,7 @@ void lookup_anim_rig_instance_data( void* resource )
 Id create_anim_state( const void* resource, ActorId32 id)
 {
     check_status();
-    AnimationStateLayer* inst;
+    AnimationStatesInstance* inst;
     Id animId = m_stateLayers.create(&inst);
     inst->init(resource, id);
     return animId;
@@ -318,7 +318,7 @@ void* get_all_anim_state()
 void lookup_anim_state_instance_data( void* resource )
 {
     ComponentInstanceData* data = (ComponentInstanceData*)resource;
-    data->m_resource = FIND_RESOURCE(AnimationStateLayer, EngineTypes::ANIMATION_STATES, data->m_name);
+    data->m_resource = FIND_RESOURCE(AnimationStates, EngineTypes::ANIMATION_STATES, data->m_name);
 }
 //-----------------------------------------------------------------
 //

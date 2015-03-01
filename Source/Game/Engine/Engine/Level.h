@@ -19,10 +19,10 @@ struct LevelActorResource
 
 struct Level
 {
-    uint32_t                    m_num_objects;
-    uint32_t                    m_num_resources;
-    uint32_t                    m_object_offset;
-    uint32_t                    m_resource_offset;
+    uint32_t            m_num_objects;
+    uint32_t            m_num_resources;
+    uint32_t            m_object_offset;
+    uint32_t            m_resource_offset;
 };
 
 void   lookup_resource_level(void*);

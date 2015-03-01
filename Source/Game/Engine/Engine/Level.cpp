@@ -32,22 +32,22 @@ void start_level(Level* l)
 {
     hkQsTransform t;
     uint32_t num = l->m_num_objects;
-    LevelObject* objects = (LevelObject*)((char*)resource + l->m_object_offset);
-    LevelActorResource* resources = (LevelActorResource*)((char*)resource + l->m_resource_offset);
+    LevelObject* objects = (LevelObject*)((char*)l + l->m_object_offset);
+    LevelActorResource* resources = (LevelActorResource*)((char*)l + l->m_resource_offset);
     for (uint32_t i = 0; i < num; ++i)
     {
         LevelObject& object = objects[i];
         transform_object(t, object.m_translation, object.m_rotation, object.m_scale);
-        object.m_actorId = g_actorWorld.create_actor(resources[object.m_resource_index].m_resource, t);
+        object.m_actor = g_actorWorld.create_actor(resources[object.m_resource_index].m_resource, t);
     }
 }
 
-void stop_level(Level*)
+void stop_level(Level* l)
 {
     uint32_t num = l->m_num_objects;
-    LevelObject* objects = (LevelObject*)((char*)resource + l->m_object_offset);
+    LevelObject* objects = (LevelObject*)((char*)l + l->m_object_offset);
     for (uint32_t i = 0; i < num; ++i)
     {
-        g_actorWorld.destroy_actor(objects[i].m_actorId);
+        g_actorWorld.destroy_actor(objects[i].m_actor);
     }
 }
