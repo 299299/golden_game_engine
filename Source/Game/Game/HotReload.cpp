@@ -129,8 +129,8 @@ void reload_level_resource(void* oldResource, void* newResource)
 {
     Level* oldLevel = (Level*)oldResource;
     Level* newLevel = (Level*)newResource;
-    oldLevel->unload();
-    newLevel->load();
+    stop_level(oldLevel);
+    start_level(newLevel);
 }
 
 void reload_shading_enviroment(void* oldResource, void* newResource)

@@ -16,8 +16,8 @@ struct RuntimeAnimationTransition
         m_name = o.get<std::string>("name");
         m_destName = o.get<std::string>("dest");
         m_transition.m_duration = json_to_float(o, "duration", DEFAULT_ANIM_TRANSITION_DURATION);
-        m_transition.m_easeType = json_to_enum(o, "ease", g_anim_ease_type_names, kEaseCurveSmooth);
-        m_transition.m_motionBlendingType = json_to_enum(o, "motion_blending", g_anim_motion_blending_type_names, kMotionBlendingDefault);
+        m_transition.m_ease_type = json_to_enum(o, "ease", g_anim_ease_type_names, kEaseCurveSmooth);
+        m_transition.m_motion_blend_type = json_to_enum(o, "motion_blending", g_anim_motion_blending_type_names, kMotionBlendingDefault);
     }
 };
 
@@ -249,34 +249,6 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         memOffset += rtState.m_memorySize;
     }
 
-#if 1
-    AnimationStateLayer* l = (AnimationStateLayer*)load_animation_state(mem.m_buf, mem.m_size);
-    ENGINE_ASSERT(l->m_numStates == numStates && l->m_memorySize == memSize && l->m_rigName == layer->m_rigName,
-        "AnimationStateLayer load check");
-    for(uint32_t i=0; i<numStates; ++i)
-    {
-        const AnimationState& state = l->m_states[i];
-        const RuntimeAnimationState& state2 = states[i];
-        ENGINE_ASSERT(l->m_stateNames[i] == stringid_caculate(state2.m_name.c_str()), "AnimationStateLayer load check");
-        ENGINE_ASSERT(state.m_numAnimations == state2.m_animations.size(), "AnimationStateLayer load check");
-        ENGINE_ASSERT(state.m_numNodes == state2.m_nodes.size(), "AnimationStateLayer load check");
-        ENGINE_ASSERT(state.m_numTransitions == state2.m_transitions.size(), "AnimationStateLayer load check");
-        for (uint32_t j=0; j<state.m_numNodes; ++j)
-        {
-            ENGINE_ASSERT(state.m_nodeNames[j] == stringid_caculate(state2.m_nodes[j]->m_name.c_str()),
-                "AnimationStateLayer load check");
-        }
-        for (uint32_t j=0; j<state.m_numTransitions; ++j)
-        {
-            ENGINE_ASSERT(state.m_transitionNames[j] == stringid_caculate(state2.m_transitions[j].m_name.c_str()),
-                "AnimationStateLayer load check");
-        }
-        for (uint32_t j=0; j<state.m_numAnimations; ++j)
-        {
-            ENGINE_ASSERT(state.m_animations[j].m_name == state2.m_animations[j].m_name,
-                "AnimationStateLayer load check");
-        }
-    }
-#endif
+
     return write_file(m_output, mem.m_buf, memSize);
 }

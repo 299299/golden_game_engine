@@ -104,7 +104,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
     {
         const jsonxx::Object& actorValue = actorsValue.get<jsonxx::Object>(i);
         LevelObject& object = objects[i];
-        object.m_resourceIndex = actorIndices[i];
+        object.m_resource_index = actorIndices[i];
         object.m_name = json_to_stringid(actorValue, "name");
         json_transform(actorValue, object.m_translation, object.m_rotation, object.m_scale);
     }

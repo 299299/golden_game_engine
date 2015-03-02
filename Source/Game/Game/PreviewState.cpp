@@ -23,27 +23,25 @@ extern DebugFPSCamera  g_fpsCamera;
 
 
 
-INTERNAL void anim_state_debug_imgui(void* _component, ComponentData* _data)
+INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
 {
-    AnimationStateLayer* _layer = (AnimationStateLayer*)_component;
-    StringId* _names = _layer->m_stateNames;
-    AnimationState* _states = _layer->m_states;
-    int _cur_index = _layer->m_curStateIndex;
-    StringId _cur_name = _cur_index >= 0 ? _names[_cur_index] : 0;
-    imguiLabel("cur state = %s", stringid_lookup(_cur_name));
+    AnimationStatesInstance* states = (AnimationStatesInstance*)component;
+    const AnimationState* cur_state = states->m_state;
 
-    if(_cur_index >= 0)
+    StringId cur_name = cur_state ? cur_state->m_name : 0;
+    imguiLabel("cur state = %s", stringid_lookup(cur_name));
+
+    if(cur_state)
     {
-        AnimationState* _cur_state = _states + _cur_index;
-        StringId* _t_names = _cur_state->m_transitionNames;
-        uint32_t _t_num = _cur_state->m_numTransitions;
-        for(uint32_t i=0; i<_t_num; ++i)
+        StringId* t_names = (StringId*)((char*)cur_state + cur_state->m_transition_name_offset);
+        int t_num = cur_state->m_num_transitions;
+        for(int i=0; i<t_num; ++i)
         {
-            StringId _t_name = _t_names[i];
-            bool _clicked = imguiButton(stringid_lookup(_t_name));
-            if(_clicked)
+            StringId t_name = t_names[i];
+            bool clicked = imguiButton(stringid_lookup(t_name));
+            if(clicked)
             {
-                _layer->fire_event(_t_name);
+                states->fire_event(t_name);
             }
         }
     }
@@ -146,16 +144,16 @@ void PreviewState::process_cmd_args( void* p )
     {
         LOGD("loading level %s \n", level_name);
         m_preview_level = (Level*)g_resourceMgr.find_resource(EngineTypes::LEVEL, stringid_caculate(level_name));
-        if(m_preview_level) 
-            m_preview_level->load();
+        if(m_preview_level)
+            start_level(m_preview_level);
     }
 }
 
 void PreviewState::swith_graphics_debug( uint32_t flag )
 {
-    if(!HAS_BITS(m_bgfx_debug,flag)) 
+    if(!HAS_BITS(m_bgfx_debug,flag))
         ADD_BITS(m_bgfx_debug, flag);
-    else 
+    else
         REMOVE_BITS(m_bgfx_debug, flag);
     bgfx::setDebug(m_bgfx_debug);
 }
@@ -178,7 +176,7 @@ void PreviewState::draw_actor_info(ActorId32 _actorId, int _x, int _y, int _w, i
 
     imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
     _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
-   
+
     uint32_t _num = _res->m_num_components;
     ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
     int _class = _res->m_class;

@@ -779,7 +779,7 @@ Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_m
 
     uint32_t num_of_keys = array.size();
     uint32_t memory_size = sizeof(Fact) + num_of_keys * (sizeof(StringId) + sizeof(Key)) + value_size;
-    char* p = (char*)COMMON_ALLOC(memory_size);
+    char* p = COMMON_ALLOC(char, memory_size);
     memset(p, 0x00, memory_size);
 
     Fact* f = (Fact*)p;

@@ -49,7 +49,7 @@ int find_node(const AnimationState* state, StringId name)
     FIND_IN_ARRAY_RET(node_keys, num, name);
 }
 
-void update_node_recursive(const char*, const AnimationState*, float, char*);
+INTERNAL void update_node_recursive(const char*, const AnimationState*, float, char*);
 INTERNAL void update_lerp_node(const char* n, const AnimationState* s, float f, char* d)
 {
     const BinaryNode* node = (const BinaryNode*)n;
@@ -153,8 +153,10 @@ INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
     {
         const AnimationData* anim_data = anim_datas + i;
         hk_anim_ctrl* anim_ctl = anim_ctls + i;
-        hk_anim_ctrl* ac = new (anim_ctl) hk_anim_ctrl(anim_data->m_animation);
+#ifdef HAVOK_COMPILE
+        hk_anim_ctrl* ac = new () hk_anim_ctrl(anim_data->m_animation);
         ac->set_loop(state->m_looped);
+#endif
     }
 }
 
@@ -180,7 +182,9 @@ INTERNAL void state_get_rootmotion(const AnimationState* state, char *d, float d
         hkQsTransform t;
         hk_anim_ctrl* ac = anim_ctls + i;
         ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
+#ifdef HAVOK_COMPILE
         deltaMotionOut.setMulEq(t);
+#endif
     }
 }
 
