@@ -154,7 +154,7 @@ INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
         const AnimationData* anim_data = anim_datas + i;
         hk_anim_ctrl* anim_ctl = anim_ctls + i;
 #ifdef HAVOK_COMPILE
-        hk_anim_ctrl* ac = new () hk_anim_ctrl(anim_data->m_animation);
+        hk_anim_ctrl* ac = new (anim_ctl) hk_anim_ctrl(anim_data->m_animation);
         ac->set_loop(state->m_looped);
 #endif
     }
@@ -460,7 +460,22 @@ void AnimationStatesInstance::get_rootmotion_crossfading(float deltaTime, hkQsTr
 #endif
 }
 
+void AnimationStatesInstance::set_node_data(StringId name, void* d, int size)
+{
+    if(!m_state)
+        return;
 
+    int i = find_node(m_state, name);
+    if(i < 0)
+        return;
+
+    char* n = get_node(m_state, i);
+    int type = *(uint32_t*)n;
+    ENGINE_ASSERT(type != AnimationNodeType::Value, "Can not set data to a value node.");
+
+    uint32_t offset = *((uint32_t*)n + 1);
+    memcpy(m_dynamic_data + offset, d, size);
+}
 
 
 

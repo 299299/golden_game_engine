@@ -81,7 +81,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     if (!rlc)
     {
         g_hc_config->m_error.add_error("can not load input havok file %s", config.m_input.c_str());
-        err = KErrorLoadHavok;
+        err = kErrorLoadHavok;
         goto error_exit;
     }
 

@@ -25,18 +25,25 @@ struct RuntimeAnimationNode
 {
     RuntimeAnimationNode()
     {
-        m_left = m_right = m_parent = 0;
-        memset(&m_node, 0x00, sizeof(m_node));
+        m_parent = 0;
         m_animationIndex = -1;
     }
 
-    AnimationNode                           m_node;
-    RuntimeAnimationNode*                   m_left;
-    RuntimeAnimationNode*                   m_right;
+    std::vector<RuntimeAnimationNode*>      m_children;
+    int                                     m_index;
+    int                                     m_type;
     RuntimeAnimationNode*                   m_parent;
     std::string                             m_animationName;
     std::string                             m_name;
     int                                     m_animationIndex;
+
+    char                                    m_node[NODE_SIZE];
+
+    void setParent(RuntimeAnimationNode* n)
+    {
+        n->m_children.push_back(n);
+        m_parent = n;
+    }
 };
 
 
@@ -48,10 +55,14 @@ struct RuntimeAnimationState
     std::vector<AnimationData>              m_animations;
     std::string                             m_name;
     uint32_t                                m_memorySize;
+    char*                                   m_memory;
+    int                                     m_node_num[AnimationNodeType::Num];
 
     RuntimeAnimationState()
+    :m_memory(0)
     {
         memset(&m_state, 0x00, sizeof(m_state));
+        memset(m_node_num, 0x00, sizeof(m_node_num));
     }
 
     ~RuntimeAnimationState()
@@ -60,6 +71,17 @@ struct RuntimeAnimationState
         {
             delete m_nodes[i];
         }
+        delete []m_memory;
+    }
+
+    RuntimeAnimationNode* createNode(RuntimeAnimationNode* parent)
+    {
+        RuntimeAnimationNode* node = new RuntimeAnimationNode;
+        node->m_index = m_nodes.size();
+        m_nodes.push_back(node);
+        if(parent)
+            node->setParent(parent);
+        return node;
     }
 
     void readJSON(const jsonxx::Object& o)
@@ -76,40 +98,44 @@ struct RuntimeAnimationState
         if(!o.has<jsonxx::Object>("nodes"))
             return;
         const jsonxx::Object& jsonNodes = o.get<jsonxx::Object>("nodes");
-        RuntimeAnimationNode* node = new RuntimeAnimationNode;
-        m_nodes.push_back(node);
+        RuntimeAnimationNode* node = createNode(NULL);
         readNode(jsonNodes, node);
 
         //post process
-        m_memorySize = (sizeof(AnimationTranstion) + sizeof(StringId)) * m_transitions.size() +
-                       (sizeof(AnimationNode) + sizeof(StringId)) * m_nodes.size() +
-                       sizeof(AnimationData) * m_animations.size();
-
         m_state.m_loop = json_to_bool(o, "looped");
-        m_state.m_numTransitions = m_transitions.size();
-        m_state.m_numNodes = m_nodes.size();
-        m_state.m_numAnimations = m_animations.size();
-        uint32_t offset = 0;
-        m_state.m_transitionNameOffset = offset;
+        m_state.m_num_transitions = m_transitions.size();
+        m_state.m_num_nodes = m_nodes.size();
+        m_state.m_num_animations = m_animations.size();
+
+        uint32_t offset = sizeof(AnimationState);
+        m_state.m_transition_name_offset = offset;
         offset += sizeof(StringId) * m_transitions.size();
-        m_state.m_transitionOffset = offset;
-        offset += sizeof(AnimationTranstion) * m_transitions.size();
-        m_state.m_nodeNameOffset = sizeof(StringId) * m_nodes.size();
-        offset += sizeof(StringId) * m_nodes.size();
+
+        m_state.m_transition_offset = offset;
+        offset += sizeof(AnimationTranstion) * m_state.m_num_transitions;
+
+        m_state.m_animation_offset = offset;
+        offset += sizeof(AnimationData) * m_state.m_num_animations;
+
+        m_state.m_node_name_offset = sizeof(StringId) * m_nodes.size();
+        offset += sizeof(StringId) * m_state.m_num_nodes;
+
         m_state.m_nodesOffset = offset;
-        offset += sizeof(AnimationNode) * m_nodes.size();
-        m_state.m_animDataOffset = offset;
+        offset += NODE_SIZE * m_state.m_num_nodes;
+
+        m_memorySize = offset;
     }
 
     void readNode(const jsonxx::Object& o, RuntimeAnimationNode* node)
     {
-        int type = json_to_enum(o, "type", g_anim_node_names, BlendNodeType::Undefined);
-        node->m_node.m_type = type;
+        int type = json_to_enum(o, "type", g_anim_node_names, AnimationNodeType::Undefined);
+        node->m_type = type;
         node->m_name = o.get<std::string>("name");
+        m_node_num[type] ++;
 
         switch(type)
         {
-        case BlendNodeType::Value:
+        case AnimationNodeType::Value:
             {
                 node->m_animationName = o.get<std::string>("animation");
                 AnimationData data;
@@ -120,25 +146,26 @@ struct RuntimeAnimationState
                 m_animations.push_back(data);
                 break;
             }
-        case BlendNodeType::Lerp:
-        case BlendNodeType::Additive:
+        case AnimationNodeType::Lerp:
+        case AnimationNodeType::Additive:
             {
                 const jsonxx::Object& o1 = o.get<jsonxx::Object>("left");
                 const jsonxx::Object& o2 = o.get<jsonxx::Object>("right");
-                RuntimeAnimationNode* node1 = new RuntimeAnimationNode;
-                RuntimeAnimationNode* node2 = new RuntimeAnimationNode;
-                m_nodes.push_back(node1);
-                m_nodes.push_back(node2);
-                int index_1 = m_nodes.size() - 2;
-                int index_2 = m_nodes.size() - 1;
-                node1->m_parent = node;
-                node2->m_parent = node;
-                node->m_left = node1;
-                node->m_right = node2;
-                node->m_node.m_data[0] = index_1;
-                node->m_node.m_data[1] = index_2;
+                RuntimeAnimationNode* node1 = createNode(node);
+                RuntimeAnimationNode* node2 = createNode(node);
                 readNode(o1, node1);
                 readNode(o2, node2);
+                break;
+            }
+        case AnimationNodeType::Select:
+            {
+                const jsonxx::Array& children = o.get<jsonxx::Array>("children");
+                for(unsigned i=0; i<children.size(); ++i)
+                {
+                    const jsonxx::Object& o = children.get<jsonxx::Object>(i);
+                    RuntimeAnimationNode* node = createNode(node);
+                    readNode(o, node);
+                }
                 break;
             }
         default:
@@ -160,34 +187,70 @@ struct RuntimeAnimationState
     {
         for (size_t i=0; i<m_transitions.size(); ++i)
         {
-            m_transitions[i].m_transition.m_dstStateIndex = findState(states, m_transitions[i].m_destName);
+            m_transitions[i].m_transition.m_next_state_index = findState(states, m_transitions[i].m_destName);
         }
     }
 
-    void fillState(AnimationState& state, uint32_t memOffset, char* head) const
+    void prepareMemory()
     {
-        memcpy(&state, &m_state, sizeof(AnimationState));
-        state.m_transitionNameOffset += memOffset;
-        state.m_transitionOffset += memOffset;
-        state.m_nodeNameOffset += memOffset;
-        state.m_nodesOffset += memOffset;
-        state.m_animDataOffset += memOffset;
-        state.load(head);
-        for (uint32_t i=0; i<state.m_numTransitions; ++i)
+        m_memory = new char[m_memorySize];
+        char* p = m_memory + sizeof(AnimationState);
+
+        StringId* transiton_names = (StringId*)p;
+        for (int i=0; i<m_state.m_num_transitions; ++i)
         {
-            state.m_transitions[i] = m_transitions[i].m_transition;
-            state.m_transitionNames[i] = stringid_caculate(m_transitions[i].m_name.c_str());
+            transiton_names[i] = stringid_caculate(m_transitions[i].m_name.c_str());
         }
-        for (uint32_t i=0; i<state.m_numNodes; ++i)
+        p += sizeof(StringId) * m_transitions.size();
+
+        AnimationTranstion* transtions = (AnimationTranstion*)p;
+        for (int i=0; i<m_state.m_num_transitions; ++i)
         {
-            state.m_nodeNames[i] = stringid_caculate(m_nodes[i]->m_name.c_str());
-            state.m_nodes[i] = m_nodes[i]->m_node;
+            transtions[i] = m_transitions[i].m_transition;
         }
-        for (uint32_t i=0; i<state.m_numAnimations; ++i)
+        p += sizeof(AnimationTranstion) * m_state.m_num_transitions;
+
+        AnimationData* anims = (AnimationData*)p;
+        for (int i=0; i<m_state.m_num_animations; ++i)
         {
-            state.m_animations[i] = m_animations[i];
+            anims[i] = m_animations[i];
         }
+        p += sizeof(AnimationData) * m_state.m_num_animations;
+
+        StringId* node_names = (StringId*)p;
+        for (int i=0; i<m_state.m_num_nodes; ++i)
+        {
+            node_names[i] = stringid_caculate(m_nodes[i]->m_name.c_str());
+        }
+        p += sizeof(StringId) * m_state.m_num_nodes;
+
+        int nums[AnimationNodeType::Num] = {0};
+        int animation_size = m_num_nodes[AnimationNodeType::Value] * sizeof(hk_anim_ctrl);
+
+        for (int i=0; i<m_state.m_num_nodes; ++i)
+        {
+            RuntimeAnimationNode* n = m_nodes[i];
+            int type = n->m_type;
+
+            switch(type)
+            {
+            case AnimationNodeType::Value:
+                break;
+            case AnimationNodeType::Select:
+                break;
+            case AnimationNodeType::Lerp:
+            case AnimationNodeType::Additive:
+                break;
+            default:
+                continue;
+            }
+
+            p += NODE_SIZE;
+        }
+
+        ENGNIE_ASSERT(p == m_memory + m_memorySize, "Animation State Node Offset check");
     }
+
 };
 
 
@@ -216,6 +279,7 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         states[i].readJSON(o);
     }
 
+#if 0
     uint32_t memSize = sizeof(AnimationStateLayer);
     memSize += (sizeof(StringId) + sizeof(AnimationState))* numStates;
     for (uint32_t i=0; i<numStates; ++i)
@@ -251,4 +315,6 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
 
 
     return write_file(m_output, mem.m_buf, memSize);
+#endif
+    return 0;
 }

@@ -29,15 +29,16 @@ struct AnimationData
 struct BinaryNode
 {
     uint32_t                    m_type;
+    uint32_t                    m_dynamic_data_offset;
     uint32_t                    m_left_offset;
     uint32_t                    m_right_offset;
-    uint32_t                    m_dynamic_data_offset;
 };
 
 struct ValueNode
 {
     uint32_t                    m_type;
     uint32_t                    m_dynamic_data_offset;
+    //uint32_t                    m_animation_index;
 };
 
 struct SelectNode
@@ -89,6 +90,7 @@ struct AnimationStates
     uint32_t                    m_num_states;
     uint32_t                    m_state_key_offset;
     uint32_t                    m_dynamic_data_size;
+    uint32_t                    m_static_data_size;
 };
 
 int find_state(const AnimationStates* , StringId);
@@ -114,6 +116,7 @@ struct AnimationStatesInstance
     void fire_event(StringId name);
     void change_state(StringId name);
     void get_rootmotion(float deltaTime, hkQsTransformf& deltaMotionOut);
+    void set_node_data(StringId name, void* d, int size);
 
 private:
     void change_state(const AnimationTranstion* t);

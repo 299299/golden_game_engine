@@ -63,7 +63,7 @@ enum AppErrorCode
     kErrorSuccess   = 0,
     kErrorAction    = -1,
     kErrorArg       = -2,
-    KErrorLoadHavok = -3,
+    kErrorLoadHavok = -3,
 };
 
 enum EaseCurveType
