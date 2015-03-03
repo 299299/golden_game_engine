@@ -1,5 +1,6 @@
 #include "AnimationStateCompiler.h"
 #include "AnimationState.h"
+#include "AnimControl.h"
 
 extern const char* g_anim_ease_type_names[];
 extern const char* g_anim_motion_blending_type_names[];
@@ -57,9 +58,11 @@ struct RuntimeAnimationState
     uint32_t                                m_memorySize;
     char*                                   m_memory;
     int                                     m_node_num[AnimationNodeType::Num];
+    uint32_t                                m_dynamic_data_size;
 
     RuntimeAnimationState()
     :m_memory(0)
+    ,m_dynamic_data_size(0)
     {
         memset(&m_state, 0x00, sizeof(m_state));
         memset(m_node_num, 0x00, sizeof(m_node_num));
@@ -102,7 +105,7 @@ struct RuntimeAnimationState
         readNode(jsonNodes, node);
 
         //post process
-        m_state.m_loop = json_to_bool(o, "looped");
+        m_state.m_looped = json_to_bool(o, "looped");
         m_state.m_num_transitions = m_transitions.size();
         m_state.m_num_nodes = m_nodes.size();
         m_state.m_num_animations = m_animations.size();
@@ -120,7 +123,7 @@ struct RuntimeAnimationState
         m_state.m_node_name_offset = sizeof(StringId) * m_nodes.size();
         offset += sizeof(StringId) * m_state.m_num_nodes;
 
-        m_state.m_nodesOffset = offset;
+        m_state.m_node_offset = offset;
         offset += NODE_SIZE * m_state.m_num_nodes;
 
         m_memorySize = offset;
@@ -191,64 +194,117 @@ struct RuntimeAnimationState
         }
     }
 
-    void prepareMemory()
+    void prepareMemory(int* total_nums, int* cur_nums)
     {
         m_memory = new char[m_memorySize];
-        char* p = m_memory + sizeof(AnimationState);
+        char* p = m_memory;
+
+        AnimationState* state = (AnimationState*)p;
+        memcpy(p, &m_state, sizeof(m_state));
+        p += sizeof(AnimationState);
 
         StringId* transiton_names = (StringId*)p;
-        for (int i=0; i<m_state.m_num_transitions; ++i)
+        for (uint32_t i=0; i<m_state.m_num_transitions; ++i)
         {
             transiton_names[i] = stringid_caculate(m_transitions[i].m_name.c_str());
         }
         p += sizeof(StringId) * m_transitions.size();
 
         AnimationTranstion* transtions = (AnimationTranstion*)p;
-        for (int i=0; i<m_state.m_num_transitions; ++i)
+        for (uint32_t i=0; i<m_state.m_num_transitions; ++i)
         {
             transtions[i] = m_transitions[i].m_transition;
         }
         p += sizeof(AnimationTranstion) * m_state.m_num_transitions;
 
         AnimationData* anims = (AnimationData*)p;
-        for (int i=0; i<m_state.m_num_animations; ++i)
+        for (uint32_t i=0; i<m_state.m_num_animations; ++i)
         {
             anims[i] = m_animations[i];
         }
         p += sizeof(AnimationData) * m_state.m_num_animations;
 
         StringId* node_names = (StringId*)p;
-        for (int i=0; i<m_state.m_num_nodes; ++i)
+        for (uint32_t i=0; i<m_state.m_num_nodes; ++i)
         {
             node_names[i] = stringid_caculate(m_nodes[i]->m_name.c_str());
         }
         p += sizeof(StringId) * m_state.m_num_nodes;
 
         int nums[AnimationNodeType::Num] = {0};
-        int animation_size = m_num_nodes[AnimationNodeType::Value] * sizeof(hk_anim_ctrl);
+        int sizes[AnimationNodeType::Num] =
+        {
+            sizeof(hk_anim_ctrl),
+            sizeof(float),
+            sizeof(float),
+            sizeof(int)
+        };
+        int total_sizes[AnimationNodeType::Num];
+        for(int i=0; i<AnimationNodeType::Num; ++i)
+        {
+            total_sizes[i] = sizes[i] * total_nums[i];
+        }
+        int total_offsets[AnimationNodeType::Num];
+        int total_size = 0;
+        for(int i=0; i<AnimationNodeType::Num;++i)
+        {
+            total_offsets[i] = total_size + cur_nums[i] * sizes[i];
+            total_size += total_sizes[i];
+        }
 
-        for (int i=0; i<m_state.m_num_nodes; ++i)
+        int node_offset = state->m_node_offset;
+        for (uint32_t i=0; i<m_state.m_num_nodes; ++i)
         {
             RuntimeAnimationNode* n = m_nodes[i];
             int type = n->m_type;
+            int& num = nums[type];
+            int size = sizes[type];
+            int offset = total_offsets[type];
+            int dynamic_offset = offset + size * num;
+
+            *((uint32_t*)p) = type;
 
             switch(type)
             {
             case AnimationNodeType::Value:
-                break;
+                {
+                    ValueNode* v = (ValueNode*)p;
+                    v->m_dynamic_data_offset = offset + size * n->m_animationIndex;
+                    break;
+                }
             case AnimationNodeType::Select:
-                break;
+                {
+                    SelectNode* s = (SelectNode*)p;
+                    s->m_dynamic_data_offset = dynamic_offset;
+                    s->m_num_children = n->m_children.size();
+                    for(uint32_t i=0; i<s->m_num_children; ++i)
+                    {
+                        int index = n->m_children[i]->m_index;
+                        s->m_child_offsets[i] = node_offset + index * NODE_SIZE;
+                    }
+                    break;
+                }
             case AnimationNodeType::Lerp:
             case AnimationNodeType::Additive:
-                break;
+                {
+                    BinaryNode* b = (BinaryNode*)p;
+                    b->m_dynamic_data_offset = dynamic_offset;
+                    int left_index = n->m_children[0]->m_index;
+                    int right_index = n->m_children[1]->m_index;
+                    b->m_left_offset = node_offset + left_index * NODE_SIZE;
+                    b->m_right_offset = node_offset + right_index * NODE_SIZE;
+                    break;
+                }
             default:
                 continue;
             }
 
+            ++num;
             p += NODE_SIZE;
+            m_dynamic_data_size += size;
         }
 
-        ENGNIE_ASSERT(p == m_memory + m_memorySize, "Animation State Node Offset check");
+        ENGINE_ASSERT(p == m_memory + m_memorySize, "Animation State Node Offset check");
     }
 
 };
@@ -273,48 +329,64 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
     std::vector<RuntimeAnimationState> states;
     states.resize(numStates);
 
+    int total_nums[AnimationNodeType::Num] = {0};
     for (uint32_t i=0; i<numStates; ++i)
     {
         const jsonxx::Object& o = jsonStates.get<jsonxx::Object>(i);
         states[i].readJSON(o);
+        for(int j=0; j<AnimationNodeType::Num; ++j)
+        {
+            total_nums[j] += states[i].m_node_num[j];
+        }
     }
 
-#if 0
-    uint32_t memSize = sizeof(AnimationStateLayer);
-    memSize += (sizeof(StringId) + sizeof(AnimationState))* numStates;
-    for (uint32_t i=0; i<numStates; ++i)
+    int cur_nums[AnimationNodeType::Num] = {0};
+    for (uint32_t i = 0; i <numStates; ++i)
     {
         states[i].findStates(states);
+        states[i].prepareMemory(total_nums, cur_nums);
+        for(int j=0; j<AnimationNodeType::Num; ++j)
+        {
+            cur_nums[j] += states[i].m_node_num[j];
+        }
+    }
+
+    uint32_t memSize = sizeof(AnimationStates);
+    memSize += (sizeof(StateKey))* numStates;
+
+    uint32_t dynamicSize = 0;
+
+    for (uint32_t i=0; i<numStates; ++i)
+    {
         memSize += states[i].m_memorySize;
+        dynamicSize += states[i].m_dynamic_data_size;
     }
 
     memSize = NATIVE_ALGIN_SIZE(memSize);
     LOGI("%s animation states memory size = %d", m_input.c_str(), memSize);
 
     MemoryBuffer mem(memSize);
-    AnimationStateLayer* layer = (AnimationStateLayer*)mem.m_buf;
-    layer->m_numStates = numStates;
-    layer->m_memorySize = memSize;
-    layer->m_rigName = json_to_stringid(root, "rig");
+    AnimationStates* layer = (AnimationStates*)mem.m_buf;
+    layer->m_num_states = numStates;
+    layer->m_memory_size = memSize;
+    layer->m_dynamic_data_size = dynamicSize;
+
     char* p = mem.m_buf;
-    p += sizeof(AnimationStateLayer);
-    layer->m_stateNames = (StringId*)p;
-    p += sizeof(StringId) * layer->m_numStates;
-    layer->m_states = (AnimationState*)p;
-    p += sizeof(AnimationState) * layer->m_numStates;
-    uint32_t memOffset = (uint32_t)(p - mem.m_buf);
+    p += sizeof(AnimationStates);
+
+    StateKey* state_keys = (StateKey*)p;
+    for(uint32_t i=0; i<numStates; ++i)
+    {
+        state_keys[i].m_name = stringid_caculate(states[i].m_name.c_str());
+    }
+    p += sizeof(StateKey) * numStates;
 
     for(uint32_t i=0; i<numStates; ++i)
     {
-        const RuntimeAnimationState& rtState = states[i];
-        layer->m_stateNames[i] = stringid_caculate(rtState.m_name.c_str());
-        AnimationState& state = layer->m_states[i];
-        rtState.fillState(state, memOffset, mem.m_buf);
-        memOffset += rtState.m_memorySize;
+        memcpy(p, states[i].m_memory, states[i].m_memorySize);
+        state_keys[i].m_offset = (uint32_t)(p - mem.m_buf);
+        p += states[i].m_memorySize;
     }
 
-
     return write_file(m_output, mem.m_buf, memSize);
-#endif
-    return 0;
 }
