@@ -234,6 +234,7 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
 {
     ComponentInstanceData* res = (ComponentInstanceData*)resource;
     const AnimationStates* states = (const AnimationStates*)(res->m_resource);
+    char* p = (char*)states;
 
     m_resource = states;
     int num = states->m_num_states;
@@ -241,10 +242,10 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
     char* d = COMMON_ALLOC(char, size);
     m_dynamic_data = d;
     memset(d, 0x00, size);
-    StateKey* keys = (StateKey*)((char*)resource + states->m_state_key_offset);
+    StateKey* keys = (StateKey*)(p + states->m_state_key_offset);
     for(int i=0; i<num; ++i)
     {
-        const AnimationState* state = (const AnimationState*)((char*)resource + keys[i].m_offset);
+        const AnimationState* state = (const AnimationState*)(p + keys[i].m_offset);
         init_state_dynamic_data(state, d);
     }
 
@@ -322,7 +323,9 @@ void AnimationStatesInstance::update_crossfading( float dt )
 
     char* d = m_dynamic_data;
     update_node(cur_state, 0, w1, d);
-    update_node(last_state, 0, w2, d);
+
+    if(last_state)
+        update_node(last_state, 0, w2, d);
 
 #ifdef HAVOK_COMPILE
     hk_anim_ctrl::EaseStatus status1 = c1->getEaseStatus();
@@ -332,7 +335,8 @@ void AnimationStatesInstance::update_crossfading( float dt )
     {
         // crossfading finished!
         m_status = kLayerDefault;
-        remove_state_from_skeleton(last_state, m_skeleton, d);
+        if(last_state)
+            remove_state_from_skeleton(last_state, m_skeleton, d);
         m_last_state = NULL;
     }
 #endif

@@ -67,7 +67,7 @@ void DebugDrawManager::shutdown()
 void DebugDrawManager::ready()
 {
     m_ready = true;
-    m_shader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, stringid_caculate("core/shaders/debug"));
+    m_shader = FIND_RESOURCE(ShaderProgram, EngineTypes::PROGRAM, stringid_caculate(PROGRAM_PATH"debug"));
 }
 
 void DebugDrawManager::frame_start()

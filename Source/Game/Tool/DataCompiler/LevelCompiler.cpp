@@ -79,6 +79,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
 
     uint32_t numOfResources = resourceNames.size();
     uint32_t memSize = sizeof(Level) + sizeof(LevelObject) * numOfActors + sizeof(LevelActorResource) * numOfResources;
+    uint32_t acSize = memSize;
     memSize = NATIVE_ALGIN_SIZE(memSize);
 
     MemoryBuffer mem(memSize);
@@ -98,7 +99,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
     LevelActorResource* resources = (LevelActorResource*)offset;
     level->m_resource_offset = (uint32_t)(offset - mem.m_buf);
     offset += (sizeof(LevelActorResource) * numOfResources);
-    ENGINE_ASSERT(offset == mem.m_buf + memSize, "offset error.");
+    ENGINE_ASSERT(offset == mem.m_buf + acSize, "offset error.");
 
     for (uint32_t i = 0; i < numOfActors; ++i)
     {

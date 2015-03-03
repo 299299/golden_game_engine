@@ -46,7 +46,7 @@ void bringin_resource_material( void* resource )
 
 void submit_material(Material* m)
 {
-    if(!m->m_shader)
+    if(!m->m_shader || !bgfx::isValid(m->m_shader->m_handle))
         return;
 
     bgfx::setProgram(m->m_shader->m_handle);
@@ -64,7 +64,8 @@ void submit_material(Material* m)
 
     // Set shadow map.
     extern ShadowMap g_shadowMap;
-    Graphics::set_texture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
+    if(g_shadowMap.m_shadowMapFB)
+        Graphics::set_texture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
 
     extern UniformPerObject     g_uniformPerObject;
     bgfx::setUniform(g_uniformPerObject.m_uv, m->m_offset_repeat);

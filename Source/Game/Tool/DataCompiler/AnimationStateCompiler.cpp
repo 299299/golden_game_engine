@@ -42,7 +42,7 @@ struct RuntimeAnimationNode
 
     void setParent(RuntimeAnimationNode* n)
     {
-        n->m_children.push_back(n);
+        n->m_children.push_back(this);
         m_parent = n;
     }
 };
@@ -109,6 +109,7 @@ struct RuntimeAnimationState
         m_state.m_num_transitions = m_transitions.size();
         m_state.m_num_nodes = m_nodes.size();
         m_state.m_num_animations = m_animations.size();
+        m_state.m_name = stringid_caculate(m_name.c_str());
 
         uint32_t offset = sizeof(AnimationState);
         m_state.m_transition_name_offset = offset;
@@ -197,11 +198,15 @@ struct RuntimeAnimationState
     void prepareMemory(int* total_nums, int* cur_nums)
     {
         m_memory = new char[m_memorySize];
+        memset(m_memory, 0x00, m_memorySize);
+
         char* p = m_memory;
 
         AnimationState* state = (AnimationState*)p;
         memcpy(p, &m_state, sizeof(m_state));
         p += sizeof(AnimationState);
+
+        state->m_dynamic_animation_offset = cur_nums[AnimationNodeType::Value] * sizeof(hk_anim_ctrl);
 
         StringId* transiton_names = (StringId*)p;
         for (uint32_t i=0; i<m_state.m_num_transitions; ++i)
@@ -291,6 +296,7 @@ struct RuntimeAnimationState
                     b->m_dynamic_data_offset = dynamic_offset;
                     int left_index = n->m_children[0]->m_index;
                     int right_index = n->m_children[1]->m_index;
+                    ENGINE_ASSERT(left_index != right_index, "AnimationStatets left index == right index!");
                     b->m_left_offset = node_offset + left_index * NODE_SIZE;
                     b->m_right_offset = node_offset + right_index * NODE_SIZE;
                     break;
@@ -370,6 +376,7 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
     layer->m_num_states = numStates;
     layer->m_memory_size = memSize;
     layer->m_dynamic_data_size = dynamicSize;
+    layer->m_state_key_offset = sizeof(AnimationStates);
 
     char* p = mem.m_buf;
     p += sizeof(AnimationStates);
@@ -387,6 +394,17 @@ bool AnimationStateCompiler::readJSON(const jsonxx::Object& root)
         state_keys[i].m_offset = (uint32_t)(p - mem.m_buf);
         p += states[i].m_memorySize;
     }
+
+#if 1
+    AnimationStates* p_states = (AnimationStates*)mem.m_buf;
+    ENGINE_ASSERT(p_states->m_num_states == layer->m_num_states, "animation states compile check.");
+    for (uint32_t i=0; i<p_states->m_num_states; ++i)
+    {
+        const AnimationState* p_state = get_state(p_states, i);
+        const AnimationState* p_state1 = get_state(layer, i);
+        ENGINE_ASSERT(p_state == p_state1, "animation states compile check.");
+    }
+#endif
 
     return write_file(m_output, mem.m_buf, memSize);
 }

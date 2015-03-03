@@ -1,8 +1,6 @@
 #include "PackageCompiler.h"
 #include "Resource.h"
 
-#define NATIVE_MEMORY_ALIGN 16
-
 PackageCompiler::PackageCompiler()
 {
 
@@ -47,7 +45,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         const std::string& fileName = filesInFolder[i];
         std::string ext = getFileExt(fileName);
         int order = g_resourceMgr.get_resource_order(stringid_caculate(ext.c_str()));
-        if(order < -1)
+        if(order < 0)
         {
             LOGW("not engine resource %s.", fileName.c_str());
             continue;
@@ -69,16 +67,20 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             group = m_groups[index];
         }
 
-        if(!bundled) memSize += fileName.length();
+        if(!bundled) 
+            memSize += fileName.length();
 
         group->m_files.push_back(&fileName);
         uint32_t fileSize = (uint32_t)get_file_size(fileName);
-        fileSize = NATIVE_ALGIN_SIZE(fileSize);
+        fileSize = NATIVE_ALGIN_SIZE(fileSize) + NATIVE_ALIGN_VALUE;
         totalFileSize += fileSize;
     }
 
     std::sort(m_groups.begin(), m_groups.end(), compare_less_group);
     memSize += sizeof(ResourceGroup) * m_groups.size();
+    uint32_t acSize = memSize;
+    memSize = NATIVE_ALGIN_SIZE(memSize);
+
     LOGI("%s resource package group num = %d, total mem len = %d, total file size = %d",
         BX_FUNCTION, m_groups.size(), memSize, totalFileSize);
 
@@ -159,7 +161,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     }
 
     fwrite(mem.m_buf, 1, memSize, fp);
-    ENGINE_ASSERT(offset == mem.m_buf + memSize, "offset error.");
+    ENGINE_ASSERT(offset == mem.m_buf + acSize, "offset error.");
 
     if(bundled)
     {
