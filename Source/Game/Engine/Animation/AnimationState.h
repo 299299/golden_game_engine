@@ -46,7 +46,7 @@ struct SelectNode
     uint32_t                    m_type;
     uint32_t                    m_dynamic_data_offset;
     uint32_t                    m_num_children;
-    uint16_t                    m_child_indices[MAX_CHILDREN_NUM];
+    uint16_t                    m_child_offsets[MAX_CHILDREN_NUM];
 };
 
 struct AnimationState
@@ -90,7 +90,7 @@ struct AnimationStates
     uint32_t                    m_num_states;
     uint32_t                    m_state_key_offset;
     uint32_t                    m_dynamic_data_size;
-    uint32_t                    m_static_data_size;
+    uint32_t                    m_memory_size;
 };
 
 int find_state(const AnimationStates* , StringId);

@@ -78,7 +78,7 @@ INTERNAL void update_select_node(const char* n, const AnimationState* s, float f
     const SelectNode* node = (const SelectNode*)n;
     int num_of_children = node->m_num_children;
     int i = *((int*)(d + node->m_dynamic_data_offset));
-    const uint16_t* head = node->m_child_indices;
+    const uint16_t* head = node->m_child_offsets;
     float weights[MAX_CHILDREN_NUM] = {0,0,0,0,0,0,0,0};
     weights[i] = 1.0f;
     for (int i=0; i<num_of_children; ++i)
@@ -469,11 +469,11 @@ void AnimationStatesInstance::set_node_data(StringId name, void* d, int size)
     if(i < 0)
         return;
 
-    char* n = get_node(m_state, i);
-    int type = *(uint32_t*)n;
+    const char* n = get_node(m_state, i);
+    int type = *(const uint32_t*)n;
     ENGINE_ASSERT(type != AnimationNodeType::Value, "Can not set data to a value node.");
 
-    uint32_t offset = *((uint32_t*)n + 1);
+    uint32_t offset = *((const uint32_t*)n + 1);
     memcpy(m_dynamic_data + offset, d, size);
 }
 
