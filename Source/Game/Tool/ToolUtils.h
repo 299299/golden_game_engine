@@ -15,7 +15,7 @@ struct hkxAttributeGroup;
 #define DDS_ALPHA_FORMAT        ("DXT5")
 #define TEXCONV_PATH            ("texconv.exe")
 #define SHADERC_PATH            ("shaderc.exe")
-#define SHADER_INCLUDE_EXT      ("sc")
+#define SHADER_INCLUDE_EXT      ("sh")
 #define SHADER_SOURCE_PATH      INTERMEDIATE_PATH"core/shaders/"
 #define DC_RESULT               ("data_compiler_result.txt")
 
@@ -46,7 +46,7 @@ bool        write_file(const std::string& fileName, const void* buf, uint32_t bu
 uint32_t    get_file_size(const std::string& fileName);
 std::string remove_top_folder(const std::string& fileName);
 std::string get_top_folder(const std::string& dirName);
-int         shell_exec(const std::string& exe, const StringArray& args, const std::string& workDir = "", bool bHide = true);
+int         shell_exec(const std::string& exe, const StringArray& args, const std::string& workDir = "", bool bHide = true, std::string* output = 0);
 std::string name_to_file_path(const std::string& resourceName, const std::string& ext);
 bool        delete_file(const std::string& fileName);
 void        compile_shader(const std::string& src, const std::string& dst, const std::string& def, bool vs);

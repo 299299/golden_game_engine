@@ -1,5 +1,5 @@
 
-#include "common.sc"
+#include "common.sh"
 
 #ifdef ALPHA_MASK
 SAMPLER2D(u_texColor, TEX_COLOR_SLOT);

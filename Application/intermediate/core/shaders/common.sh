@@ -1,8 +1,8 @@
 
 
 #include "../../../../Source/Game/Engine/Graphics/ShaderInc.h"
-#include "bgfx_shader.sc"
-#include "shaderlib.sc"
+#include "bgfx_shader.sh"
+#include "shaderlib.sh"
 
 #define ALPHA_THRESHOLD 0.1f
 

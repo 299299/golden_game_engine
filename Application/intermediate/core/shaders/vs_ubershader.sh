@@ -1,5 +1,5 @@
 
-#include "common.sc"
+#include "common.sh"
 
 uniform mat4  u_lightMtx;
 uniform vec3  u_shadowParams;

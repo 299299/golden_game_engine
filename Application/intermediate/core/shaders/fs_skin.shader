@@ -12,4 +12,4 @@ $input v_wpos, v_normal, v_tangent, v_texcoord0, v_view, v_shadowcoord, v_binorm
 #define FOG
 #define FOG_TYPE 0
 #define SHADOW
-#include "fs_ubershader.sc"
+#include "fs_ubershader.sh"

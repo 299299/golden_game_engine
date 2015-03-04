@@ -130,7 +130,8 @@ bool ShaderIncludeCompiler::process(const std::string& input, const std::string&
     for(size_t i=0; i<shaderFiles.size(); ++i)
     {
         const std::string& shaderFile = shaderFiles[i];
-        if(isShaderProcessed(getFileName(shaderFile))) continue;
+        if(isShaderProcessed(getFileName(shaderFile)))
+            continue;
 
         ShaderCompiler* shader = new ShaderCompiler;
         shader->m_input = shaderFile;

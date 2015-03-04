@@ -3,4 +3,4 @@ $output v_texcoord0
 //[def=intermediate/core/shaders/shadow.def]
 #define SKINNING
 #define ALPHA_MASK
-#include "vs_shadow.sc"
+#include "vs_shadow.sh"

@@ -1,4 +1,4 @@
-#include "common.sc"
+#include "common.sh"
 
 #define SHADER_DEBUG
 

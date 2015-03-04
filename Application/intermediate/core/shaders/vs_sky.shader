@@ -1,7 +1,7 @@
 $input a_position, a_texcoord0
 $output v_texcoord0
 //[def=intermediate/core/shaders/sky.def]
-#include "common.sc"
+#include "common.sh"
 
 void main()
 {

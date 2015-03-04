@@ -3,4 +3,4 @@ $input v_wpos, v_normal, v_tangent, v_texcoord0, v_view, v_shadowcoord, v_binorm
 #define DIFFUSE_MAPPING
 #define SPECULAR_MAPPING
 #define SHADOW
-#include "fs_ubershader.sc"
+#include "fs_ubershader.sh"

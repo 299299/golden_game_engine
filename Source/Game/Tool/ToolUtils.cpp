@@ -367,20 +367,24 @@ std::string get_top_folder(const std::string& dirName)
     return ret.substr(0, npos);
 }
 
-int shell_exec(const std::string& exe, const StringArray& args, const std::string& workDir, bool bHide)
+int shell_exec(const std::string& exe, const StringArray& args, const std::string& workDir, bool bHide, std::string* output)
 {
+    int ret = 0;
 #ifdef WIN32
+    std::string arg_line = "/c ";
+    arg_line += exe;
+    for (size_t i=0; i<args.size(); ++i)
+    {
+        arg_line += " " + args[i];
+    }
+    if(output)
+        arg_line += " > shell_output.txt 2>&1";
     SHELLEXECUTEINFO ShExecInfo = {0};
     ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
     ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
     ShExecInfo.hwnd = NULL;
     ShExecInfo.lpVerb = NULL;
-    ShExecInfo.lpFile = exe.c_str();
-    std::string arg_line;
-    for (size_t i=0; i<args.size(); ++i)
-    {
-        arg_line += " " + args[i];
-    }
+    ShExecInfo.lpFile = "cmd.exe";
     ShExecInfo.lpParameters = arg_line.c_str();
     ShExecInfo.lpDirectory = workDir.length() ? workDir.c_str() : 0;
     ShExecInfo.nShow = bHide ? SW_HIDE : SW_SHOW;
@@ -391,8 +395,8 @@ int shell_exec(const std::string& exe, const StringArray& args, const std::strin
         LOGE("ShellExecuteEx error ");
         return -1;
     }
+    ret = 1;
     WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
-    return bRet;
 #else
     pid_t pid = fork();
     if (!pid)
@@ -410,11 +414,24 @@ int shell_exec(const std::string& exe, const StringArray& args, const std::strin
     {
         int exitCode;
         wait(&exitCode);
-        return exitCode;
+        ret = exitCode;
     }
     else
         return -1;
 #endif
+    if(output)
+    {
+        std::string dump_file = workDir + "shell_output.txt";
+        std::ifstream ifs(dump_file);
+        if(!ifs.good())
+            return ret;
+
+        std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        *output = str;
+        delete_file(dump_file);
+    }
+
+    return ret;
 }
 
 std::string name_to_file_path( const std::string& resourceName, const std::string& ext )
@@ -440,11 +457,13 @@ void compile_shader(const std::string& src, const std::string& dst, const std::s
     std::string folder = getFilePath(src);
     StringArray args;
     args.push_back(buf);
-    shell_exec(SHADERC_PATH, args, "");
+
+    std::string output;
+    shell_exec(SHADERC_PATH, args, "", true, &output);
 #if 1
     if(!isFileExist(dst))
     {
-        LOGE("shader err --> \n %s %s \n", SHADERC_PATH, buf);
+        LOGE("%s", output.c_str());
     }
 #endif
 }

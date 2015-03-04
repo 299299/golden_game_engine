@@ -1,6 +1,6 @@
 $input v_texcoord0
 //[def=intermediate/core/shaders/sky.def]
-#include "common.sc"
+#include "common.sh"
 SAMPLER2D(u_texColor, TEX_COLOR_SLOT);
 
 void main()

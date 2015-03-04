@@ -1,5 +1,5 @@
 
-#include "common.sc"
+#include "common.sh"
 
 void main()
 {

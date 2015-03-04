@@ -1,2 +1,2 @@
 //[def=intermediate/core/shaders/shadow.def]
-#include "fs_shadow.sc"
+#include "fs_shadow.sh"

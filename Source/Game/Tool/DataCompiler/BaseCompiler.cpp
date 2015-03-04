@@ -103,7 +103,7 @@ bool BaseCompiler::process( const std::string& input, const std::string& output 
     if(m_processed)
         return true;
 
-    std::ifstream ifs(input.c_str());
+    std::ifstream ifs(input);
     if(!ifs.good())
     {
         g_config->m_error.add_error("ifstream error %s", input.c_str());
