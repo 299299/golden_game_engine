@@ -46,5 +46,6 @@ struct Engine
     char                                    m_padding[3];
 };
 
+void register_engine_factories();
 
 extern Engine g_engine;

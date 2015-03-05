@@ -155,6 +155,7 @@ INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
         hk_anim_ctrl* anim_ctl = anim_ctls + i;
 #ifdef HAVOK_COMPILE
         hk_anim_ctrl* ac = new (anim_ctl) hk_anim_ctrl(anim_data->m_animation);
+        ac->m_name = anim_data->m_name;
         ac->set_loop(state->m_looped);
 #endif
     }
@@ -168,7 +169,7 @@ INTERNAL void destroy_state_dynamic_data(const AnimationState* state, char *d)
     for (int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = anim_ctls + i;
-        SAFE_REMOVEREF(ac);
+        SAFE_DESTRUCTOR(ac, hk_anim_ctrl);
     }
 }
 
@@ -252,6 +253,7 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
     m_ease_in_ctl = new hk_anim_ctrl(NULL);
     m_ease_out_ctrl = new hk_anim_ctrl(NULL);
     m_status = kLayerDefault;
+    m_weight = 1.0f; // default layer weight is 1.0
 
     Actor* actor = g_actorWorld.get_actor(id);
     ENGINE_ASSERT_ARGS(actor, "actor not exist %x", id);
@@ -278,6 +280,8 @@ void AnimationStatesInstance::destroy()
     }
 
     COMMON_DEALLOC(d);
+    SAFE_REMOVEREF(m_ease_in_ctl);
+    SAFE_REMOVEREF(m_ease_out_ctrl);
 }
 
 void AnimationStatesInstance::update( float dt )
@@ -369,6 +373,12 @@ void AnimationStatesInstance::change_state(const AnimationTranstion* t)
 
     float duration = t->m_duration;
     int type = t->m_ease_type;
+
+    // clear their ease status first
+    m_ease_in_ctl->easeOut(0.0f);
+    m_ease_out_ctrl->easeIn(0.0f);
+    m_ease_in_ctl->update(1.0f);
+    m_ease_out_ctrl->update(1.0f);
 
     m_ease_in_ctl->ease_in(duration, type);
     m_ease_out_ctrl->ease_out(duration, type);

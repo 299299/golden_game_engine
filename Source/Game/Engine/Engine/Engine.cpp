@@ -150,19 +150,17 @@ void Engine::core_init()
     g_threadMgr.init(true);
     g_profiler.init(TOTAL_BLOCK_NUM);
     g_resourceMgr.init();
+    register_engine_factories();
 }
 
 void Engine::subsystem_init()
 {
     TIMELOG("Engine Subsystem init");
 
-    if(!m_cfg.m_headless) g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
-    else g_engineMode = 1;
-
-    Graphics::register_factories();
-    PhysicsWorld::register_factories();
-    AnimationSystem::register_factories();
-    ActorWorld::register_factories();
+    if(!m_cfg.m_headless) 
+        g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
+    else
+        g_engineMode = 1;
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
     g_physicsWorld.init(MAX_PHYSICS, MAX_PROXY);
@@ -201,4 +199,12 @@ void Engine::subsystem_shutdown()
     Graphics::shutdown();
     g_debugDrawMgr.shutdown();
     g_resourceMgr.shutdown();
+}
+
+void register_engine_factories()
+{
+    Graphics::register_factories();
+    PhysicsWorld::register_factories();
+    AnimationSystem::register_factories();
+    ActorWorld::register_factories();
 }

@@ -245,7 +245,8 @@ void ResourcePackage::bringin_all_resources(int maxNum)
         for(uint32_t i=0; i<m_numGroups; ++i)
         {
             ResourceGroup& group = m_groups[i];
-            if(!group.m_factory->m_bringInFunc) continue;
+            if(!group.m_factory->m_bringInFunc) 
+                continue;
             bringin_group_resource(group, 0, group.m_numResources);
         }
     }

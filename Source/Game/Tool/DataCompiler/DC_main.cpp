@@ -7,6 +7,7 @@
 #include "Actor.h"
 #include "AnimationSystem.h"
 #include "PhysicsWorld.h"
+#include "Engine.h"
 //=================================================================
 #include "AnimationCompiler.h"
 #include "AnimationStateCompiler.h"
@@ -316,10 +317,7 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     g_profiler.init(TOTAL_BLOCK_NUM);
 #endif
 
-    Graphics::register_factories();
-    PhysicsWorld::register_factories();
-    AnimationSystem::register_factories();
-    ActorWorld::register_factories();
+    register_engine_factories();
 
     g_config = new DC_Config;
     const char* inputChar = cmdline->findOption('i');

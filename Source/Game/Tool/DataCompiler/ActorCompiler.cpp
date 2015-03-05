@@ -139,6 +139,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
             comp_data.m_compiler->getCompiledData(),
             comp_data.m_compiler->getCompiledDataSize());
         offset += data.m_size;
+        LOGI("component index = %d", data.m_index);
     }
 
     ENGINE_ASSERT((offset == (mem.m_buf + ac_size)), "offset address");

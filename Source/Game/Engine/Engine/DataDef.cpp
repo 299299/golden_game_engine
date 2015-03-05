@@ -9,15 +9,9 @@ const char*  g_textureNames[] =
     "u_texColor",
     "u_texNormal",
     "u_texSpecular",
-    "u_texRelfection",
     "u_texEmissive",
     "u_texLightmap",
-    "u_texBlendNormalMask",
-    "u_texIBL",
     "u_shadowMap",
-    "u_texReflectionMask",
-    "u_texAndirMap",
-    "u_texThickness",
     0
 };
 

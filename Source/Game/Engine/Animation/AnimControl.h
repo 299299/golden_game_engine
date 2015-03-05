@@ -9,7 +9,7 @@
 struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
     Animation*              m_animation;
-    StringId                m_name;
+    StringId                m_name; // for better debug
     bool                    m_enabled;
     char                    m_padding[3];
 
@@ -41,10 +41,10 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
     {
         switch(type)
         {
-        case kEaseCurveLinear:setEaseInCurve(1, 0.66f, 0.33f, 0);break;
-        case kEaseCurveFast:setEaseInCurve(1, 1, 0, 0);break;
+        case kEaseCurveLinear:setEaseOutCurve(1, 0.66f, 0.33f, 0);break;
+        case kEaseCurveFast:setEaseOutCurve(1, 0, 0, 0);break;
         case kEaseCurveSmooth:
-        default:setEaseInCurve(1, 1, 0, 0);break;
+        default:setEaseOutCurve(1, 1, 0, 0);break;
         }
         easeOut(time);
     }

@@ -15,6 +15,7 @@
 #include "Component.h"
 #include "Level.h"
 #include "AnimationState.h"
+#include "AnimControl.h"
 #include <bx/string.h>
 #include <bx/commandline.h>
 
@@ -44,8 +45,55 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
                 states->fire_event(t_name);
             }
         }
+
+        int n_num = cur_state->m_num_nodes;
+        StringId* n_names = (StringId*)((char*)cur_state + cur_state->m_node_name_offset);
+        char* nodes = (char*)cur_state + cur_state->m_node_offset;
+        extern const char* g_anim_node_names[];
+
+        for(int i=0; i<n_num; ++i)
+        {
+            int type = *((uint32_t*)nodes);
+            imguiLabel("    node name: %s, type %s", stringid_lookup(n_names[i]), g_anim_node_names[type]);
+            switch(type)
+            {
+            case AnimationNodeType::Lerp:
+            case AnimationNodeType::Additive:
+                {
+                    BinaryNode* node = (BinaryNode*)nodes;
+                    float* f = (float*)(states->m_dynamic_data + node->m_dynamic_data_offset);
+                    imguiSlider("     value: ", *f, 0.0f, 1.0f, 0.01f);
+                }
+                break;
+            case AnimationNodeType::Value:
+                {
+                    ValueNode* node = (ValueNode*)nodes;
+                    hk_anim_ctrl* ac = (hk_anim_ctrl*)(states->m_dynamic_data + node->m_dynamic_data_offset);
+                    imguiLabel("     animation = %s", stringid_lookup(ac->m_name));
+                }
+                break;
+            case AnimationNodeType::Select:
+                {
+                    SelectNode* node = (SelectNode*)nodes;
+                    int32_t* i = (int32_t*)(states->m_dynamic_data + node->m_dynamic_data_offset);
+                    imguiSlider("     value:", *i, 0, node->m_num_children - 1);
+                }
+                break;
+            default:
+                break;
+            }
+            nodes += NODE_SIZE;
+        }
     }
 
+    imguiLabel("animation skeleton control info:");
+    hkaAnimatedSkeleton* s = states->m_skeleton;
+    int num = s->getNumAnimationControls();
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
+        imguiLabel("%s weight = %f, time = %f", stringid_lookup(ac->m_name), ac->getMasterWeight(), ac->getLocalTime());
+    }
 }
 
 PreviewState::PreviewState()
@@ -160,6 +208,8 @@ void PreviewState::swith_graphics_debug( uint32_t flag )
 
 void PreviewState::draw_actor_info(ActorId32 _actorId, int _x, int _y, int _w, int _h)
 {
+    PROFILE(IMGUI_Actor_Info);
+
     Actor* _actor = g_actorWorld.get_actor(_actorId);
     if(!_actor)
         return;
@@ -190,7 +240,7 @@ void PreviewState::draw_actor_info(ActorId32 _actorId, int _x, int _y, int _w, i
         ComponentDebugDrawGUI* _gui = find_component_gui(_comp_type);
         imguiSeparatorLine();
         imguiLabel("%s component type:%s", _indent, stringid_lookup(_comp_type));
-        int _index = data->m_index;
+        int _index = data[i].m_index;
         ComponentFactory* _fac = g_componentMgr.get_factory(_index);
         void* _component = _fac->get_component(_actor->m_components[i]);
 

@@ -42,7 +42,7 @@
                     "duration":0.1,
                     "ease":"smooth",
                     "motion_blending":"default",
-                    "dest":"stand_idle"
+                    "dest":"idle_state"
                 }
             ],
             "nodes":

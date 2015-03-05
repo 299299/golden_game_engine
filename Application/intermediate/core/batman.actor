@@ -16,8 +16,8 @@
 			"type": "rig"
 		},
 		{
-			"name": "core\/batman_locomotion",
-			"type": "states"
+			"name": "core/batman_locomotion",
+			"type" : "states"
 		}
 	],
 	"name": "batman",

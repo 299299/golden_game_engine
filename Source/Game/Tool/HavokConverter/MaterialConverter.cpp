@@ -36,9 +36,6 @@ int MaterialConverter::getTextureSlot( const hkxMaterial::TextureStage& stage )
     case hkxMaterial::TEX_NORMAL:
         ret = TEX_NORMAL_SLOT;
         break;
-    case hkxMaterial::TEX_REFLECTION:
-        ret = TEX_REFLECTION_SLOT;
-        break;
     case hkxMaterial::TEX_SPECULAR:
         ret = TEX_SPECULAR_SLOT;
         break;

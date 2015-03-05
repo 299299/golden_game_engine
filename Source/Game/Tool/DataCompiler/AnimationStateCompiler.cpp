@@ -105,7 +105,7 @@ struct RuntimeAnimationState
         readNode(jsonNodes, node);
 
         //post process
-        m_state.m_looped = json_to_bool(o, "looped");
+        m_state.m_looped = json_to_bool(o, "looped", true);
         m_state.m_num_transitions = m_transitions.size();
         m_state.m_num_nodes = m_nodes.size();
         m_state.m_num_animations = m_animations.size();
@@ -121,7 +121,7 @@ struct RuntimeAnimationState
         m_state.m_animation_offset = offset;
         offset += sizeof(AnimationData) * m_state.m_num_animations;
 
-        m_state.m_node_name_offset = sizeof(StringId) * m_nodes.size();
+        m_state.m_node_name_offset = offset;
         offset += sizeof(StringId) * m_state.m_num_nodes;
 
         m_state.m_node_offset = offset;
@@ -191,7 +191,9 @@ struct RuntimeAnimationState
     {
         for (size_t i=0; i<m_transitions.size(); ++i)
         {
-            m_transitions[i].m_transition.m_next_state_index = findState(states, m_transitions[i].m_destName);
+            int index = findState(states, m_transitions[i].m_destName);
+            ENGINE_ASSERT(index >= 0, "RuntimeAnimationState findStates index != -1");
+            m_transitions[i].m_transition.m_next_state_index = index;
         }
     }
 

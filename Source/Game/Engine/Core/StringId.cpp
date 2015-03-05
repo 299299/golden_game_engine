@@ -38,7 +38,8 @@ const char* stringid_lookup(StringId id)
     if(!id) return "";
     bx::LwMutexScope _l(g_stringLock);
     StringTable::iterator iter = g_stringTable.find(id);
-    if(iter == g_stringTable.end()) return  0;
+    if(iter == g_stringTable.end()) 
+        return  0;
     return iter->second;
 }
 #define STRING_TABLE_FMT "%u,%d,%s\n"
