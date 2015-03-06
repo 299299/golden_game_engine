@@ -108,6 +108,7 @@ struct AnimationStatesInstance
     int                                 m_motion_blend_type;
     hkaAnimatedSkeleton*                m_skeleton;
     char*                               m_dynamic_data;
+    int                                 m_dirty;
 
     void init(const void*, ActorId32);
     void update(float dt);

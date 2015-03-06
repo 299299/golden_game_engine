@@ -7,7 +7,6 @@ class hkaAnimation;
 class hkaAnimationBinding;
 class hkaDefaultAnimationControl;
 class hkaPose;
-struct AnimationEvent;
 
 #define ANIMATION_FRAME_FPS          (30.0f)
 #define ANIMATION_TIME_PERFRAME      (1.0f/30.0f)
@@ -25,7 +24,6 @@ ENGINE_NATIVE_ALIGN(struct) Animation
 
     int  find_first_trigger(StringId name) const;
     int  find_next_closest_trigger(float time, bool bLoop) const;
-    uint32_t collect_triggers(float curTime, float dt, AnimationEvent* events) const;
     const AnimationTrigger* get_triggers() const;
 
     StringId                        m_mirrored_from;

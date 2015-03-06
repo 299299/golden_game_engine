@@ -194,8 +194,11 @@ void AnimationSystem::update_animations(float dt)
     if(!num) return;
     PROFILE(Animation_Update);
     AnimRigInstance* rigs = m_rigs.begin();
+    AnimationEvent* events = m_events;
     for(uint32_t i=0; i<num;++i)
     {
+        int num = rigs[i].collect_event(dt, events);
+        events += num;
         rigs[i].update(dt);
     }
     num = m_stateLayers.size();

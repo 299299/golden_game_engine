@@ -30,7 +30,7 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
     const AnimationState* cur_state = states->m_state;
 
     StringId cur_name = cur_state ? cur_state->m_name : 0;
-    imguiLabel("cur state = %s", stringid_lookup(cur_name));
+    imguiLabel("cur state = %s, dirty = %d", stringid_lookup(cur_name), states->m_dirty);
 
     if(cur_state)
     {
@@ -62,7 +62,8 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
                 {
                     BinaryNode* node = (BinaryNode*)nodes;
                     float* f = (float*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    imguiSlider("     value: ", *f, 0.0f, 1.0f, 0.01f);
+                    if(imguiSlider("     value: ", *f, 0.0f, 1.0f, 0.01f))
+                        states->m_dirty = 1;
                 }
                 break;
             case AnimationNodeType::Value:
@@ -76,7 +77,8 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
                 {
                     SelectNode* node = (SelectNode*)nodes;
                     int32_t* i = (int32_t*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    imguiSlider("     value:", *i, 0, node->m_num_children - 1);
+                    if(imguiSlider("     value:", *i, 0, node->m_num_children - 1))
+                        states->m_dirty = 1;
                 }
                 break;
             default:

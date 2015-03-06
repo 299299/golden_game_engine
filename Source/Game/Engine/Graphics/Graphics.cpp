@@ -450,6 +450,8 @@ namespace bgfx
     void rendererDestroyD3D9() {};
     struct RendererContextI* rendererCreateD3D12()  { return 0;};
     void rendererDestroyD3D12() {};
+    struct RendererContextI* rendererCreateVK()  { return 0;};
+    void rendererDestroyVK() {};
 };
 
 

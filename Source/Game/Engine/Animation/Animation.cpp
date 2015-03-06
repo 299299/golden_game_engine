@@ -6,7 +6,6 @@
 #include "MathDefs.h"
 #include "Utils.h"
 #include "Profiler.h"
-#include "Event.h"
 #include "DataDef.h"
 
 #ifdef HAVOK_COMPILE
@@ -83,25 +82,6 @@ float Animation::get_length() const
     return 2.0f;
 #endif
 }
-
-uint32_t Animation::collect_triggers( float curTime, float dt, AnimationEvent* events ) const
-{
-    uint32_t num = m_num_triggers;
-    const AnimationTrigger* head = get_triggers();
-    uint32_t retNum = 0;
-    uint32_t startIndex = -1;
-    for(uint32_t i=0; i<num; ++i)
-    {
-        const AnimationTrigger& trigger  = head[i];
-        float tTime = trigger.m_time;
-        if(tTime > curTime && tTime + dt < curTime)
-        {
-            events[retNum++].m_name = trigger.m_name;
-        }
-    }
-    return retNum;
-}
-
 
 const AnimationTrigger* Animation::get_triggers() const
 {

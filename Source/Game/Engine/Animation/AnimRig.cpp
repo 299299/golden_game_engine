@@ -6,6 +6,7 @@
 #include "MathDefs.h"
 #include "Utils.h"
 #include "AnimControl.h"
+#include "Event.h"
 #include <bx/fpumath.h>
 #ifdef HAVOK_COMPILE
 #include <Animation/Animation/Playback/hkaAnimatedSkeleton.h>
@@ -158,6 +159,38 @@ void AnimRigInstance::test_animation(const char* name)
     ac->set_loop(true);
     ac->removeReference();
 #endif
+}
+
+int AnimRigInstance::collect_event( float dt, AnimationEvent* events )
+{
+    ActorId32 actor = m_actor;
+    hkaAnimatedSkeleton* s = m_skeleton;
+    int num = s->getNumAnimationControls();
+    int r_num = 0;
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
+        const Animation* anim = ac->m_animation;
+        const AnimationTrigger* triggers = anim->get_triggers();
+        int t_num = anim->m_num_triggers;
+        float local_time = ac->getLocalTime();
+        float future_time = local_time + dt;
+        for(int j=0; j<t_num; ++j)
+        {
+            const AnimationTrigger* t = triggers + i;
+            float time = t->m_time;
+            if(time > local_time && time < future_time)
+            {
+                AnimationEvent& evt = events[r_num++];
+                evt.m_who = actor;
+                evt.m_name = t->m_name;
+            }
+            if(time > future_time)
+                break;
+        }
+    }
+
+    return r_num;
 }
 
 

@@ -305,10 +305,11 @@ void AnimationStatesInstance::update( float dt )
 
 void AnimationStatesInstance::update_default( float dt )
 {
-    if(!m_state)
+    if(!m_state || !m_dirty)
         return;
 
     update_node(m_state, 0, m_weight, m_dynamic_data);
+    m_dirty = 0;
 }
 
 void AnimationStatesInstance::update_crossfading( float dt )
@@ -383,6 +384,7 @@ void AnimationStatesInstance::change_state(const AnimationTranstion* t)
     m_ease_in_ctl->ease_in(duration, type);
     m_ease_out_ctrl->ease_out(duration, type);
     m_motion_blend_type = t->m_motion_blend_type;
+    m_dirty = 1;
 }
 
 void AnimationStatesInstance::change_state( StringId name )
@@ -489,6 +491,7 @@ void AnimationStatesInstance::set_node_data(StringId name, void* d, int size)
 
     uint32_t offset = *((const uint32_t*)n + 1);
     memcpy(m_dynamic_data + offset, d, size);
+    m_dirty = 1;
 }
 
 
