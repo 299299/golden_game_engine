@@ -68,7 +68,7 @@ void submit_material(Material* m)
         Graphics::set_texture(TEX_SHADOWMAP_SLOT, g_shadowMap.m_shadowMapFB->m_handle);
 
     extern UniformPerObject     g_uniformPerObject;
-    bgfx::setUniform(g_uniformPerObject.m_uv, m->m_offset_repeat);
+    bgfx::setUniform(g_uniformPerObject.m_uv, m->m_offset_scale);
     bgfx::setUniform(g_uniformPerObject.m_diffuse, m->m_diffuse);
     bgfx::setUniform(g_uniformPerObject.m_specular, m->m_specular);
     bgfx::setUniform(g_uniformPerObject.m_params1, m->m_params1);

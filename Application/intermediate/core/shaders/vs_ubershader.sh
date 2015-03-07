@@ -29,7 +29,7 @@ void main()
     v_normal = mul(u_model[0], normal).xyz;
     worldTangent = mul(u_model[0], a_tangent);
 #endif
-    
+
     const float shadowMapOffset = u_shadowParams.x;
     vec3 posOffset = v_wpos.xyz + v_normal * shadowMapOffset;
     v_shadowcoord = mul(u_lightMtx, vec4(posOffset, 1));
@@ -38,9 +38,9 @@ void main()
     v_view = normalize(u_camPos - v_wpos.xyz);
 
     vec2 tex = float2(a_texcoord0.x, (1.0-a_texcoord0.y));
-    tex *= u_uvOffsetAndRepeat.zw;
-    v_texcoord0 = u_uvOffsetAndRepeat.xy + tex;
-    
+    tex *= u_uvOffsetAndScale.zw;
+    v_texcoord0 = u_uvOffsetAndScale.xy + tex;
+
     v_normal = normalize(v_normal);
     v_tangent = normalize(worldTangent.xyz);
     v_binormal = cross(v_normal, v_tangent);

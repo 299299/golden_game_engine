@@ -12,7 +12,8 @@ void json_transform(const jsonxx::Object& jValue, float* t, float* r, float* s)
     vec3_make(t, 0,0,0);
     vec3_make(r, 0,0,0);
     r[3] = 1;
-    if(s) vec3_make(s, 1,1,1);
+    if(s) 
+        vec3_make(s, 1,1,1);
 
     json_to_floats(jValue, "translation", t, 3);
     int nRet = json_to_floats(jValue, "rotation", r, 4);
@@ -68,9 +69,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
             addDependency("actor resource", name_to_file_path(typeName, EngineNames::ACTOR));
         }
         else
-        {
             index = iter->second;
-        }
         actorIndices[i] = index;
         if(!actorValue.get<bool>("packed" ,false))
             continue;
@@ -111,9 +110,7 @@ bool LevelCompiler::readJSON( const jsonxx::Object& root )
     }
 
     for (uint32_t i = 0; i < numOfResources; ++i)
-    {
         resources[i].m_name = resourceNames[i];
-    }
 
     return write_file(m_output, mem.m_buf, memSize);
 }

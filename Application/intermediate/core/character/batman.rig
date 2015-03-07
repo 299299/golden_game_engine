@@ -1,7 +1,7 @@
 {
 	"attachments": [
 	],
-	"havok_file": "intermediate\/core\/batman_rig.havok",
+	"havok_file": "intermediate\/core\/character\/batman_rig.havok",
 	"human_body": {
 		"head": "Bip01_Head",
 		"neck": "Bip01_Neck" 
@@ -81,6 +81,6 @@
 		"Bip01_RUpArmTwist",
 		"Bip01_RUpArmTwist1" 
 	],
-	"name": "core\/batman",
+	"name": "core\/character\/batman",
 	"type": "rig" 
 } 

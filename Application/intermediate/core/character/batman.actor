@@ -1,0 +1,21 @@
+{
+	"asset_path": "",
+	"class": "character",
+	"components": [
+		{
+			"materials": [
+				"core\/character\/batman_Guard_NoRain_Mat",
+				"core\/character\/batman_Guard_A_Head_A2_FaceFX_Mat" 
+			],
+			"mesh": "core\/character\/batman",
+			"name": "core\/character\/batman",
+			"type": "model" 
+		},
+		{
+			"name": "core\/character\/batman",
+			"type": "rig" 
+		} 
+	],
+	"name": "batman",
+	"source_file": "havok\/batman.hkt" 
+} 

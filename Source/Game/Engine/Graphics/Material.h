@@ -42,7 +42,7 @@ struct MatSampler
 
 struct Material
 {
-    float                               m_offset_repeat[4];
+    float                               m_offset_scale[4];
     float                               m_diffuse[4];
     float                               m_specular[4];
     float                               m_params1[4];

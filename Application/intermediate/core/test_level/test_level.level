@@ -1,0 +1,72 @@
+{
+	"actors": [
+		{
+			"asset_path": "",
+			"class": "level_geometry",
+			"components": [
+				{
+					"materials": [
+						"core\/test_level\/lambert1"
+					],
+					"mesh": "core\/test_level\/pCube1",
+					"name": "core\/test_level\/pCube1",
+					"type": "model"
+				}
+			],
+			"name": "pCube1",
+			"packed": true,
+			"rotation": [
+				0,
+				0,
+				0,
+				1
+			],
+			"scale": [
+				1,
+				1,
+				1
+			],
+			"source_file": "",
+			"translation": [
+				0.003753030672669411,
+				0.02156689204275608,
+				-0.04673603549599648
+			],
+			"type": "core\/test_level\/pCube1"
+		},
+
+		{
+			"asset_path": "",
+			"class": "level_geometry",
+			"components": [
+				{
+					"materials": [
+						"core\/test_level\/lambert1"
+					],
+					"mesh": "core\/test_level\/pCube1",
+					"name": "core\/test_level\/pCube1",
+					"type": "model"
+				}
+			],
+			"name": "pCube2",
+			"packed": true,
+			"rotation": [
+				0,
+				0,
+				0,
+				1
+			],
+			"scale": [
+				1,
+				1,
+				1
+			],
+			"source_file": "",
+			"translation":
+			[
+				2, 0, 2
+			],
+			"type": "core\/test_level\/pCube1"
+		}
+	]
+}

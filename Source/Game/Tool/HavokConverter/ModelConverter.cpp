@@ -5,6 +5,7 @@
 #include "MathDefs.h"
 #include "Model.h"
 #include "Mesh.h"
+#include <vertexdecl.h>
 
 ModelConverter::ModelConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
@@ -193,13 +194,28 @@ void ModelConverter::writeMesh(const std::string& fileName)
 
     ENGINE_ASSERT((head + ac_size) == p, "error offset");
     write_file(fileName, head, memorySize);
+
+    if(g_hc_config->m_verbose)
+    {
+        LOGI("******************** verbose mesh information %s ********************", m_meshName.c_str());
+        Mesh* p_mesh = (Mesh*)head;
+        bgfx::dump(p_mesh->m_decl);
+        for(uint32_t i=0; i<p_mesh->m_num_submeshes; ++i)
+        {
+            LOGI("verbose dumpping sub mesh %d", i);
+            const void* d = get_mesh_vertex_data(p_mesh, i);
+            m_meshes[0]->dumpVerterx((char*)d, 8);
+        }
+        LOGI("******************** end of verbose mesh ********************");
+    }
+
 #endif
 }
 
 void ModelConverter::postProcess()
 {
     std::string writeMeshFile = m_ownner->m_config->m_exportFolder + m_name + ".mesh";
-    m_meshFile = m_ownner->m_config->m_rootPath + m_name;
+    m_meshName = m_ownner->m_config->m_rootPath + m_name;
     writeMesh(writeMeshFile);
 
     for(size_t i=0; i<m_meshes.size(); ++i)
@@ -212,7 +228,7 @@ jsonxx::Object
 ModelConverter::serializeToJson() const
 {
     jsonxx::Object modelObject;
-    modelObject << "mesh" << m_meshFile;
+    modelObject << "mesh" << m_meshName;
     modelObject << "name" << getResourceName();
     modelObject << "type" << getTypeName();
 

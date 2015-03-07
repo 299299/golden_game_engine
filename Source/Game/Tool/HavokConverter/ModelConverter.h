@@ -50,6 +50,6 @@ public:
     std::vector<Matrix>                 m_joints;
     Aabb                                m_bbox;
     RigSkinData*                        m_skin;
-    std::string                         m_meshFile;
+    std::string                         m_meshName;
     int                                 m_type;
 };

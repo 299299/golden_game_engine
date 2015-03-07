@@ -89,13 +89,9 @@ void MaterialConverter::process(hkxMaterial* material)
     }
 
     if(m_samplers.size() == 0)
-    {
         m_name = COMMON_MAT_NAME;
-    }
     else
-    {
         m_name = m_ownner->m_config->m_exportName + "_" + m_name;
-    }
 
     m_shadowShader = "shadow";
     const char* shader_comb_names[] =
@@ -110,6 +106,9 @@ void MaterialConverter::process(hkxMaterial* material)
             m_shader += shader_comb_names[i];
         }
     }
+
+    if(m_shader.empty())
+        m_shader = DEFAULT_SHADER;
 
     if(m_model->m_type == kModelSkinning)
     {
@@ -137,6 +136,24 @@ jsonxx::Object MaterialConverter::serializeToJson() const
     rootObject << "name" << getResourceName();
     rootObject << "shader" << m_shader;
     rootObject << "shadow_shader" << m_shadowShader;
+    jsonxx::Array uvArray;
+    uvArray << m_material->m_uvMapOffset[0];
+    uvArray << m_material->m_uvMapOffset[1];
+    uvArray << m_material->m_uvMapScale[0];
+    uvArray << m_material->m_uvMapScale[1];
+    rootObject << "uv_offset_scale" << uvArray;
+    jsonxx::Array diffuseArray;
+    for (int i=0; i<4; ++i)
+    {
+        diffuseArray << m_material->m_diffuseColor(i);
+    }
+    rootObject << "diffuse" << diffuseArray;
+    jsonxx::Array specularArray;
+    for (int i=0; i<4; ++i)
+    {
+        specularArray << m_material->m_diffuseColor(i);
+    }
+    rootObject << "specular" << specularArray;
 
     extern const char* g_matFlagNames[];
 

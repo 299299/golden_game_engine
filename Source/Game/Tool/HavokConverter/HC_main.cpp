@@ -37,6 +37,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     g_hc_config->m_packNormal = cmdline->hasArg("packnormal");
     g_hc_config->m_packUV = cmdline->hasArg("packuv");
     g_hc_config->m_slient = cmdline->hasArg("slient");
+    g_hc_config->m_verbose = cmdline->hasArg("verbose");
 
     Actor_Config config;
     ActorConverter* converter = 0;
@@ -73,6 +74,10 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         string_replace(path, INTERMEDIATE_PATH, "");
         config.m_rootPath = path;
         LOGD("export-folder=%s *********** root-folder=%s", config.m_exportFolder.c_str(), config.m_rootPath.c_str());
+    }
+    else
+    {
+        config.m_exportFolder = TEMP_PATH;
     }
     config.m_output = config.m_exportFolder + config.m_exportName + "." + std::string(EngineNames::ACTOR);
 

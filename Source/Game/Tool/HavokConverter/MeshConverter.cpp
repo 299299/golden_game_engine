@@ -61,7 +61,7 @@ static bgfx::Attrib::Enum havokAttribToBgfx(const hkxVertexDescription::DataUsag
     case hkxVertexDescription::HKX_DU_BLENDINDICES:
         return bgfx::Attrib::Indices;
     case hkxVertexDescription::HKX_DU_BINORMAL:
-        //return bgfx::Attrib::Bitangent;
+        return bgfx::Attrib::Bitangent;
     default:
         return bgfx::Attrib::Count;
     }
@@ -349,10 +349,10 @@ uint32_t MeshConverter::writeIndexBuffer(char* blob)
     return ret;
 }
 
-void MeshConverter::dumpVerterx( char* blob )
+void MeshConverter::dumpVerterx( char* blob, uint32_t dumpNum )
 {
-    uint32_t dumpNum = 6;
-    if(dumpNum > m_numVertices) dumpNum = m_numVertices;
+    if(dumpNum > m_numVertices) 
+        dumpNum = m_numVertices;
     char* vStart = blob;
     for(uint32_t j=0; j<dumpNum; ++j)
     {

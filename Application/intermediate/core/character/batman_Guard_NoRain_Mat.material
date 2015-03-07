@@ -1,7 +1,13 @@
 {
+	"diffuse": [
+		1,
+		1,
+		1,
+		1 
+	],
 	"flags": [
 	],
-	"name": "core\/batman_Guard_NoRain_Mat",
+	"name": "core\/character\/batman_Guard_NoRain_Mat",
 	"samplers": [
 		{
 			"flags": [
@@ -10,7 +16,7 @@
 			"texture": {
 				"format": "DXT5",
 				"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_D.DDS",
-				"name": "core\/Guard_A4_Raincoat_D" 
+				"name": "core\/character\/Guard_A4_Raincoat_D" 
 			} 
 		},
 		{
@@ -20,10 +26,22 @@
 			"texture": {
 				"format": "DXT5",
 				"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_N.DDS",
-				"name": "core\/Guard_A4_Raincoat_N" 
+				"name": "core\/character\/Guard_A4_Raincoat_N" 
 			} 
 		} 
 	],
 	"shader": "skin_diff_norm",
-	"shadow_shader": "skin_shadow" 
+	"shadow_shader": "skin_shadow",
+	"specular": [
+		1,
+		1,
+		1,
+		1 
+	],
+	"uv_offset_scale": [
+		0,
+		0,
+		1,
+		1 
+	] 
 } 

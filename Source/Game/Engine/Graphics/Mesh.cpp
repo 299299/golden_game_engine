@@ -1,6 +1,6 @@
 #include "Mesh.h"
 #include "Log.h"
-
+#include <vertexdecl.h>
 
 void  bringin_resource_mesh(void* resource)
 {

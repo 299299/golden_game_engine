@@ -40,7 +40,7 @@ public:
     uint32_t writeVertexBuffer(char* blob);
     uint32_t writeIndexBuffer(char* blob);
     uint32_t getVertexStride() const { return m_decl.getStride(); };
-    void dumpVerterx(char* blob);
+    void dumpVerterx(char* blob, uint32_t dumpNum);
 
 private:
     void processVertexBuffer(hkxVertexBuffer* vb);

@@ -35,6 +35,7 @@ void showHelp()
         "--slient do not show error msg box\n"
         "--packnormal pack normal\n"
         "--packuv pack uv\n"
+        "--verpose pack uv\n"
         "-----------------------------------------\n"
         "Data Compiler options\n"
         "-i input dir \n"

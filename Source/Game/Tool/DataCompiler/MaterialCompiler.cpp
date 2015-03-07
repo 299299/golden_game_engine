@@ -59,29 +59,18 @@ bool MaterialCompiler::readJSON( const jsonxx::Object& root )
                             | BGFX_STATE_CULL_CCW \
                             | BGFX_STATE_MSAA;
 
+    for(int i=0; i<4; ++i)
+        m->m_diffuse[i] = 1.0f;
+    for(int i=0; i<4; ++i)
+        m->m_specular[i] = 1.0f;
+    m->m_offset_scale[0] = 0;
+    m->m_offset_scale[1] = 0;
+    m->m_offset_scale[2] = 1;
+    m->m_offset_scale[3] = 1;
 
-    json_to_floats(root, "diffuse", m->m_diffuse, 3);
-    m->m_diffuse[3] = json_to_float(root, "diffuse_alpha", 1.0f);
-    json_to_floats(root, "specular", m->m_specular, 3);
-    m->m_specular[3] = json_to_float(root, "specular_power", 20.0f);
-
-    //convert all color 255 to 1 range.
-    for(uint32_t i=0; i<3; ++i)
-    {
-        m->m_diffuse[i] /= 255;
-    }
-    for(uint32_t i=0; i<3; ++i)
-    {
-        m->m_specular[i] /= 255;
-    }
-
-    m->m_offset_repeat[0] = 0;
-    m->m_offset_repeat[1] = 0;
-    m->m_offset_repeat[2] = 1;
-    m->m_offset_repeat[3] = 1;
-
-    json_to_floats(root, "uv_offset", m->m_offset_repeat, 2);
-    json_to_floats(root, "uv_repeat", m->m_offset_repeat + 2, 2);
+    json_to_floats(root, "diffuse", m->m_diffuse, 4);
+    json_to_floats(root, "specular", m->m_specular, 4);
+    json_to_floats(root, "uv_offset_scale", m->m_offset_scale, 4);
 
     extern const char*  g_textureNames[];
     extern const char* g_textureFlagNames[];

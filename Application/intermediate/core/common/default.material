@@ -1,8 +1,7 @@
 {
     "shader": "diff_norm",
     "shadow_shader": "shadow",
-    "uv_offset":[0,0],
-    "uv_repeat":[10,10],
+    "uv_offset_scale":[0,0,10,10],
     "samplers":
     [
         {
@@ -15,4 +14,4 @@
             "texture": "core/common/default_normal"
         }
     ]
-} 
+}

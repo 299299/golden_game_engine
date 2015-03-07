@@ -35,7 +35,7 @@
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(316): 	u_time, unknown type
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(312): 	u_camPos, 8752, size 12, flags 0x00000002, 5
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(316): 	u_camDist, unknown type
-..\..\..\tools\shaderc\shaderc_dx11.cpp(312): 	u_uvOffsetAndRepeat, 8784, size 16, flags 0x00000002, 5
+..\..\..\tools\shaderc\shaderc_dx11.cpp(312): 	u_uvOffsetAndScale, 8784, size 16, flags 0x00000002, 5
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(316): 	u_fogParams, unknown type
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(312): 	u_lightMtx, 8816, size 64, flags 0x00000002, 9
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(312): 	u_shadowParams, 8880, size 12, flags 0x00000002, 5
@@ -44,6 +44,6 @@
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_viewProj, mat4, 0, 288, 4
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_model, mat4, 128, 416, 512
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_camPos, vec2, 0, 8752, 1
-..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_uvOffsetAndRepeat, vec2, 0, 8784, 1
+..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_uvOffsetAndScale, vec2, 0, 8784, 1
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_lightMtx, mat4, 0, 8816, 4
 ..\..\..\tools\shaderc\shaderc_dx11.cpp(366): u_shadowParams, vec2, 0, 8880, 1

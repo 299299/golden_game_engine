@@ -222,7 +222,7 @@ Actor_Config* LevelConverter::createConfig(const std::string& nodeName)
     cfg->m_assetFolder = m_config->m_assetFolder;
     cfg->m_workspaceFolder = m_config->m_workspaceFolder;
     cfg->m_exportFolder = m_config->m_exportFolder;
-    cfg->m_exportName = m_name + "_" + nodeName;
+    cfg->m_exportName = nodeName;//m_name + "_" + nodeName;
     cfg->m_rootPath = m_config->m_rootPath;
     cfg->m_assetPath = m_config->m_assetPath;
     cfg->m_exportClass = "level_geometry";

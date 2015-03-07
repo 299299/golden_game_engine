@@ -9,7 +9,7 @@
 uniform float   u_time;
 uniform vec3    u_camPos;
 uniform vec2    u_camDist;
-uniform vec4    u_uvOffsetAndRepeat;
+uniform vec4    u_uvOffsetAndScale;
 uniform vec4    u_fogParams;
 
 float LinearizeDepth(float depth)

@@ -63,3 +63,4 @@ ipch/
 .build/
 gameDebug.exe
 gameDebug
+*.rdc

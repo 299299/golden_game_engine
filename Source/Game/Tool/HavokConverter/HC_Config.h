@@ -20,6 +20,7 @@ struct HC_Config
     ,m_packNormal(false)
     ,m_packUV(false)
     ,m_slient(false)
+    ,m_verbose(false)
     {
     }
 
@@ -29,6 +30,7 @@ struct HC_Config
     bool                        m_packNormal;
     bool                        m_packUV;
     bool                        m_slient;
+    bool                        m_verbose;
 };
 
 class hkpPhysicsData;

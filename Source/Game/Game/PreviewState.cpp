@@ -99,8 +99,10 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
 }
 
 PreviewState::PreviewState()
-    :m_preview_actor(0)
+    :m_preview_actor(INVALID_ID)
     ,m_preview_level(0)
+    ,m_actor_name(0)
+    ,m_level_name(0)
     ,m_bgfx_debug(BGFX_DEBUG_TEXT)
     ,m_show_profile(false)
     ,m_draw_debug_graphics(false)
@@ -162,7 +164,10 @@ void PreviewState::step( float dt )
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
 
-    draw_actor_info(m_preview_actor, 0, 25, 400, 600);
+    if(m_preview_level)
+        draw_level_info(m_level_name, m_preview_level, 0, 25, 400, 600);
+    else
+        draw_actor_info(m_actor_name, m_preview_actor, 0, 25, 400, 600);
 }
 
 void PreviewState::on_enter( GameState* prev_state )
@@ -179,6 +184,8 @@ void PreviewState::process_cmd_args( void* p )
     bx::CommandLine* cmd = (bx::CommandLine*)p;
     const char* actor_name = cmd->findOption("actor");
     const char* level_name = cmd->findOption("level");
+    m_actor_name = actor_name;
+    m_level_name = level_name;
 
     if(actor_name)
     {
@@ -208,53 +215,6 @@ void PreviewState::swith_graphics_debug( uint32_t flag )
     bgfx::setDebug(m_bgfx_debug);
 }
 
-void PreviewState::draw_actor_info(ActorId32 _actorId, int _x, int _y, int _w, int _h)
-{
-    PROFILE(IMGUI_Actor_Info);
-
-    Actor* _actor = g_actorWorld.get_actor(_actorId);
-    if(!_actor)
-        return;
-
-    const ActorResource* _res = _actor->m_resource;
-    if(!_res)
-        return;
-
-    static int32_t _scroll = 0;
-    static bool _enabled = true;
-
-    char _buf[256];
-    bx::snprintf(_buf, sizeof(_buf), "Actor %x", _actorId);
-
-    imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
-    _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
-
-    uint32_t _num = _res->m_num_components;
-    ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
-    int _class = _res->m_class;
-    extern const char* g_actorClassNames[];
-    imguiLabel("[%s] [%x] has [%d] components: ", g_actorClassNames[_class], _actorId, _num);
-    const char* _indent = "    ";
-
-    for(uint32_t i=0; i<_num; ++i)
-    {
-        StringId _comp_type = data[i].m_type;
-        ComponentDebugDrawGUI* _gui = find_component_gui(_comp_type);
-        imguiSeparatorLine();
-        imguiLabel("%s component type:%s", _indent, stringid_lookup(_comp_type));
-        int _index = data[i].m_index;
-        ComponentFactory* _fac = g_componentMgr.get_factory(_index);
-        void* _component = _fac->get_component(_actor->m_components[i]);
-
-        if(_gui)
-        {
-            _gui->m_function(_component, data + i);
-        }
-    }
-
-    imguiEndScrollArea();
-}
-
 ComponentDebugDrawGUI* PreviewState::find_component_gui( StringId _type )
 {
     int _num = m_num_component_gui;
@@ -265,4 +225,82 @@ ComponentDebugDrawGUI* PreviewState::find_component_gui( StringId _type )
             return _head + i;
     }
     return 0;
+}
+
+
+void PreviewState::draw_actor_info(const char* name, ActorId32 _actorId, int _x, int _y, int _w, int _h)
+{
+    PROFILE(IMGUI_Actor_Info);
+    static int32_t _scroll = 0;
+    static bool _enabled = true;
+    char _buf[256];
+    bx::snprintf(_buf, sizeof(_buf), "Actor %s", name);
+    imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
+    _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
+    draw_components_info(_actorId);
+    imguiEndScrollArea();
+}
+
+void PreviewState::draw_level_info( const char* name, Level* level, int _x, int _y, int _w, int _h )
+{
+    PROFILE(IMGUI_Level_Info);
+
+    if(!level)
+        return;
+
+    static int32_t _scroll = 0;
+    static bool _enabled = true;
+
+    char _buf[256];
+    bx::snprintf(_buf, sizeof(_buf), "Level %s", name);
+
+    imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
+    _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
+
+    int num = level->m_num_objects;
+    LevelObject* objects = (LevelObject*)((char*)level + level->m_object_offset);
+    for (int i=0; i<num; ++i)
+    {
+        LevelObject& object = objects[i];
+        imguiSeparatorLine();
+        imguiLabel("Actor %s", stringid_lookup(object.m_name));
+        draw_components_info(object.m_actor);
+    }
+
+    imguiEndScrollArea();
+}
+
+void PreviewState::draw_components_info( ActorId32 actorId )
+{
+    Actor* _actor = g_actorWorld.get_actor(actorId);
+    if(!_actor)
+        return;
+
+    const ActorResource* _res = _actor->m_resource;
+    if(!_res)
+        return;
+
+    uint32_t _num = _res->m_num_components;
+    ComponentData* data = (ComponentData*)((char*)_res + _res->m_component_data_offset);
+    int _class = _res->m_class;
+    extern const char* g_actorClassNames[];
+    imguiLabel("[%s] [%x] has [%d] components: ", g_actorClassNames[_class], actorId, _num);
+    const char* _indent = "    ";
+
+    for(uint32_t i=0; i<_num; ++i)
+    {
+        StringId _comp_type = data[i].m_type;
+        ComponentDebugDrawGUI* _gui = find_component_gui(_comp_type);
+        imguiLabel("%s component type:%s", _indent, stringid_lookup(_comp_type));
+        int _index = data[i].m_index;
+        ComponentFactory* _fac = g_componentMgr.get_factory(_index);
+        void* _component = _fac->get_component(_actor->m_components[i]);
+
+        if(_gui)
+        {
+            _gui->m_function(_component, data + i);
+        }
+
+        imguiSeparator();
+    }
 }

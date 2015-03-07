@@ -131,7 +131,7 @@ INTERNAL void createUniforms()
     g_uniformPerFrame.m_fogParams = createEngineUniform("u_fogParams", bgfx::UniformType::Uniform4fv);
     g_uniformPerFrame.m_zParams = createEngineUniform("u_camDist", bgfx::UniformType::Uniform2fv);
 
-    g_uniformPerObject.m_uv = createEngineUniform("u_uvOffsetAndRepeat", bgfx::UniformType::Uniform4fv);
+    g_uniformPerObject.m_uv = createEngineUniform("u_uvOffsetAndScale", bgfx::UniformType::Uniform4fv);
     for(int i=0; i<TEX_MAX_SLOT; ++i)
     {
         const char* _name = g_textureNames[i];
@@ -151,6 +151,44 @@ INTERNAL void createUniforms()
 
     g_shadowMap.m_lightMtx = createEngineUniform("u_lightMtx", bgfx::UniformType::Uniform4x4fv);
     g_shadowMap.m_paramUniform = createEngineUniform("u_shadowParams", bgfx::UniformType::Uniform3fv);
+}
+
+INTERNAL void postProcessInit()
+{
+    int width = g_win32Context.m_width;
+    int height = g_win32Context.m_height;
+
+    int smSize = SHADOWMAP_SIZE;
+    g_shadowMap.m_shadowMapSize = smSize;
+    g_shadowMap.m_shadowMapFB = createFrameBuffer(smSize, smSize, 1, 1, false, bgfx::TextureFormat::D16, BGFX_TEXTURE_COMPARE_LEQUAL);
+
+#if 0
+    uint32_t msaa = (g_resetFlag & BGFX_RESET_MSAA_MASK)>>BGFX_RESET_MSAA_SHIFT;
+    uint32_t msaaMask = (msaa+1)<<BGFX_TEXTURE_RT_MSAA_SHIFT;
+    bgfx::TextureFormat::Enum fboFmt = bgfx::TextureFormat::RGBA16F;
+    FrameBufferTexture mainRtTextures[] =
+    {
+        {fboFmt, msaaMask|BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP},
+        {bgfx::TextureFormat::D16, BGFX_TEXTURE_RT_BUFFER_ONLY|msaaMask}
+    };
+    g_postProcess.m_colorFB = createFrameBuffer(width, height, 1, 1, true, BX_COUNTOF(mainRtTextures), mainRtTextures);
+    int base = 2;
+    for (int i = 0; i < N_PASSES; i++) {
+        g_postProcess.m_blurFB[i][0] = createFrameBuffer(max(width / base, 1), max(height / base, 1), base, base, true, fboFmt);
+        g_postProcess.m_blurFB[i][1] = createFrameBuffer(max(width / base, 1), max(height / base, 1), base, base, true, fboFmt);
+        base *= 2;
+    }
+
+    g_postProcess.m_brightFB = createFrameBuffer(width/2, height/2, 1, 1, true, fboFmt);
+    bx::mtxIdentity(g_postProcess.m_view);
+    bx::mtxOrtho(g_postProcess.m_proj, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f);
+#endif
+}
+INTERNAL void postProcessSubmit(ShadingEnviroment* env)
+{
+    if(!env) return;
+    int width = g_win32Context.m_width;
+    int height = g_win32Context.m_height;
 }
 
 void Graphics::register_factories()
@@ -235,6 +273,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     bgfx::setViewName(kCombineViewId, "combine");
     bgfx::setViewName(kDebugDrawViewId, "debug");
     bgfx::setViewName(kGUIViewId, "gui");
+
+    postProcessInit();
 }
 
 void Graphics::ready()
@@ -315,9 +355,16 @@ void Graphics::draw(ShadingEnviroment* env)
         g_lightWorld.submit_lights(env);
         env->submit();
     }
+
     g_modelWorld.submit_models();
-    if(g_lightWorld.m_shadowLight) g_modelWorld.submit_shadows();
+
+    if(g_lightWorld.m_shadowLight)
+        g_modelWorld.submit_shadows();
+
     g_debugDrawMgr.draw();
+
+    postProcessSubmit(env);
+
     PROFILE(bgfx_frame);
     bgfx::frame();
 }
