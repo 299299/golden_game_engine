@@ -163,3 +163,6 @@ struct ComponentInstanceData
     StringId    m_name;
     void*       m_resource;
 };
+
+
+#define STRING_TABLE_FILE                           ("string_table.txt")

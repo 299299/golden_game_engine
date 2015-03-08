@@ -236,6 +236,7 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
     ComponentInstanceData* res = (ComponentInstanceData*)resource;
     const AnimationStates* states = (const AnimationStates*)(res->m_resource);
     char* p = (char*)states;
+    m_actor = id;
 
     m_resource = states;
     int num = states->m_num_states;
@@ -255,6 +256,9 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
     m_status = kLayerDefault;
     m_weight = 1.0f; // default layer weight is 1.0
 
+    m_state = NULL;
+    m_last_state = NULL;
+
     Actor* actor = g_actorWorld.get_actor(id);
     ENGINE_ASSERT_ARGS(actor, "actor not exist %x", id);
     AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_RIG);
@@ -265,19 +269,32 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
     change_state(keys[0].m_name);
 }
 
-void AnimationStatesInstance::destroy()
-{
+void AnimationStatesInstance::destroy(bool remove_control)
+{ 
     const AnimationStates* states = m_resource;
     int num = states->m_num_states;
     char* p = (char*)(states);
     StateKey* keys = (StateKey*)(p + states->m_state_key_offset);
     char* d = m_dynamic_data;
 
-    for(int i=0; i<num; ++i)
+    if(!remove_control)
     {
-        const AnimationState* state = (const AnimationState*)(p + keys[i].m_offset);
-        destroy_state_dynamic_data(state, d);
+        for(int i=0; i<num; ++i)
+        {
+            const AnimationState* state = (const AnimationState*)(p + keys[i].m_offset);
+            destroy_state_dynamic_data(state, d);
+        }
     }
+    else
+    {
+        for(int i=0; i<num; ++i)
+        {
+            const AnimationState* state = (const AnimationState*)(p + keys[i].m_offset);
+            remove_state_from_skeleton(state, m_skeleton, m_dynamic_data);
+            destroy_state_dynamic_data(state, d);
+        }
+    }
+    
 
     COMMON_DEALLOC(d);
     SAFE_REMOVEREF(m_ease_in_ctl);

@@ -1,0 +1,107 @@
+{
+    "rig":"core/batman",
+    "states":
+    [
+        {
+            "name":"idle_state",
+            "transitions":
+            [
+                {
+                    "name":"move",
+                    "duration":0.1,
+                    "ease":"smooth",
+                    "motion_blending":"default",
+                    "dest":"move_state"
+                },
+
+                {
+                    "name":"move_test",
+                    "duration":0.1,
+                    "ease":"smooth",
+                    "motion_blending":"default",
+                    "dest":"test_state"
+                }
+            ],
+            "nodes":
+            {
+                "name":"root",
+                "type":"lerp",
+                "left":
+                {
+                    "name": "stand_test_1",
+                    "type": "value",
+                    "animation":"core/character/stand_idle"
+                },
+                "right":
+                {
+                    "name": "heihei",
+                    "type": "value",
+                    "animation":"core/character/stand_idle"
+                }
+            }
+        },
+
+        {
+            "name":"move_state",
+            "transitions":
+            [
+                {
+                    "name":"stop",
+                    "duration":0.1,
+                    "ease":"smooth",
+                    "motion_blending":"default",
+                    "dest":"idle_state"
+                }
+            ],
+            "nodes":
+            {
+                "name":"root",
+                "type":"lerp",
+                "left":
+                {
+                    "name": "move_test_1",
+                    "type": "value",
+                    "animation":"core/character/stand_idle"
+                },
+                "right":
+                {
+                    "name": "move_test_2",
+                    "type": "value",
+                    "animation":"core/character/stand_idle"
+                }
+            }
+        },
+
+
+        {
+            "name":"test_state",
+            "transitions":
+            [
+                {
+                    "name":"stop",
+                    "duration":0.1,
+                    "ease":"smooth",
+                    "motion_blending":"default",
+                    "dest":"idle_state"
+                }
+            ],
+            "nodes":
+            {
+                "name":"root",
+                "type":"lerp",
+                "left":
+                {
+                    "name": "move_test_44",
+                    "type": "value",
+                    "animation":"core/character/stand_idle"
+                },
+                "right":
+                {
+                    "name": "move_test_45",
+                    "type": "value",
+                    "animation":"core/character/stand_idle"
+                }
+            }
+        }
+    ]
+}

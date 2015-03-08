@@ -26,6 +26,7 @@
 #include "DataDef.h"
 #include "FileWatcher.h"
 #include "ToolUtils.h"
+#include "AnimationState.h"
 
 #ifdef HAVOK_COMPILE
 #include <Animation/Animation/Animation/hkaAnimation.h>
@@ -81,21 +82,40 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
 {
     AnimRig* oldCompResource = (AnimRig*)oldResource;
     AnimRig* newCompResource = (AnimRig*)newResource;
-    ComponentFactory* fac = g_componentMgr.find_factory(EngineTypes::ANIMATION_RIG);
-    uint32_t componentNum = fac->num_components();
+    uint32_t num = num_all_anim_rig();
+    AnimRigInstance* rigs = (AnimRigInstance*)get_all_anim_rig();
+    
+    int actor_num = 0;
+    ActorId32 actors[MAX_ANIM_RIG];
 
-    AnimRigInstance* components = (AnimRigInstance*)fac->get_components();
-    LOGI("component %s instance num = %d", EngineNames::ANIMATION_RIG, componentNum);
-    for(size_t i=0; i<componentNum; ++i)
+    for(size_t i=0; i<num; ++i)
     {
-        AnimRigInstance* rig = components + i;
+        AnimRigInstance* rig = rigs + i;
         if(rig->m_resource == oldCompResource)
         {
             rig->destroy();
-            rig->init(newCompResource, components[i].m_actor);
+            rig->init(newCompResource, rigs[i].m_actor);
+            actors[actor_num++] = rig->m_actor;
         }
     }
 
+    for (int i=0; i<actor_num; ++i)
+    {
+        Actor* actor = g_actorWorld.get_actor(actors[i]);
+        if(!actor)
+            continue;
+
+        AnimationStatesInstance* states = (AnimationStatesInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_STATES);
+        if(!states)
+            continue;
+
+        const AnimationStates* resource = states->m_resource;
+        states->destroy();
+
+        ComponentInstanceData d;
+        d.m_resource = (void*)resource;
+        states->init(&d, actors[i]);
+    }
 }
 
 void reload_animation_resource(void* oldResource, void* newResource)
@@ -283,6 +303,25 @@ void reload_actor_resource(void* oldResource, void* newResource)
     }
 }
 
+void reload_anim_state_resource(void* oldResource, void* newResource)
+{
+    AnimationStates* old_states = (AnimationStates*)oldResource;
+    AnimationStates* new_States = (AnimationStates*)newResource;
+    uint32_t num = num_all_anim_state();
+    AnimationStatesInstance* instances = (AnimationStatesInstance*)get_all_anim_state();
+    for (uint32_t i=0; i<num; ++i)
+    {
+        if(instances[i].m_resource == old_states) 
+        {
+            instances[i].destroy(true);
+
+            ComponentInstanceData d;
+            d.m_resource = new_States;
+            instances[i].init(&d, instances[i].m_actor);
+        }
+    }
+ }
+
 //===================================================================================================
 
 
@@ -299,6 +338,7 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(EngineTypes::LEVEL, reload_level_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION, reload_animation_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION_RIG, reload_anim_rig_resource);
+    g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION_STATES, reload_anim_state_resource);
     //g_resourceMgr.register_reload_callback(PhysicsResource::get_type(), reload_physics_resource);
 
     g_hotReload = new HotReloadData;
@@ -325,6 +365,7 @@ void run_data_compile()
     args.push_back("intermediate");
     args.push_back("-o");
     args.push_back("-data");
+    args.push_back("--slient");
     shell_exec(exeName, args);
 }
 
@@ -357,6 +398,9 @@ void resource_hot_reload_update(float dt)
     std::ifstream ifs(DC_RESULT);
     if(!ifs.good())
         return;
+
+    update_string_table(STRING_TABLE_FILE);
+
     std::string line;
     while(std::getline(ifs, line))
     {

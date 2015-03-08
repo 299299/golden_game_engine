@@ -109,10 +109,11 @@ struct AnimationStatesInstance
     hkaAnimatedSkeleton*                m_skeleton;
     char*                               m_dynamic_data;
     int                                 m_dirty;
+    ActorId32                           m_actor;
 
     void init(const void*, ActorId32);
     void update(float dt);
-    void destroy();
+    void destroy(bool remove_controls = false);
 
     void fire_event(StringId name);
     void change_state(StringId name);

@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "StringId.h"
 #include "Prerequisites.h"
+#include "DataDef.h"
 //=================================================================
 #include <string.h>
 #ifdef HAVOK_COMPILE
@@ -15,8 +16,6 @@
 #include <Common/Base/Monitor/hkMonitorStream.h>
 #endif
 //=================================================================
-
-#define STRING_TABLE_FILE                           ("string_table.txt")
 
 #ifdef HAVOK_COMPILE
 static void errorReport(const char* msg, void* userArgGivenToInit)

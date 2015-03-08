@@ -16,6 +16,7 @@
 #include "Level.h"
 #include "AnimationState.h"
 #include "AnimControl.h"
+#include "Engine.h"
 #include <bx/string.h>
 #include <bx/commandline.h>
 
@@ -141,6 +142,9 @@ void PreviewState::step( float dt )
     {
         swith_graphics_debug(BGFX_DEBUG_STATS);
     }
+
+    if(g_win32Context.is_key_just_pressed(VK_ESCAPE))
+        g_engine.shutdown();
 #endif
 
     if(m_show_profile)

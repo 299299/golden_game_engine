@@ -9,4 +9,5 @@ StringId stringid_caculate(const char* _str, uint32_t _len);
 const char* stringid_lookup(StringId id);
 void load_string_table(const char* fName);
 void save_string_table(const char* fName);
+void update_string_table(const char* fName);
 #endif

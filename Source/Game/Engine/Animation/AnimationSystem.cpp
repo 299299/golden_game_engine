@@ -315,7 +315,7 @@ uint32_t num_all_anim_state()
 
 void* get_all_anim_state()
 {
-    return m_rigs.begin();
+    return m_stateLayers.begin();
 }
 
 void lookup_anim_state_instance_data( void* resource )

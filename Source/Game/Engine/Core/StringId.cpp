@@ -51,12 +51,14 @@ void load_string_table(const char* fName)
         return;
     }
     TIMELOG("load string table");
+    g_stringTable.clear();
     char buf[256];
     uint32_t key1, key2 = 0;
     while(!feof(fp))
     {
         int argNum = fscanf(fp, STRING_TABLE_FMT, &key1, &key2, buf);
-        if(argNum != 3) break;
+        if(argNum != 3) 
+            break;
         insert_string_id(key1, buf, key2);
     }
     fclose(fp);
@@ -76,6 +78,25 @@ void save_string_table(const char* fName)
     }
     fclose(fp);
     g_stringTable.clear();
+}
+void update_string_table( const char* fName )
+{
+    FILE* fp = fopen(fName, "r");
+    if(!fp) {
+        LOGW("%s can not open file %s", BX_FUNCTION, fName);
+        return;
+    }
+    TIMELOG("update string table");
+    char buf[256];
+    uint32_t key1, key2 = 0;
+    while(!feof(fp))
+    {
+        int argNum = fscanf(fp, STRING_TABLE_FMT, &key1, &key2, buf);
+        if(argNum != 3) 
+            break;
+        insert_string_id(key1, buf, key2);
+    }
+    fclose(fp);
 }
 #else
 static char g_buffer[32];
@@ -102,3 +123,5 @@ StringId stringid_caculate(const char* _str, uint32_t _len)
 #endif
     return hash;
 }
+
+
