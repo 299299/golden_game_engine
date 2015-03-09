@@ -15,7 +15,8 @@ std::string ComponentConverter::getResourceName() const
 
 void ComponentConverter::fillAttributes(jsonxx::Object& object) const
 {
-    if(!m_node) return;
+    if(!m_node) 
+        return;
 #ifdef HAOVK_COMPILE
     fill_object_attributes(object, m_node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
 #endif

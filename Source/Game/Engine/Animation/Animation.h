@@ -13,8 +13,7 @@ class hkaPose;
 
 struct AnimationTrigger
 {
-    StringId                        m_name;
-    float                           m_time;
+    StringId    m_name;
 };
 
 ENGINE_NATIVE_ALIGN(struct) Animation
@@ -22,18 +21,16 @@ ENGINE_NATIVE_ALIGN(struct) Animation
     int get_frames() const;
     float get_length() const;
 
-    int  find_first_trigger(StringId name) const;
-    int  find_next_closest_trigger(float time, bool bLoop) const;
-    const AnimationTrigger* get_triggers() const;
-
     StringId                        m_mirrored_from;
     StringId                        m_rig_name;
 
     hkaAnimation*                   m_animation;
     hkaAnimationBinding*            m_binding;
 
-    uint32_t                        m_trigger_offset;
+    uint32_t                        m_num_frames;
     uint32_t                        m_num_triggers;
+    uint32_t                        m_trigger_offset;
+    uint32_t                        m_trigger_num_offset;
 
     uint32_t                        m_havok_data_offset;
     uint32_t                        m_havok_data_size;
@@ -44,6 +41,9 @@ void* load_resource_animation( void*, uint32_t);
 void destroy_resource_animation( void * );
 void lookup_resource_animation( void * );
 void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim);
+
+float get_animation_length(const Animation* anim);
+int get_animation_triggers(const Animation* anim, int frame, AnimationTrigger** triggers);
 
 //======================================================================
 //          HELPER API

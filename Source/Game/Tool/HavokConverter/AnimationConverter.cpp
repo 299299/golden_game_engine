@@ -45,8 +45,6 @@ jsonxx::Object AnimationConverter::serializeToJson() const
 
 #ifdef HAVOK_COMPILE
     static const std::string trigger_prefix = "hk_trigger_";
-    static const std::string beat_prefix = "hk_beat_";
-
     hkxScene* scene = m_config->m_scene;
     hkxNode* triggers_node = scene->findNodeByName("triggers");
     if(triggers_node)
@@ -58,10 +56,11 @@ jsonxx::Object AnimationConverter::serializeToJson() const
         {
             const hkxNode::AnnotationData& data = triggers_node->m_annotations[i];
             const hkStringPtr& text = data.m_description;
-            if(!text.startsWith(trigger_prefix.c_str())) continue;
+            if(!text.startsWith(trigger_prefix.c_str())) 
+                continue;
             std::string longName(text.cString());
             jsonxx::Object obj;
-            obj << "time" << data.m_time;
+            obj << "frame" << (int)(data.m_time * ANIMATION_TIME_PERFRAME);
             std::string name(longName.c_str() + trigger_prefix.length(), longName.length() - trigger_prefix.length());
             obj << "name" << name;
             triggers << obj;
@@ -70,6 +69,7 @@ jsonxx::Object AnimationConverter::serializeToJson() const
 
 #endif
 
+    object << "frames" << m_ac->m_animations[0]->getNumOriginalFrames();
     object << "triggers" << triggers;
     object << "havok_file" << m_animationFile;
 

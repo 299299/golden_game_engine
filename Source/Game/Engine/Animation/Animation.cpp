@@ -40,54 +40,21 @@ void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim)
 #endif
 }
 
-int Animation::find_first_trigger( StringId name ) const
-{
-    uint32_t num = m_num_triggers;
-    const AnimationTrigger* head = get_triggers();
-    for(uint32_t i=0; i<num; ++i)
-    {
-        if(head[i].m_name == name)
-            return i;
-    }
-    return -1;
-}
-
-int Animation::find_next_closest_trigger(float time, bool bLoop) const
-{
-    int num = m_num_triggers;
-    const AnimationTrigger* head = get_triggers();
-    if(!num || time >= get_length()) return -1;
-    for(int i = 0; i < num; ++i)
-    {
-        if(head[i].m_time >= time)
-            return i;
-    }
-    return bLoop ? 0 : -1;
-}
-
-int Animation::get_frames() const
+float get_animation_length( const Animation* anim )
 {
 #ifdef HAVOK_COMPILE
-    return m_animation->getNumOriginalFrames();
-#else
-    return 0;
-#endif
-}
-
-float Animation::get_length() const
-{
-#ifdef HAVOK_COMPILE
-    return m_animation->m_duration;
+    return anim->m_animation->m_duration;
 #else
     return 2.0f;
 #endif
 }
 
-const AnimationTrigger* Animation::get_triggers() const
+int get_animation_triggers( const Animation* anim, int frame, AnimationTrigger** triggers )
 {
-    char* p = (char*)this;
-    const AnimationTrigger* t = (const AnimationTrigger*)(p + m_trigger_offset);
-    return t;
+    char* p = (char*)anim;
+    uint32_t* nums = (uint32_t*)(p + anim->m_trigger_num_offset);
+    *triggers = (AnimationTrigger*)(p + anim->m_trigger_offset);
+    return *(nums + frame);
 }
 
 
@@ -150,7 +117,8 @@ void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int
                                  worldFromModel,
                                  color );
 
-    if (!showLabels) return;
+    if (!showLabels) 
+        return;
 
     hkDebugDisplay& d = hkDebugDisplay::getInstance();
     const hkInt16* parents = skeleton->m_parentIndices.begin();
@@ -211,4 +179,6 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
     }
 #endif
 }
+
+
 

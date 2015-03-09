@@ -161,7 +161,7 @@ void AnimRigInstance::test_animation(const char* name)
 #endif
 }
 
-int AnimRigInstance::collect_event( float dt, AnimationEvent* events )
+int AnimRigInstance::collect_event( AnimationEvent* events )
 {
     ActorId32 actor = m_actor;
     hkaAnimatedSkeleton* s = m_skeleton;
@@ -171,23 +171,16 @@ int AnimRigInstance::collect_event( float dt, AnimationEvent* events )
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
         const Animation* anim = ac->m_animation;
-        const AnimationTrigger* triggers = anim->get_triggers();
-        int t_num = anim->m_num_triggers;
+        AnimationTrigger* triggers = 0;
         float local_time = ac->getLocalTime();
-        float future_time = local_time + dt;
+        int frame = (int)(local_time * ANIMATION_TIME_PERFRAME);
+        int t_num = get_animation_triggers(anim, frame, &triggers);
         for(int j=0; j<t_num; ++j)
         {
-            const AnimationTrigger* t = triggers + i;
-            float time = t->m_time;
-            if(time > local_time && time < future_time)
-            {
-                AnimationEvent& evt = events[r_num++];
-                evt.m_who = actor;
-                evt.m_name = t->m_name;
-            }
-            if(time > future_time)
-                break;
+            events[j].m_name = triggers[i].m_name;
+            events[j].m_who = actor;
         }
+        events += r_num;
     }
 
     return r_num;

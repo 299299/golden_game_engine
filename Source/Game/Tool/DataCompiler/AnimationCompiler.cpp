@@ -5,16 +5,16 @@
 struct AnimTriggerData
 {
     std::string             m_name;
-    float                   m_time;
+    int                     m_frame;
     AnimTriggerData()
-    :m_time(0)
+    :m_frame(0)
     {
     }
 };
 
 INTERNAL bool compare_anim_trigger_less(const AnimTriggerData& data1, const AnimTriggerData& data2)
 {
-    return data1.m_time < data2.m_time;
+    return data1.m_frame < data2.m_frame;
 }
 
 AnimationCompiler::AnimationCompiler()
@@ -33,6 +33,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
 
     std::vector<AnimTriggerData>  trigger_data;
     uint32_t triggerNum = 0;
+    uint32_t frames = json_to_int(root, "frames");
 
     if(root.has<jsonxx::Array>("triggers"))
     {
@@ -44,7 +45,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
             AnimTriggerData data;
             const jsonxx::Object& o = triggersValue.get<jsonxx::Object>(i);
             data.m_name = o.get<std::string>("name");
-            data.m_time = json_to_float(o, "time");
+            data.m_frame = json_to_int(o, "frame");
             trigger_data.push_back(data);
         }
 
@@ -60,9 +61,11 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         return false;
     }
 
-    uint32_t havokOffset = sizeof(Animation) + triggerNum * sizeof(triggerNum);
+    uint32_t havokOffset = sizeof(Animation)  + frames * sizeof(uint32_t) + triggerNum * sizeof(AnimationTrigger);
     havokOffset = NATIVE_ALGIN_SIZE(havokOffset);
     uint32_t memSize = havokOffset + havokReader.m_size;
+    memSize = NATIVE_ALGIN_SIZE(memSize);
+
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
 
     MemoryBuffer mem(memSize);
@@ -70,6 +73,8 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     memcpy(offset + havokOffset, havokReader.m_buf, havokReader.m_size);
 
     Animation* anim = (Animation*)mem.m_buf;
+    anim->m_num_frames = frames;
+
     if(root.has<jsonxx::Object>("mirrored"))
     {
         const jsonxx::Object& mirrorObject = root.get<jsonxx::Object>("mirrored");
@@ -82,17 +87,19 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     }
 
     anim->m_num_triggers = triggerNum;
-    offset += sizeof(Animation);
-    anim->m_trigger_offset = sizeof(Animation);
-    AnimationTrigger* triggers = (AnimationTrigger*)offset;
-    offset += (triggerNum * sizeof(triggerNum));
+    anim->m_trigger_num_offset = sizeof(Animation);
+    anim->m_trigger_offset = sizeof(Animation)  + frames * sizeof(uint32_t);
     anim->m_havok_data_offset = havokOffset;
     anim->m_havok_data_size = havokReader.m_size;
+
+    uint32_t* t_nums = (uint32_t*)(mem.m_buf + anim->m_trigger_num_offset);
+    AnimationTrigger* triggers = (AnimationTrigger*)(mem.m_buf + anim->m_trigger_offset);
+    offset += (triggerNum * sizeof(triggerNum));
 
     for (uint32_t i=0; i<triggerNum; ++i)
     {
         triggers[i].m_name = stringid_caculate(trigger_data[i].m_name.c_str());
-        triggers[i].m_time = trigger_data[i].m_time;
+        t_nums[trigger_data[i].m_frame] += 1;
     }
 
     return write_file(m_output, mem.m_buf, memSize);
