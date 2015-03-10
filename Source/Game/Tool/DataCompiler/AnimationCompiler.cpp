@@ -61,7 +61,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         return false;
     }
 
-    uint32_t havokOffset = sizeof(Animation)  + frames * sizeof(AnimationTriggerKey) + triggerNum * sizeof(AnimationTrigger);
+    uint32_t havokOffset = sizeof(Animation)  + frames * sizeof(uint32_t) * 2 + triggerNum * sizeof(AnimationTrigger);
     havokOffset = NATIVE_ALGIN_SIZE(havokOffset);
     uint32_t memSize = havokOffset + havokReader.m_size;
     memSize = NATIVE_ALGIN_SIZE(memSize);
@@ -69,8 +69,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
 
     MemoryBuffer mem(memSize);
-    char* offset = mem.m_buf;
-    memcpy(offset + havokOffset, havokReader.m_buf, havokReader.m_size);
+    memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
 
     Animation* anim = (Animation*)mem.m_buf;
     anim->m_num_frames = frames;
@@ -86,20 +85,45 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION));
     }
 
-    anim->m_num_triggers = triggerNum;
-    anim->m_trigger_key_offset = sizeof(Animation);
+    anim->m_trigger_offsets = sizeof(Animation);
     anim->m_havok_data_offset = havokOffset;
     anim->m_havok_data_size = havokReader.m_size;
 
-    AnimationTriggerKey* keys = (AnimationTriggerKey*)(mem.m_buf + anim->m_trigger_key_offset);
-    AnimationTrigger* triggers = (AnimationTrigger*)(mem.m_buf + anim->m_trigger_offset);
-    offset += (triggerNum * sizeof(triggerNum));
+    uint32_t* offsets = (uint32_t*)(mem.m_buf + anim->m_trigger_offsets);
+    char* triggers = mem.m_buf + anim->m_trigger_offsets + sizeof(uint32_t)*frames;
 
+    std::map<int, std::vector<AnimTriggerData*> > trigger_maps;
     for (uint32_t i=0; i<triggerNum; ++i)
     {
-        triggers[i].m_name = stringid_caculate(trigger_data[i].m_name.c_str());
-        t_nums[trigger_data[i].m_frame] += 1;
+        trigger_maps[trigger_data[i].m_frame].push_back(&trigger_data[i]);
     }
+
+    for (int i=0; i<(int)frames; ++i)
+    {
+        std::map<int, std::vector<AnimTriggerData*> >::iterator iter = trigger_maps.find(i);
+        int num = 0;
+        if (iter != trigger_maps.end())
+        {
+            num = iter->second.size();
+        }
+        offsets[i] = (int)(triggers - mem.m_buf);
+        *((uint32_t*)triggers) = num;
+        triggers += sizeof(uint32_t);
+        AnimationTrigger* t = (AnimationTrigger*)triggers;
+        for (int j=0; j<num; ++j)
+        {
+            AnimTriggerData* d = iter->second[j];
+            t[j].m_name = stringid_caculate(d->m_name.c_str());
+        }
+        triggers += num*sizeof(AnimationTrigger);
+    }
+    
+    int r = triggers - mem.m_buf;
+    int t = sizeof(Animation)  + frames * sizeof(uint32_t) * 2 + triggerNum * sizeof(AnimationTrigger);
+
+    ENGINE_ASSERT(r == t, "havok offset check");
+    ENGINE_ASSERT(anim->m_havok_data_size == havokReader.m_size, "havok offset check");
+    ENGINE_ASSERT(anim->m_havok_data_offset == havokOffset, "havok offset check");
 
     return write_file(m_output, mem.m_buf, memSize);
 }

@@ -52,9 +52,11 @@ float get_animation_length( const Animation* anim )
 int get_animation_triggers( const Animation* anim, int frame, AnimationTrigger** triggers )
 {
     char* p = (char*)anim;
-    AnimationTriggerKey* key = (AnimationTriggerKey*)(p + anim->m_trigger_key_offset);
-    *triggers = (AnimationTrigger*)(p + key->m_offset);
-    return key->m_num;
+    uint32_t* offsets = (uint32_t*)(p + anim->m_trigger_offsets);
+    p += offsets[frame];
+    int num = *((uint32_t*)p);
+    *triggers = (AnimationTrigger*)(p + sizeof(uint32_t));
+    return num;
 }
 
 

@@ -2,5 +2,17 @@
 	"frames": 17,
 	"havok_file": "intermediate\/core\/character\/run.havok",
 	"triggers": [
+		{
+			"frame": 0,
+			"name": "left_foot_down" 
+		},
+		{
+			"frame": 8,
+			"name": "right_foot_down" 
+		},
+		{
+			"frame": 18,
+			"name": "left_foot_down" 
+		} 
 	] 
 } 

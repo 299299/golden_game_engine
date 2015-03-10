@@ -16,12 +16,6 @@ struct AnimationTrigger
     StringId    m_name;
 };
 
-struct AnimationTriggerKey
-{
-    uint32_t    m_num;
-    uint32_t    m_offset;
-};
-
 ENGINE_NATIVE_ALIGN(struct) Animation
 {
     int get_frames() const;
@@ -34,8 +28,7 @@ ENGINE_NATIVE_ALIGN(struct) Animation
     hkaAnimationBinding*            m_binding;
 
     uint32_t                        m_num_frames;
-    uint32_t                        m_num_triggers;
-    uint32_t                        m_trigger_key_offset;
+    uint32_t                        m_trigger_offsets;
 
     uint32_t                        m_havok_data_offset;
     uint32_t                        m_havok_data_size;
