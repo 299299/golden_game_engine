@@ -90,6 +90,8 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
     }
 
     imguiLabel("animation skeleton control info:");
+
+#ifdef HAVOK_COMPILE
     hkaAnimatedSkeleton* s = states->m_skeleton;
     int num = s->getNumAnimationControls();
     for (int i=0; i<num; ++i)
@@ -97,6 +99,7 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
         hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
         imguiLabel("%s weight = %f, time = %f", stringid_lookup(ac->m_name), ac->getMasterWeight(), ac->getLocalTime());
     }
+#endif
 }
 
 PreviewState::PreviewState()

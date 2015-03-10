@@ -163,10 +163,11 @@ void AnimRigInstance::test_animation(const char* name)
 
 int AnimRigInstance::collect_event( AnimationEvent* events )
 {
+    int r_num = 0;
+#ifdef HAVOK_COMPILE
     ActorId32 actor = m_actor;
     hkaAnimatedSkeleton* s = m_skeleton;
     int num = s->getNumAnimationControls();
-    int r_num = 0;
     for (int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
@@ -182,7 +183,7 @@ int AnimRigInstance::collect_event( AnimationEvent* events )
         }
         events += r_num;
     }
-
+#endif
     return r_num;
 }
 

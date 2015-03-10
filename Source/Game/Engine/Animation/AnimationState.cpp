@@ -270,7 +270,7 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
 }
 
 void AnimationStatesInstance::destroy(bool remove_control)
-{ 
+{
     const AnimationStates* states = m_resource;
     int num = states->m_num_states;
     char* p = (char*)(states);
@@ -294,7 +294,7 @@ void AnimationStatesInstance::destroy(bool remove_control)
             destroy_state_dynamic_data(state, d);
         }
     }
-    
+
 
     COMMON_DEALLOC(d);
     SAFE_REMOVEREF(m_ease_in_ctl);
@@ -392,11 +392,13 @@ void AnimationStatesInstance::change_state(const AnimationTranstion* t)
     float duration = t->m_duration;
     int type = t->m_ease_type;
 
+#ifdef HAVOK_COMPILE
     // clear their ease status first
     m_ease_in_ctl->easeOut(0.0f);
     m_ease_out_ctrl->easeIn(0.0f);
     m_ease_in_ctl->update(1.0f);
     m_ease_out_ctrl->update(1.0f);
+#endif
 
     m_ease_in_ctl->ease_in(duration, type);
     m_ease_out_ctrl->ease_out(duration, type);

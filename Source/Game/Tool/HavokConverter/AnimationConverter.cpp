@@ -56,7 +56,7 @@ jsonxx::Object AnimationConverter::serializeToJson() const
         {
             const hkxNode::AnnotationData& data = triggers_node->m_annotations[i];
             const hkStringPtr& text = data.m_description;
-            if(!text.startsWith(trigger_prefix.c_str())) 
+            if(!text.startsWith(trigger_prefix.c_str()))
                 continue;
             std::string longName(text.cString());
             jsonxx::Object obj;
@@ -67,9 +67,9 @@ jsonxx::Object AnimationConverter::serializeToJson() const
         }
     }
 
+    object << "frames" << m_ac->m_animations[0]->getNumOriginalFrames();
 #endif
 
-    object << "frames" << m_ac->m_animations[0]->getNumOriginalFrames();
     object << "triggers" << triggers;
     object << "havok_file" << m_animationFile;
 

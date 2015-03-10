@@ -76,6 +76,7 @@ struct hkaAnimatedSkeleton;
 struct hk_anim_ctrl
 {
     Animation* m_animation;
+    StringId m_name;
     hk_anim_ctrl(Animation* anim):m_animation(anim) {};
     void removeReference() {};
     void getExtractedMotionDeltaReferenceFrame( hkReal deltaTime, hkQsTransform& deltaMotionOut ) {}

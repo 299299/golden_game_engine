@@ -136,6 +136,7 @@ jsonxx::Object MaterialConverter::serializeToJson() const
     rootObject << "name" << getResourceName();
     rootObject << "shader" << m_shader;
     rootObject << "shadow_shader" << m_shadowShader;
+ #ifdef HAVOK_COMPILE
     jsonxx::Array uvArray;
     uvArray << m_material->m_uvMapOffset[0];
     uvArray << m_material->m_uvMapOffset[1];
@@ -154,6 +155,7 @@ jsonxx::Object MaterialConverter::serializeToJson() const
         specularArray << m_material->m_diffuseColor(i);
     }
     rootObject << "specular" << specularArray;
+#endif
 
     extern const char* g_matFlagNames[];
 
