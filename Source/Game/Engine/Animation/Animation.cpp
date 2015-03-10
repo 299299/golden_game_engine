@@ -52,9 +52,9 @@ float get_animation_length( const Animation* anim )
 int get_animation_triggers( const Animation* anim, int frame, AnimationTrigger** triggers )
 {
     char* p = (char*)anim;
-    uint32_t* nums = (uint32_t*)(p + anim->m_trigger_num_offset);
-    *triggers = (AnimationTrigger*)(p + anim->m_trigger_offset);
-    return *(nums + frame);
+    AnimationTriggerKey* key = (AnimationTriggerKey*)(p + anim->m_trigger_key_offset);
+    *triggers = (AnimationTrigger*)(p + key->m_offset);
+    return key->m_num;
 }
 
 
@@ -117,7 +117,7 @@ void draw_pose_vdb(const hkaPose& pose, const hkQsTransform& worldFromModel, int
                                  worldFromModel,
                                  color );
 
-    if (!showLabels) 
+    if (!showLabels)
         return;
 
     hkDebugDisplay& d = hkDebugDisplay::getInstance();

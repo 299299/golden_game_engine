@@ -61,7 +61,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         return false;
     }
 
-    uint32_t havokOffset = sizeof(Animation)  + frames * sizeof(uint32_t) + triggerNum * sizeof(AnimationTrigger);
+    uint32_t havokOffset = sizeof(Animation)  + frames * sizeof(AnimationTriggerKey) + triggerNum * sizeof(AnimationTrigger);
     havokOffset = NATIVE_ALGIN_SIZE(havokOffset);
     uint32_t memSize = havokOffset + havokReader.m_size;
     memSize = NATIVE_ALGIN_SIZE(memSize);
@@ -87,12 +87,11 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     }
 
     anim->m_num_triggers = triggerNum;
-    anim->m_trigger_num_offset = sizeof(Animation);
-    anim->m_trigger_offset = sizeof(Animation)  + frames * sizeof(uint32_t);
+    anim->m_trigger_key_offset = sizeof(Animation);
     anim->m_havok_data_offset = havokOffset;
     anim->m_havok_data_size = havokReader.m_size;
 
-    uint32_t* t_nums = (uint32_t*)(mem.m_buf + anim->m_trigger_num_offset);
+    AnimationTriggerKey* keys = (AnimationTriggerKey*)(mem.m_buf + anim->m_trigger_key_offset);
     AnimationTrigger* triggers = (AnimationTrigger*)(mem.m_buf + anim->m_trigger_offset);
     offset += (triggerNum * sizeof(triggerNum));
 
