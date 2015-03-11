@@ -110,25 +110,14 @@ INTERNAL void on_state_enter(const AnimationState* state, hkaAnimatedSkeleton* s
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
     const AnimationData* anim_datas = get_animations(state);
-
     for (int i=0; i<num; ++i)
     {
         const AnimationData* anim_data = anim_datas + i;
         hk_anim_ctrl* ac = anim_ctls + i;
         ac->setPlaybackSpeed(anim_data->m_speed);
         ac->ease_in(0.0f, kEaseCurveSmooth);
+        ac->set_weight(0.0f);
         ac->add_to_skeleton(s);
-    }
-}
-
-INTERNAL void add_state_from_skeleton(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
-{
-    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
-    int num = state->m_num_animations;
-    for (int i=0; i<num; ++i)
-    {
-        hk_anim_ctrl* ac = anim_ctls + i;
-        ac->remove_from_skeleton(s);
     }
 }
 

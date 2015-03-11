@@ -59,6 +59,7 @@ void AnimationSystem::init(const AnimationConfig& cfg)
     m_rigs.init(cfg.max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     m_stateLayers.init(cfg.max_state_layers, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     m_time = 0.0f;
+    m_time_scale = 1.0f;
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif
@@ -197,7 +198,7 @@ void AnimationSystem::update_animations(float dt)
     else
         return;
 
-    dt = ANIMATION_TIME_PERFRAME;
+    dt = ANIMATION_TIME_PERFRAME * m_time_scale;
     uint32_t num = m_rigs.size();
     PROFILE(Animation_Update);
     AnimRigInstance* rigs = m_rigs.begin();

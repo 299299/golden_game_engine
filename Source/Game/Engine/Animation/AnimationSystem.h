@@ -40,6 +40,7 @@ struct AnimationSystem
     uint32_t                m_numAnimEvts;
     AnimationEvent*         m_events;
     float                   m_time;
+    float                   m_time_scale;
 };
 
 extern AnimationSystem g_animMgr;

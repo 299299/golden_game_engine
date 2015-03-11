@@ -16,6 +16,7 @@
 #include "Level.h"
 #include "AnimationState.h"
 #include "AnimControl.h"
+#include "AnimationSystem.h"
 #include "Engine.h"
 #include <bx/string.h>
 #include <bx/commandline.h>
@@ -148,6 +149,16 @@ void PreviewState::step( float dt )
 
     if(g_win32Context.is_key_just_pressed(VK_ESCAPE))
         g_engine.shutdown();
+
+    if(g_win32Context.is_key_just_pressed(VK_SPACE))
+    {
+        static int index = 0;
+        ++index;
+        static float scales[] = {0.125f, 0.25f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f};
+        if(index >= BX_COUNTOF(scales))
+            index = 0;
+        g_animMgr.m_time_scale = scales[index];
+    }
 #endif
 
     if(m_show_profile)

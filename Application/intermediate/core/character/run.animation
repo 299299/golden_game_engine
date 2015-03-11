@@ -1,5 +1,5 @@
 {
-	"frames": 17,
+	"frames": 21,
 	"havok_file": "intermediate\/core\/character\/run.havok",
 	"triggers": [
 		{
@@ -7,7 +7,7 @@
 			"name": "left_foot_down" 
 		},
 		{
-			"frame": 8,
+			"frame": 9,
 			"name": "right_foot_down" 
 		},
 		{

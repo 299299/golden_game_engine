@@ -8,7 +8,7 @@
             [
                 {
                     "name":"move",
-                    "duration":0.25,
+                    "duration":0.2,
                     "ease":"smooth",
                     "motion_blending":"default",
                     "dest":"move_state"
@@ -39,7 +39,7 @@
             [
                 {
                     "name":"stop",
-                    "duration":0.1,
+                    "duration":0.2,
                     "ease":"smooth",
                     "motion_blending":"default",
                     "dest":"idle_state"

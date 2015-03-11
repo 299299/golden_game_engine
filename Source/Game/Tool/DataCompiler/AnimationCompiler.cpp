@@ -46,6 +46,8 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
             const jsonxx::Object& o = triggersValue.get<jsonxx::Object>(i);
             data.m_name = o.get<std::string>("name");
             data.m_frame = json_to_int(o, "frame");
+            if(data.m_frame == frames)
+                data.m_frame = frames - 1;
             trigger_data.push_back(data);
         }
 
