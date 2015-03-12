@@ -33,7 +33,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
 
     std::vector<AnimTriggerData>  trigger_data;
     uint32_t triggerNum = 0;
-    uint32_t frames = json_to_int(root, "frames");
+    int frames = json_to_int(root, "frames");
 
     if(root.has<jsonxx::Array>("triggers"))
     {
