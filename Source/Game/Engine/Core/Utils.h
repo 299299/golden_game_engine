@@ -8,7 +8,6 @@ int find_enum_index(const char* name, const char** enum_names);
 void* load_havok_inplace(void* data, uint32_t size);
 void unload_havok_inplace(void* data, uint32_t size);
 void msg_box(const char* fmt, ...);
-void accurate_sleep(uint32_t milliSeconds);
 bool check_unique_process();
 
 struct ValueType
@@ -40,7 +39,8 @@ struct Fact
     int  get_key_index(StringId k) const;
     void get_value(StringId k, void* value_buf, void* value_out, uint32_t size) const;
     void set_value(StringId k, void* value_buf, const void* value_in, uint32_t size);
-    void fill_default_values(void* value_buf);
+    void fill_default_values(void* value_buf) const;
+    uint32_t get_memory_size() const;
 };
 
 

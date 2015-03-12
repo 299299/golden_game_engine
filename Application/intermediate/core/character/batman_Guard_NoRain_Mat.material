@@ -15,7 +15,7 @@
 			"name": "u_texColor",
 			"texture": {
 				"format": "DXT5",
-				"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_D.DDS",
+				"input": "F:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_D.DDS",
 				"name": "core\/character\/Guard_A4_Raincoat_D" 
 			} 
 		},
@@ -25,7 +25,7 @@
 			"name": "u_texNormal",
 			"texture": {
 				"format": "DXT5",
-				"input": "C:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_N.DDS",
+				"input": "F:\/Project\/NagaGame\/Arts\/animations\/Guard_A4_Raincoat_N.DDS",
 				"name": "core\/character\/Guard_A4_Raincoat_N" 
 			} 
 		} 

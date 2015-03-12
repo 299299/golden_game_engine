@@ -69,6 +69,8 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     uint32_t numComps = 0;
     jsonxx::Array compsValue = root.get<jsonxx::Array>("components");
+    Fact* fact = json_to_fact(root, "data", NULL);
+    uint32_t fact_mem_size = fact ? fact->get_memory_size() : sizeof(Fact);
 
     for(size_t i=0; i<compsValue.size(); ++i)
     {
@@ -113,6 +115,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     {
         mem_size += m_components[i].m_compiler->getCompiledDataSize();
     }
+    mem_size += fact_mem_size;
 
     uint32_t ac_size = mem_size;
     mem_size = NATIVE_ALGIN_SIZE(mem_size);
@@ -142,6 +145,14 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         LOGI("component index = %d", data.m_index);
     }
 
+    actor->m_fact_offset = (uint32_t)(offset - mem.m_buf);
+
+    if(fact) 
+    {
+        memcpy(offset, fact, fact_mem_size);
+        COMMON_DEALLOC(fact);
+    }
+    offset += fact_mem_size;
     ENGINE_ASSERT((offset == (mem.m_buf + ac_size)), "offset address");
     return write_file(m_output, mem.m_buf, mem_size);
 }

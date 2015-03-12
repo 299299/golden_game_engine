@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: bruce.ma
-//Last modified: Fri, Jan 30, 2015 02:47:25 PM
+//Last modified: Thu, Mar 12, 2015 09:28:46 PM
 //Codeset: 936
 requires maya "2015";
 requires -nodeType "hkNodeOptions" "hctMayaSceneExport" "2014.1.0.1 (2014.1 r1)";
@@ -12,12 +12,12 @@ fileInfo "cutIdentifier" "201410051530-933320";
 fileInfo "osv" "Microsoft Windows 7 Ultimate Edition, 64-bit Windows 7 Service Pack 1 (Build 7601)\n";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" -66.508503590581824 559.41994820061518 629.32373716083566 ;
-	setAttr ".r" -type "double3" -21.338352729577799 -4.199999999998969 -6.9761981045980249e-016 ;
+	setAttr ".t" -type "double3" -2402.1290869996783 1025.6126240685255 -404.72533903105159 ;
+	setAttr ".r" -type "double3" -17.13835272957726 -97.799999999999059 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 761.07389868425003;
+	setAttr ".coi" 2521.8140642034364;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -24136,6 +24136,13 @@ createNode mesh -n "Louie_Green_Hood_on_MeshShapeOrig" -p "Louie_Green_Hood_on_M
 	setAttr ".cd" -type "dataPolyComponent" Index_Data Edge 0 ;
 	setAttr ".cvd" -type "dataPolyComponent" Index_Data Vertex 0 ;
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
+createNode transform -n "data";
+	addAttr -ci true -sn "gender" -ln "gender" -dt "string";
+	addAttr -ci true -sn "hkType" -ln "hkType" -dt "string";
+	addAttr -ci true -sn "hhahahahah" -ln "hhahahahah" -dt "string";
+	setAttr -cb on ".gender" -type "string" "male";
+	setAttr -k on ".hkType";
+	setAttr -k on ".hhahahahah" -type "string" "kkljkjks";
 createNode lightLinker -s -n "lightLinker1";
 	setAttr -s 4 ".lnk";
 	setAttr -s 4 ".slnk";
@@ -24159,7 +24166,7 @@ createNode shadingEngine -n "Louie_Green_Hood_on_MeshSG1";
 	setAttr ".ro" yes;
 createNode materialInfo -n "materialInfo2";
 createNode file -n "Guard_NoRain_Mat_ncl1_1";
-	setAttr ".ftn" -type "string" "C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS";
+	setAttr ".ftn" -type "string" "F:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS";
 createNode place2dTexture -n "place2dTexture1";
 createNode file -n "Guard_A_Head_A2_FaceFX_Mat_ncl1_1";
 	setAttr ".ftn" -type "string" "Guard_A_Head_A2_FaceFX_Mat";
@@ -31974,7 +31981,7 @@ createNode hkNodeOptions -n "hkNodeOptions1";
 	addAttr -ci true -sn "NSV" -ln "DoNotSplitVertices" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "ASA" -ln "GetAutoSkinAttachments" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "KFS" -ln "StoreKeyFrameSamplePoints" -dv 1 -min 0 -max 1 -at "bool";
-	setAttr ".FS" -type "Int32Array" 5419 60 63 120 109 108 32
+	setAttr ".FS" -type "Int32Array" 5409 60 63 120 109 108 32
 		 118 101 114 115 105 111 110 61 34 49 46 48
 		 34 32 101 110 99 111 100 105 110 103 61 34
 		 117 116 102 45 56 34 63 62 10 60 104 107
@@ -32400,33 +32407,32 @@ createNode hkNodeOptions -n "hkNodeOptions1";
 		 115 101 60 47 104 107 112 97 114 97 109 62
 		 10 9 60 47 104 107 111 98 106 101 99 116
 		 62 10 9 60 104 107 111 98 106 101 99 116
-		 32 110 97 109 101 61 34 80 114 101 118 105
-		 101 119 32 84 111 111 108 34 32 99 108 97
-		 115 115 61 34 104 99 116 70 105 108 116 101
-		 114 68 97 116 97 34 62 10 9 9 60 104
+		 32 110 97 109 101 61 34 86 105 101 119 32
+		 88 77 76 34 32 99 108 97 115 115 61 34
+		 104 99 116 70 105 108 116 101 114 68 97 116
+		 97 34 62 10 9 9 60 104 107 112 97 114
+		 97 109 32 110 97 109 101 61 34 105 100 34
+		 62 51 50 53 57 54 49 54 49 60 47 104
+		 107 112 97 114 97 109 62 10 9 9 60 104
 		 107 112 97 114 97 109 32 110 97 109 101 61
-		 34 105 100 34 62 49 56 55 57 48 54 48
-		 54 56 51 60 47 104 107 112 97 114 97 109
-		 62 10 9 9 60 104 107 112 97 114 97 109
-		 32 110 97 109 101 61 34 118 101 114 34 62
-		 54 53 55 57 53 60 47 104 107 112 97 114
-		 97 109 62 10 9 9 60 104 107 112 97 114
-		 97 109 32 110 97 109 101 61 34 104 97 115
-		 79 112 116 105 111 110 115 34 62 116 114 117
-		 101 60 47 104 107 112 97 114 97 109 62 10
-		 9 60 47 104 107 111 98 106 101 99 116 62
-		 10 9 60 104 107 111 98 106 101 99 116 32
-		 110 97 109 101 61 34 80 114 101 118 105 101
-		 119 32 84 111 111 108 34 32 99 108 97 115
-		 115 61 34 104 99 116 70 105 108 116 101 114
-		 84 111 111 108 83 116 117 98 73 109 112 108
-		 79 112 116 105 111 110 115 34 62 10 9 9
+		 34 118 101 114 34 62 54 53 55 57 50 60
+		 47 104 107 112 97 114 97 109 62 10 9 9
 		 60 104 107 112 97 114 97 109 32 110 97 109
-		 101 61 34 114 101 110 100 101 114 101 114 34
-		 62 60 47 104 107 112 97 114 97 109 62 10
-		 9 60 47 104 107 111 98 106 101 99 116 62
-		 10 60 47 104 107 111 112 116 105 111 110 115
-		 62 ;
+		 101 61 34 104 97 115 79 112 116 105 111 110
+		 115 34 62 116 114 117 101 60 47 104 107 112
+		 97 114 97 109 62 10 9 60 47 104 107 111
+		 98 106 101 99 116 62 10 9 60 104 107 111
+		 98 106 101 99 116 32 110 97 109 101 61 34
+		 86 105 101 119 32 88 77 76 34 32 99 108
+		 97 115 115 61 34 104 99 116 86 105 101 119
+		 88 109 108 79 112 116 105 111 110 115 34 62
+		 10 9 9 60 104 107 112 97 114 97 109 32
+		 110 97 109 101 61 34 101 120 101 99 117 116
+		 101 77 111 100 97 108 108 121 34 62 102 97
+		 108 115 101 60 47 104 107 112 97 114 97 109
+		 62 10 9 60 47 104 107 111 98 106 101 99
+		 116 62 10 60 47 104 107 111 112 116 105 111
+		 110 115 62 ;
 createNode phong -n "Guard_NoRain_Mat";
 	setAttr ".dc" 1;
 	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;
@@ -32435,10 +32441,10 @@ createNode phong -n "Guard_NoRain_Mat";
 	setAttr ".cp" 2;
 createNode psdFileTex -n "psdFileTex1";
 	setAttr ".ail" yes;
-	setAttr ".ftn" -type "string" "C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS";
+	setAttr ".ftn" -type "string" "F:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS";
 createNode place2dTexture -n "place2dTexture3";
 createNode bump2d -n "bump2d1";
-	setAttr ".vc1" -type "float3" 0 9.9999997e-006 0 ;
+	setAttr ".vc1" -type "float3" 0 3.9999999e-005 0 ;
 	setAttr ".vc2" -type "float3" 9.9999997e-006 9.9999997e-006 0 ;
 select -ne :time1;
 	setAttr ".o" 1;
@@ -33050,6 +33056,6 @@ connectAttr "Guard_A_Head_A2_FaceFX_Mat_ncl1_1.msg" ":defaultTextureList1.tx" -n
 		;
 connectAttr "psdFileTex1.msg" ":defaultTextureList1.tx" -na;
 dataStructure -fmt "raw" -as "name=externalContentTable:string=node:string=key:string=upath:uint32=upathcrc:string=rpath:string=roles";
-applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"Guard_NoRain_Mat_ncl1_1\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS\" 1819525504 \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS\" \"sourceImages\"\n1\n\"Guard_A_Head_A2_FaceFX_Mat_ncl1_1\" \"fileTextureName\" \"Guard_A_Head_A2_FaceFX_Mat\" 2510539110 \"\" \"sourceImages\"\n2\n\"psdFileTex1\" \"fileTextureName\" \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS\" 650369313 \"C:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
+applyMetadata -fmt "raw" -v "channel\nname externalContentTable\nstream\nname v1.0\nindexType numeric\nstructure externalContentTable\n0\n\"Guard_NoRain_Mat_ncl1_1\" \"fileTextureName\" \"F:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS\" 2071909876 \"F:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_D.DDS\" \"sourceImages\"\n1\n\"Guard_A_Head_A2_FaceFX_Mat_ncl1_1\" \"fileTextureName\" \"Guard_A_Head_A2_FaceFX_Mat\" 2510539110 \"\" \"sourceImages\"\n2\n\"psdFileTex1\" \"fileTextureName\" \"F:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS\" 835636565 \"F:/Project/NagaGame/Arts/animations/Guard_A4_Raincoat_N.DDS\" \"sourceImages\"\nendStream\nendChannel\nendAssociations\n" 
 		-scn;
 // End of bruce.ma

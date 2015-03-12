@@ -55,45 +55,6 @@ void unload_havok_inplace(void* data, uint32_t size)
 #endif
 }
 
-void accurate_sleep(uint32_t milliSeconds)
-{
-#ifdef HAVOK_COMPILE
-    static LARGE_INTEGER s_freq = {0,0};
-    if (s_freq.QuadPart == 0)
-        QueryPerformanceFrequency(&s_freq);
-    LARGE_INTEGER from,now;
-    QueryPerformanceCounter(&from);
-    int ticks_to_wait = (int)s_freq.QuadPart / (1000/milliSeconds);
-    bool done = false;
-    int ticks_passed;
-    int ticks_left;
-    do
-    {
-        QueryPerformanceCounter(&now);
-        ticks_passed = (int)((__int64)now.QuadPart - (__int64)from.QuadPart);
-        ticks_left = ticks_to_wait - ticks_passed;
-
-        if (now.QuadPart < from.QuadPart)    // time wrap
-            done = true;
-        if (ticks_passed >= ticks_to_wait)
-            done = true;
-
-        if (!done)
-        {
-            if (ticks_left > (int)s_freq.QuadPart*2/1000)
-                bx::sleep(1);
-            else {
-                for (int i=0; i<10; i++)
-                    bx::sleep(0);
-            }
-        }
-    }
-    while (!done);
-#else
-    bx::sleep(milliSeconds);
-#endif
-}
-
 void msg_box( const char* fmt, ... )
 {
     char buf[256];
@@ -153,9 +114,14 @@ void Fact::set_value(StringId k, void* value_buf, const void* value_in, uint32_t
     memcpy((char*)value_buf + key->m_value_offset, value_in, size);
 }
 
-void Fact::fill_default_values(void* value_buf)
+void Fact::fill_default_values(void* value_buf) const
 {
-    memcpy(value_buf, (char*)this + m_value_offset, m_value_size);
+    memcpy(value_buf, (const char*)this + m_value_offset, m_value_size);
+}
+
+uint32_t Fact::get_memory_size() const
+{ 
+    return sizeof(Fact) + sizeof(StringId) * m_num_keys + sizeof(Key) * m_num_keys + m_value_size;
 }
 
 void CommandMachine::init(int max_commands, int max_callbacks)
@@ -248,6 +214,11 @@ void CommandMachine::update( float timestep )
         head[i] = head[idx+i];
     }
     m_numCommands = num_cmd_left;
+}
+
+void engine_assertion( const char *file, int line, const char *expression, bool result )
+{
+
 }
 
 // Walk to jump with Sync.

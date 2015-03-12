@@ -52,16 +52,18 @@ void DebugDrawManager::init()
     PosColorVertex::init();
     m_numLines[0] = m_numLines[1] = 0;
     m_numTexts = 0;
-    m_texts = COMMON_ALLOC(DebugText, MAX_DEBUG_TEXTS);
-    m_lines[0] = COMMON_ALLOC(DebugLine, MAX_DEBUG_LINES);
-    m_lines[1] = COMMON_ALLOC(DebugLine, MAX_DEBUG_LINES);
+    m_texts = DEBUG_ALLOC(DebugText, MAX_DEBUG_TEXTS);
+    m_lines[0] = DEBUG_ALLOC(DebugLine, MAX_DEBUG_LINES);
+    m_lines[1] = DEBUG_ALLOC(DebugLine, MAX_DEBUG_LINES);
 }
 
 void DebugDrawManager::shutdown()
 {
+#if 0
     COMMON_DEALLOC(m_texts);
     COMMON_DEALLOC(m_lines[0]);
     COMMON_DEALLOC(m_lines[1]);
+#endif
 }
 
 void DebugDrawManager::ready()

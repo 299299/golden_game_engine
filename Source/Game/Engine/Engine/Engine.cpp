@@ -66,8 +66,10 @@ void Engine::run()
         double timeMS = (double)m_timer.get_usec(false) / 1000.0;
         g_frameTimeMS = timeMS;
         g_totalSeconds += (float)(timeMS/1000.0);
-        if(timeMS < fixTimeMS) apply_framelimit(fixTimeMS - timeMS);
-        else ++g_frameLostNum;
+        if(timeMS < fixTimeMS) 
+            apply_framelimit((uint32_t)(fixTimeMS - timeMS));
+        else 
+            ++g_frameLostNum;
         PROFILE_END();
     }
 }
@@ -129,11 +131,12 @@ void Engine::frame(float timeStep)
     }
 }
 
-void Engine::apply_framelimit(double timeMS)
+void Engine::apply_framelimit(uint32_t timeMS)
 {
     PROFILE(FrameLimit);
-    if(timeMS < 1.0) return;
-    accurate_sleep((uint32_t)timeMS);
+    if(timeMS < 1) 
+        return;
+    bx::sleep(timeMS);
 }
 
 void Engine::core_init()

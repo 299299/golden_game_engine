@@ -103,8 +103,12 @@ void Actor::init( void* resource, const hkQsTransform& t, ActorId32 id)
     m_transform.setIdentity();
 #endif
     m_id = id;
-
     const ActorResource* actorResource = m_resource;
+    
+    Fact* fact = (Fact*)((char*)resource + actorResource->m_fact_offset);
+    m_blob = COMMON_ALLOC(char, fact->m_value_size);
+    fact->fill_default_values(m_blob);
+    
     uint32_t num = actorResource->m_num_components;
     char* p = (char*)resource;
     ComponentData* data = (ComponentData*)(p + actorResource->m_component_data_offset);
@@ -114,7 +118,8 @@ void Actor::init( void* resource, const hkQsTransform& t, ActorId32 id)
     {
         ComponentData* _d = data + i;
         char* _data = p + _d->m_offset;
-        ids[i] = g_componentMgr.get_factory(_d->m_index)->create_component(_data, m_id);
+        ComponentFactory* fac = g_componentMgr.get_factory(_d->m_index);
+        ids[i] = fac->create_component(_data, m_id);
     }
 
     set_transform(t);
@@ -130,6 +135,8 @@ void Actor::destroy()
     {
         g_componentMgr.get_factory(data[i].m_index)->destroy_component(comps[i]);
     }
+
+    COMMON_DEALLOC(m_blob);
 }
 
 void* Actor::get_first_component_of( StringId type )

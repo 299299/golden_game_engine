@@ -13,6 +13,7 @@ struct ActorResource
     uint32_t            m_component_data_offset;
     uint32_t            m_num_components;
     uint32_t            m_class;
+    uint32_t            m_fact_offset;
 };
 
 ENGINE_NATIVE_ALIGN(struct) Actor
@@ -22,6 +23,7 @@ ENGINE_NATIVE_ALIGN(struct) Actor
     const ActorResource*        m_resource;
     ActorId32                   m_id;
     StringId                    m_name;
+    char*                       m_blob;
 
     void        init(void* resource, const hkQsTransform& t, ActorId32 id);
     void        destroy();

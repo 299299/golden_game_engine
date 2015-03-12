@@ -103,6 +103,28 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
 #endif
 }
 
+INTERNAL void draw_fact(ActorId32 id)
+{
+    Actor* actor = g_actorWorld.get_actor(id);
+    if(!actor)
+        return;
+    const Fact* fact = (const Fact*)((char*)actor->m_resource + actor->m_resource->m_fact_offset);
+    void* fact_value = actor->m_blob;
+    imguiLabel("Fact: num_of_keys = %d, value_size = %d", fact->m_num_keys, fact->m_value_size);
+    int num = (int)fact->m_num_keys;
+    const StringId* names = (const StringId*)((char*)fact + fact->m_name_offset);
+    const Key* keys = (const Key*)((char*)fact + fact->m_key_offset);
+    char buf[1024] = {0};
+    for (int i=0; i<num; ++i)
+    {
+        const Key* key = keys + i;
+        char* value = (char*)fact_value + key->m_value_offset;
+        int value_size = key->m_size;
+        memcpy(buf, value, value_size);
+        imguiLabel("key=%s, value size=%d, str=%s", stringid_lookup(names[i]), value_size, buf);
+    }
+}
+
 PreviewState::PreviewState()
     :m_preview_actor(INVALID_ID)
     ,m_preview_level(0)
@@ -256,6 +278,7 @@ void PreviewState::draw_actor_info(const char* name, ActorId32 _actorId, int _x,
     imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
     _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
     draw_components_info(_actorId);
+    draw_fact(_actorId);
     imguiEndScrollArea();
 }
 

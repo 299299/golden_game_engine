@@ -756,12 +756,12 @@ bool json_to_bool( const jsonxx::Object& o,const char* name, bool def/*=false*/ 
     return o.get<bool>(name);
 }
 
-Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_mem_t func)
+Fact* json_to_fact(const jsonxx::Object& root, const char* name, func_fact_object_mem_t func)
 {
-    if(!o.has<jsonxx::Array>(name))
+    if(!root.has<jsonxx::Object>(name))
         return 0;
 
-    const jsonxx::Array& array = o.get<jsonxx::Array>(name);
+    const jsonxx::Object& o = root.get<jsonxx::Object>(name);
     uint32_t value_size = 0;
     const std::map<std::string, jsonxx::Value*>& kv = o.kv_map();
     std::map<std::string, jsonxx::Value*>::const_iterator it = kv.begin();
@@ -796,7 +796,7 @@ Fact* json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_m
         }
     }
 
-    uint32_t num_of_keys = array.size();
+    uint32_t num_of_keys = kv.size();
     uint32_t memory_size = sizeof(Fact) + num_of_keys * (sizeof(StringId) + sizeof(Key)) + value_size;
     char* p = COMMON_ALLOC(char, memory_size);
     memset(p, 0x00, memory_size);

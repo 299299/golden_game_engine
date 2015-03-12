@@ -44,6 +44,20 @@ ActorConverter::serializeToJson() const
     }
     rootObject << "components" << compsObject;
 
+    hkxScene* scene = m_config->m_scene;
+    hkxNode* data_node = scene->findNodeByName("data");
+    if(data_node) 
+    {
+        jsonxx::Object dataObject;
+        dumpNodeRec(data_node);
+        for(int i=0; i<data_node->m_attributeGroups.getSize(); ++i)
+        {
+            fill_object_attributes(dataObject, &data_node->m_attributeGroups[i]);
+        }
+        rootObject << "data" << dataObject;
+    }
+    
+
     return rootObject;
 }
 
