@@ -77,8 +77,3 @@ void CharacterConverter::collectRigSkinData(hkaSkeleton* rig)
     }
 #endif
 }
-
-jsonxx::Object CharacterConverter::serializeToJson() const
-{
-    return ActorConverter::serializeToJson();
-}

@@ -102,7 +102,11 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
     for (int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
-        imguiLabel("%s weight = %f, time = %f", stringid_lookup(ac->m_name), ac->getMasterWeight(), ac->getLocalTime());
+        anim_debug_map::iterator it = g_animMgr.m_anim_debug_names.find(ac->m_animation);
+        const char* anim_name = 0;
+        if(it != g_animMgr.m_anim_debug_names.end())
+            anim_name = it->second;
+        imguiLabel("%s weight = %f, time = %f", anim_name, ac->getMasterWeight(), ac->getLocalTime());
     }
 #endif
 }

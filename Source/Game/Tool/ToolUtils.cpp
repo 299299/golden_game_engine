@@ -628,6 +628,16 @@ void fill_object_attributes(jsonxx::Object& object, const hkxAttributeGroup* gro
 #endif
 }
 
+void fill_object_attributes( jsonxx::Object& object, const hkxAttributeHolder* holder )
+{
+#ifdef HAVOK_COMPILE
+    for (int i=0; i<holder->m_attributeGroups.getSize();++i)
+    {
+        fill_object_attributes(object, &holder->m_attributeGroups[i]);
+    }
+#endif
+}
+
 
 void lut2d_to_3d(const uint8_t* inData, uint8_t* outData)
 {

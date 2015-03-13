@@ -2,7 +2,7 @@
 
 //#define DIFFUSE_MAPPING
 //#define NORMAL_MAPPING
-//#define SPECULAR_MAPPING 
+//#define SPECULAR_MAPPING
 //#define LIGHTMAP_MAPING
 
 //uniforms
@@ -41,5 +41,10 @@ uniform vec3  u_shadowParams;
 
 void main()
 {
-    gl_FragColor = vec4(1,0,0,1);   
+    vec4 color = vec4(1,1,1,1);
+#ifdef DIFFUSE_MAPPING
+    color = texture2D(u_texColor, v_texcoord0);
+#endif
+    gl_FragColor.xyz = color.xyz;
+    gl_FragColor.w = 1.0;
 }

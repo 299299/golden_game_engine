@@ -11,7 +11,6 @@ public:
     ~LevelConverter();
     virtual void process(void* pData);
     virtual jsonxx::Object serializeToJson() const;
-    virtual jsonxx::Object serializeToJsonSplit() const;
 private:
     void process(hkxScene* scene);
     virtual void postProcess();

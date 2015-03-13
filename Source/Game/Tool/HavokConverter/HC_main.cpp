@@ -5,6 +5,7 @@
 #include "LevelConverter.h"
 #include "AnimationConverter.h"
 #include "linear_allocator.h"
+#include "Engine.h"
 
 HC_Config* g_hc_config = 0;
 
@@ -32,6 +33,8 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
 #ifdef HC_DUMP_PROFILE
     g_profiler.init(64);
 #endif
+
+    register_engine_factories();
 
     g_hc_config = new HC_Config;
     g_hc_config->m_packNormal = cmdline->hasArg("packnormal");

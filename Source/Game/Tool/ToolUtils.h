@@ -62,6 +62,7 @@ void        dumpNodeRec(hkxNode* theNode);
 void        findNodesRec(hkxNode* theNode, const hkClass* theClass, std::vector<hkxNode*>& outNodes);
 void        findNodesRec(hkxNode* theNode, const std::string& preFix, std::vector<hkxNode*>& outNodes);
 void        fill_object_attributes(jsonxx::Object& object, const hkxAttributeGroup* group);
+void        fill_object_attributes(jsonxx::Object& object, const hkxAttributeHolder* holder);
 
 void        texconv_compress(const std::string& src, const std::string& folder, const std::string& fmt);
 void        lut2d_to_3d(const uint8_t* inData, uint8_t* outData);

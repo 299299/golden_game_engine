@@ -39,24 +39,35 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
         return true;
     }
 
-    //1. first convert the source texture to dds file.
     std::string fileName = getFileName(input);
     std::string ddsFile = getFilePath(output) + fileName + ".dds";
-    std::string fileNameExt = getFileNameAndExtension(input);
-    toLower(fileNameExt);
-#ifdef WIN32
-    texconv_compress(input, getFilePath(output), m_format);
-#else
-    //in linux we just copy it to dest
-    copy_file(input, ddsFile);
+
+    bool bConvert = false;
+    std::string ext = getFileExt(input);
+    toLower(ext);
+    if(ext != "dds")
+        bConvert = true;
+
+#ifndef WIN32
+    bConvert = false; //in linux we just copy it to dest
 #endif
+
+    if(bConvert)
+    {
+        //1. first convert the source texture to dds file.
+        texconv_compress(input, getFilePath(output), m_format);
+        copy_file(input, ddsFile);
+    }
+    else
+        ddsFile = input;
 
     addDependency("texture", input);
 
     //2. read the dds file back
     {
         FileReader texutreReader(ddsFile);
-        if(!texutreReader.m_size) return false;
+        if(!texutreReader.m_size)
+            return false;
 
         //3. back the whole file to one blob.
         uint32_t memSize = texutreReader.m_size + sizeof(Texture);
@@ -64,12 +75,14 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
         Texture* tex = (Texture*)mem.m_buf;
         tex->m_handle.idx = bgfx::invalidHandle;
         tex->m_data_size = texutreReader.m_size;
+        tex->m_data_offset = sizeof(Texture);
         memcpy(mem.m_buf + sizeof(Texture), texutreReader.m_buf, texutreReader.m_size);
         write_file(output, mem.m_buf, memSize);
     }
 
     //3. delete the temp dds file.
-    delete_file(ddsFile);
+    if(bConvert)
+        delete_file(ddsFile);
 
     return true;
 }
@@ -77,7 +90,8 @@ bool TextureCompiler::processImage( const std::string& input, const std::string&
 void TextureCompiler::postProcess()
 {
     checkDependency();
-    if(!m_processed) return;
+    if(!m_processed)
+        return;
     g_config->m_database.insertResourceFile(m_input, m_modifyTime);
 }
 
@@ -85,7 +99,8 @@ void TextureCompiler::postProcess()
 bool DDSCompiler::process( const std::string& input, const std::string& output )
 {
     FileReader ddsReader(input);
-    if(!ddsReader.m_size) return false;
+    if(!ddsReader.m_size)
+        return false;
 
     uint32_t memSize = ddsReader.m_size + sizeof(Texture);
     MemoryBuffer mem(memSize);

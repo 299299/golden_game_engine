@@ -11,11 +11,9 @@ public:
     CharacterConverter();
     ~CharacterConverter();
     virtual void process(void* pData);
-    virtual jsonxx::Object serializeToJson() const;
 private:
     void process(hkaAnimationContainer* ac);
     void collectRigSkinData(hkaSkeleton* rig);
-
 private:
     hkaAnimationContainer*               m_ac;
     RigSkinData*                         m_skin;

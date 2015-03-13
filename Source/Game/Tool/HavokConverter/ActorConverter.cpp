@@ -1,6 +1,7 @@
 #include "ActorConverter.h"
 #include "ComponentConverter.h"
 #include "Actor.h"
+#include "Component.h"
 
 ActorConverter::ActorConverter()
 :m_config(NULL)
@@ -37,24 +38,46 @@ ActorConverter::serializeToJson() const
     string_replace(srcFile, "\\", "/");
     rootObject << "asset_path" << srcFile;
 
+    hkxScene* scene = m_config->m_scene;
     jsonxx::Array compsObject;
     for(size_t i=0; i<m_components.size(); ++i)
     {
         compsObject << m_components[i]->serializeToJson();
     }
+
+#ifdef HAVOK_COMPILE
+    if(scene)
+    {
+        hkxNode* root_node = scene->m_rootNode;
+        if (root_node)
+        {
+            for (int i=0; i<root_node->m_children.getSize(); ++i)
+            {
+                hkxNode* node = root_node->m_children[i];
+                printf("root child = %s\n", node->m_name.cString());
+                StringId type = stringid_caculate(node->m_name.cString());
+                if (!g_componentMgr.find_factory(type))
+                    continue;
+                
+                LOGI("processing other components node %s", node->m_name.cString());
+                jsonxx::Object o;
+                fill_object_attributes(o, node);
+                o << "type" << std::string(node->m_name.cString());
+                compsObject << o;
+            }
+        }
+    }
+#endif
+
     rootObject << "components" << compsObject;
 
 #ifdef HAVOK_COMPILE
-    hkxScene* scene = m_config->m_scene;
     hkxNode* data_node = scene->findNodeByName("data");
     if(data_node)
     {
         jsonxx::Object dataObject;
         dumpNodeRec(data_node);
-        for(int i=0; i<data_node->m_attributeGroups.getSize(); ++i)
-        {
-            fill_object_attributes(dataObject, &data_node->m_attributeGroups[i]);
-        }
+        fill_object_attributes(dataObject, data_node);
         rootObject << "data" << dataObject;
     }
 #endif

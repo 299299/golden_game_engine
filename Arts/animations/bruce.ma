@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: bruce.ma
-//Last modified: Thu, Mar 12, 2015 09:28:46 PM
+//Last modified: Fri, Mar 13, 2015 10:17:20 PM
 //Codeset: 936
 requires maya "2015";
 requires -nodeType "hkNodeOptions" "hctMayaSceneExport" "2014.1.0.1 (2014.1 r1)";
@@ -12,12 +12,12 @@ fileInfo "cutIdentifier" "201410051530-933320";
 fileInfo "osv" "Microsoft Windows 7 Ultimate Edition, 64-bit Windows 7 Service Pack 1 (Build 7601)\n";
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" -2402.1290869996783 1025.6126240685255 -404.72533903105159 ;
-	setAttr ".r" -type "double3" -17.13835272957726 -97.799999999999059 0 ;
+	setAttr ".t" -type "double3" 1030.2951427854305 1115.4222242667377 2108.106216002509 ;
+	setAttr ".r" -type "double3" -17.738352729558382 -694.99999999997647 8.7733845139507493e-016 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 2521.8140642034364;
+	setAttr ".coi" 2521.8140642044214;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -24143,6 +24143,11 @@ createNode transform -n "data";
 	setAttr -cb on ".gender" -type "string" "male";
 	setAttr -k on ".hkType";
 	setAttr -k on ".hhahahahah" -type "string" "kkljkjks";
+createNode transform -n "states";
+	addAttr -ci true -sn "hkType" -ln "hkType" -at "double";
+	addAttr -ci true -sn "name" -ln "name" -dt "string";
+	setAttr -k on ".hkType";
+	setAttr -k on ".name" -type "string" "core/character/locomotion";
 createNode lightLinker -s -n "lightLinker1";
 	setAttr -s 4 ".lnk";
 	setAttr -s 4 ".slnk";
@@ -31981,7 +31986,7 @@ createNode hkNodeOptions -n "hkNodeOptions1";
 	addAttr -ci true -sn "NSV" -ln "DoNotSplitVertices" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "ASA" -ln "GetAutoSkinAttachments" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "KFS" -ln "StoreKeyFrameSamplePoints" -dv 1 -min 0 -max 1 -at "bool";
-	setAttr ".FS" -type "Int32Array" 5409 60 63 120 109 108 32
+	setAttr ".FS" -type "Int32Array" 5108 60 63 120 109 108 32
 		 118 101 114 115 105 111 110 61 34 49 46 48
 		 34 32 101 110 99 111 100 105 110 103 61 34
 		 117 116 102 45 56 34 63 62 10 60 104 107
@@ -32009,7 +32014,7 @@ createNode hkNodeOptions -n "hkNodeOptions1";
 		 117 108 116 60 47 104 107 112 97 114 97 109
 		 62 10 9 9 60 104 107 112 97 114 97 109
 		 32 110 97 109 101 61 34 110 117 109 70 105
-		 108 116 101 114 115 34 62 55 60 47 104 107
+		 108 116 101 114 115 34 62 54 60 47 104 107
 		 112 97 114 97 109 62 10 9 60 47 104 107
 		 111 98 106 101 99 116 62 10 9 60 104 107
 		 111 98 106 101 99 116 32 110 97 109 101 61
@@ -32406,33 +32411,8 @@ createNode hkNodeOptions -n "hkNodeOptions1";
 		 108 70 111 114 109 97 116 34 62 102 97 108
 		 115 101 60 47 104 107 112 97 114 97 109 62
 		 10 9 60 47 104 107 111 98 106 101 99 116
-		 62 10 9 60 104 107 111 98 106 101 99 116
-		 32 110 97 109 101 61 34 86 105 101 119 32
-		 88 77 76 34 32 99 108 97 115 115 61 34
-		 104 99 116 70 105 108 116 101 114 68 97 116
-		 97 34 62 10 9 9 60 104 107 112 97 114
-		 97 109 32 110 97 109 101 61 34 105 100 34
-		 62 51 50 53 57 54 49 54 49 60 47 104
-		 107 112 97 114 97 109 62 10 9 9 60 104
-		 107 112 97 114 97 109 32 110 97 109 101 61
-		 34 118 101 114 34 62 54 53 55 57 50 60
-		 47 104 107 112 97 114 97 109 62 10 9 9
-		 60 104 107 112 97 114 97 109 32 110 97 109
-		 101 61 34 104 97 115 79 112 116 105 111 110
-		 115 34 62 116 114 117 101 60 47 104 107 112
-		 97 114 97 109 62 10 9 60 47 104 107 111
-		 98 106 101 99 116 62 10 9 60 104 107 111
-		 98 106 101 99 116 32 110 97 109 101 61 34
-		 86 105 101 119 32 88 77 76 34 32 99 108
-		 97 115 115 61 34 104 99 116 86 105 101 119
-		 88 109 108 79 112 116 105 111 110 115 34 62
-		 10 9 9 60 104 107 112 97 114 97 109 32
-		 110 97 109 101 61 34 101 120 101 99 117 116
-		 101 77 111 100 97 108 108 121 34 62 102 97
-		 108 115 101 60 47 104 107 112 97 114 97 109
-		 62 10 9 60 47 104 107 111 98 106 101 99
-		 116 62 10 60 47 104 107 111 112 116 105 111
-		 110 115 62 ;
+		 62 10 60 47 104 107 111 112 116 105 111 110
+		 115 62 ;
 createNode phong -n "Guard_NoRain_Mat";
 	setAttr ".dc" 1;
 	setAttr ".ambc" -type "float3" 0.588 0.588 0.588 ;

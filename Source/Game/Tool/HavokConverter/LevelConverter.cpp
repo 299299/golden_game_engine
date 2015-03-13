@@ -160,7 +160,7 @@ jsonxx::Object LevelConverter::serializeToJson() const
         hkxNode* node = m_sceneNodes[i];
         jsonxx::Object actor;
         json_transform(actor, node, m_scene);
-        fill_object_attributes(actor, node->findAttributeGroupByName(ENGINE_ATTRIBUTES));
+        fill_object_attributes(actor, node);
         actorList << actor;
     }
 
@@ -198,11 +198,6 @@ jsonxx::Object LevelConverter::serializeToJson() const
     return levelObject;
 }
 
-jsonxx::Object LevelConverter::serializeToJsonSplit() const
-{
-    return serializeToJson();
-}
-
 void LevelConverter::postProcess()
 {
     for(size_t i=0; i<m_levelMeshes.size(); ++i)
@@ -213,7 +208,8 @@ void LevelConverter::postProcess()
     {
         m_levelLights[i]->postProcess();
     }
-    if(m_collisionActor) m_collisionActor->postProcess();
+    if(m_collisionActor) 
+        m_collisionActor->postProcess();
 }
 
 Actor_Config* LevelConverter::createConfig(const std::string& nodeName)
