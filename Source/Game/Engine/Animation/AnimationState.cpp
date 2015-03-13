@@ -6,6 +6,7 @@
 #include "DataDef.h"
 #include "Actor.h"
 #include "MemorySystem.h"
+#include "AnimationSystem.h"
 
 enum LayerState
 {
@@ -144,8 +145,10 @@ INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
         hk_anim_ctrl* anim_ctl = anim_ctls + i;
 #ifdef HAVOK_COMPILE
         hk_anim_ctrl* ac = new (anim_ctl) hk_anim_ctrl(anim_data->m_animation);
-        ac->m_name = anim_data->m_name;
         ac->set_loop(state->m_looped);
+#endif
+#ifndef _RETAIL
+        g_animMgr.add_anim_debug_name(anim_data->m_animation, anim_data->m_name);
 #endif
     }
 }

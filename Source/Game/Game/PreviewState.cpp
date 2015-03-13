@@ -72,7 +72,11 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
                 {
                     ValueNode* node = (ValueNode*)nodes;
                     hk_anim_ctrl* ac = (hk_anim_ctrl*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    imguiLabel("     animation = %s", stringid_lookup(ac->m_name));
+                    anim_debug_map::iterator i = g_animMgr.m_anim_debug_names.find(ac->m_animation);
+                    const char* anim_name = 0;
+                    if(i != g_animMgr.m_anim_debug_names.end())
+                        anim_name = i->second;
+                    imguiLabel("     animation = %s", anim_name);
                 }
                 break;
             case AnimationNodeType::Select:

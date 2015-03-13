@@ -9,7 +9,6 @@
 struct hk_anim_ctrl : public hkaDefaultAnimationControl
 {
     Animation*              m_animation;
-    StringId                m_name; // for better debug
     bool                    m_enabled;
     char                    m_padding[3];
 
@@ -76,7 +75,6 @@ struct hkaAnimatedSkeleton;
 struct hk_anim_ctrl
 {
     Animation* m_animation;
-    StringId m_name;
     hk_anim_ctrl(Animation* anim):m_animation(anim) {};
     void removeReference() {};
     void getExtractedMotionDeltaReferenceFrame( hkReal deltaTime, hkQsTransform& deltaMotionOut ) {}

@@ -44,9 +44,10 @@ ActorConverter::serializeToJson() const
     }
     rootObject << "components" << compsObject;
 
+#ifdef HAVOK_COMPILE
     hkxScene* scene = m_config->m_scene;
     hkxNode* data_node = scene->findNodeByName("data");
-    if(data_node) 
+    if(data_node)
     {
         jsonxx::Object dataObject;
         dumpNodeRec(data_node);
@@ -56,7 +57,7 @@ ActorConverter::serializeToJson() const
         }
         rootObject << "data" << dataObject;
     }
-    
+#endif
 
     return rootObject;
 }

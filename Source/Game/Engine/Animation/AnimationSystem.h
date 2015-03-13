@@ -1,5 +1,8 @@
 #pragma once
 #include "BaseTypes.h"
+#include "StringId.h"
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 
 class hkaSkeleton;
 class hkaAnimatedSkeleton;
@@ -23,6 +26,10 @@ struct AnimationConfig
     int    max_anim_events;
 };
 
+#ifndef _RETAIL
+typedef tinystl::unordered_map<void*, const char*> anim_debug_map;
+#endif
+
 struct AnimationSystem
 {
     void    init(const AnimationConfig& cfg);
@@ -41,6 +48,17 @@ struct AnimationSystem
     AnimationEvent*         m_events;
     float                   m_time;
     float                   m_time_scale;
+
+#ifndef _RETAIL
+    anim_debug_map  m_anim_debug_names;
+    void add_anim_debug_name(void* p, StringId name)
+    {
+        anim_debug_map::iterator i = m_anim_debug_names.find(p);
+        if(i != m_anim_debug_names.end())
+            return;
+        m_anim_debug_names[p] = stringid_lookup(name);
+    }
+#endif
 };
 
 extern AnimationSystem g_animMgr;
