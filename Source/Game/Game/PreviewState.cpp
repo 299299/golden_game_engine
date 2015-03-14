@@ -199,10 +199,10 @@ void PreviewState::step( float dt )
     {
         extern void draw_debug_models();
         extern void draw_debug_lights();
-        extern void draw_debug_animation();
+        extern void draw_debug_animation(float);
         draw_debug_lights();
         draw_debug_models();
-        draw_debug_animation();
+        draw_debug_animation(dt);
     }
 
 #ifdef HAVOK_COMPILE
@@ -284,7 +284,6 @@ void PreviewState::draw_actor_info(const char* name, ActorId32 _actorId, int _x,
     char _buf[256];
     bx::snprintf(_buf, sizeof(_buf), "Actor %s", name);
     imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
-    _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
     draw_components_info(_actorId);
     draw_fact(_actorId);
     imguiEndScrollArea();
@@ -303,9 +302,7 @@ void PreviewState::draw_level_info( const char* name, Level* level, int _x, int 
     char _buf[256];
     bx::snprintf(_buf, sizeof(_buf), "Level %s", name);
 
-    imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
-    _enabled = imguiBeginScroll(_h, &_scroll, _enabled);
-
+    _enabled = imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);
     int num = level->m_num_objects;
     LevelObject* objects = (LevelObject*)((char*)level + level->m_object_offset);
     for (int i=0; i<num; ++i)
@@ -315,7 +312,6 @@ void PreviewState::draw_level_info( const char* name, Level* level, int _x, int 
         imguiLabel("Actor %s", stringid_lookup(object.m_name));
         draw_components_info(object.m_actor);
     }
-
     imguiEndScrollArea();
 }
 

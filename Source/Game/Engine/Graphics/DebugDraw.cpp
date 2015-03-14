@@ -86,10 +86,10 @@ void DebugDrawManager::draw()
     draw(m_numLines[0], m_lines[0], true);
     draw(m_numLines[1], m_lines[1], false);
 
-    uint32_t num = m_numTexts;
+    int num = m_numTexts;
     const DebugText* head = m_texts;
 
-    for (uint32_t i = 0; i < num; ++i)
+    for (int i = 0; i < num; ++i)
     {
         const DebugText& text = head[i];
         imguiDrawText((int)text.m_screenPos[0],
@@ -100,9 +100,10 @@ void DebugDrawManager::draw()
     }
 }
 
-void DebugDrawManager::draw( uint32_t lineNum, DebugLine* lines, bool bDepth)
+void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
 {
-    if(!lineNum) return;
+    if(!lineNum) 
+        return;
     bgfx::TransientVertexBuffer tvb;
     uint32_t numVertices = lineNum*2;
     if (!bgfx::checkAvailTransientVertexBuffer(numVertices, PosColorVertex::ms_decl))
@@ -113,7 +114,7 @@ void DebugDrawManager::draw( uint32_t lineNum, DebugLine* lines, bool bDepth)
 
     bgfx::allocTransientVertexBuffer(&tvb, numVertices, PosColorVertex::ms_decl);
     PosColorVertex* vertices = (PosColorVertex*)tvb.data;
-    for (uint32_t i=0; i<lineNum; ++i)
+    for (int i=0; i<lineNum; ++i)
     {
         const DebugLine& line = lines[i];
         PosColorVertex& va = vertices[i*2];
@@ -136,7 +137,7 @@ void DebugDrawManager::draw( uint32_t lineNum, DebugLine* lines, bool bDepth)
 void DebugDrawManager::add_line( const float* start, const float* end, uint32_t color, bool bDepth)
 {
     int index = bDepth ? 0 : 1;
-    uint32_t& numLines = m_numLines[index];
+    int& numLines = m_numLines[index];
     if(numLines >= (MAX_DEBUG_LINES - 1))
     {
         LOGE("%s lines num overflow!", bDepth ? "depth" : "non-depth");
@@ -240,7 +241,8 @@ void DebugDrawManager::add_text_3d( const float* pos, const char* text, uint32_t
 {
     float pos2D[2] = {0,0};
     bool bFlag = g_camera.project_3d_to_2d(pos2D, pos);
-    if(!bFlag) return;
+    if(!bFlag) 
+        return;
     DebugText& dbgText = m_texts[m_numTexts++];
     dbgText.m_color = color;
     dbgText.m_screenPos[0] = pos2D[0];

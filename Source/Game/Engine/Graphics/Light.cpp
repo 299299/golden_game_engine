@@ -35,10 +35,10 @@ void LightWorld::update( float dt )
 {
     reset();
 
-    uint32_t numLights = m_lights.size();
+    int numLights = m_lights.size();
     m_drawLights = FRAME_ALLOC(Light*, numLights);
     Light* lights = m_lights.begin();
-    for (uint32_t i=0; i<numLights; ++i)
+    for (int i=0; i<numLights; ++i)
     {
         Light& l = lights[i];
         if(l.m_flag & kNodeInvisible) continue;
@@ -161,7 +161,7 @@ void*  get_light(Id id)
     return m_lights.get(id);
 }
 
-uint32_t num_all_light()
+int num_all_light()
 {
     return m_lights.size();
 }
@@ -184,11 +184,11 @@ void transform_light(Id id, const hkQsTransform& t)
 #include "DebugDraw.h"
 void draw_debug_lights()
 {
-    uint32_t num = m_lights.size();
+    int num = m_lights.size();
     Light* lights = m_lights.begin();
     bool bShadow = false;
 
-    for (uint32_t i=0; i<num; ++i)
+    for (int i=0; i<num; ++i)
     {
         const Light& lt = lights[i];
         switch(lt.m_type)

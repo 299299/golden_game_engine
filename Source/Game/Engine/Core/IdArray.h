@@ -115,7 +115,7 @@ struct IdArray
         return &m_objects[m_sparse_to_dense[id.index]];
     }
 
-    uint32_t size() const { return m_size; };
+    int size() const { return m_size; };
 
     const T* begin() const { return m_objects; };
     T* begin() { return m_objects; };

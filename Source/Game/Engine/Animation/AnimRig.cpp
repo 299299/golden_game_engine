@@ -20,6 +20,7 @@
 #include <Animation/Animation/Rig/hkaSkeletonUtils.h>
 #endif
 
+#define ANIM_EVT_WEIGHT_THRESHOLD 0.1f
 //------------------------------------------------------------------------------------------------
 //          RESOURCE
 //------------------------------------------------------------------------------------------------
@@ -171,17 +172,20 @@ int AnimRigInstance::collect_event( AnimationEvent* events )
     for (int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
+        if(ac->getWeight() < ANIM_EVT_WEIGHT_THRESHOLD)
+            continue;
         const Animation* anim = ac->m_animation;
         AnimationTrigger* triggers = 0;
         float local_time = ac->getLocalTime();
-        int frame = (int)(local_time * ANIMATION_TIME_PERFRAME);
+        int frame = (int)(local_time * ANIMATION_FRAME_FPS);
         int t_num = get_animation_triggers(anim, frame, &triggers);
         for(int j=0; j<t_num; ++j)
         {
-            events[j].m_name = triggers[i].m_name;
+            events[j].m_name = triggers[j].m_name;
             events[j].m_who = actor;
         }
-        events += r_num;
+        events += t_num;
+        r_num += t_num;
     }
 #endif
     return r_num;

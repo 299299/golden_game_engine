@@ -67,7 +67,7 @@ void AnimationSystem::init(const AnimationConfig& cfg)
 
 void AnimationSystem::shutdown()
 {
-    for (uint32_t i=0; i<m_stateLayers.size(); ++i)
+    for (int i=0; i<m_stateLayers.size(); ++i)
     {
         m_stateLayers[i].destroy();
     }
@@ -79,25 +79,27 @@ void AnimationSystem::shutdown()
 void AnimationSystem::frame_start()
 {
     set_status(kTickFrameStart);
+    m_numAnimEvts = 0;
 }
 
 void AnimationSystem::kick_in_jobs()
 {
-    uint32_t num = m_rigs.size();
-    if(num == 0) return;
+    int num = m_rigs.size();
+    if(num == 0) 
+        return;
     AnimRigInstance* rigs = m_rigs.begin();
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
     PROFILE(Animation_KickInJobs);
     set_status(kTickProcessing);
-    for (uint32_t i=0; i<num;++i)
+    for (int i=0; i<num;++i)
     {
         AnimRigInstance& instance = rigs[i];
         m_jobs[i].build(instance.m_skeleton, instance.m_pose);
     }
     hkLocalArray<hkJob*> jobPointers( num );
     jobPointers.setSize( num );
-    for ( uint32_t i = 0; i < num; ++i )
+    for ( int i = 0; i < num; ++i )
     {
         jobPointers[i] = &m_jobs[i];
     }
@@ -120,10 +122,10 @@ void AnimationSystem::tick_finished_jobs()
 {
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
-    uint32_t num = m_rigs.size();
+    int num = m_rigs.size();
     if(!num) return;
     PROFILE(AnimationFinishJobs);
-    for(uint32_t i=0; i<num; ++i)
+    for(int i=0; i<num; ++i)
     {
         m_jobs[i].destroy();
     }
@@ -132,13 +134,13 @@ void AnimationSystem::tick_finished_jobs()
 #endif
 }
 
-void AnimationSystem::skin_actors( Actor* actors, uint32_t num )
+void AnimationSystem::skin_actors( Actor* actors, int num )
 {
     PROFILE(Animation_SkinActors);
 
     StringId anim_type = EngineTypes::ANIMATION_RIG;
     StringId model_type = EngineTypes::MODEL;
-    for (uint32_t i=0; i<num; ++i)
+    for (int i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
         AnimRigInstance* rig = (AnimRigInstance*)actor.get_first_component_of(anim_type);
@@ -199,35 +201,39 @@ void AnimationSystem::update_animations(float dt)
         return;
 
     dt = ANIMATION_TIME_PERFRAME * m_time_scale;
-    uint32_t num = m_rigs.size();
+    int num = m_rigs.size();
     PROFILE(Animation_Update);
     AnimRigInstance* rigs = m_rigs.begin();
     AnimationEvent* events = m_events;
-    for(uint32_t i=0; i<num;++i)
+    int evt_num = m_numAnimEvts;
+    for(int i=0; i<num;++i)
     {
         int num = rigs[i].collect_event(events);
         events += num;
+        evt_num += num;
         rigs[i].update(dt);
     }
+    m_numAnimEvts = evt_num;
     num = m_stateLayers.size();
     AnimationStatesInstance* l = m_stateLayers.begin();
-    for(uint32_t i=0; i<num;++i)
+    for(int i=0; i<num;++i)
     {
         l[i].update(dt);
     }
 }
 
-void AnimationSystem::update_attachment( Actor* actors, uint32_t num )
+void AnimationSystem::update_attachment( Actor* actors, int num )
 {
     PROFILE(Animation_UpdateAttachment);
     StringId anim_type = EngineTypes::ANIMATION_RIG;
-    for (uint32_t i=0; i<num; ++i)
+    for (int i=0; i<num; ++i)
     {
         Actor& actor = actors[i];
         int index = actor.get_first_component_index_of(anim_type);
         Id rigId = actor.m_components[index];
         AnimRigInstance* rig = (AnimRigInstance*)get_anim_rig(rigId);
-        if(!rig) continue;
+        if(!rig)
+            continue;
         rig->update_attachment(actor.m_transform);
     }
 }
@@ -277,7 +283,7 @@ void* get_anim_rig( Id id )
     return m_rigs.get(id);
 }
 
-uint32_t num_all_anim_rig()
+int num_all_anim_rig()
 {
     return m_rigs.size();
 }
@@ -316,7 +322,7 @@ void* get_anim_state( Id id )
     return m_stateLayers.get(id);
 }
 
-uint32_t num_all_anim_state()
+int num_all_anim_state()
 {
     return m_stateLayers.size();
 }
@@ -331,18 +337,27 @@ void lookup_anim_state_instance_data( void* resource )
     ComponentInstanceData* data = (ComponentInstanceData*)resource;
     data->m_resource = FIND_RESOURCE(AnimationStates, EngineTypes::ANIMATION_STATES, data->m_name);
 }
+
+
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
-#include "DebugDraw.h"
-void draw_debug_animation()
+
+#ifndef _RETAIL
+struct DebugEvtText
 {
-#ifdef HAVOK_COMPILE
+    float           m_time;
+    const char*     m_message;
+};
+
+#include "DebugDraw.h"
+void draw_debug_animation(float dt)
+{
     PROFILE(draw_debug_animation);
     extern int g_engineMode;
-    uint32_t num = m_rigs.size();
+    int num = m_rigs.size();
     AnimRigInstance* rigs = m_rigs.begin();
-    for (uint32_t i=0; i<num; ++i)
+    for (int i=0; i<num; ++i)
     {
         AnimRigInstance& rig = rigs[i];
         const AnimRig* res = rig.m_resource;
@@ -359,6 +374,7 @@ void draw_debug_animation()
                 draw_pose_vdb(*pose, t);
         }
 
+#ifdef HAVOK_COMPILE
         {
             //draw local motion mark
             //FIXME:TODO move it to a better place
@@ -389,12 +405,55 @@ void draw_debug_animation()
                 }
             }
         }
-    }
 #endif
+    }
+
+    typedef tinystl::unordered_map<ActorId32, DebugEvtText> DebugEvtMap;
+    static DebugEvtMap g_evtMap;
+    const float evt_time = 0.5f;
+
+    for (DebugEvtMap::iterator iter = g_evtMap.begin(); iter != g_evtMap.end(); ++iter)
+    {
+        DebugEvtText& dbg_evt = iter->second;
+        dbg_evt.m_time -= dt;
+        if(dbg_evt.m_time <= 0)
+        {
+            dbg_evt.m_time = 0;
+            continue;
+        }
+
+        Actor* actor = g_actorWorld.get_actor(iter->first);
+        if(!actor)
+            continue;
+        const hkQsTransform& t = actor->m_transform;
+        float pos[3];
+        transform_vec3(pos, t.m_translation);
+        g_debugDrawMgr.add_text_3d(pos, dbg_evt.m_message, RGBCOLOR(255,0,255));
+    }
+
+    num = g_animMgr.m_numAnimEvts;
+    AnimationEvent* evts = g_animMgr.m_events;
+    for (int i=0; i<num; ++i)
+    {
+        ActorId32 id = evts[i].m_who;
+        DebugEvtMap::iterator iter = g_evtMap.find(id);
+        if(iter != g_evtMap.end())
+        {
+            iter->second.m_message = stringid_lookup(evts[i].m_name);
+            iter->second.m_time = evt_time;
+        }
+        else 
+        {
+            DebugEvtText dbg_evt;
+            dbg_evt.m_message = stringid_lookup(evts[i].m_name);
+            dbg_evt.m_time = evt_time;
+            g_evtMap[id] = dbg_evt;
+        }
+    }
 }
 
 
-
+#endif
 
 
 //-----------------------------------------------------------------

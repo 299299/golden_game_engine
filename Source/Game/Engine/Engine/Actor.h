@@ -54,8 +54,8 @@ struct ActorWorld
     ActorId32   create_actor(void* actorResource, const hkQsTransform& t);
     void        destroy_actor(ActorId32 id);
     Actor*      get_actor(ActorId32 id);
-    uint32_t    num_actors(uint32_t type);
-    Actor*      get_actors(uint32_t type);
+    int         num_actors(int type);
+    Actor*      get_actors(int type);
 
     void        pre_step(float dt);
     void        step(float dt);

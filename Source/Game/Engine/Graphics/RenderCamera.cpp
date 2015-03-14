@@ -58,13 +58,16 @@ bool Camera::project_3d_to_2d(float* out2DPos, const float* in3DPos)
     bx::mtxMul(pxv, m_view, m_proj);
     bx::vec4MulMtx(p, inp, pxv);
     float w = p[3];
-    if(w <= 0) return false;
+    if(w <= 0) 
+        return false;
     float x = p[0]/w;
     float y = -p[1]/w;
     x = (0.5f * x + 0.5f);
     y = (0.5f * y + 0.5f);
-    if(x < 0.0f || x >= 1.0f) return false;
-    if(y < 0.0f || y >= 1.0f) return false;
+    if(x < 0.0f || x >= 1.0f) 
+        return false;
+    if(y < 0.0f || y >= 1.0f) 
+        return false;
     out2DPos[0] = x * g_win32Context.m_width;
     out2DPos[1] = y * g_win32Context.m_height;
     return true;

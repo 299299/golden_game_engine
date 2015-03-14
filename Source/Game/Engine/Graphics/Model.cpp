@@ -161,9 +161,9 @@ void ModelWorld::reset()
 
 void ModelWorld::update(float dt)
 {
-    uint32_t num = m_models.size();
+    int num = m_models.size();
     Model* begin = m_models.begin();
-    for(uint32_t i=0; i<num; ++i)
+    for(int i=0; i<num; ++i)
     {
         begin[i].update();
     }
@@ -171,10 +171,10 @@ void ModelWorld::update(float dt)
 
 void ModelWorld::submit_models()
 {
-    uint32_t num = m_numModels;
+    int num = m_numModels;
     Model** head = m_modelsToDraw;
 
-    for(uint32_t i=0; i<num; ++i)
+    for(int i=0; i<num; ++i)
     {
         head[i]->submit();
     }
@@ -193,14 +193,14 @@ void ModelWorld::submit_shadows()
 
 void ModelWorld::cull_models(const Frustum& frust)
 {
-    uint32_t numModels = m_models.size();
+    int numModels = m_models.size();
     m_modelsToDraw = FRAME_ALLOC(Model*, numModels);
 
     Model* begin = m_models.begin();
     Model** head = m_modelsToDraw;
-    uint32_t num = 0;
+    int num = 0;
 
-    for(uint32_t i=0; i<numModels; ++i)
+    for(int i=0; i<numModels; ++i)
     {
         Model* model = begin + i;
         if(model->m_flag & kNodeInvisible) continue;
@@ -214,14 +214,14 @@ void ModelWorld::cull_models(const Frustum& frust)
 
 void ModelWorld::cull_shadows(const Frustum& lightFrust)
 {
-    uint32_t numModels = m_models.size();
+    int numModels = m_models.size();
     m_shadowsToDraw = FRAME_ALLOC(Model*, numModels);
 
     Model* begin = m_models.begin();
     Model** head = m_shadowsToDraw;
-    uint32_t num = 0;
+    int num = 0;
 
-    for(uint32_t i=0; i<numModels; ++i)
+    for(int i=0; i<numModels; ++i)
     {
         Model* model = begin + i;
         uint32_t flag = model->m_flag;
@@ -259,7 +259,7 @@ void* get_model(Id id)
     return m_models.get(id);
 }
 
-uint32_t num_all_model()
+int num_all_model()
 {
     return m_models.size();
 }
@@ -301,9 +301,9 @@ void lookup_model_instance_data( void * resource )
 void draw_debug_models()
 {
     PROFILE(draw_debug_models);
-    uint32_t num = m_models.size();
+    int num = m_models.size();
     Model* models = m_models.begin();
-    for (uint32_t i=0; i<num; ++i)
+    for (int i=0; i<num; ++i)
     {
         const Aabb& aabb = models[i].m_aabb;
         g_debugDrawMgr.add_aabb(aabb.m_min, aabb.m_max, RGBA(0,255,0,255), true);

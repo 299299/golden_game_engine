@@ -492,10 +492,10 @@ void PhysicsWorld::update_character_proxies(float timeStep)
 {
     PROFILE(update_character_proxies);
     check_status();
-    uint32_t num = m_proxies.size();
+    int num = m_proxies.size();
     ProxyInstance* proxies = m_proxies.begin();
     PHYSICS_LOCK(m_world);
-    for (uint32_t i=0; i<num; ++i)
+    for (int i=0; i<num; ++i)
     {
         proxies[i].update(timeStep);
     }
@@ -533,7 +533,7 @@ void* get_physics_object(Id id)
     return m_objects.get(id);
 }
 
-uint32_t num_all_physics_object()
+int num_all_physics_object()
 {
     return m_objects.size();
 }
@@ -566,7 +566,7 @@ void* get_physics_proxy(Id id)
     return m_proxies.get(id);
 }
 
-uint32_t num_all_physics_proxy()
+int num_all_physics_proxy()
 {
     return m_proxies.size();
 }

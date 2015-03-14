@@ -62,6 +62,6 @@ void lookup_model_instance_data( void * );
 Id create_model(const void*, ActorId32);
 void destroy_model(Id);
 void* get_model(Id);
-uint32_t num_all_model();
+int num_all_model();
 void* get_all_model();
 void transform_model(Id, const hkQsTransformf&);

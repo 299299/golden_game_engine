@@ -288,12 +288,12 @@ Actor* ActorWorld::get_actor( ActorId32 actor_id )
     return bucket.get(indexId);
 }
 
-uint32_t ActorWorld::num_actors( uint32_t type )
+int ActorWorld::num_actors( int type )
 {
     return g_actorBuckets[type].size();
 }
 
-Actor* ActorWorld::get_actors( uint32_t type )
+Actor* ActorWorld::get_actors( int type )
 {
     return g_actorBuckets[type].begin();
 }

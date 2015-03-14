@@ -32,14 +32,14 @@ struct DebugDrawManager
     DebugText*              m_texts;
     DebugLine*              m_lines[2];
 
-    uint32_t                m_numLines[2];
-    uint32_t                m_numTexts;
+    int                     m_numLines[2];
+    int                     m_numTexts;
 
     ShaderProgram*          m_shader;
     bool                    m_ready;
 
 private:
-    void draw(uint32_t lineNum, DebugLine* lines, bool bDepth);
+    void draw(int lineNum, DebugLine* lines, bool bDepth);
 };
 
 extern DebugDrawManager g_debugDrawMgr;

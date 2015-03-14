@@ -15,7 +15,7 @@ struct ComponentData
 typedef Id      (*func_create_component_t)(const void*, ActorId32);
 typedef void    (*func_destroy_component_t)(Id);
 typedef void*   (*func_get_component_t)(Id);
-typedef uint32_t(*func_num_components_t)();
+typedef int     (*func_num_components_t)();
 typedef void*   (*func_get_components_t)();
 typedef void    (*func_transform_component_t)(Id, const hkQsTransformf&);
 typedef void    (*func_lookup_component_data_t)(void*);
