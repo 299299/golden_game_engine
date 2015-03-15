@@ -4,7 +4,7 @@
 class PhysicsCompiler : public BaseCompiler
 {
 public:
-    virtual std::string getFormatExt() const { return ""; };
+    virtual std::string getFormatExt() const { return EngineNames::PHYSICS; };
     virtual bool parseWithJson() const { return true; };
     virtual bool readJSON(const jsonxx::Object& root);
 };

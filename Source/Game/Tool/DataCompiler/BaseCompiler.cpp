@@ -58,7 +58,8 @@ void BaseCompiler::go()
 
 bool BaseCompiler::readJSON( const jsonxx::Object& root )
 {
-    if(m_mode == 0) return true;
+    if(m_mode == 0) 
+        return true;
     add_trailing_slash(m_outputFolder);
     m_name = root.get<std::string>("name");
     std::string fileName = getFileName(m_name);
@@ -99,23 +100,13 @@ bool BaseCompiler::checkProcessing()
 bool BaseCompiler::process( const std::string& input, const std::string& output )
 {
     ENGINE_ASSERT(parseWithJson(), "NOT A JSON PARSER COMPILER!");
-
     if(m_processed)
         return true;
-
-    std::ifstream ifs(input);
-    if(!ifs.good())
-    {
-        g_config->m_error.add_error("ifstream error %s", input.c_str());
-        return false;
-    }
-
-    std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-
     jsonxx::Object o;
-    if(!o.parse(str))
+    m_processed = read_json_from_file(o, input);
+    if(!m_processed)
     {
-        g_config->m_error.add_error("json parse error %s", input.c_str());
+        g_config->m_error.add_error("%s error %s", __FUNCTION__, input.c_str());
         return false;
     }
     return m_processed = readJSON(o);

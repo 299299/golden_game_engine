@@ -136,6 +136,7 @@ namespace EngineTypes
     extern StringId     LIGHT;
     extern StringId     ACTOR;
     extern StringId     LEVEL;
+    extern StringId     PHYSICS;
 };
 
 
@@ -156,6 +157,7 @@ namespace EngineNames
     extern const char*  LIGHT;
     extern const char*  ACTOR;
     extern const char*  LEVEL;
+    extern const char*  PHYSICS;
 };
 
 struct ComponentInstanceData

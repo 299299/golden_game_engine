@@ -1,0 +1,20 @@
+{
+	"asset_path": "",
+	"class": "prop",
+	"components": [
+		{
+			"materials": [
+				"core\/actor\/lambert1" 
+			],
+			"mesh": "core\/actor\/cube",
+			"name": "core\/actor\/cube",
+			"type": "model" 
+		},
+		{
+			"name": "core\/actor\/cube",
+			"type": "physics" 
+		} 
+	],
+	"name": "cube",
+	"source_file": "havok\/cube.hkt" 
+} 

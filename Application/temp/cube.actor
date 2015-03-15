@@ -1,0 +1,20 @@
+{
+	"asset_path": "",
+	"class": "level_geometry",
+	"components": [
+		{
+			"materials": [
+				"lambert1" 
+			],
+			"mesh": "cube",
+			"name": "cube",
+			"type": "model" 
+		},
+		{
+			"name": "cube",
+			"type": "physics" 
+		} 
+	],
+	"name": "cube",
+	"source_file": "havok\/cube.hkt" 
+} 

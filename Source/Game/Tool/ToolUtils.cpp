@@ -939,6 +939,29 @@ std::string input_to_output( const std::string& inputName )
     return ret;
 }
 
+bool write_json_to_file( const jsonxx::Object& o, const std::string& fileName )
+{
+    LOGD("%s %s", __FUNCTION__, fileName.c_str());
+    std::ofstream s(fileName);
+    if(!s.good())
+    {
+        return false;
+    }
+    s << o.json();
+    return true;
+}
+
+bool read_json_from_file( jsonxx::Object& o, const std::string& fileName )
+{
+    std::ifstream ifs(fileName);
+    if(fileName.empty())
+        return false;
+    if(!ifs.good())
+        return false;
+    std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+    return o.parse(str);
+}
+
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
 {
     //bx::LwMutexScope _l(&m_lock);

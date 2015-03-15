@@ -36,7 +36,7 @@ struct AnimationSystem
     void    shutdown();
 
     void    frame_start();
-    void    kick_in_jobs();
+    void    kickin_jobs();
     void    tick_finished_jobs();
     void    update_attachment(Actor* actors, int num);
     void    skin_actors(Actor* actors, int num);

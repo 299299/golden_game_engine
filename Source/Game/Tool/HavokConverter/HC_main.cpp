@@ -46,9 +46,11 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     ActorConverter* converter = 0;
     const char* mode = cmdline->findOption('m');
     if(!mode)
-    {
         mode = "model";
-    }
+
+    const char* class_name = cmdline->findOption('c');
+    if(!class_name) 
+        class_name = "level_geometry";
 
     const char* input = cmdline->findOption('f');
     const char* output = cmdline->findOption('o');
@@ -64,6 +66,8 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     config.m_exportName = getFileName(input);
     config.m_exportFolder = "";
     config.m_rootPath = "";
+    config.m_exportClass = class_name;
+
     if(output)
     {
         bool has_itermediate = strstr(output, INTERMEDIATE_PATH) != 0;

@@ -58,6 +58,7 @@ DC_Config::DC_Config()
         EngineNames::SHADING_ENV,
         SHADER_INCLUDE_EXT,
         "dds",
+        EngineNames::PHYSICS,
     };
     __create_compiler__ g_funtions[] =
     {
@@ -77,6 +78,7 @@ DC_Config::DC_Config()
         _create_compiler<ShadingEnviromentCompiler>,
         _create_compiler<ShaderIncludeCompiler>,
         _create_compiler<DDSCompiler>,
+        _create_compiler<PhysicsCompiler>,
     };
 
     uint32_t num = BX_COUNTOF(g_resourceTypeNames);
@@ -229,7 +231,8 @@ void resources_process()
     {
         const std::string& input = input_file_list[i];
         std::string ext = getFileExt(input);
-        if(ext == EngineNames::LEVEL) continue;
+        if(ext == EngineNames::LEVEL) 
+            continue;
         BaseCompiler* compiler = g_config->create_compiler(ext);
         if(!compiler)
         {
@@ -237,7 +240,8 @@ void resources_process()
             continue;
         }
         std::string output = input_to_output(input);
-        if(ext == "dds") output = replaceExtension(output, EngineNames::TEXTURE);
+        if(ext == "dds") output = 
+            replaceExtension(output, EngineNames::TEXTURE);
         compiler->m_input = input;
         compiler->m_output = output;
         if(!compiler->checkProcessing())

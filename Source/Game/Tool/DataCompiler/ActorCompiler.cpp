@@ -29,7 +29,8 @@ INTERNAL BaseCompiler* create_component_compiler(StringId _type)
     else if(_type == EngineTypes::LIGHT)
         return new LightCompiler;
     else if(_type == EngineTypes::ANIMATION_STATES ||
-            _type == EngineTypes::ANIMATION_RIG)
+            _type == EngineTypes::ANIMATION_RIG ||
+            _type == EngineTypes::PHYSICS)
         return new ComponentCompiler;
     else
         return NULL;

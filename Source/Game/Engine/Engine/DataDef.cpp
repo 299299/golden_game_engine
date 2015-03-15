@@ -141,6 +141,7 @@ namespace EngineNames
     const char* LIGHT = "light";
     const char* ACTOR = "actor";
     const char* LEVEL = "level";
+    const char* PHYSICS = "physics";
 };
 
 namespace EngineTypes
@@ -161,6 +162,7 @@ namespace EngineTypes
     StringId LIGHT = 0;
     StringId ACTOR = 0;
     StringId LEVEL = 0;
+    StringId PHYSICS = 0;
 };
 
 
@@ -183,4 +185,5 @@ void init_engine_type_names()
     INIT_ENGINE_TYPE(LIGHT);
     INIT_ENGINE_TYPE(ACTOR);
     INIT_ENGINE_TYPE(LEVEL);
+    INIT_ENGINE_TYPE(PHYSICS);
 }

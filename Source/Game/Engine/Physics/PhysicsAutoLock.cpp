@@ -55,7 +55,6 @@ PhysicsAutoLock::~PhysicsAutoLock()
         break;
     }
 #endif
-
 }
 
 void IgnoreLock( bool bIgnore )

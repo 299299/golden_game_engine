@@ -82,10 +82,10 @@ void AnimationSystem::frame_start()
     m_numAnimEvts = 0;
 }
 
-void AnimationSystem::kick_in_jobs()
+void AnimationSystem::kickin_jobs()
 {
     int num = m_rigs.size();
-    if(num == 0) 
+    if(num == 0)
         return;
     AnimRigInstance* rigs = m_rigs.begin();
 #ifdef HAVOK_COMPILE
@@ -120,16 +120,17 @@ void AnimationSystem::kick_in_jobs()
 
 void AnimationSystem::tick_finished_jobs()
 {
+    set_status(kTickFinishedJobs);
+    int num = m_rigs.size();
+    if(!num) 
+        return;
+    PROFILE(AnimationFinishJobs);
 #ifdef HAVOK_COMPILE
 #ifdef MT_ANIMATION
-    int num = m_rigs.size();
-    if(!num) return;
-    PROFILE(AnimationFinishJobs);
     for(int i=0; i<num; ++i)
     {
         m_jobs[i].destroy();
     }
-    set_status(kTickFinishedJobs);
 #endif
 #endif
 }
@@ -442,7 +443,7 @@ void draw_debug_animation(float dt)
             iter->second.m_message = stringid_lookup(evts[i].m_name);
             iter->second.m_time = evt_time;
         }
-        else 
+        else
         {
             DebugEvtText dbg_evt;
             dbg_evt.m_message = stringid_lookup(evts[i].m_name);

@@ -81,6 +81,8 @@ bool        json_to_bool(const jsonxx::Object& o,const char* name, bool def=fals
 
 typedef uint32_t (*func_fact_object_mem_t)(const jsonxx::Object& o, char* p);
 Fact*       json_to_fact(const jsonxx::Object& o, const char* name, func_fact_object_mem_t f);
+bool        write_json_to_file(const jsonxx::Object& o, const std::string& fileName);
+bool        read_json_from_file(jsonxx::Object& o, const std::string& fileName);
 
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase

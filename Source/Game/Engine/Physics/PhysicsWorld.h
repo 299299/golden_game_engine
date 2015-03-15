@@ -18,6 +18,7 @@ struct  hkpCollisionQueryJobHeader;
 class   hkSemaphore;
 struct  Actor;
 struct  CollisionEvent;
+class   hkQsTransformf;
 
 struct RaycastJob
 {
@@ -48,7 +49,7 @@ struct PhysicsWorld
     void shutdown();
 
     void frame_start();
-    void kick_in_jobs(float timeStep);
+    void kickin_jobs(float timeStep);
     void tick_finished_jobs();
 
     void create_world(PhysicsConfig* config);
@@ -58,21 +59,22 @@ struct PhysicsWorld
 
     int  get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody** contactingBodies, int maxLen = 100);
 
-    void add_to_world(PhysicsInstance* instance);
-    void remove_from_world(PhysicsInstance* instance);
-
     void add_collision_event(uint64_t key, const CollisionEvent& evt);
-    int add_raycast_job(const float* from, const float* to, int32_t filterInfo = -1);
+    int add_raycast_job(const float* from, const float* to, int filterInfo = -1);
     RaycastJob* get_raycast_job(int handle) const;
 
     int get_layer(StringId name) const;
     void create_plane(float size);
 
-    void sync_rigidbody_actors(Actor* actors, uint32_t num);
-    void sync_proxy_actors(Actor* actors, uint32_t num);
+    void sync_rigidbody_actors(Actor* actors, int num);
+    void sync_proxy_actors(Actor* actors, int num);
     void update_character_proxies(float timeStep);
 
     static void register_factories();
+
+    // check if is not valid for multhread update
+    void check_status();
+    void set_status(int status);
 
 private:
     void kickin_raycast_jobs();
@@ -84,9 +86,18 @@ public:
     CollisionEvent**                        m_collisionEvents;
     RaycastJob*                             m_raycasts;
     hkSemaphore*                            m_raycastSem;
-    uint32_t                                m_numCollisionEvents;
-    uint32_t                                m_numRaycasts;
+    int                                     m_numCollisionEvents;
+    int                                     m_numRaycasts;
     PhysicsConfig*                          m_config;
+    int                                     m_status;
 };
 
 extern PhysicsWorld g_physicsWorld;
+
+Id create_physics_object(const void*, ActorId32);
+void destroy_physics_object(Id);
+void* get_physics_object(Id);
+int num_all_physics_object();
+void* get_all_physics_object();
+void transform_physics_object(Id, const hkQsTransformf&);
+void lookup_physics_instance_data(void*);

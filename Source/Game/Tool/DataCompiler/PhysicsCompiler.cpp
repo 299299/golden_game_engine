@@ -2,30 +2,52 @@
 #include "PhysicsWorld.h"
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
+#include "b64.h"
 
 bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
 {
     BaseCompiler::readJSON(root);
     uint32_t havokOffset = NATIVE_ALGIN_SIZE(sizeof(PhysicsResource));
 
-    const std::string& havokFile = root.get<std::string>("havok_file");
-    FileReader havokReader(havokFile);
-    if(havokReader.m_size < 16)
+    if(root.has<std::string>("havok_b64"))
     {
-        g_config->m_error.add_error("%s can not find havok file [%s]", BX_FUNCTION, havokFile.c_str());
-        return false;
+#if 1 // TODO
+        uint32_t havok_size = json_to_int(root, "havok_size");
+        uint32_t memSize = havokOffset + havok_size;
+        const std::string& havok_b64 = root.get<std::string>("havok_b64");
+        LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
+        MemoryBuffer mem(memSize);
+        PhysicsResource* physics = (PhysicsResource*)mem.m_buf;
+        extern const char* physics_type_names[];
+        physics->m_system_type = json_to_enum(root, "physics_type", physics_type_names);
+        physics->m_havok_data_offset = havokOffset;
+        physics->m_havok_data_size = havok_size;
+        char* p_mem = (char*)b64_decode(havok_b64.c_str(), havok_b64.length());
+        memcpy(mem.m_buf + havokOffset, p_mem, havok_size);
+        return write_file(m_output, mem.m_buf, memSize);
+#endif
     }
+    else
+    {
+        const std::string& havokFile = root.get<std::string>("havok_file");
+        FileReader havokReader(havokFile);
+        if(havokReader.m_size < 16)
+        {
+            g_config->m_error.add_error("%s can not find havok file [%s]", BX_FUNCTION, havokFile.c_str());
+            return false;
+        }
 
-    uint32_t memSize = havokOffset + havokReader.m_size;
-    LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
-    MemoryBuffer mem(memSize);
-    PhysicsResource* physics = (PhysicsResource*)mem.m_buf;
-    extern const char* physics_type_names[];
-    physics->m_systemType = json_to_enum(root, "physics_type", physics_type_names);
-    physics->m_havokDataOffset = havokOffset;
-    physics->m_havokDataSize = havokReader.m_size;
-    memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
-    return write_file(m_output, mem.m_buf, memSize);
+        uint32_t memSize = havokOffset + havokReader.m_size;
+        LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
+        MemoryBuffer mem(memSize);
+        PhysicsResource* physics = (PhysicsResource*)mem.m_buf;
+        extern const char* physics_type_names[];
+        physics->m_system_type = json_to_enum(root, "physics_type", physics_type_names);
+        physics->m_havok_data_offset = havokOffset;
+        physics->m_havok_data_size = havokReader.m_size;
+        memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
+        return write_file(m_output, mem.m_buf, memSize);
+    }
 }
 
 bool ProxyCompiler::readJSON(const jsonxx::Object& root)

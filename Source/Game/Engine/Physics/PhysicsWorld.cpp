@@ -15,6 +15,7 @@
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
 #include "Actor.h"
+#include "Component.h"
 
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
@@ -43,16 +44,6 @@
 #include <Physics2012/Collide/Query/Multithreaded/RayCastQuery/hkpRayCastQueryJobQueueUtils.h>
 #endif
 
-static int  m_status = 0;
-static void check_status()
-{
-    ENGINE_ASSERT((m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
-}
-static void set_status(int newStatus)
-{
-    m_status = newStatus;
-}
-
 /// The Havok Physics contact listener is added to the Havok Physics world to provide collision information.
 /// It responds to collision callbacks, collects the collision information and sends messages to the
 /// collider objects.
@@ -67,7 +58,8 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
         hkUlong dataB = event.getBody(1)->getUserData();
         PhysicsInstance* objectA = (PhysicsInstance*)dataA;
         PhysicsInstance* objectB = (PhysicsInstance*)dataB;
-        if(!objectA || !objectB) return;
+        if(!objectA || !objectB)
+            return;
 
         CollisionEvent evt;
         evt.m_objects[0] = objectA->m_actor;
@@ -79,14 +71,8 @@ class HavokContactListener : public hkpContactListener, public hkpEntityListener
         uint64_t key = (uint64_t)dataA << 32 | (uint64_t)dataB;
         g_physicsWorld.add_collision_event(key, evt);
     }
-    virtual void collisionAddedCallback(const hkpCollisionEvent& event)
-    {
-        //TODO
-    }
-    virtual void collisionRemovedCallback(const hkpCollisionEvent& event)
-    {
-        //TODO
-    }
+    virtual void collisionAddedCallback(const hkpCollisionEvent& event) {}
+    virtual void collisionRemovedCallback(const hkpCollisionEvent& event) {}
 };
 #endif
 
@@ -95,8 +81,6 @@ typedef tinystl::unordered_map<uint64_t, CollisionEvent*> CollisionEventMap;
 static CollisionEventMap                        g_collisionEvtMap;
 static IdArray<PhysicsInstance>                 m_objects;
 static IdArray<ProxyInstance>                   m_proxies;
-
-#define MAX_RAYCAST_PERFRAME    (1000)
 
 void PhysicsWorld::init(int max_bodies, int max_proxies)
 {
@@ -171,9 +155,9 @@ void PhysicsWorld::create_world(PhysicsConfig* config)
     pGroupFilter->disableCollisionsUsingBitfield(0xfffffffe, 0xfffffffe);
     if(m_config)
     {
-        uint32_t num = m_config->m_numFilterLayers;
+        int num = m_config->m_numFilterLayers;
         CollisionFilter* head = m_config->m_filters;
-        for (uint32_t i=1;i<num;++i)
+        for (int i=1;i<num;++i)
         {
             pGroupFilter->enableCollisionsUsingBitfield(1 << i, head[i].m_mask);
         }
@@ -210,9 +194,8 @@ void PhysicsWorld::create_plane(float size)
 
 void PhysicsWorld::post_simulation()
 {
-    PROFILE(Physics_PostCallback);
+    PROFILE(Physics_PostSimulation);
 
-#if 0
 #ifdef HAVOK_COMPILE
     PHYSICS_LOCKREAD(m_world);
     const hkArray<hkpSimulationIsland*>& activeIslands = m_world->getActiveSimulationIslands();
@@ -220,7 +203,7 @@ void PhysicsWorld::post_simulation()
 
     hkTransformf t;
     hkQsTransform tq;
-    StringId body_type = PhysicsResource::get_type();
+    StringId body_type = EngineTypes::PHYSICS;
 
     for(int i = 0; i < num; ++i)
     {
@@ -232,9 +215,11 @@ void PhysicsWorld::post_simulation()
         {
             hkpRigidBody* rigidBody = static_cast<hkpRigidBody*>(head[j]);
             //fix object should not update renderer
-            if(rigidBody->isFixed()) continue;
+            if(rigidBody->isFixed()) 
+                continue;
             hkUlong user_data = rigidBody->getUserData();
-            if (!user_data) continue;
+            if (!user_data) 
+                continue;
             PhysicsInstance* body = (PhysicsInstance*)user_data;
             ActorId32 actorId = body->m_actor;
             body->fetch_transform(0, t);
@@ -243,7 +228,6 @@ void PhysicsWorld::post_simulation()
             actor->set_transform_ignore_type(tq, body_type);
         }
     }
-#endif
 #endif
 }
 
@@ -263,11 +247,10 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
 {
     check_status();
 
+    int retNum = 0;
 #ifdef HAVOK_COMPILE
     PHYSICS_LOCKREAD(m_world);
-    int retNum = 0;
-    const hkArray<hkpLinkedCollidable::CollisionEntry>& collisionEntries = \
-            body->getLinkedCollidable()->getCollisionEntriesNonDeterministic();
+    const hkArray<hkpLinkedCollidable::CollisionEntry>& collisionEntries = body->getLinkedCollidable()->getCollisionEntriesNonDeterministic();
     int num = collisionEntries.getSize();
     const hkpLinkedCollidable::CollisionEntry* head = collisionEntries.begin();
 
@@ -290,84 +273,35 @@ int PhysicsWorld::get_contact_rigidbodies(const hkpRigidBody* body, hkpRigidBody
             }
         }
     }
-    return retNum;
-#else
-    return 0;
 #endif
+    return retNum;
 }
 
 
-void PhysicsWorld::kick_in_jobs( float timeStep )
+void PhysicsWorld::kickin_jobs( float timeStep )
 {
-    if(!m_world) return;
+    if(!m_world)
+        return;
     PROFILE(Physics_KickInJobs);
     set_status(kTickProcessing);
     kickin_raycast_jobs();
 #ifdef HAVOK_COMPILE
-    m_world->initMtStep( g_threadMgr.get_jobqueue(),timeStep );
+    m_world->initMtStep(g_threadMgr.get_jobqueue(),timeStep);
 #endif
 }
 
 void PhysicsWorld::tick_finished_jobs()
 {
-    if(!m_world) return;
-    PROFILE(Physics_TickFinishJobs);
-    set_status(kTickFinishedJobs);
-
-#ifdef HAVOK_COMPILE
     m_world->finishMtStep(g_threadMgr.get_jobqueue(), g_threadMgr.get_threadpool());
-    if(m_numRaycasts) m_raycastSem->acquire();
-#endif
+    set_status(kTickFinishedJobs);
     post_simulation();
-}
-
-
-void PhysicsWorld::add_to_world(PhysicsInstance* instance)
-{
-    ENGINE_ASSERT(m_world, "physics is not created!");
-
-    check_status();
-    PHYSICS_LOCKWRITE(m_world);
-
-#ifdef HAVOK_COMPILE
-    switch(instance->m_systemType)
-    {
-    case kSystemRigidBody: m_world->addEntity(instance->m_rigidBody); break;
-    case kSystemRagdoll:
-    case kSystemComplex:
-        m_world->addPhysicsSystem(instance->m_system);
-        break;
-    default:
-        break;
-    }
-#endif
-}
-
-void PhysicsWorld::remove_from_world(PhysicsInstance* instance)
-{
-    ENGINE_ASSERT(m_world, "physics is not created!");
-
-    check_status();
-    PHYSICS_LOCKWRITE(m_world);
-
-#ifdef HAVOK_COMPILE
-    switch(instance->m_systemType)
-    {
-    case kSystemRigidBody: m_world->removeEntity(instance->m_rigidBody); break;
-    case kSystemRagdoll:
-    case kSystemComplex:
-        m_world->removePhysicsSystem(instance->m_system);
-        break;
-    default:
-        break;
-    }
-#endif
 }
 
 void PhysicsWorld::add_collision_event(uint64_t key, const CollisionEvent& evt)
 {
     PROFILE(Physics_addCollisionEvent);
-    if(g_collisionEvtMap.find(key) != g_collisionEvtMap.end()) return;
+    if(g_collisionEvtMap.find(key) != g_collisionEvtMap.end())
+        return;
     CollisionEvent* newEvt = FRAME_ALLOC(CollisionEvent, 1);
     *newEvt = evt;
     m_collisionEvents[m_numCollisionEvents++] = newEvt;
@@ -375,7 +309,7 @@ void PhysicsWorld::add_collision_event(uint64_t key, const CollisionEvent& evt)
 }
 
 
-int PhysicsWorld::add_raycast_job(const float* from, const float* to, int32_t filterInfo)
+int PhysicsWorld::add_raycast_job(const float* from, const float* to, int filterInfo)
 {
     check_status();
     if(!m_raycasts) return -1;
@@ -390,14 +324,16 @@ int PhysicsWorld::add_raycast_job(const float* from, const float* to, int32_t fi
 
 RaycastJob* PhysicsWorld::get_raycast_job( int handle ) const
 {
-    if(handle < 0) return 0;
+    if(handle < 0)
+        return 0;
     return &m_raycasts[handle];
 }
 
 void PhysicsWorld::kickin_raycast_jobs()
 {
-    uint32_t num = m_numRaycasts;
-    if(!num) return;
+    int num = m_numRaycasts;
+    if(!num)
+        return;
 
 #ifdef HAVOK_COMPILE
     hkpCollisionQueryJobHeader* jobHeader = FRAME_ALLOC(hkpCollisionQueryJobHeader, num);
@@ -405,7 +341,7 @@ void PhysicsWorld::kickin_raycast_jobs()
     hkpWorldRayCastOutput* outputs = FRAME_ALLOC(hkpWorldRayCastOutput, num);
     RaycastJob* head = m_raycasts;
 
-    for (uint32_t i = 0; i < num; ++i)
+    for (int i = 0; i < num; ++i)
     {
         RaycastJob& job = head[i];
         hkpWorldRayCastCommand* command = commands + i;
@@ -430,14 +366,13 @@ void PhysicsWorld::kickin_raycast_jobs()
         }
     }
 
-    m_world->markForRead();
+    hkpWorldRayCastJob* worldRayCastJob = 0;
     size_t memSize = sizeof(hkpWorldRayCastJob);
     char* p = FRAME_ALLOC(char, memSize);
-    hkpWorldRayCastJob* worldRayCastJob = new (p) hkpWorldRayCastJob(
-        m_world->getCollisionInput(), jobHeader, commands,
-        m_numRaycasts, m_world->m_broadPhase, m_raycastSem);
-    m_world->unmarkForRead();
-
+    {
+        PHYSICS_LOCKREAD(m_world);
+        worldRayCastJob = new (p) hkpWorldRayCastJob(m_world->getCollisionInput(), jobHeader, commands,m_numRaycasts, m_world->m_broadPhase, m_raycastSem);
+    }
     g_threadMgr.get_jobqueue()->addJob(*worldRayCastJob, hkJobQueue::JOB_LOW_PRIORITY);
 #endif
 }
@@ -457,12 +392,12 @@ int PhysicsWorld::get_layer(StringId name) const
     return 0;
 }
 
-void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, uint32_t num )
+void PhysicsWorld::sync_rigidbody_actors( struct Actor* actors, int num )
 {
     PROFILE(sync_rigidbody_actors);
 }
 
-void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
+void PhysicsWorld::sync_proxy_actors( Actor* actors, int num )
 {
     PROFILE(sync_proxy_actors);
     check_status();
@@ -490,6 +425,7 @@ void PhysicsWorld::sync_proxy_actors( Actor* actors, uint32_t num )
 
 void PhysicsWorld::update_character_proxies(float timeStep)
 {
+#if 0
     PROFILE(update_character_proxies);
     check_status();
     int num = m_proxies.size();
@@ -499,12 +435,32 @@ void PhysicsWorld::update_character_proxies(float timeStep)
     {
         proxies[i].update(timeStep);
     }
+#endif
 }
 
 void PhysicsWorld::register_factories()
 {
     ResourceFactory _fac = {0,0,0,0,0,EngineNames::PHYSICS_CONFIG,0};
     g_resourceMgr.register_factory(_fac);
+
+    ResourceFactory _physics_fac = {load_resource_physics, destroy_resource_physics, 0, 0, 0, EngineNames::PHYSICS, 0};
+    g_resourceMgr.register_factory(_physics_fac);
+
+    ComponentFactory _physics_comp_fac = {
+        create_physics_object, destroy_physics_object, 
+        get_physics_object, num_all_physics_object, 
+        get_all_physics_object, transform_physics_object, 
+        lookup_physics_instance_data, 0};
+    g_componentMgr.register_factory(_physics_comp_fac, EngineTypes::PHYSICS);
+}
+
+void PhysicsWorld::check_status()
+{
+    ENGINE_ASSERT((m_status != kTickProcessing),  "PhysicsSystem Status is Processing!!!");
+}
+void PhysicsWorld::set_status(int newStatus)
+{
+    m_status = newStatus;
 }
 
 //-----------------------------------------------------------------
@@ -512,7 +468,7 @@ void PhysicsWorld::register_factories()
 //-----------------------------------------------------------------
 Id create_physics_object(const void* resource, ActorId32 actor)
 {
-    check_status();
+    g_physicsWorld.check_status();
     PhysicsInstance* inst;
     Id phyId = m_objects.create(&inst);
     inst->init(resource, actor);
@@ -521,15 +477,17 @@ Id create_physics_object(const void* resource, ActorId32 actor)
 
 void destroy_physics_object(Id id)
 {
-    check_status();
-    if(!m_objects.has(id)) return;
+    g_physicsWorld.check_status();
+    if(!m_objects.has(id))
+        return;
     m_objects.get(id)->destroy();
     m_objects.destroy(id);
 }
 
 void* get_physics_object(Id id)
 {
-    if(!m_objects.has(id)) return 0;
+    if(!m_objects.has(id))
+        return 0;
     return m_objects.get(id);
 }
 
@@ -543,9 +501,26 @@ void* get_all_physics_object()
     return m_objects.begin();
 }
 
+void transform_physics_object(Id id, const hkQsTransform& t)
+{
+    if(!m_objects.has(id))
+        return;
+    hkTransform t1;
+#ifdef HAVOK_COMPILE
+    t.copyToTransformNoScale(t1);
+#endif
+    m_objects.get(id)->set_transform(t1);
+}
+
+void lookup_physics_instance_data( void* resource)
+{
+    ComponentInstanceData* data = (ComponentInstanceData*)resource;
+    data->m_resource = g_resourceMgr.find_resource(EngineTypes::PHYSICS, data->m_name);
+}
+
 Id create_physics_proxy(const void* resource, ActorId32 id)
 {
-    check_status();
+    g_physicsWorld.check_status();
     ProxyInstance* inst;
     Id proxyId = m_proxies.create(&inst);
     inst->init(resource);
@@ -554,8 +529,9 @@ Id create_physics_proxy(const void* resource, ActorId32 id)
 
 void destroy_physics_proxy(Id id)
 {
-    check_status();
-    if(!m_proxies.has(id)) return;
+    g_physicsWorld.check_status();
+    if(!m_proxies.has(id))
+        return;
     m_proxies.get(id)->destroy();
     m_proxies.destroy(id);
 }
@@ -576,21 +552,15 @@ void* get_all_physics_proxy()
     return m_proxies.begin();
 }
 
-void transform_physics_object(Id id, const hkQsTransform& t)
-{
-    if(!m_objects.has(id)) return;
-    hkTransform t1;
-#ifdef HAVOK_COMPILE
-    t.copyToTransformNoScale(t1);
-#endif
-    m_objects.get(id)->set_transform(t1);
-}
-
 void transform_physics_proxy(Id id, const hkQsTransform& t)
 {
-    if(!m_proxies.has(id)) return;
+    if(!m_proxies.has(id))
+        return;
     m_proxies.get(id)->setTransform(t);
 }
+
+
+
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------

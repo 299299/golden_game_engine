@@ -10,10 +10,9 @@ class hkTransformf;
 ENGINE_NATIVE_ALIGN(struct) PhysicsResource
 {
     hkpPhysicsData*             m_data;
-    uint32_t                    m_havokDataOffset;
-    uint32_t                    m_havokDataSize;
-    uint8_t                     m_systemType;
-    char                        m_padding[3];
+    uint32_t                    m_havok_data_offset;
+    uint32_t                    m_havok_data_size;
+    uint32_t                    m_system_type;
 };
 
 enum PhysicsSystemType
@@ -25,22 +24,19 @@ enum PhysicsSystemType
     kPhysicsSystemNUM
 };
 
-
 struct PhysicsInstance
 {
     union
     {
-        hkpRigidBody*               m_rigidBody;
+        hkpRigidBody*               m_rigid_body;
         hkpPhysicsSystem*           m_system;
     };
 
-    const PhysicsResource*      m_resource;
-    ActorId32                   m_actor;
+    const PhysicsResource*          m_resource;
+    ActorId32                       m_actor;
 
-    uint8_t                     m_numData;
-    uint8_t                     m_systemType;
-    bool                        m_inWorld;
-    char                        m_padding[1];
+    int                             m_in_world;
+    int                             m_type;
 
     void init(const void* resource, ActorId32 actor);
     void destroy();
@@ -49,3 +45,7 @@ struct PhysicsInstance
     void remove_from_simulation();
     void fetch_transform(int index, hkTransformf& outT);
 };
+
+
+void* load_resource_physics( void* data, uint32_t size );
+void  destroy_resource_physics( void* resource );

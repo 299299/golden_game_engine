@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "PhysicsAutoLock.h"
 #include "Prerequisites.h"
+#include "DataDef.h"
 #ifdef HAVOK_COMPILE
 #include <Physics2012/Utilities/Serialize/hkpPhysicsData.h>
 #include <Physics2012/Dynamics/World/hkpWorld.h>
@@ -14,25 +15,29 @@
 
 void PhysicsInstance::init(const void* resource, ActorId32 actor)
 {
-    m_resource = (const PhysicsResource*)resource;
+    const ComponentInstanceData* d = (const ComponentInstanceData*)resource;
+    m_resource = (const PhysicsResource*)(d->m_resource);
     m_actor = actor;
-    m_inWorld = false;
-#ifdef HAVOK_COMPILE
+    m_in_world = 0;
     const hkpPhysicsData* phyData = m_resource->m_data;
-    m_systemType = m_resource->m_systemType;
-    switch(m_systemType)
+#ifdef HAVOK_COMPILE
+    int sys_type = m_resource->m_system_type;
+    m_type = sys_type;
+    switch(sys_type)
     {
     case kSystemRigidBody:
         {
-            m_rigidBody = phyData->getPhysicsSystems()[0]->getRigidBodies()[0]->clone();
-            m_rigidBody->setUserData((hkUlong)this);
+            m_rigid_body = phyData->getPhysicsSystems()[0]->getRigidBodies()[0]->clone();
+            m_rigid_body->setUserData((hkUlong)this);
             break;
         }
     case kSystemTrigger: break;
     case kSystemRagdoll:
     case kSystemComplex:
-        m_system = phyData->getPhysicsSystems()[0]->clone(); break;
-    default: break;
+        m_system = phyData->getPhysicsSystems()[0]->clone();
+        break;
+    default:
+        break;
     }
 #endif
     add_to_simulation();
@@ -40,12 +45,16 @@ void PhysicsInstance::init(const void* resource, ActorId32 actor)
 
 void PhysicsInstance::set_transform(const hkTransform& t)
 {
+    int type = m_type;
 #ifdef HAVOK_COMPILE
     PHYSICS_LOCKWRITE(g_physicsWorld.world());
-    switch(m_systemType)
+    switch(type)
     {
-    case kSystemRigidBody: m_rigidBody->setTransform(t); break;
-    default: break;
+    case kSystemRigidBody:
+        m_rigid_body->setTransform(t);
+        break;
+    default:
+        break;
     }
 #endif
 }
@@ -53,14 +62,19 @@ void PhysicsInstance::set_transform(const hkTransform& t)
 void PhysicsInstance::destroy()
 {
     remove_from_simulation();
+    int type = m_type;
 #ifdef HAVOK_COMPILE
-    switch(m_systemType)
+    switch(type)
     {
-    case kSystemRigidBody: SAFE_REMOVEREF(m_rigidBody); break;
-    case kSystemTrigger: break;
+    case kSystemRigidBody:
+        SAFE_REMOVEREF(m_rigid_body);
+        break;
+    case kSystemTrigger:
+        break;
     case kSystemComplex:
     case kSystemRagdoll:
-        SAFE_REMOVEREF(m_system); break;
+        SAFE_REMOVEREF(m_system);
+        break;
     default:
         break;
     }
@@ -70,41 +84,82 @@ void PhysicsInstance::destroy()
 
 void PhysicsInstance::add_to_simulation()
 {
-    if(m_inWorld) return;
-    g_physicsWorld.add_to_world(this);
-    m_inWorld = true;
+    if(m_in_world)
+        return;
+
+    hkpWorld* world = g_physicsWorld.m_world;
+    g_physicsWorld.check_status();
+    PHYSICS_LOCKWRITE(world);
+    int type = m_type;
+#ifdef HAVOK_COMPILE
+    switch(type)
+    {
+    case kSystemRigidBody:
+        world->addEntity(m_rigid_body);
+        break;
+    case kSystemRagdoll:
+    case kSystemComplex:
+        world->addPhysicsSystem(m_system);
+        break;
+    default:
+        break;
+    }
+#endif
+
+    m_in_world = 1;
 }
 
 void PhysicsInstance::remove_from_simulation()
 {
-    if(!m_inWorld) return;
-    g_physicsWorld.remove_from_world(this);
-    m_inWorld = false;
+    if(!m_in_world)
+        return;
+
+    hkpWorld* world = g_physicsWorld.m_world;
+    g_physicsWorld.check_status();
+    PHYSICS_LOCKWRITE(world);
+    int type = m_type;
+#ifdef HAVOK_COMPILE
+    switch(type)
+    {
+    case kSystemRigidBody:
+        world->removeEntity(m_rigid_body);
+        break;
+    case kSystemRagdoll:
+    case kSystemComplex:
+        world->removePhysicsSystem(m_system);
+        break;
+    default:
+        break;
+    }
+#endif
+
+    m_in_world = 0;
 }
 
 void PhysicsInstance::fetch_transform(int index, hkTransform& outT)
 {
-#ifdef HAVOK_COMPILE
-    switch(m_systemType)
+    int type = m_type;
+    switch(type)
     {
-    case kSystemRigidBody: m_rigidBody->approxCurrentTransform(outT); break;
-    default: break;
-    }
+    case kSystemRigidBody:
+#ifdef HAVOK_COMPILE
+        m_rigid_body->approxCurrentTransform(outT);
 #endif
+        break;
+    default:
+        break;
+    }
 }
 
-
-void* load_resource_physics( const char* data, uint32_t size )
+void* load_resource_physics( void* data, uint32_t size )
 {
     PhysicsResource* physics = (PhysicsResource*)data;
-    char* havokData = (char*)data + physics->m_havokDataOffset;
-    physics->m_data = (hkpPhysicsData*)load_havok_inplace(havokData, physics->m_havokDataSize);
+    physics->m_data = (hkpPhysicsData*)load_havok_inplace((char*)data + physics->m_havok_data_offset, physics->m_havok_data_size);
     return physics;
 }
 
 void destroy_resource_physics( void* resource )
 {
     PhysicsResource* physics = (PhysicsResource*)resource;
-    char* havokData = (char*)resource + physics->m_havokDataOffset;
-    unload_havok_inplace(havokData, physics->m_havokDataSize);
+    unload_havok_inplace((char*)resource + physics->m_havok_data_offset, physics->m_havok_data_size);
 }
