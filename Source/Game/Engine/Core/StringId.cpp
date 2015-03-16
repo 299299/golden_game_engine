@@ -28,9 +28,10 @@ static void insert_string_id(uint32_t key, const char* value, uint32_t len)
         mem[len] = '\0';
         g_stringTable[key] = mem;
     }
-    else {
+    else 
+    {
         const char* second = iter->second;
-        ENGINE_ASSERT_ARGS(!bx::stricmp(value, second), "hash collision [%s] != [%s]", value, second);
+        ENGINE_ASSERT(!bx::stricmp(value, second), "hash collision [%s] != [%s]", value, second);
     }
 }
 const char* stringid_lookup(StringId id)

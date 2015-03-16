@@ -252,7 +252,7 @@ void AnimationStatesInstance::init(const void* resource, ActorId32 id)
     m_last_state = NULL;
 
     Actor* actor = g_actorWorld.get_actor(id);
-    ENGINE_ASSERT_ARGS(actor, "actor not exist %x", id);
+    ENGINE_ASSERT(actor, "actor not exist %x", id);
     AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_RIG);
     ENGINE_ASSERT(rig, "actor must have anim-rig component");
     m_skeleton = rig->m_skeleton;

@@ -90,7 +90,7 @@ struct IdArray
 
     void destroy(Id id)
     {
-        ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
         m_sparse[id.index].id = INVALID_ID;
         m_sparse[id.index].index = m_freelist;
@@ -111,7 +111,7 @@ struct IdArray
 
     T* get(Id id)
     {
-        ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
         return &m_objects[m_sparse_to_dense[id.index]];
     }
 
@@ -204,7 +204,7 @@ struct CIdArray
 
     void destroy(Id id)
     {
-        ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
 
         m_sparse[id.index].id = INVALID_ID;
         m_sparse[id.index].index = m_freelist;
@@ -228,7 +228,7 @@ struct CIdArray
 
     void* get(Id id)
     {
-        ENGINE_ASSERT_ARGS(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
+        ENGINE_ASSERT(has(id), "IdArray does not have ID: %d,%d", id.id, id.index);
         return get_by_index(m_sparse_to_dense[id.index]);
     }
     void* get_by_index(uint32_t index)

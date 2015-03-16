@@ -87,7 +87,7 @@ void ResourcePackage::load_group(int index)
     ResourceGroup& group = m_groups[index];
     StringId type = group.m_type;
     ResourceFactory* fac = g_resourceMgr.find_factory(type);
-    ENGINE_ASSERT_ARGS(fac, "ResourceFactory %s not found.", stringid_lookup(type));
+    ENGINE_ASSERT(fac, "ResourceFactory %s not found.", stringid_lookup(type));
 
     char* pThis = (char*)this;
     group.m_factory = fac;

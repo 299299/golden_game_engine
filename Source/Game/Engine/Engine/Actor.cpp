@@ -59,7 +59,7 @@ void lookup_resource_actor(void* resource)
     {
         ComponentData& data = comp_data[i];
         ComponentFactory* fac = g_componentMgr.get_factory(data.m_index);
-        ENGINE_ASSERT_ARGS(fac, "Can not find component factory %d", data.m_index);
+        ENGINE_ASSERT(fac, "Can not find component factory %d", data.m_index);
         fac->lookup_component_data(p + data.m_offset);
     }
 }

@@ -28,6 +28,7 @@
 //for xinput
 #pragma comment(lib, "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86\\XInput.lib")
 #pragma comment(lib, "Psapi.lib")
+#pragma comment(lib, "Dbghelp.lib");
 
 //start of havok link config
 #ifdef _DEBUG

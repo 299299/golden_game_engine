@@ -3,6 +3,8 @@
 #include "Prerequisites.h"
 #include "MemorySystem.h"
 #include "Profiler.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <bx/timer.h>
 #include <bx/fpumath.h>
 #include <bx/string.h>
@@ -99,7 +101,7 @@ void Fact::get_value(StringId k, void* value_buf, void* value_out, uint32_t size
         return;
 
     Key* key = (Key*)((char*)this + m_key_offset) + index;
-    ENGINE_ASSERT_ARGS(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
+    ENGINE_ASSERT(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
     memcpy(value_out, (char*)value_buf + key->m_value_offset, size);
 }
 
@@ -110,7 +112,7 @@ void Fact::set_value(StringId k, void* value_buf, const void* value_in, uint32_t
         return;
 
     Key* key = (Key*)((char*)this + m_key_offset) + index;
-    ENGINE_ASSERT_ARGS(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
+    ENGINE_ASSERT(key->m_size == size, "%s key size %d != %d", __FUNCTION__, key->m_size, size);
     memcpy((char*)value_buf + key->m_value_offset, value_in, size);
 }
 
@@ -216,9 +218,143 @@ void CommandMachine::update( float timestep )
     m_numCommands = num_cmd_left;
 }
 
-void engine_assertion( const char *file, int line, const char *expression, bool result )
+#ifdef  WIN32
+#include <dbghelp.h>
+#include <windows.h>
+void stacktrace()
 {
+    SymInitialize(GetCurrentProcess(), NULL, TRUE);
+    SymSetOptions(SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
+    DWORD mtype;
+    CONTEXT ctx;
+    ZeroMemory(&ctx, sizeof(CONTEXT));
+    ctx.ContextFlags = CONTEXT_CONTROL;
+    RtlCaptureContext(&ctx);
 
+    STACKFRAME64 stack;
+    ZeroMemory(&stack, sizeof(STACKFRAME64));
+#ifdef _M_IX86
+    mtype = IMAGE_FILE_MACHINE_I386;
+    stack.AddrPC.Offset = ctx.Eip;
+    stack.AddrPC.Mode = AddrModeFlat;
+    stack.AddrFrame.Offset = ctx.Ebp;
+    stack.AddrFrame.Mode = AddrModeFlat;
+    stack.AddrStack.Offset = ctx.Esp;
+    stack.AddrStack.Mode = AddrModeFlat;
+#elif _M_X64
+    mtype = IMAGE_FILE_MACHINE_AMD64;
+    stack.AddrPC.Offset = ctx.Rip;
+    stack.AddrPC.Mode = AddrModeFlat;
+    stack.AddrFrame.Offset = ctx.Rsp;
+    stack.AddrFrame.Mode = AddrModeFlat;
+    stack.AddrStack.Offset = ctx.Rsp;
+    stack.AddrStack.Mode = AddrModeFlat;
+#endif
+
+    DWORD ldsp = 0;
+    IMAGEHLP_LINE64 line;
+    ZeroMemory(&line, sizeof(IMAGEHLP_LINE64));
+    line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+    char buf[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
+    PSYMBOL_INFO sym = (PSYMBOL_INFO)buf;
+    sym->SizeOfStruct = sizeof(SYMBOL_INFO);
+    sym->MaxNameLen = MAX_SYM_NAME;
+
+    UINT num = 0;
+    while (StackWalk64(mtype,
+        GetCurrentProcess(),
+        GetCurrentThread(),
+        &stack,
+        &ctx,
+        NULL,
+        SymFunctionTableAccess64,
+        SymGetModuleBase64,
+        NULL))
+    {
+
+        if (stack.AddrPC.Offset == 0)
+            break;
+
+        ++num;
+        BOOL res = SymGetLineFromAddr64(GetCurrentProcess(), stack.AddrPC.Offset, &ldsp, &line) &&
+            SymFromAddr(GetCurrentProcess(), stack.AddrPC.Offset, 0, sym);
+
+        if (res == TRUE)
+            printf("\t[%i] %s (%s:%d)\n", num, sym->Name, line.FileName, line.LineNumber);
+        else
+            printf("\t[%i] 0x%p\n", num, stack.AddrPC.Offset);
+    }
+
+    SymCleanup(GetCurrentProcess());
+}
+#else
+#include <cxxabi.h>
+#include <execinfo.h>
+INTERNAL void stacktrace()
+{
+    void* array[50];
+    int size = backtrace(array, 50);
+
+    char** messages = backtrace_symbols(array, size);
+
+    // skip first stack frame (points here)
+    for (int i = 1; i < size && messages != NULL; ++i)
+    {
+        char *mangled_name = 0, *offset_begin = 0, *offset_end = 0;
+
+        // find parantheses and +address offset surrounding mangled name
+        for (char *p = messages[i]; *p; ++p)
+        {
+            if (*p == '(')
+            {
+                mangled_name = p;
+            }
+            else if (*p == '+')
+            {
+                offset_begin = p;
+            }
+            else if (*p == ')')
+            {
+                offset_end = p;
+                break;
+            }
+        }
+
+        // if the line could be processed, attempt to demangle the symbol
+        if (mangled_name && offset_begin && offset_end && mangled_name < offset_begin)
+        {
+            *mangled_name++ = '\0';
+            *offset_begin++ = '\0';
+            *offset_end++ = '\0';
+
+            int status;
+            char* real_name = abi::__cxa_demangle(mangled_name, 0, 0, &status);
+
+            printf("\t[%d] %s: (%s)+%s %s\n", i, messages[i], (status == 0 ? real_name : mangled_name), offset_begin, offset_end);
+            free(real_name);
+        }
+        // otherwise, print the whole line
+        else
+        {
+            printf("\t[%d] %s\n", i, messages[i]);
+        }
+    }
+    free(messages);
+}
+#endif
+
+
+void error_abort(const char* file, int line, const char* message, ...)
+{
+    va_list ap;
+    va_start(ap, message);
+    vprintf(message, ap);
+    va_end(ap);
+    printf("\tIn: %s:%d\n", file, line);
+    printf("Stacktrace:\n");
+    stacktrace();
+    exit(EXIT_FAILURE);
 }
 
 // Walk to jump with Sync.

@@ -175,7 +175,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
                 const std::string& fileName = *in_group->m_files[j];
                 FileReader reader(fileName);
                 uint32_t memSize = NATIVE_ALGIN_SIZE(reader.m_size);
-                ENGINE_ASSERT_ARGS(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
+                ENGINE_ASSERT(reader.m_buf, "bundle file [%s] not found.", fileName.c_str());
                 fwrite(reader.m_buf, 1, reader.m_size, fp);
                 if(memSize > reader.m_size)
                 {

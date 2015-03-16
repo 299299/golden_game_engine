@@ -2,16 +2,14 @@
 #include "PhysicsWorld.h"
 #include "PhysicsInstance.h"
 #include "ProxyInstance.h"
-#include "b64.h"
 
 bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
 {
     BaseCompiler::readJSON(root);
-    uint32_t havokOffset = NATIVE_ALGIN_SIZE(sizeof(PhysicsResource));
+    uint32_t havokOffset = sizeof(PhysicsResource);
 
     if(root.has<std::string>("havok_b64"))
     {
-#if 1 // TODO
         uint32_t havok_size = json_to_int(root, "havok_size");
         uint32_t memSize = havokOffset + havok_size;
         const std::string& havok_b64 = root.get<std::string>("havok_b64");
@@ -22,10 +20,10 @@ bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
         physics->m_system_type = json_to_enum(root, "physics_type", physics_type_names);
         physics->m_havok_data_offset = havokOffset;
         physics->m_havok_data_size = havok_size;
-        char* p_mem = (char*)b64_decode(havok_b64.c_str(), havok_b64.length());
-        memcpy(mem.m_buf + havokOffset, p_mem, havok_size);
+        size_t len = havok_size;
+        unsigned char* p_mem = (unsigned char*)(mem.m_buf + havokOffset);
+        string_to_binary(havok_b64, p_mem, len);
         return write_file(m_output, mem.m_buf, memSize);
-#endif
     }
     else
     {
@@ -89,7 +87,7 @@ bool PhysicsConfigCompiler::readJSON(const jsonxx::Object& root)
     const jsonxx::Array& filtersValue = root.get<jsonxx::Array>("collision_filters");
     uint32_t numOfFilters = filtersValue.size();
 
-    ENGINE_ASSERT_ARGS(numOfFilters <= 32, "collsion filter num overflow = %d", numOfFilters);
+    ENGINE_ASSERT(numOfFilters <= 32, "collsion filter num overflow = %d", numOfFilters);
 
     PhysicsConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));

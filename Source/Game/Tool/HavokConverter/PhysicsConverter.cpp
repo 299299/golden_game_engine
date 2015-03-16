@@ -1,7 +1,6 @@
 #include "PhysicsConverter.h"
 #include "ActorConverter.h"
 #include "PhysicsInstance.h"
-#include "b64.h"
 #include <Common/Base/System/Io/Writer/Buffered/hkBufferedStreamWriter.h>
 
 #define HKX_BINARY_TO_TEXT
@@ -69,7 +68,7 @@ void PhysicsConverter::postProcess()
 #ifdef HKX_BINARY_TO_TEXT
     {
         FileReader reader(m_phyFileName);
-        convert_string = b64_encode((const unsigned char*)reader.m_buf, reader.m_size);
+        binary_to_string((const unsigned char*)reader.m_buf, reader.m_size, convert_string);
         havok_size = reader.m_size;
     }
     delete_file(m_phyFileName);

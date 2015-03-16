@@ -74,7 +74,7 @@ void ModelConverter::process(RigSkinData* skinData)
         transform_matrix(m_joints[i].m_x, invT);
     }
 
-    ENGINE_ASSERT_ARGS(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
+    ENGINE_ASSERT(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
 #endif
 }
 

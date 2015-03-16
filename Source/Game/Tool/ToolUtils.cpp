@@ -138,7 +138,7 @@ bool copy_file(const std::string& src, const std::string& dst)
     if(writer.open(dst.c_str()))
         return false;
 
-    uint32_t size = bx::getSize(&reader);
+    uint32_t size = (uint32_t)bx::getSize(&reader);
     void* p = malloc(size);
     reader.read(p, size);
     reader.close();
@@ -960,6 +960,29 @@ bool read_json_from_file( jsonxx::Object& o, const std::string& fileName )
         return false;
     std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
     return o.parse(str);
+}
+
+void binary_to_string( const unsigned char* b, int len, std::string& s )
+{
+    s.resize(len*2);
+    for (int i=0; i<len; ++i)
+    {
+        uint8_t val = b[i];
+        char buf[3];
+        bx::snprintf(buf, sizeof(buf), "%02x", val);
+        s[i*2] = buf[0];
+        s[i*2+1] = buf[1];
+    }
+}
+
+void string_to_binary( const std::string& s, unsigned char* b, int capacity )
+{
+    int len = s.length()/2;
+    for (int i=0; i<len; ++i)
+    {   
+        char buf[] = { s[i*2], s[i*2+1], '\0'};
+        b[i] = (int)strtol(buf, NULL, 16);
+    }
 }
 
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
