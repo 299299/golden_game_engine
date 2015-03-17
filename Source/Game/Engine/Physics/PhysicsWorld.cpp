@@ -215,10 +215,10 @@ void PhysicsWorld::post_simulation()
         {
             hkpRigidBody* rigidBody = static_cast<hkpRigidBody*>(head[j]);
             //fix object should not update renderer
-            if(rigidBody->isFixed()) 
+            if(rigidBody->isFixed())
                 continue;
             hkUlong user_data = rigidBody->getUserData();
-            if (!user_data) 
+            if (!user_data)
                 continue;
             PhysicsInstance* body = (PhysicsInstance*)user_data;
             ActorId32 actorId = body->m_actor;
@@ -292,7 +292,9 @@ void PhysicsWorld::kickin_jobs( float timeStep )
 
 void PhysicsWorld::tick_finished_jobs()
 {
+#ifdef HAVOK_COMPILE
     m_world->finishMtStep(g_threadMgr.get_jobqueue(), g_threadMgr.get_threadpool());
+#endif
     set_status(kTickFinishedJobs);
     post_simulation();
 }
@@ -447,9 +449,9 @@ void PhysicsWorld::register_factories()
     g_resourceMgr.register_factory(_physics_fac);
 
     ComponentFactory _physics_comp_fac = {
-        create_physics_object, destroy_physics_object, 
-        get_physics_object, num_all_physics_object, 
-        get_all_physics_object, transform_physics_object, 
+        create_physics_object, destroy_physics_object,
+        get_physics_object, num_all_physics_object,
+        get_all_physics_object, transform_physics_object,
         lookup_physics_instance_data, 0};
     g_componentMgr.register_factory(_physics_comp_fac, EngineTypes::PHYSICS);
 }

@@ -280,7 +280,6 @@ void PreviewState::draw_actor_info(const char* name, ActorId32 _actorId, int _x,
 {
     PROFILE(IMGUI_Actor_Info);
     static int32_t _scroll = 0;
-    static bool _enabled = true;
     char _buf[256];
     bx::snprintf(_buf, sizeof(_buf), "Actor %s", name);
     imguiBeginScrollArea(_buf, _x, _y, _w, _h, &_scroll);

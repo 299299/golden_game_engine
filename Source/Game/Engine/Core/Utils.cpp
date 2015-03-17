@@ -122,7 +122,7 @@ void Fact::fill_default_values(void* value_buf) const
 }
 
 uint32_t Fact::get_memory_size() const
-{ 
+{
     return sizeof(Fact) + sizeof(StringId) * m_num_keys + sizeof(Key) * m_num_keys + m_value_size;
 }
 
@@ -281,9 +281,9 @@ void stacktrace()
             SymFromAddr(GetCurrentProcess(), stack.AddrPC.Offset, 0, sym);
 
         if (res == TRUE)
-            printf("\t[%i] %s (%s:%d)\n", num, sym->Name, line.FileName, line.LineNumber);
+            LOGE("\t[%i] %s (%s:%d)\n", num, sym->Name, line.FileName, line.LineNumber);
         else
-            printf("\t[%i] 0x%p\n", num, stack.AddrPC.Offset);
+            LOGE("\t[%i] 0x%p\n", num, stack.AddrPC.Offset);
     }
 
     SymCleanup(GetCurrentProcess());
@@ -331,13 +331,13 @@ INTERNAL void stacktrace()
             int status;
             char* real_name = abi::__cxa_demangle(mangled_name, 0, 0, &status);
 
-            printf("\t[%d] %s: (%s)+%s %s\n", i, messages[i], (status == 0 ? real_name : mangled_name), offset_begin, offset_end);
+            LOGE("\t[%d] %s: (%s)+%s %s\n", i, messages[i], (status == 0 ? real_name : mangled_name), offset_begin, offset_end);
             free(real_name);
         }
         // otherwise, print the whole line
         else
         {
-            printf("\t[%d] %s\n", i, messages[i]);
+            LOGE("\t[%d] %s\n", i, messages[i]);
         }
     }
     free(messages);
@@ -351,8 +351,13 @@ void error_abort(const char* file, int line, const char* message, ...)
     va_start(ap, message);
     vprintf(message, ap);
     va_end(ap);
-    printf("\tIn: %s:%d\n", file, line);
-    printf("Stacktrace:\n");
+
+    char buf[2048];
+    snprintf(buf, sizeof(buf), "\tIn: %s:%d\n", file, line);
+    msg_box(buf);
+    LOGE(buf);
+
+    LOGE("Stacktrace:\n");
     stacktrace();
     exit(EXIT_FAILURE);
 }

@@ -10,8 +10,11 @@
 #ifdef HC_DUMP_PROFILE
 #define HC_PROFILE(name)      PROFILE(name)
 #else
-#define HC_PROFILE(name)       
+#define HC_PROFILE(name)
 #endif
+
+#define HKX_BINARY_TO_TEXT
+#define HKX_TMP                 ("hkx_tmp")
 
 struct HC_Config
 {

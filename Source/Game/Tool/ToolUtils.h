@@ -4,6 +4,7 @@
 class hkxNode;
 class hkClass;
 struct hkxAttributeGroup;
+class hkxAttributeHolder;
 
 #define COMMON_RESOURCE_PATH    ("core/common/")
 #define INTERMEDIATE_PATH       "intermediate/"
@@ -114,6 +115,7 @@ struct MemoryBuffer
     uint32_t        m_size;
     MemoryBuffer(uint32_t size);
     ~MemoryBuffer();
+    void alloc(uint32_t size);
 };
 
 struct ToolError

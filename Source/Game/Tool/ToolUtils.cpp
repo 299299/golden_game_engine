@@ -979,7 +979,7 @@ void string_to_binary( const std::string& s, unsigned char* b, int capacity )
 {
     int len = s.length()/2;
     for (int i=0; i<len; ++i)
-    {   
+    {
         char buf[] = { s[i*2], s[i*2+1], '\0'};
         b[i] = (int)strtol(buf, NULL, 16);
     }
@@ -1029,15 +1029,24 @@ FileReader::~FileReader()
 }
 
 MemoryBuffer::MemoryBuffer( uint32_t size )
-:m_size(size)
+:m_buf(0)
 {
-    m_buf = COMMON_ALLOC(char, size);
-    memset(m_buf, 0x00, size);
+    alloc(size);
 }
 
 MemoryBuffer::~MemoryBuffer()
 {
     COMMON_DEALLOC(m_buf);
+}
+
+void MemoryBuffer::alloc(uint32_t size)
+{
+    if(!size)
+        return;
+    COMMON_DEALLOC(m_buf);
+    m_size = size;
+    m_buf = COMMON_ALLOC(char, size);
+    memset(m_buf, 0x00, size);
 }
 
 //=======================================================

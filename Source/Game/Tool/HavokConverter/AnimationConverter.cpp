@@ -15,7 +15,11 @@ AnimationConverter::~AnimationConverter()
 void AnimationConverter::process( void* pData )
 {
     m_ac = (hkaAnimationContainer*)pData;
+#ifdef HKX_BINARY_TO_TEXT
+    m_animationFile = HKX_TMP;
+#else
     m_animationFile = m_config->m_exportFolder + m_name + ".havok";
+#endif
 }
 
 void AnimationConverter::postProcess()
@@ -60,7 +64,7 @@ jsonxx::Object AnimationConverter::serializeToJson() const
                 continue;
             std::string longName(text.cString());
             jsonxx::Object obj;
-            int frame = (int)(data.m_time * ANIMATION_FRAME_FPS); 
+            int frame = (int)(data.m_time * ANIMATION_FRAME_FPS);
             obj << "frame" << frame;
             std::string name(longName.c_str() + trigger_prefix.length(), longName.length() - trigger_prefix.length());
             obj << "name" << name;
@@ -73,8 +77,21 @@ jsonxx::Object AnimationConverter::serializeToJson() const
 #endif
 
     object << "triggers" << triggers;
-    object << "havok_file" << m_animationFile;
 
+#ifdef HKX_BINARY_TO_TEXT
+    object << "havok_file" << m_animationFile;
+#else
+     std::string convert_string;
+    uint32_t havok_size = 0;
+    {
+        FileReader reader(m_phyFileName);
+        binary_to_string((const unsigned char*)reader.m_buf, reader.m_size, convert_string);
+        havok_size = reader.m_size;
+    }
+    delete_file(m_phyFileName);
+    object << "havok_data" << convert_string;
+    object << "havok_size" << havok_size;
+#endif
     return object;
 }
 

@@ -8,11 +8,12 @@ bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
     BaseCompiler::readJSON(root);
     uint32_t havokOffset = sizeof(PhysicsResource);
 
-    if(root.has<std::string>("havok_b64"))
+    if(root.has<std::string>("havok_data"))
     {
         uint32_t havok_size = json_to_int(root, "havok_size");
         uint32_t memSize = havokOffset + havok_size;
-        const std::string& havok_b64 = root.get<std::string>("havok_b64");
+        const std::string& havok_data = root.get<std::string>("havok_data");
+        ENGINE_ASSERT(havok_data.length() == 2*havok_size, "havok size check");
         LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
         MemoryBuffer mem(memSize);
         PhysicsResource* physics = (PhysicsResource*)mem.m_buf;
@@ -20,9 +21,8 @@ bool PhysicsCompiler::readJSON(const jsonxx::Object& root)
         physics->m_system_type = json_to_enum(root, "physics_type", physics_type_names);
         physics->m_havok_data_offset = havokOffset;
         physics->m_havok_data_size = havok_size;
-        size_t len = havok_size;
         unsigned char* p_mem = (unsigned char*)(mem.m_buf + havokOffset);
-        string_to_binary(havok_b64, p_mem, len);
+        string_to_binary(havok_data, p_mem, havok_size);
         return write_file(m_output, mem.m_buf, memSize);
     }
     else

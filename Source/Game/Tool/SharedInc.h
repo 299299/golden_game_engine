@@ -194,4 +194,5 @@
 #include <Common/Serialize/Packfile/Binary/hkBinaryPackfileWriter.h>
 #include <Common/Serialize/Util/hkNativePackfileUtils.h>
 #include <Common/Base/Math/Matrix/hkMatrixDecomposition.h>
+#include <Common/Base/System/Io/Writer/Buffered/hkBufferedStreamWriter.h>
 #endif

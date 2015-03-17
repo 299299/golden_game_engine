@@ -1,9 +1,6 @@
 #include "PhysicsConverter.h"
 #include "ActorConverter.h"
 #include "PhysicsInstance.h"
-#include <Common/Base/System/Io/Writer/Buffered/hkBufferedStreamWriter.h>
-
-#define HKX_BINARY_TO_TEXT
 
 PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)
@@ -48,12 +45,13 @@ void PhysicsConverter::process(hkpPhysicsData* data)
 
 void PhysicsConverter::postProcess()
 {
+#ifdef HAVOK_COMPILE
 #ifdef HKX_BINARY_TO_TEXT
     m_phyFileName = m_ownner->m_config->m_exportFolder + m_name + ".havok";
 #else
-    m_phyFileName = "hkx_tmp";
+    m_phyFileName = HKX_TMP;
 #endif
-    
+
     LOGD("Write physics file: %s.", m_phyFileName.c_str());
     hkPackfileWriter::Options options;
     options.m_writeMetaInfo = false;
@@ -82,10 +80,11 @@ void PhysicsConverter::postProcess()
     o << "name" << getResourceName();
     o << "type" << getTypeName();
 #ifdef HKX_BINARY_TO_TEXT
-    o << "havok_b64" << convert_string;
+    o << "havok_data" << convert_string;
     o << "havok_size" << havok_size;
 #endif
     write_json_to_file(o, m_compFileName);
+#endif
 }
 
 jsonxx::Object PhysicsConverter::serializeToJson() const

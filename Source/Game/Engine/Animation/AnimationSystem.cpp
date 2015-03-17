@@ -122,7 +122,7 @@ void AnimationSystem::tick_finished_jobs()
 {
     set_status(kTickFinishedJobs);
     int num = m_rigs.size();
-    if(!num) 
+    if(!num)
         return;
     PROFILE(AnimationFinishJobs);
 #ifdef HAVOK_COMPILE
@@ -428,7 +428,9 @@ void draw_debug_animation(float dt)
             continue;
         const hkQsTransform& t = actor->m_transform;
         float pos[3];
+#ifdef HAVOK_COMPILE
         transform_vec3(pos, t.m_translation);
+#endif
         g_debugDrawMgr.add_text_3d(pos, dbg_evt.m_message, RGBCOLOR(255,0,255));
     }
 
