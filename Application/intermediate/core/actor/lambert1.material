@@ -7,7 +7,7 @@
 	],
 	"flags": [
 	],
-	"name": "lambert1",
+	"name": "core\/actor\/lambert1",
 	"samplers": [
 	],
 	"shader": "base",

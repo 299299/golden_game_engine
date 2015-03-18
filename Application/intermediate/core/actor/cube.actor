@@ -4,14 +4,14 @@
 	"components": [
 		{
 			"materials": [
-				"lambert1" 
+				"core\/actor\/lambert1" 
 			],
-			"mesh": "cube",
-			"name": "cube",
+			"mesh": "core\/actor\/cube",
+			"name": "core\/actor\/cube",
 			"type": "model" 
 		},
 		{
-			"name": "cube",
+			"name": "core\/actor\/cube",
 			"type": "physics" 
 		} 
 	],

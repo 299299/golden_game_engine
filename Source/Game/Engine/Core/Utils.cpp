@@ -280,10 +280,14 @@ void stacktrace()
         BOOL res = SymGetLineFromAddr64(GetCurrentProcess(), stack.AddrPC.Offset, &ldsp, &line) &&
             SymFromAddr(GetCurrentProcess(), stack.AddrPC.Offset, 0, sym);
 
-        if (res == TRUE)
+        if (res) 
+        {
             LOGE("\t[%i] %s (%s:%d)\n", num, sym->Name, line.FileName, line.LineNumber);
+        }
         else
+        {
             LOGE("\t[%i] 0x%p\n", num, stack.AddrPC.Offset);
+        }
     }
 
     SymCleanup(GetCurrentProcess());
@@ -353,7 +357,7 @@ void error_abort(const char* file, int line, const char* message, ...)
     va_end(ap);
 
     char buf[2048];
-    snprintf(buf, sizeof(buf), "\tIn: %s:%d\n", file, line);
+    bx::snprintf(buf, sizeof(buf), "\tIn: %s:%d\n", file, line);
     msg_box(buf);
     LOGE(buf);
 

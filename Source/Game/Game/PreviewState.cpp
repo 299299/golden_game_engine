@@ -216,6 +216,8 @@ void PreviewState::step( float dt )
         draw_level_info(m_level_name, m_preview_level, 0, 25, 400, 600);
     else
         draw_actor_info(m_actor_name, m_preview_actor, 0, 25, 400, 600);
+
+    debug_update_vdb_camera();
 }
 
 void PreviewState::on_enter( GameState* prev_state )

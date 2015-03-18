@@ -1,6 +1,7 @@
 #include "PhysicsConverter.h"
 #include "ActorConverter.h"
 #include "PhysicsInstance.h"
+#include "HC_Config.h"
 
 PhysicsConverter::PhysicsConverter(ActorConverter* ownner)
 :ComponentConverter(ownner)

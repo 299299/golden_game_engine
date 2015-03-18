@@ -1,5 +1,6 @@
 #include "AnimationConverter.h"
 #include "Animation.h"
+#include "HC_Config.h"
 
 AnimationConverter::AnimationConverter()
 :m_ac(0)
@@ -27,12 +28,16 @@ void AnimationConverter::postProcess()
     HC_PROFILE(animation_post_process);
 
 #ifdef HAVOK_COMPILE
-    m_ac->m_animations[0]->m_annotationTracks.clear();
+    hkaAnimationContainer* ac = m_ac;
+    ac->m_animations[0]->m_annotationTracks.clear();
+    ac->m_skeletons.clear();
+    ac->m_skins.clear();
+    ac->m_attachments.clear();
     {
         hkPackfileWriter::Options options;
         hkOstream ostream(m_animationFile.c_str());
         hkBinaryPackfileWriter writer;
-        writer.setContents(m_ac, hkaAnimationContainerClass);
+        writer.setContents(ac, hkaAnimationContainerClass);
         if(writer.save(ostream.getStreamWriter(), options) != HK_SUCCESS)
             g_hc_config->m_error.add_error("%s write error.", BX_FUNCTION);
         LOGI("save havok animation %s", m_animationFile.c_str());
@@ -78,17 +83,17 @@ jsonxx::Object AnimationConverter::serializeToJson() const
 
     object << "triggers" << triggers;
 
-#ifdef HKX_BINARY_TO_TEXT
+#ifndef HKX_BINARY_TO_TEXT
     object << "havok_file" << m_animationFile;
 #else
-     std::string convert_string;
+    std::string convert_string;
     uint32_t havok_size = 0;
     {
-        FileReader reader(m_phyFileName);
+        FileReader reader(m_animationFile);
         binary_to_string((const unsigned char*)reader.m_buf, reader.m_size, convert_string);
         havok_size = reader.m_size;
     }
-    delete_file(m_phyFileName);
+    delete_file(m_animationFile);
     object << "havok_data" << convert_string;
     object << "havok_size" << havok_size;
 #endif

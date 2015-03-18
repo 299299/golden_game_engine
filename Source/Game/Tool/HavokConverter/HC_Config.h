@@ -13,7 +13,6 @@
 #define HC_PROFILE(name)
 #endif
 
-#define HKX_BINARY_TO_TEXT
 #define HKX_TMP                 ("hkx_tmp")
 
 struct HC_Config
