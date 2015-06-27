@@ -686,16 +686,17 @@ void ResourceManager::offline_all_resources()
 }
 //==================================================================================
 #ifdef RESOURCE_RELOAD
-#include <unordered_map>
+#include <tinystl/allocator.h>
+#include <tinystl/unordered_map.h>
 #include <vector>
 struct ResouceData
 {
     ResourceFactory* m_fac;
     void*            m_resource;
 };
-typedef std::unordered_map<hkUint64, ResouceData> ReloadResourceMap;
+typedef tinystl::unordered_map<hkUint64, ResouceData> ReloadResourceMap;
 ReloadResourceMap  g_reloadResources;
-typedef std::unordered_map<uint32_t, std::vector<func_reload_resource_t> > ReloadCallbackMap;
+typedef tinystl::unordered_map<uint32_t, std::vector<func_reload_resource_t> > ReloadCallbackMap;
 ReloadCallbackMap g_reloadCallbacks;
 //===================================================================================
 void ResourceManager::destroy_reload_resources()

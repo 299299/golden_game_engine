@@ -327,7 +327,9 @@ bool write_file(const std::string& fileName, const void* buf, uint32_t bufSize)
 
 void add_trailing_slash( std::string& outStr )
 {
-    if(outStr.back() != '/')
+    if (outStr.empty())
+        return;
+    if(outStr[outStr.length()-1] != '/')
         outStr += "/";
 }
 
@@ -422,7 +424,7 @@ int shell_exec(const std::string& exe, const StringArray& args, const std::strin
     if(output)
     {
         std::string dump_file = workDir + "shell_output.txt";
-        std::ifstream ifs(dump_file);
+        std::ifstream ifs(dump_file.c_str());
         if(!ifs.good())
             return ret;
 
@@ -942,7 +944,7 @@ std::string input_to_output( const std::string& inputName )
 bool write_json_to_file( const jsonxx::Object& o, const std::string& fileName )
 {
     LOGD("%s %s", __FUNCTION__, fileName.c_str());
-    std::ofstream s(fileName);
+    std::ofstream s(fileName.c_str());
     if(!s.good())
     {
         return false;
@@ -953,7 +955,7 @@ bool write_json_to_file( const jsonxx::Object& o, const std::string& fileName )
 
 bool read_json_from_file( jsonxx::Object& o, const std::string& fileName )
 {
-    std::ifstream ifs(fileName);
+    std::ifstream ifs(fileName.c_str());
     if(fileName.empty())
         return false;
     if(!ifs.good())

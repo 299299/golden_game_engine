@@ -1,7 +1,4 @@
---
--- Copyright 2010-2015 Branimir Karadzic. All rights reserved.
--- License: https://github.com/bkaradzic/bx#license-bsd-2-clause
---
+
 local naclToolchain = ""
 
 function toolchain(_buildDir, _libDir, _bxDir, _outputDir)

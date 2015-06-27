@@ -146,7 +146,8 @@ game_inc_dirs = {
     BGFX_DIR .. "examples/common",
     BGFX_DIR .. "3rdparty",
     HAVOK_DIR,
-    GAME_SRC_DIR .. "**"
+    GAME_SRC_DIR .. "**",
+	"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include",
 }
 
 bgfx_files = {

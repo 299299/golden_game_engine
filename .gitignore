@@ -65,3 +65,4 @@ gameDebug.exe
 gameDebug
 *.rdc
 temp
+*.idb

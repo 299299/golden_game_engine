@@ -33,18 +33,6 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-struct bgfxCallback : public bgfx::CallbackI
-{
-    virtual void fatal(bgfx::Fatal::Enum _code, const char* _str) { LOGE(_str); }
-    virtual uint32_t cacheReadSize(uint64_t _id) { return 0; };
-    virtual bool cacheRead(uint64_t _id, void* _data, uint32_t _size) { return false; }
-    virtual void cacheWrite(uint64_t _id, const void* _data, uint32_t _size) {};
-    virtual void screenShot(const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _pitch, const void* _data, uint32_t _size, bool _yflip){};
-    virtual void captureBegin(uint32_t _width, uint32_t _height, uint32_t _pitch, bgfx::TextureFormat::Enum _format, bool _yflip) {};
-    virtual void captureEnd() {};
-    virtual void captureFrame(const void* _data, uint32_t _size) {};
-};
-
 struct PosTexCoord0Vertex
 {
     float m_x;
@@ -75,7 +63,6 @@ bool                        g_hdr = true;
 //==============================================================
 //      INNER GLOBAL VARIABLES
 //==============================================================
-static bgfxCallback         g_bgfxCallback;
 static uint32_t             g_resetFlag = BGFX_RESET_MSAA_X4|BGFX_RESET_VSYNC;
 static bgfx::UniformHandle* g_engineUniforms;
 static uint32_t             g_numEngineUniforms = 0;
@@ -124,33 +111,33 @@ INTERNAL void createUniforms()
 {
     g_engineUniforms = COMMON_ALLOC(bgfx::UniformHandle, MAX_UNIFORM_NUM);
     extern const char*  g_textureNames[];
-    g_uniformPerFrame.m_time = createEngineUniform("u_time", bgfx::UniformType::Uniform1f);
-    g_uniformPerFrame.m_ambientSkyColor = createEngineUniform("u_ambientSkyColor", bgfx::UniformType::Uniform3fv);
-    g_uniformPerFrame.m_ambientGroundColor = createEngineUniform("u_ambientGroundColor", bgfx::UniformType::Uniform3fv);
-    g_uniformPerFrame.m_camPos = createEngineUniform("u_camPos", bgfx::UniformType::Uniform3fv);
-    g_uniformPerFrame.m_fogParams = createEngineUniform("u_fogParams", bgfx::UniformType::Uniform4fv);
-    g_uniformPerFrame.m_zParams = createEngineUniform("u_camDist", bgfx::UniformType::Uniform2fv);
+    g_uniformPerFrame.m_time = createEngineUniform("u_time", bgfx::UniformType::Vec4);
+    g_uniformPerFrame.m_ambientSkyColor = createEngineUniform("u_ambientSkyColor", bgfx::UniformType::Vec4);
+    g_uniformPerFrame.m_ambientGroundColor = createEngineUniform("u_ambientGroundColor", bgfx::UniformType::Vec4);
+    g_uniformPerFrame.m_camPos = createEngineUniform("u_camPos", bgfx::UniformType::Vec4);
+    g_uniformPerFrame.m_fogParams = createEngineUniform("u_fogParams", bgfx::UniformType::Vec4);
+    g_uniformPerFrame.m_zParams = createEngineUniform("u_camDist", bgfx::UniformType::Vec4);
 
-    g_uniformPerObject.m_uv = createEngineUniform("u_uvOffsetAndScale", bgfx::UniformType::Uniform4fv);
+    g_uniformPerObject.m_uv = createEngineUniform("u_uvOffsetAndScale", bgfx::UniformType::Vec4);
     for(int i=0; i<TEX_MAX_SLOT; ++i)
     {
         const char* _name = g_textureNames[i];
         if(!_name)
             break;
-        g_uniformPerObject.m_tex[i] = createEngineUniform(_name, bgfx::UniformType::Uniform1iv);
+        g_uniformPerObject.m_tex[i] = createEngineUniform(_name, bgfx::UniformType::Int1);
     }
 
-    g_uniformPerObject.m_diffuse = createEngineUniform("u_diffuseColor", bgfx::UniformType::Uniform4fv);
-    g_uniformPerObject.m_specular = createEngineUniform("u_specularColor", bgfx::UniformType::Uniform4fv);
-    g_uniformPerObject.m_params1 = createEngineUniform("u_matParams1", bgfx::UniformType::Uniform4fv);
+    g_uniformPerObject.m_diffuse = createEngineUniform("u_diffuseColor", bgfx::UniformType::Vec4);
+    g_uniformPerObject.m_specular = createEngineUniform("u_specularColor", bgfx::UniformType::Vec4);
+    g_uniformPerObject.m_params1 = createEngineUniform("u_matParams1", bgfx::UniformType::Vec4);
 
-    g_uniformLights.m_color = createEngineUniform("u_lightColor", bgfx::UniformType::Uniform3fv, BGFX_CONFIG_MAX_LIGHTS);
-    g_uniformLights.m_info = createEngineUniform("u_lightInfo", bgfx::UniformType::Uniform4fv, BGFX_CONFIG_MAX_LIGHTS);
-    g_uniformLights.m_vec = createEngineUniform("u_lightVec", bgfx::UniformType::Uniform3fv, BGFX_CONFIG_MAX_LIGHTS);
-    g_uniformLights.m_type = createEngineUniform("u_lightType", bgfx::UniformType::Uniform1i, BGFX_CONFIG_MAX_LIGHTS);
+    g_uniformLights.m_color = createEngineUniform("u_lightColor", bgfx::UniformType::Vec4, BGFX_CONFIG_MAX_LIGHTS);
+    g_uniformLights.m_info = createEngineUniform("u_lightInfo", bgfx::UniformType::Vec4, BGFX_CONFIG_MAX_LIGHTS);
+    g_uniformLights.m_vec = createEngineUniform("u_lightVec", bgfx::UniformType::Vec4, BGFX_CONFIG_MAX_LIGHTS);
+    g_uniformLights.m_type = createEngineUniform("u_lightType", bgfx::UniformType::Int1, BGFX_CONFIG_MAX_LIGHTS);
 
-    g_shadowMap.m_lightMtx = createEngineUniform("u_lightMtx", bgfx::UniformType::Uniform4x4fv);
-    g_shadowMap.m_paramUniform = createEngineUniform("u_shadowParams", bgfx::UniformType::Uniform3fv);
+    g_shadowMap.m_lightMtx = createEngineUniform("u_lightMtx", bgfx::UniformType::Mat4);
+    g_shadowMap.m_paramUniform = createEngineUniform("u_shadowParams", bgfx::UniformType::Vec4);
 }
 
 INTERNAL void postProcessInit()
@@ -232,7 +219,7 @@ void Graphics::init(void* hwnd, bool bFullScreen)
 #endif
 
     bx::debugOutput("bgfx init started ---\n");
-    bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null, &g_bgfxCallback);
+    bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null);
     bx::debugOutput("bgfx init ended ---\n");
 
     const bgfx::Caps* caps = bgfx::getCaps();
@@ -491,14 +478,11 @@ void Graphics::screenspace_quad(float _textureWidth, float _textureHeight, float
 //so I add this -_-
 namespace bgfx
 {
-    struct RendererContextI* rendererCreateGL() { return 0;};
-    void rendererDestroyGL() {};
-    struct RendererContextI* rendererCreateD3D9()  { return 0;};
-    void rendererDestroyD3D9() {};
-    struct RendererContextI* rendererCreateD3D12()  { return 0;};
-    void rendererDestroyD3D12() {};
-    struct RendererContextI* rendererCreateVK()  { return 0;};
-    void rendererDestroyVK() {};
+    struct RendererContextI;
+    namespace gl {  RendererContextI* rendererCreate() { return 0;}; void rendererDestroy() {}; }
+    namespace d3d9 {  RendererContextI* rendererCreate() { return 0;}; void rendererDestroy() {}; }
+    namespace d3d12 {  RendererContextI* rendererCreate() { return 0;}; void rendererDestroy() {}; }
+    namespace vk {  RendererContextI* rendererCreate() { return 0;}; void rendererDestroy() {}; }
 };
 
 

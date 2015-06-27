@@ -115,7 +115,7 @@ int AnimRigConverter::findBodyPart( const std::string& boneName, const char** ar
 
 void AnimRigConverter::writeRig( const std::string& fileName )
 {
-    std::ofstream s(fileName);
+    std::ofstream s(fileName.c_str());
     if(!s.good())
     {
         g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName.c_str());
