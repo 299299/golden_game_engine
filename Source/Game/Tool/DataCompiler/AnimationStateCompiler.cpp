@@ -167,8 +167,8 @@ struct RuntimeAnimationState
                 for(unsigned i=0; i<children.size(); ++i)
                 {
                     const jsonxx::Object& o = children.get<jsonxx::Object>(i);
-                    RuntimeAnimationNode* node = createNode(node);
-                    readNode(o, node);
+                    RuntimeAnimationNode* node1 = createNode(node);
+                    readNode(o, node1);
                 }
                 break;
             }

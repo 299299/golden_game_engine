@@ -82,8 +82,12 @@ function exeProject(_name, _incdirs, _files)
     }
 
     configuration { "vs*" }
+        buildoptions {
+            "/wd4275",
+        }
         linkoptions {
             "/ignore:4199", -- LNK4199: /DELAYLOAD:*.dll ignored; no imports found from *.dll
+            "/ignore:4099",
         }
         links { -- this is needed only for testing with GLES2/3 on Windows with VS2008
             "DelayImp",
@@ -110,6 +114,9 @@ function exeProject(_name, _incdirs, _files)
             "gdi32",
             "psapi",
         }
+
+    configuration { "vs2008" }
+        linkoptions {"/NODEFAULTLIB:libc"}
 
     configuration { "linux-*" }
         links {
@@ -147,7 +154,7 @@ game_inc_dirs = {
     BGFX_DIR .. "3rdparty",
     HAVOK_DIR,
     GAME_SRC_DIR .. "**",
-	"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include",
+	"$(DXSDK_DIR)/include",
 }
 
 bgfx_files = {
