@@ -78,11 +78,11 @@ int game_main(int argc, bx::CommandLine* cmdline)
         g_gameFSM.change_state(state_name);
 
     _state = g_gameFSM.get_state();
-    if(_state)
+
+    if(_state) {
         _state->process_cmd_args(cmdline);
-
-
-    g_engine.run();
+		g_engine.run();
+	}
 
 err:
     //------------------------------------------------------------

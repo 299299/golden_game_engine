@@ -104,6 +104,10 @@ void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
 {
     if(!lineNum) 
         return;
+
+	if (!bgfx::isValid(m_shader->m_handle))
+		return;
+
     bgfx::TransientVertexBuffer tvb;
     uint32_t numVertices = lineNum*2;
     if (!bgfx::checkAvailTransientVertexBuffer(numVertices, PosColorVertex::ms_decl))

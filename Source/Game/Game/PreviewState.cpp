@@ -134,7 +134,7 @@ INTERNAL void draw_fact(ActorId32 id)
 }
 
 PreviewState::PreviewState()
-    :m_preview_actor(INVALID_ID)
+    :m_preview_actor(INVALID_U32)
     ,m_preview_level(0)
     ,m_actor_name(0)
     ,m_level_name(0)
