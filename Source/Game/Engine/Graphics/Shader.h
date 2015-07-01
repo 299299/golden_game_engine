@@ -25,9 +25,9 @@ struct ShaderProgram
     StringId                    m_vsName;
 };
 
-void bringin_resource_shader(void* resource);
+int  bringin_resource_shader(void* resource);
 void bringout_resource_shader(void* resource);
 
 void lookup_resource_shader_program(void* resource);
-void bringin_resource_shader_program(void* resource);
+int  bringin_resource_shader_program(void* resource);
 void bringout_resource_shader_program(void* resource);

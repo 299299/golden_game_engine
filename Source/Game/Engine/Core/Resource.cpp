@@ -120,20 +120,20 @@ void ResourcePackage::load_group(int index)
 
         uint32_t fileSize = (uint32_t)bx::getSize(&reader);
         char* buffer = (char*)m_allocator->allocate(fileSize);
-        if(!buffer) 
+        if(!buffer)
             continue;
 
         reader.read(buffer, fileSize);
         reader.close();
 
-        if(loadFunc) 
+        if(loadFunc)
             info.m_ptr = loadFunc(buffer, fileSize);
-        else 
+        else
             info.m_ptr = buffer; //---> MAGIC !
 
-        if(info.m_ptr) 
+        if(info.m_ptr)
             g_resourceMgr.insert_resource(type, info.m_name, info.m_ptr);
-        else 
+        else
             LOGE("resource load error !!!! resource id = %d", i);
     }
 }
@@ -164,13 +164,13 @@ void ResourcePackage::load_group_bundled(int index)
             return;
         ResourceInfo& info = group.m_resources[i];
         char* buffer = pThis + info.m_offset;
-        if(loadFunc) 
+        if(loadFunc)
             info.m_ptr = loadFunc(buffer, info.m_size);
-        else 
+        else
             info.m_ptr = buffer;
-        if(info.m_ptr) 
+        if(info.m_ptr)
             g_resourceMgr.insert_resource(type, info.m_name, info.m_ptr);
-        else 
+        else
             LOGE("resource load error !!!! resource id = %d", i);
     }
 }
@@ -195,7 +195,7 @@ void ResourcePackage::lookup_all_resources()
     {
         ResourceGroup& group = groups[i];
         func_lookup_resource_t func_ = group.m_factory->m_lookupFunc;
-        if(!func_) 
+        if(!func_)
             continue;
 
         uint32_t num_res = group.m_numResources;
@@ -203,9 +203,9 @@ void ResourcePackage::lookup_all_resources()
 
         for(uint32_t j=0; j<num_res; ++j)
         {
-            if(resources[j].m_ptr) 
+            if(resources[j].m_ptr)
                 func_(resources[j].m_ptr);
-            else 
+            else
                 LOGE("resource lookup error, group id = %d!!!", i);
         }
     }
@@ -233,8 +233,12 @@ void ResourcePackage::bringin_group_resource(ResourceGroup& group, int start, in
 {
     func_bringin_resource_t func_ = group.m_factory->m_bringInFunc;
     ResourceInfo* resources = group.m_resources;
-    for(int i=start; i<end; ++i)
-        func_(resources[i].m_ptr);
+    for(int i=start; i<end; ++i) {
+        int ret = func_(resources[i].m_ptr);
+        if (ret < 0) {
+			LOGE("resource[%s] %s bringin error", stringid_lookup(m_name));
+        }
+    }
 }
 
 void ResourcePackage::bringin_all_resources(int maxNum)
@@ -245,7 +249,7 @@ void ResourcePackage::bringin_all_resources(int maxNum)
         for(uint32_t i=0; i<m_numGroups; ++i)
         {
             ResourceGroup& group = m_groups[i];
-            if(!group.m_factory->m_bringInFunc) 
+            if(!group.m_factory->m_bringInFunc)
                 continue;
             bringin_group_resource(group, 0, group.m_numResources);
         }

@@ -12,17 +12,17 @@
         }
 
 
-void  bringin_resource_texture(void* resource, uint32_t flags, uint32_t skip)
+int  bringin_resource_texture(void* resource, uint32_t flags, uint32_t skip)
 {
     Texture* tex = (Texture*)resource;
     if(bgfx::isValid(tex->m_handle))
-        return;
+        return 0;
     tex->m_handle = bgfx::createTexture(
         bgfx::makeRef((char*)resource + tex->m_data_offset, tex->m_data_size),
         flags,
         skip,
         &tex->m_info);
-    ENGINE_ASSERT(bgfx::isValid(tex->m_handle), "bringin_resource_texture bgfx::isValid(m_handle)");
+    return bgfx::isValid(tex->m_handle) ? 0 : -1;
 }
 
 void  bringout_resource_texture(void* resource)
@@ -31,11 +31,11 @@ void  bringout_resource_texture(void* resource)
     DESTROY_TEXTURE(tex->m_handle);
 }
 
-void bringin_resource_texture3d( void* resource )
+int bringin_resource_texture3d( void* resource )
 {
     Texture3D* tex3d = (Texture3D*)resource;
     if(bgfx::isValid(tex3d->m_handle))
-        return;
+        return 0;
     tex3d->m_handle = bgfx::createTexture3D(
         tex3d->m_width,
         tex3d->m_height,
@@ -44,7 +44,7 @@ void bringin_resource_texture3d( void* resource )
         (bgfx::TextureFormat::Enum)tex3d->m_format,
         tex3d->m_flags,
         bgfx::makeRef((char*)resource + tex3d->m_data_offset, tex3d->m_data_size));
-    ENGINE_ASSERT(bgfx::isValid(tex3d->m_handle), "bringin_resource_texture3d bgfx::isValid");
+    return bgfx::isValid(tex3d->m_handle) ? 0 : -1;
 }
 
 void bringout_resource_texture3d( void* resource )

@@ -31,7 +31,7 @@ struct Mesh
 };
 
 
-void  bringin_resource_mesh(void* resource);
+int   bringin_resource_mesh(void* resource);
 void  bringout_resource_mesh(void* resource);
 
 uint32_t get_mesh_vertex_num(const Mesh* mesh, uint32_t index);

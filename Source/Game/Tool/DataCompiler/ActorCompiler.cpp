@@ -89,6 +89,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
         if(!comp)
             continue;
 
+		comp->m_mode = 1;
         comp->m_pathPrefix = m_pathPrefix;
         bool bOk = comp->readJSON(comp_json);
         if(!bOk) {

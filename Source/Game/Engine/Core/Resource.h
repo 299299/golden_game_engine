@@ -22,7 +22,7 @@ enum ResourceStatus
 
 typedef void* (*func_load_resource_t)(void*, uint32_t);
 typedef void  (*func_destroy_resource_t)(void*);
-typedef void  (*func_bringin_resource_t)(void*);
+typedef int   (*func_bringin_resource_t)(void*);
 typedef void  (*func_lookup_resource_t)(void*);
 typedef void  (*func_bringout_resource_t)(void*);
 typedef void  (*func_reload_resource_t)(void*, void*);
@@ -79,7 +79,6 @@ ENGINE_NATIVE_ALIGN(struct) ResourcePackage
     void  load();
     void  unload();
     void  flush(int maxNum);
-
 
     void  bringin_all_resources(int maxNum);
     void  bringout_all_resources();

@@ -2,7 +2,7 @@
 #include "Log.h"
 #include <vertexdecl.h>
 
-void  bringin_resource_mesh(void* resource)
+int  bringin_resource_mesh(void* resource)
 {
     Mesh* pMesh = (Mesh*)resource;
     char* p = (char*)resource;
@@ -15,9 +15,17 @@ void  bringin_resource_mesh(void* resource)
         _sub_mesh.m_vbh = bgfx::createVertexBuffer(
             bgfx::makeRef(p + _sub_mesh.m_vertex_offset, _sub_mesh.m_vertex_size),
             pMesh->m_decl);
+        if (!bgfx::isValid(_sub_mesh.m_vbh)) {
+            return -1;
+        }
         _sub_mesh.m_ibh = bgfx::createIndexBuffer(
             bgfx::makeRef(p + _sub_mesh.m_index_offset, _sub_mesh.m_index_size));
+        if (!bgfx::isValid(_sub_mesh.m_ibh)) {
+            return -1;
+        }
     }
+
+	return 0;
 }
 
 void  bringout_resource_mesh(void* resource)

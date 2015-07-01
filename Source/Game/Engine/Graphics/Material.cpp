@@ -27,7 +27,7 @@ void lookup_resource_material(void * resource)
     }
 }
 
-void bringin_resource_material( void* resource )
+int bringin_resource_material( void* resource )
 {
     Material* mat = (Material*)resource;
     uint32_t _num = mat->m_num_samplers;
@@ -41,6 +41,8 @@ void bringin_resource_material( void* resource )
             continue;
         bringin_resource_texture(_tex, _sample->m_flags);
     }
+
+    return 0;
 }
 
 

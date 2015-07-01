@@ -28,10 +28,10 @@ struct Texture3D
 };
 
 
-void  bringin_resource_texture(void* resource, uint32_t flags, uint32_t skip = 0);
+int   bringin_resource_texture(void* resource, uint32_t flags, uint32_t skip = 0);
 void* load_resource_texture(void* data, uint32_t size);
 void  bringout_resource_texture(void* resource);
 
 void* load_resource_texture3d( void* data, uint32_t size);
-void bringin_resource_texture3d( void* resource );
+int  bringin_resource_texture3d( void* resource );
 void bringout_resource_texture3d( void* resource );
