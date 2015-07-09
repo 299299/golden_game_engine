@@ -67,7 +67,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             group = m_groups[index];
         }
 
-        if(!bundled) 
+        if(!bundled)
             memSize += fileName.length();
 
         group->m_files.push_back(&fileName);
@@ -116,7 +116,6 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
             out_group.m_resourceInfoOffset);
     }
 
-    FILE* fp = fopen(output.c_str(), "wb");
     //===================================================
     //  TRAPS HERE
     //
@@ -135,6 +134,8 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     {
         const PackageGroup* in_group = m_groups[i];
         ResourceGroup& out_group = package->m_groups[i];
+        LOGI("packing group %s", in_group->m_ext.c_str());
+
         for(size_t j=0; j<in_group->m_files.size(); ++j)
         {
             const std::string& fileName = *in_group->m_files[j];
@@ -142,6 +143,9 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
 
             std::string resourceName = remove_top_folder(fileName);
             removeExtension(resourceName);
+
+            LOGI("resource file:%s, name:%s", fileName.c_str(), resourceName.c_str());
+
             info.m_name = stringid_caculate(resourceName.c_str());
             if(bundled)
             {
@@ -160,6 +164,7 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
         }
     }
 
+    FILE* fp = fopen(output.c_str(), "wb");
     fwrite(mem.m_buf, 1, memSize, fp);
     ENGINE_ASSERT(offset == mem.m_buf + acSize, "offset error.");
 
@@ -189,6 +194,31 @@ bool PackageCompiler::process(const std::string& input, const std::string& outpu
     }
 
     fclose(fp);
+
+    // check code
+    if(!bundled)
+    {
+        fp = fopen(output.c_str(), "rb");
+        fread(mem.m_buf, memSize, 1, fp);
+        ResourcePackage* check_pack = (ResourcePackage*)mem.m_buf;
+        check_pack->m_groups = (ResourceGroup*)(mem.m_buf + sizeof(ResourcePackage));
+
+        ENGINE_ASSERT(check_pack->m_name == package->m_name, "package check failed");
+        ENGINE_ASSERT(check_pack->m_memBudget == package->m_memBudget, "package check failed");
+        ENGINE_ASSERT(check_pack->m_numGroups == package->m_numGroups, "package check failed");
+        for (size_t i=0; i<check_pack->m_numGroups; ++i)
+        {
+            ResourceGroup* check_grp = check_pack->m_groups + i;
+            ResourceGroup* grp = package->m_groups + i;
+            ENGINE_ASSERT(check_grp->m_memUsed == grp->m_memUsed, "package check failed");
+            ENGINE_ASSERT(check_grp->m_numResources == grp->m_numResources, "package check failed");
+            ENGINE_ASSERT(check_grp->m_resourceInfoOffset == grp->m_resourceInfoOffset, "package check failed");
+            ENGINE_ASSERT(check_grp->m_type == grp->m_type, "package check failed");
+        }
+
+        fclose(fp);
+    }
+
 
     m_processed = true;
     return true;

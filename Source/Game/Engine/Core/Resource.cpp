@@ -236,7 +236,7 @@ void ResourcePackage::bringin_group_resource(ResourceGroup& group, int start, in
     for(int i=start; i<end; ++i) {
         int ret = func_(resources[i].m_ptr);
         if (ret < 0) {
-			LOGE("resource[%s] %s bringin error", stringid_lookup(m_name));
+			LOGE("resource %s bringin error", stringid_lookup(m_name));
         }
     }
 }
