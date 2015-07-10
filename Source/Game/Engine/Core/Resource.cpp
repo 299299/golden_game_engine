@@ -98,6 +98,7 @@ void ResourcePackage::load_group(int index)
 
     uint32_t num = group.m_numResources;
     ResourceInfo* resources = group.m_resources;
+    LOGD("loading resource group %s num-of-resources=%d", stringid_lookup(group.m_type), num);
 
     for (uint32_t i=0; i<num; ++i)
     {
@@ -125,6 +126,8 @@ void ResourcePackage::load_group(int index)
 
         reader.read(buffer, fileSize);
         reader.close();
+
+        LOGD("loading file %s", fileName);
 
         if(loadFunc)
             info.m_ptr = loadFunc(buffer, fileSize);
@@ -236,7 +239,7 @@ void ResourcePackage::bringin_group_resource(ResourceGroup& group, int start, in
     for(int i=start; i<end; ++i) {
         int ret = func_(resources[i].m_ptr);
         if (ret < 0) {
-			LOGE("resource %s bringin error", stringid_lookup(m_name));
+			LOGE("resource %s bringin error", stringid_lookup(resources[i].m_name));
         }
     }
 }
@@ -251,6 +254,7 @@ void ResourcePackage::bringin_all_resources(int maxNum)
             ResourceGroup& group = m_groups[i];
             if(!group.m_factory->m_bringInFunc)
                 continue;
+            LOGD("bring group %s, num-of-resources=%d", stringid_lookup(group.m_type), group.m_numResources);
             bringin_group_resource(group, 0, group.m_numResources);
         }
     }
