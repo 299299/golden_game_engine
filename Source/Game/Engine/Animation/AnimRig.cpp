@@ -175,6 +175,8 @@ int AnimRigInstance::collect_event( AnimationEvent* events )
         if(ac->getWeight() < ANIM_EVT_WEIGHT_THRESHOLD)
             continue;
         const Animation* anim = ac->m_animation;
+        if (!anim)
+            continue;
         AnimationTrigger* triggers = 0;
         float local_time = ac->getLocalTime();
         int frame = (int)(local_time * ANIMATION_FRAME_FPS);

@@ -49,7 +49,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
         mode = "model";
 
     const char* class_name = cmdline->findOption('c');
-    if(!class_name) 
+    if(!class_name)
         class_name = "level_geometry";
 
     const char* input = cmdline->findOption('f');
@@ -70,12 +70,16 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
 
     if(output)
     {
-        bool has_itermediate = strstr(output, INTERMEDIATE_PATH) != 0;
-        if(!has_itermediate)
-            config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output;
+        std::string output_path = output;
+        string_replace(output_path, "\\", "/");
+        if (str_begin_with(output_path, "./"))
+        {
+            output_path = output_path.substr(2, output_path.length() - 2);
+        }
+        if(!str_begin_with(output_path, INTERMEDIATE_PATH))
+            config.m_exportFolder = std::string(INTERMEDIATE_PATH) + output_path;
         else
-            config.m_exportFolder = output;
-        string_replace(config.m_exportFolder, "\\", "/");
+            config.m_exportFolder = output_path;
         add_trailing_slash(config.m_exportFolder);
         std::string path = config.m_exportFolder;
         string_replace(path, INTERMEDIATE_PATH, "");
