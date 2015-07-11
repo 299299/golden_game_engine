@@ -1003,6 +1003,8 @@ bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& 
 void ResourceFileDataBase::insertResourceFile( const std::string& fileName,  const uint32_t& modifyTime )
 {
     //bx::LwMutexScope _l(&m_lock);
+    if (fileName.empty())
+        return;
     uint32_t key = stringid_caculate(fileName.c_str());
     m_files[key] = modifyTime;
     ENGINE_ASSERT(key && modifyTime, "key && modifyTime");

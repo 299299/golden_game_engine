@@ -231,7 +231,7 @@ void resources_process()
     {
         const std::string& input = input_file_list[i];
         std::string ext = getFileExt(input);
-        if(ext == EngineNames::LEVEL) 
+        if(ext == EngineNames::LEVEL)
             continue;
         BaseCompiler* compiler = g_config->create_compiler(ext);
         if(!compiler)
@@ -240,7 +240,7 @@ void resources_process()
             continue;
         }
         std::string output = input_to_output(input);
-        if(ext == "dds") output = 
+        if(ext == "dds") output =
             replaceExtension(output, EngineNames::TEXTURE);
         compiler->m_input = input;
         compiler->m_output = output;

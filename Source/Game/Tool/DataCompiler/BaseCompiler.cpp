@@ -16,13 +16,14 @@ m_skipped(false)
 void BaseCompiler::postProcess()
 {
     checkDependency();
-    if(!m_processed || m_subCompilerError || m_skipped) 
+    if(!m_processed || m_subCompilerError || m_skipped)
         return;
+    LOGI("postProcess put %s,%s to processed compilers", m_input.c_str(), m_output.c_str());
     g_config->m_processedCompilers.push_back(this);
     if(m_mode != 0)
         return;
     g_config->m_database.insertResourceFile(m_input, m_modifyTime);
-    
+
 }
 
 void BaseCompiler::checkDependency()
@@ -60,7 +61,7 @@ void BaseCompiler::go()
 
 bool BaseCompiler::readJSON( const jsonxx::Object& root )
 {
-    if(m_mode == 0) 
+    if(m_mode == 0)
         return true;
     add_trailing_slash(m_outputFolder);
     m_name = root.get<std::string>("name");
@@ -72,13 +73,13 @@ bool BaseCompiler::readJSON( const jsonxx::Object& root )
 BaseCompiler* BaseCompiler::createChildCompiler( const std::string& type, const jsonxx::Object& root )
 {
     BaseCompiler* compiler = g_config->create_compiler(type);
-    if(!compiler) 
+    if(!compiler)
         return 0;
     compiler->m_mode = 1;
     compiler->m_outputFolder = getFilePath(m_output);
     compiler->m_pathPrefix = m_pathPrefix;
     bool _ok = compiler->readJSON(root);
-    if(!_ok) 
+    if(!_ok)
         m_subCompilerError = true;
     compiler->m_processed = _ok;
     g_config->add_compiler(compiler);

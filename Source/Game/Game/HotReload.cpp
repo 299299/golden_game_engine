@@ -59,10 +59,9 @@ HotReloadData* g_hotReload = 0;
 //===================================================================================================
 void reload_physics_resource(void* oldResource, void* newResource)
 {
-#if 0
     PhysicsResource* oldBody = (PhysicsResource*)oldResource;
     PhysicsResource* newBody = (PhysicsResource*)newResource;
-    ComponentFactory* fac = g_componentMgr.find_factory(PhysicsResource::get_type());
+    ComponentFactory* fac = g_componentMgr.find_factory(EngineTypes::PHYSICS);
     uint32_t num = fac->num_components();
     PhysicsInstance* bodies = (PhysicsInstance*)fac->get_components();
     for (uint32_t i=0; i<num; ++i)
@@ -74,7 +73,6 @@ void reload_physics_resource(void* oldResource, void* newResource)
             body.init(newBody, body.m_actor);
         }
     }
-#endif
 }
 
 //===============================================================================
@@ -84,7 +82,7 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
     AnimRig* newCompResource = (AnimRig*)newResource;
     uint32_t num = num_all_anim_rig();
     AnimRigInstance* rigs = (AnimRigInstance*)get_all_anim_rig();
-    
+
     int actor_num = 0;
     ActorId32 actors[MAX_ANIM_RIG];
 
@@ -311,7 +309,7 @@ void reload_anim_state_resource(void* oldResource, void* newResource)
     AnimationStatesInstance* instances = (AnimationStatesInstance*)get_all_anim_state();
     for (uint32_t i=0; i<num; ++i)
     {
-        if(instances[i].m_resource == old_states) 
+        if(instances[i].m_resource == old_states)
         {
             instances[i].destroy(true);
 
@@ -339,7 +337,7 @@ void resource_hot_reload_init()
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION, reload_animation_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION_RIG, reload_anim_rig_resource);
     g_resourceMgr.register_reload_callback(EngineTypes::ANIMATION_STATES, reload_anim_state_resource);
-    //g_resourceMgr.register_reload_callback(PhysicsResource::get_type(), reload_physics_resource);
+    g_resourceMgr.register_reload_callback(EngineTypes::PHYSICS, reload_physics_resource);
 
     g_hotReload = new HotReloadData;
     g_hotReload->init();
