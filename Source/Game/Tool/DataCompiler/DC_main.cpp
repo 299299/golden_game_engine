@@ -207,10 +207,10 @@ void level_processing()
     {
         const std::string& input = level_file_list[i];
         std::string output = input_to_output(input);
+        if(!g_config->is_file_changed(input, modifyTime) && isFileExist(output))
+            continue;
         LevelCompiler* level = new LevelCompiler;
         g_config->m_levels.push_back(level);
-        if(!g_config->is_file_changed(input, modifyTime) && isFileExist(output))
-            level->m_skipped = true;
         level->m_input = input;
         level->m_output = output;
         level->m_modifyTime = modifyTime;
