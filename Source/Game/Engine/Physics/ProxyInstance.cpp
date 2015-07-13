@@ -162,8 +162,10 @@ void ProxyInstance::setTransform(const hkQsTransform& t)
 
 void ProxyInstance::setEnabled(bool bEnable)
 {
-    if(bEnable) addToSimulation();
-    else removeFromSimulation();
+    if(bEnable)
+        addToSimulation();
+    else
+        removeFromSimulation();
 }
 
 void ProxyInstance::destroy()
