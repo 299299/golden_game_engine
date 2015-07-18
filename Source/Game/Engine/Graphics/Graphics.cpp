@@ -50,7 +50,34 @@ struct PosTexCoord0Vertex
     }
     static bgfx::VertexDecl ms_decl;
 };
-bgfx::VertexDecl            PosTexCoord0Vertex::ms_decl;
+
+struct BgfxCallback : public bgfx::CallbackI
+{
+    virtual ~BgfxCallback() {}
+
+    virtual void fatal(bgfx::Fatal::Enum _code, const char* _str) BX_OVERRIDE
+    {
+        // Something unexpected happened, inform user and bail out.
+        LOGE("[BGFX]: Fatal error: 0x%08x: %s", _code, _str);
+
+        // Must terminate, continuing will cause crash anyway.
+        abort();
+    }
+
+    virtual void trace(const char* _str) BX_OVERRIDE
+    {
+        LOGD("[BGFX]: %s", _str);
+    }
+
+    virtual uint32_t cacheReadSize(uint64_t _id) BX_OVERRIDE { return 0; }
+    virtual bool cacheRead(uint64_t _id, void* _data, uint32_t _size) BX_OVERRIDE { return false; }
+    virtual void cacheWrite(uint64_t _id, const void* _data, uint32_t _size) BX_OVERRIDE {}
+    virtual void screenShot(const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _pitch, const void* _data, uint32_t /*_size*/, bool _yflip) BX_OVERRIDE {}
+    virtual void captureBegin(uint32_t _width, uint32_t _height, uint32_t /*_pitch*/, bgfx::TextureFormat::Enum /*_format*/, bool _yflip) BX_OVERRIDE {}
+    virtual void captureEnd() BX_OVERRIDE {}
+    virtual void captureFrame(const void* _data, uint32_t /*_size*/) BX_OVERRIDE {}
+};
+
 
 //==============================================================
 //      PUBLIC GLOBAL VARIABLES
@@ -68,6 +95,8 @@ static bgfx::UniformHandle* g_engineUniforms;
 static uint32_t             g_numEngineUniforms = 0;
 static FrameBuffer*         g_frameBuffers;
 static uint32_t             g_numFrameBuffers = 0;
+static BgfxCallback         g_callback;
+bgfx::VertexDecl            PosTexCoord0Vertex::ms_decl;
 
 INTERNAL bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enum type, int num = 1)
 {
@@ -219,7 +248,7 @@ void Graphics::init(void* hwnd, bool bFullScreen)
 #endif
 
     bx::debugOutput("bgfx init started ---\n");
-    bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null);
+    bgfx::init(hwnd ? bgfx::RendererType::Direct3D11 : bgfx::RendererType::Null, BGFX_PCI_ID_NONE, 0, &g_callback);
     bx::debugOutput("bgfx init ended ---\n");
 
     const bgfx::Caps* caps = bgfx::getCaps();

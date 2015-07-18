@@ -1,24 +1,26 @@
 #pragma once
 #include "Prerequisites.h"
+#include "StringId.h"
 
 enum LocomotionState
 {
-    kLocomotionStand,
+    kLocomotionStand = 0,
     kLocomotionMove,
 
 
     kLocomotionStateNum
 };
 
-struct MovementInput
+struct LocomotionInput
 {
-    float                   m_dt;
-    hkQsTransform*          m_transform;
-    int                     m_state;
+    float               m_dt;
+    float               m_vec[2]; // 0 -> horinzontal 1 -> vertical
 };
 
-struct Movement
+struct Locomotion
 {
     int         m_state;
-    void update(const MovementInput& input);
 };
+
+struct Actor;
+void update_locomotion(Locomotion *l, const LocomotionInput &input, Actor *a);

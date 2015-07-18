@@ -21,7 +21,6 @@
 #include <bx/string.h>
 #include <bx/commandline.h>
 
-
 extern DebugFPSCamera  g_fpsCamera;
 
 
@@ -247,6 +246,7 @@ void PreviewState::process_cmd_args( void* p )
         m_preview_actor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
         LOGD("created actor = %x", m_preview_actor);
     }
+
     if(level_name)
     {
         LOGD("loading level %s \n", level_name);
