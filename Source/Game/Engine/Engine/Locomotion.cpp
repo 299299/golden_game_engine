@@ -14,7 +14,6 @@ func_update_locomotion_state_t s_funcs[kLocomotionStateNum] =
     update_move_state,
 };
 
-
 static int update_idle_state(Locomotion* l, const  LocomotionInput& input, AnimationStatesInstance *s)
 {
     float sqrt_move_vec  = input.m_vec[0] * input.m_vec[0] + input.m_vec[1] * input.m_vec[1];
@@ -35,8 +34,12 @@ static int update_move_state(Locomotion* l, const  LocomotionInput& input, Anima
     return kLocomotionMove;
 }
 
-void update_locomotion(Locomotion *l, const LocomotionInput &input, Actor *a)
+void update_locomotion(Locomotion *l, const LocomotionInput &input, ActorId32 id)
 {
+    Actor *a = g_actorWorld.get_actor(id);
+    if (!a)
+        return;
+
     AnimationStatesInstance* s = (AnimationStatesInstance*)a->get_first_component_of(EngineTypes::ANIMATION_STATES);
     if (!s)
         return;

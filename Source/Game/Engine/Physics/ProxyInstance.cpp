@@ -160,6 +160,14 @@ void ProxyInstance::setTransform(const hkQsTransform& t)
 #endif
 }
 
+void ProxyInstance::setTransform( const hkTransform& t )
+{
+#ifdef HAVOK_COMPILE
+    PHYSICS_LOCKWRITE(m_proxy->m_shapePhantom->getWorld());
+    m_proxy->getShapePhantom()->setTransform(t);
+#endif
+}
+
 void ProxyInstance::setEnabled(bool bEnable)
 {
     if(bEnable)
@@ -243,14 +251,6 @@ void ProxyInstance::setLinearVelocity( const hkVector4& vel )
 {
 #ifdef HAVOK_COMPILE
     m_proxy->setLinearVelocity(vel);
-#endif
-}
-
-void ProxyInstance::setTransform( const hkTransform& t )
-{
-#ifdef HAVOK_COMPILE
-    PHYSICS_LOCKWRITE(m_proxy->m_shapePhantom->getWorld());
-    m_proxy->getShapePhantom()->setTransform(t);
 #endif
 }
 

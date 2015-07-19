@@ -31,6 +31,7 @@ struct ProxyInstance
     void init(const void* resource);
     void destroy();
     void setTransform(const hkQsTransform& t);
+    void setTransform(const hkTransform& t);
     void setEnabled(bool bEnable);
 
     void addToSimulation();
@@ -48,7 +49,6 @@ struct ProxyInstance
     const hkVector4& getLinearVelocity() const;
     const hkVector4& getPosition() const;
     void setLinearVelocity(const hkVector4& vel);
-    void setTransform(const hkTransform& t);
     void update(float timeStep);
 
     hkQsTransform                   m_transform;

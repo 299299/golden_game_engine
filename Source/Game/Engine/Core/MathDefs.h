@@ -91,6 +91,16 @@ inline void transform_vec4(float* outVec4, const hkVector4& inVec4)
     outVec4[2] = inVec4.getSimdAt(2);
     outVec4[3] = inVec4.getSimdAt(3);
 }
+
+inline float get_current_fwd_angle(const hkQuaternion &r)
+{
+    hkVector4 dir;
+    hkVector4 fwd;
+    fwd.set(0, 0, 1, 0);
+    dir.setRotatedDir(r, fwd);
+    return hkMath::atan2(dir.getSimdAt(1), dir.getSimdAt(0));
+}
+
 #endif
 
 struct Vec3
@@ -202,3 +212,5 @@ inline float aabb_get_height(const Aabb& aabb)
     bx::vec3Sub(extent, aabb.m_max, aabb.m_min);
     return extent[1];
 }
+
+

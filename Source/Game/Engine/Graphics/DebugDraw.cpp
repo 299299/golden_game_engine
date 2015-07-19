@@ -102,7 +102,7 @@ void DebugDrawManager::draw()
 
 void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
 {
-    if(!lineNum) 
+    if(!lineNum)
         return;
 
 	if (!bgfx::isValid(m_shader->m_handle))
@@ -245,7 +245,7 @@ void DebugDrawManager::add_text_3d( const float* pos, const char* text, uint32_t
 {
     float pos2D[2] = {0,0};
     bool bFlag = g_camera.project_3d_to_2d(pos2D, pos);
-    if(!bFlag) 
+    if(!bFlag)
         return;
     DebugText& dbgText = m_texts[m_numTexts++];
     dbgText.m_color = color;
@@ -371,27 +371,19 @@ void DebugDrawManager::add_grid( int gridsNum, float gridWidth, uint32_t color, 
     float start = -gridsNum * gridWidth * 0.5f;
     float startPt[3], endPt[3];
 
-    for( int x = 0; x < gridsNum; ++x )
+    for (int i = 0; i<=gridsNum; ++i)
     {
-        for( int z = 0; z < gridsNum; ++z )
-        {
-            vec3_make(startPt, start+x*gridWidth, 0, start+z*gridWidth );
-            vec3_make(endPt, start+(x+1)*gridWidth, 0, start+z*gridWidth );
-            add_line(startPt, endPt, color, bDepth);
-
-            vec3_make(startPt, start+x*gridWidth, 0, start+z*gridWidth );
-            vec3_make(endPt, start+x*gridWidth, 0, start+(z+1)*gridWidth );
-            add_line(startPt, endPt, color, bDepth);
-        }
+        vec3_make(startPt, start + gridWidth * i, 0, start);
+        vec3_make(endPt, start + gridWidth * i, 0, start + gridWidth * gridsNum);
+        add_line(startPt, endPt, color, bDepth);
     }
 
-    vec3_make( startPt, -start, 0, start );
-    vec3_make( endPt, -start, 0, -start );
-    add_line(startPt, endPt, color, bDepth);
-
-    vec3_make( startPt, start, 0, -start );
-    vec3_make( endPt, -start, 0, -start );
-    add_line(startPt, endPt, color, bDepth);
+    for (int i = 0; i<=gridsNum; ++i)
+    {
+        vec3_make(startPt, start, 0, start + gridWidth * i);
+        vec3_make(endPt, start + gridWidth * gridsNum, 0, start + gridWidth * i);
+        add_line(startPt, endPt, color, bDepth);
+    }
 }
 
 void DebugDrawManager::add_direction( const hkQsTransform& t, float len, uint32_t color, bool bDepth )

@@ -22,5 +22,4 @@ struct Locomotion
     int         m_state;
 };
 
-struct Actor;
-void update_locomotion(Locomotion *l, const LocomotionInput &input, Actor *a);
+void update_locomotion(Locomotion *l, const LocomotionInput &input, ActorId32 id);
