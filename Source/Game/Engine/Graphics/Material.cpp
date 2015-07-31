@@ -46,12 +46,11 @@ int bringin_resource_material( void* resource )
 }
 
 
-void submit_material(Material* m)
+bool submit_material(Material* m)
 {
     if(!m->m_shader || !bgfx::isValid(m->m_shader->m_handle))
-        return;
+        return false;
 
-    bgfx::setProgram(m->m_shader->m_handle);
     uint32_t _num = m->m_num_samplers;
     MatSampler* _samplers = (MatSampler*)((char*)m + m->m_sampler_offset);
 
@@ -75,13 +74,16 @@ void submit_material(Material* m)
     bgfx::setUniform(g_uniformPerObject.m_specular, m->m_specular);
     bgfx::setUniform(g_uniformPerObject.m_params1, m->m_params1);
     bgfx::setState(m->m_state);
+
+    return true;
 }
 
-void submit_material_shadow(Material* m)
+bool submit_material_shadow(Material* m)
 {
     ShaderProgram* _shadow = m->m_shadow_shader;
     if(!_shadow)
-        return;
-    bgfx::setProgram(_shadow->m_handle);
+        return false;
+    // bgfx::setProgram(_shadow->m_handle);
     bgfx::setState(SHADOW_RENDER_STATE);
+    return true;
 }

@@ -132,10 +132,9 @@ void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
         va.m_abgr = vb.m_abgr = line.m_color;
     }
 
-    bgfx::setProgram(m_shader->m_handle);
     bgfx::setState(bDepth ? DEPTH_LINE_RENDER_STATE : NO_DEPTH_LINE_RENDER_STATE);
     bgfx::setVertexBuffer(&tvb, 0, numVertices);
-    bgfx::submit(kDebugDrawViewId);
+    bgfx::submit(kDebugDrawViewId, m_shader->m_handle);
 }
 
 void DebugDrawManager::add_line( const float* start, const float* end, uint32_t color, bool bDepth)

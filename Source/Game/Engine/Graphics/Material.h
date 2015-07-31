@@ -66,5 +66,5 @@ struct Material
 void lookup_resource_material(void * resource);
 int bringin_resource_material( void* resource );
 
-void submit_material(Material* m);
-void submit_material_shadow(Material* m);
+bool submit_material(Material* m);
+bool submit_material_shadow(Material* m);

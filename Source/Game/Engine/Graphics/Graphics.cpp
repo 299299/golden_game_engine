@@ -365,6 +365,8 @@ void Graphics::draw(ShadingEnviroment* env)
     bgfx::setViewTransform(kSceneViewId, view, proj);
     bgfx::setViewTransform(kDebugDrawViewId, view, proj);
 
+    bgfx::touch(0);
+
     submitPerFrameUniforms();
     if(env)
     {
