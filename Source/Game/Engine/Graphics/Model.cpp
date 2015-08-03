@@ -10,6 +10,7 @@
 #include "Graphics.h"
 #include "IdArray.h"
 #include "GameConfig.h"
+#include "Shader.h"
 
 void Model::submit()
 {
@@ -50,7 +51,7 @@ void Model::submit_shadow()
         if (!submit_material_shadow(head[i]))
             continue;
         submit_submesh(submeshes + i);
-        bgfx::submit(kShadowViewId, head[i]->m_shadow_shader);
+        bgfx::submit(kShadowViewId, head[i]->m_shadow_shader->m_handle);
     }
 }
 

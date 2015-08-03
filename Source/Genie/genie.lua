@@ -128,7 +128,7 @@ function exeProject(_name, _incdirs, _files)
     configuration {"Debug"}
         defines {
             "_DEBUG",
-            "BGFX_CONFIG_DEBUG"
+            "BGFX_CONFIG_DEBUG",
         }
 
     configuration {"Release"}

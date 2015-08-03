@@ -64,9 +64,19 @@ struct BgfxCallback : public bgfx::CallbackI
         abort();
     }
 
-    virtual void trace(const char* _str) BX_OVERRIDE
+    virtual void traceVargs(const char* _filePath, uint16_t _line, const char* _format, va_list _argList)
     {
-        LOGD("[BGFX]: %s", _str);
+        LOGD("[BGFX]: %s,%d", _filePath, _line);
+        char temp[8192];
+        char* out = temp;
+        int32_t len = bx::vsnprintf(out, sizeof(temp), _format, _argList);
+        if ( (int32_t)sizeof(temp) < len)
+        {
+            out = (char*)alloca(len+1);
+            len = bx::vsnprintf(out, len, _format, _argList);
+        }
+        out[len] = '\0';
+        LOGD(out);
     }
 
     virtual uint32_t cacheReadSize(uint64_t _id) BX_OVERRIDE { return 0; }
@@ -274,20 +284,11 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     //----------------------------------------------
     // view name for debug.
     extern const char* g_viewGroupNames[];
-    for(int i=0; i<=kHDRBrightViewId;++i)
-    {
+    int i = 0;
+    while (g_viewGroupNames[i]) {
         bgfx::setViewName(i, g_viewGroupNames[i]);
+        ++i;
     }
-    for (int i = 0; i < N_PASSES; ++i)
-    {
-        char buf[32];
-        bx::snprintf(buf, sizeof(buf), "h-blur-%d", i+1);
-        bgfx::setViewName(kHDRBlurViewIdStart + i * 2 + 0, buf);
-        bx::snprintf(buf, sizeof(buf), "v-blur-%d", i+1);
-        bgfx::setViewName(kHDRBlurViewIdStart + i * 2 + 1, buf);
-    }
-    bgfx::setViewName(kCombineViewId, "combine");
-    bgfx::setViewName(kDebugDrawViewId, "debug");
     bgfx::setViewName(kGUIViewId, "gui");
 
     postProcessInit();
@@ -345,10 +346,6 @@ INTERNAL void submitPerFrameUniforms()
 
 void Graphics::draw(ShadingEnviroment* env)
 {
-    //force clear color & depth executed.
-    bgfx::submit(kShadowViewId);
-    bgfx::submit(kBackgroundViewId);
-
     g_guiMgr.draw();
 
     //prepare for view rects.
@@ -357,7 +354,6 @@ void Graphics::draw(ShadingEnviroment* env)
     bgfx::setViewRect(kBackgroundViewId, 0, 0, w, h);
     bgfx::setViewRect(kSceneViewId, 0, 0, w, h);
     bgfx::setViewRect(kDebugDrawViewId, 0, 0, w, h);
-    bgfx::setViewRect(kCombineViewId, 0, 0, w, h);
 
     const float* view = g_camera.m_view;
     const float* proj = g_camera.m_proj;
@@ -400,7 +396,8 @@ void Graphics::frame_start()
         for (uint32_t i=0; i<g_numFrameBuffers; ++i)
         {
             FrameBuffer& fb = g_frameBuffers[i];
-            if(!fb.m_scaled) continue;
+            if(!fb.m_scaled) 
+                continue;
             fb.resize(w, h);
         }
     }
@@ -424,7 +421,8 @@ void FrameBuffer::resize( int w, int h )
 
 void FrameBuffer::create()
 {
-    if(bgfx::isValid(m_handle)) bgfx::destroyFrameBuffer(m_handle);
+    if(bgfx::isValid(m_handle)) 
+        bgfx::destroyFrameBuffer(m_handle);
 
     for(uint32_t i=0; i<m_numTextures; ++i)
     {
@@ -447,7 +445,7 @@ void FrameBuffer::end(uint32_t viewId)
 {
     bgfx::setState(BGFX_STATE_RGB_WRITE|BGFX_STATE_ALPHA_WRITE);
     Graphics::screenspace_quad((float)m_realSize[0], (float)m_realSize[1]);
-    bgfx::submit(viewId);
+    bgfx::submit(viewId, m_shader);
 }
 
 void Graphics::set_texture( int slot, bgfx::TextureHandle handle )

@@ -33,12 +33,6 @@ enum ViewId
     kBackgroundViewId,
     kSceneViewId,
     kDebugDrawViewId,
-    kHDRBrightViewId,
-    kHDRBlurViewIdStart,
-    kCombineViewId = kHDRBlurViewIdStart + N_PASSES * 2,
-    // ...
-    // OTHERS VIEW ID
-    // ...
     kGUIViewId = 255,
 };
 

@@ -46,6 +46,7 @@ struct FrameBuffer
     FrameBufferTexture                  m_texInfo[4];
     bgfx::TextureHandle                 m_textures[4];
     bgfx::FrameBufferHandle             m_handle;
+    bgfx::ProgramHandle                 m_shader;
     uint8_t                             m_numTextures;
     bool                                m_scaled;
 

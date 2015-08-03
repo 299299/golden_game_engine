@@ -32,9 +32,9 @@
 
 //start of havok link config
 #ifdef _DEBUG
-#define HAVOK_LIB_PATH "F:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\dev\\"
+#define HAVOK_LIB_PATH "../../../../../hk2014_1_0_r1/Lib/win32_vs2010/dev/"
 #else
-#define HAVOK_LIB_PATH "F:\\Project\\hk2014_1_0_r1\\Lib\\win32_vs2010\\release\\"
+#define HAVOK_LIB_PATH "../../../../../hk2014_1_0_r1/Lib/win32_vs2010/release"
 #endif
 
 #pragma comment(lib, HAVOK_LIB_PATH"hkBase.lib")

@@ -91,7 +91,7 @@ const char* g_actorClassNames[] =
 
 const char* g_viewGroupNames[] =
 {
-    "shadow", "background", "scene", "debug", "bright", 0
+    "shadow", "background", "scene", "debug", 0
 };
 
 const char* g_modelFlagNames[] =
