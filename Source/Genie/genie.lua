@@ -44,11 +44,11 @@ if OS == "linux" then
 BX_DIR = ("/home/lixin/work/bx/")
 BGFX_DIR = ("/home/lixin/work/bgfx/")
 else
-BX_DIR = ("F:/Project/bx/")
-BGFX_DIR = ("F:/Project/bgfx/")
+BX_DIR = ("../../../bx/")
+BGFX_DIR = ("../../../bgfx/")
 end
 
-HAVOK_DIR = ("F:/Project/hk2014_1_0_r1/Source/")
+HAVOK_DIR = ("../../../hk2014_1_0_r1/Source/")
 GAME_SRC_DIR = (NAGA_SRC_DIR .. "Game/")
 TARGET_DIR = (NAGA_SRC_DIR .. "../Application")
 

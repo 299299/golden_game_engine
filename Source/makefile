@@ -5,7 +5,7 @@ ifeq ($(UNAME), $(filter $(UNAME), Linux))
     GENIE=/home/lixin/work/bx/tools/bin/linux/genie
 else
     OS=windows
-    GENIE=F:/Project/bx/tools/bin/windows/genie
+    GENIE=../../bx/tools/bin/windows/genie
 endif
 
 vs2010-build:
