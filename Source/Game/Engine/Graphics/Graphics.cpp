@@ -96,11 +96,10 @@ UniformPerFrame             g_uniformPerFrame;
 UniformPerObject            g_uniformPerObject;
 UniformPerLight             g_uniformLights;
 ShadowMap                   g_shadowMap;
-bool                        g_hdr = true;
 //==============================================================
 //      INNER GLOBAL VARIABLES
 //==============================================================
-static uint32_t             g_resetFlag = BGFX_RESET_MSAA_X4|BGFX_RESET_VSYNC;
+static uint32_t             g_resetFlag = BGFX_RESET_VSYNC; //BGFX_RESET_MSAA_X4
 static bgfx::UniformHandle* g_engineUniforms;
 static uint32_t             g_numEngineUniforms = 0;
 static FrameBuffer*         g_frameBuffers;
@@ -265,7 +264,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     bool shadowSamplerSupported = 0 != (caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);
     LOGD("support shadow sampler = %d", shadowSamplerSupported);
 
-    if(bFullScreen) g_resetFlag |= BGFX_RESET_FULLSCREEN;
+    if(bFullScreen) 
+        g_resetFlag |= BGFX_RESET_FULLSCREEN;
     bgfx::reset(g_win32Context.m_width, g_win32Context.m_height, g_resetFlag);
     bgfx::setDebug(BGFX_DEBUG_TEXT);
     bgfx::setViewClear(kShadowViewId, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, BGFX_COLOR, 1.0f, 0);
@@ -346,6 +346,9 @@ INTERNAL void submitPerFrameUniforms()
 
 void Graphics::draw(ShadingEnviroment* env)
 {
+    bgfx::touch(kBackgroundViewId);
+    bgfx::touch(kSceneViewId);
+
     g_guiMgr.draw();
 
     //prepare for view rects.
