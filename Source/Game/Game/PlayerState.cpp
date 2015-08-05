@@ -42,16 +42,16 @@ void PlayerState::step(float dt)
     GameState::step(dt);
     g_fpsCamera.update(dt);
 
-
+#ifdef HAVOK_COMPILE
     LocomotionInput input = { dt, 0, 0 };
     if (g_win32Context.is_key_down(VK_LEFT))
-        input.m_vec[0] -= 1.0f;
+        input.m_axis[0] -= 1.0f;
     if (g_win32Context.is_key_down(VK_RIGHT))
-        input.m_vec[0] += 1.0f;
+        input.m_axis[0] += 1.0f;
     if (g_win32Context.is_key_down(VK_UP))
-        input.m_vec[1] += 1.0f;
+        input.m_axis[1] += 1.0f;
     if (g_win32Context.is_key_down(VK_DOWN))
-        input.m_vec[1] -= 1.0f;
+        input.m_axis[1] -= 1.0f;
 
     update_locomotion(&s_locomotion, input, m_player);
 
@@ -66,45 +66,60 @@ void PlayerState::step(float dt)
     hkVector4 up;
     up.set(0, 1, 0, 0);
 
+    hkQuaternion rstOut;
+    hkSimdFloat32 angle_out = 0;
+
     dir.setRotatedDir(t.m_rotation, fwd);
+
+    int texColor = RGBCOLOR(50,150,125);
+    int idx = 0;
 
     char buf[256];
-    t.m_rotation.setAxisAngle(up, 0);
-    dir.setRotatedDir(t.m_rotation, fwd);
-    bx::snprintf(buf, sizeof(buf), "[0] %f, %f, %f angle=%f", dir(0), dir(1), dir(2), hkMath::atan2(dir(1), dir(0)));
     int x = 0;
-    int y = 15;
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, RGBCOLOR(255,0,0));
+    int y = 0;
+    float ag = 0;
 
-    y += 20;
-    t.m_rotation.setAxisAngle(up, 90);
-    dir.setRotatedDir(t.m_rotation, fwd);
-    bx::snprintf(buf, sizeof(buf), "[90] %f, %f, %f angle=%f", dir(0), dir(1), dir(2), hkMath::atan2(dir(1), dir(0)));
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, RGBCOLOR(255,0,0));
+    #define G_DEBUG_OUT \
+    y += 20; \
+    t.m_rotation.setAxisAngle(up, ag); \
+    bx::snprintf(buf, sizeof(buf), "[%d] angle=%f vs %f", \
+        idx++, \
+        ag * HK_FLOAT_RAD_TO_DEG, \
+        get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG); \
+    imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
 
-    y += 20;
-    t.m_rotation.setAxisAngle(up, 180);
-    dir.setRotatedDir(t.m_rotation, fwd);
-    bx::snprintf(buf, sizeof(buf), "[180] %f, %f, %f angle=%f", dir(0), dir(1), dir(2), hkMath::atan2(dir(1), dir(0)));
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, RGBCOLOR(255,0,0));
+    ag = 0;
+    G_DEBUG_OUT
 
-    y += 20;
-    t.m_rotation.setAxisAngle(up, 270);
-    dir.setRotatedDir(t.m_rotation, fwd);
-    bx::snprintf(buf, sizeof(buf), "[270] %f, %f, %f angle=%f", dir(0), dir(1), dir(2), hkMath::atan2(dir(1), dir(0)));
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, RGBCOLOR(255,0,0));
+    ag = HK_REAL_PI/2;
+    G_DEBUG_OUT
 
-    y += 20;
-    t.m_rotation.setAxisAngle(up, 360);
-    dir.setRotatedDir(t.m_rotation, fwd);
-    bx::snprintf(buf, sizeof(buf), "[360] %f, %f, %f angle=%f", dir(0), dir(1), dir(2), hkMath::atan2(dir(1), dir(0)));
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, RGBCOLOR(255,0,0));
+    ag = HK_REAL_PI;    
+    G_DEBUG_OUT
 
+    ag = HK_REAL_PI*3/2;
+    G_DEBUG_OUT
+
+    ag = HK_REAL_PI*2;
+    G_DEBUG_OUT
+
+    ag = -HK_REAL_PI/2;
+    G_DEBUG_OUT
+
+    ag = -HK_REAL_PI;
+    G_DEBUG_OUT
+
+    ag = -HK_REAL_PI*3/2;
+    G_DEBUG_OUT
+
+    ag = -HK_REAL_PI*2;
+    G_DEBUG_OUT
+    
     y += 20;
     transform_matrix(t, g_camera.m_view);
-    dir.setRotatedDir(t.m_rotation, fwd);
-    bx::snprintf(buf, sizeof(buf), "[Camera] %f, %f, %f angle=%f", dir(0), dir(1), dir(2), hkMath::atan2(dir(1), dir(0)));
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, RGBCOLOR(255,0,0));
+    t.m_translation.setZero4();
+    bx::snprintf(buf, sizeof(buf), "camera angle=%f", get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG);
+    imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
 
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
@@ -114,9 +129,7 @@ void PlayerState::step(float dt)
 
     debug_update_vdb_camera();
 
-
-#ifdef HAVOK_COMPILE
-    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());
+    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);
 #endif
 }
 

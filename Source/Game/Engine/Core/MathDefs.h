@@ -12,45 +12,27 @@ double fast_atof (const char *p);
 #ifdef HAVOK_COMPILE
 inline void transform_matrix(float* m, const hkQsTransform& t)
 {
-    HK_ALIGN16(hkReal s_m[4][4]);
-    hkReal* s_p = &(s_m[0][0]);
-    t.get4x4ColumnMajor(s_p);
-    memcpy(m, s_p, sizeof(hkReal)*16);
+    t.get4x4ColumnMajor(m);
 }
 inline void transform_matrix(hkQsTransform& t, const float* m)
 {
-    HK_ALIGN16(hkReal s_m[4][4]);
-    hkReal* s_p = &(s_m[0][0]);
-    memcpy(s_p, m, sizeof(hkReal)*16);
-    t.set4x4ColumnMajor(s_p);
+    t.set4x4ColumnMajor(m);
 }
 inline void transform_matrix(float* m, const hkTransform& t)
 {
-    HK_ALIGN16(hkReal s_m[4][4]);
-    hkReal* s_p = &(s_m[0][0]);
-    t.get4x4ColumnMajor(s_p);
-    memcpy(m, s_p, sizeof(hkReal)*16);
+    t.get4x4ColumnMajor(m);
 }
 inline void transform_matrix(hkTransform& t, const float* m)
 {
-    HK_ALIGN16(hkReal s_m[4][4]);
-    hkReal* s_p = &(s_m[0][0]);
-    memcpy(s_p, m, sizeof(hkReal)*16);
-    t.set4x4ColumnMajor(s_p);
+    t.set4x4ColumnMajor(m);
 }
 inline void transform_matrix(float* m, const hkMatrix4f& m4)
 {
-    HK_ALIGN16(hkReal s_m[4][4]);
-    hkReal* s_p = &(s_m[0][0]);
-    m4.get4x4ColumnMajor(s_p);
-    memcpy(m, s_p, sizeof(hkReal)*16);
+    m4.get4x4ColumnMajor(m);
 }
 inline void transform_matrix(hkMatrix4f& m4, const float* m)
 {
-    HK_ALIGN16(hkReal s_m[4][4]);
-    hkReal* s_p = &(s_m[0][0]);
-    memcpy(s_p, m, sizeof(hkReal)*16);
-    m4.set4x4ColumnMajor(s_p);
+    m4.set4x4ColumnMajor(m);
 }
 inline void transform_vec3(hkVector4& vec4, const float* vec3)
 {
@@ -92,13 +74,22 @@ inline void transform_vec4(float* outVec4, const hkVector4& inVec4)
     outVec4[3] = inVec4.getSimdAt(3);
 }
 
-inline float get_current_fwd_angle(const hkQuaternion &r)
+inline float get_up_axis_angle(const hkQuaternion &r)
 {
+#if 0
     hkVector4 dir;
     hkVector4 fwd;
     fwd.set(0, 0, 1, 0);
     dir.setRotatedDir(r, fwd);
     return hkMath::atan2(dir.getSimdAt(1), dir.getSimdAt(0));
+#else
+    hkVector4 up;
+    up.set(0, 1, 0, 0);
+    hkQuaternion rstOut;
+    hkSimdFloat32 angle_out = 0;
+    r.decomposeRestAxis(up, rstOut, angle_out);
+    return angle_out.getReal();
+#endif
 }
 
 #endif

@@ -14,7 +14,7 @@ enum LocomotionState
 struct LocomotionInput
 {
     float               m_dt;
-    float               m_vec[2]; // 0 -> horinzontal 1 -> vertical
+    float               m_axis[2]; // 0 -> horinzontal 1 -> vertical
 };
 
 struct Locomotion

@@ -16,7 +16,7 @@ func_update_locomotion_state_t s_funcs[kLocomotionStateNum] =
 
 static int update_idle_state(Locomotion* l, const  LocomotionInput& input, AnimationStatesInstance *s)
 {
-    float sqrt_move_vec  = input.m_vec[0] * input.m_vec[0] + input.m_vec[1] * input.m_vec[1];
+    float sqrt_move_vec  = input.m_axis[0] * input.m_axis[0] + input.m_axis[1] * input.m_axis[1];
     if (sqrt_move_vec > 0.1f) {
         s->fire_event(stringid_caculate("move"));
         return kLocomotionMove;
@@ -26,7 +26,7 @@ static int update_idle_state(Locomotion* l, const  LocomotionInput& input, Anima
 
 static int update_move_state(Locomotion* l, const  LocomotionInput& input, AnimationStatesInstance *s)
 {
-    float sqrt_move_vec  = input.m_vec[0] * input.m_vec[0] + input.m_vec[1] * input.m_vec[1];
+    float sqrt_move_vec  = input.m_axis[0] * input.m_axis[0] + input.m_axis[1] * input.m_axis[1];
     if (sqrt_move_vec < 0.1f) {
         s->fire_event(stringid_caculate("stop"));
         return kLocomotionStand;
