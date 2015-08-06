@@ -13,9 +13,9 @@ struct  Animation;
 struct  hk_anim_ctrl;
 struct  AnimationEvent;
 
-struct BoneAttachment
+ENGINE_NATIVE_ALIGN(struct) BoneAttachment
 {
-    float               m_bone_from_attachment[16];
+    ENGINE_NATIVE_ALIGN(float m_bone_from_attachment[16]);
     StringId            m_name;
     int                 m_bone_index;
 };

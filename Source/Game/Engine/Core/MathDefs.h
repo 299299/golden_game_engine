@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 #include "Prerequisites.h"
 #include <bx/fpumath.h>
 #include <bounds.h>
@@ -10,30 +10,6 @@ inline bool isPower2(unsigned int v) { return (v & (v - 1)) == 0; }
 double fast_atof (const char *p);
 
 #ifdef HAVOK_COMPILE
-inline void transform_matrix(float* m, const hkQsTransform& t)
-{
-    t.get4x4ColumnMajor(m);
-}
-inline void transform_matrix(hkQsTransform& t, const float* m)
-{
-    t.set4x4ColumnMajor(m);
-}
-inline void transform_matrix(float* m, const hkTransform& t)
-{
-    t.get4x4ColumnMajor(m);
-}
-inline void transform_matrix(hkTransform& t, const float* m)
-{
-    t.set4x4ColumnMajor(m);
-}
-inline void transform_matrix(float* m, const hkMatrix4f& m4)
-{
-    m4.get4x4ColumnMajor(m);
-}
-inline void transform_matrix(hkMatrix4f& m4, const float* m)
-{
-    m4.set4x4ColumnMajor(m);
-}
 inline void transform_vec3(hkVector4& vec4, const float* vec3)
 {
     vec4.set(vec3[0], vec3[1], vec3[2], 0);
@@ -59,7 +35,7 @@ inline void pointOnSphere(float* p, const float* pos, float radius, float theta,
 
 inline void translateOfMtx(float* p, const float* mtx)
 {
-  p[0] = mtx[12]; p[1] = mtx[13]; p[2] = mtx[14];
+    p[0] = mtx[12]; p[1] = mtx[13]; p[2] = mtx[14];
 }
 
 inline void transform_vec4(hkVector4& outVec4, const float* inVec4)
@@ -94,22 +70,22 @@ inline float get_up_axis_angle(const hkQuaternion &r)
 
 #endif
 
-struct Vec3
+ENGINE_NATIVE_ALIGN(struct) Vec3
 {
     float m_vec[3];
 };
 
-struct Vec4
+ENGINE_NATIVE_ALIGN(struct) Vec4
 {
     float m_vec[4];
 };
 
-struct Matrix
+ENGINE_NATIVE_ALIGN(struct) Matrix
 {
     float m_x[16];
 };
 
-struct Plane
+ENGINE_NATIVE_ALIGN(struct) Plane
 {
     float m_data[4];
 };

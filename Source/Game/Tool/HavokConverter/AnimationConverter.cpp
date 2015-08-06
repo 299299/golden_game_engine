@@ -16,7 +16,7 @@ AnimationConverter::~AnimationConverter()
 void AnimationConverter::process( void* pData )
 {
     m_ac = (hkaAnimationContainer*)pData;
-#ifdef HKX_BINARY_TO_TEXT
+#ifndef HKX_BINARY_TO_TEXT
     m_animationFile = HKX_TMP;
 #else
     m_animationFile = m_config->m_exportFolder + m_name + ".havok";

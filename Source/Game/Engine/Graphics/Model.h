@@ -9,9 +9,10 @@ struct Mesh;
 struct Frustum;
 class hkQsTransformf;
 
-struct Model
+ENGINE_NATIVE_ALIGN(struct) Model
 {
-    float                           m_transform[16];
+    ENGINE_NATIVE_ALIGN(float   m_transform[16]);
+    
     Aabb                            m_aabb;
     StringId                        m_materialNames[MAX_MATERIAL_NUM];
     Material*                       m_materials[MAX_MATERIAL_NUM];

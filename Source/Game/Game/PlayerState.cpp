@@ -116,7 +116,7 @@ void PlayerState::step(float dt)
     G_DEBUG_OUT
     
     y += 20;
-    transform_matrix(t, g_camera.m_view);
+    t.set4x4ColumnMajor(g_camera.m_view);
     t.m_translation.setZero4();
     bx::snprintf(buf, sizeof(buf), "camera angle=%f", get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG);
     imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);

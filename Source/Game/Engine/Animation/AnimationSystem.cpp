@@ -168,10 +168,10 @@ void AnimationSystem::skin_actors( Actor* actors, int num )
             hkQsTransform tempT1, tempT2;
             for (int i=0; i < num_of_pose; ++i)
             {
-                transform_matrix(tempT2, invMats[i].m_x);
+                tempT2.set4x4ColumnMajor(invMats[i].m_x);
                 tempT1.setMul(poseMS[i], tempT2);
                 tempT2.setMul(t, tempT1);
-                transform_matrix(matrix, tempT2);
+                tempT2.get4x4ColumnMajor(matrix);
                 matrix += 16;
             }
         }
@@ -185,7 +185,7 @@ void AnimationSystem::skin_actors( Actor* actors, int num )
             Aabb& bbox = model->m_aabb;
             transform_vec3(bbox.m_min, aabb.m_min);
             transform_vec3(bbox.m_max, aabb.m_max);
-            transform_matrix(model->m_transform, t);
+            t.get4x4ColumnMajor(model->m_transform);
             REMOVE_BITS(model->m_flag, kNodeTransformDirty);
         }
 #endif
@@ -399,7 +399,7 @@ void draw_debug_animation(float dt)
                     const BoneAttachment& attchment = attachments[i];
                     const float* world_pose = world_poses + 16 * i;
                     hkQsTransform t1;
-                    transform_matrix(t1, world_pose);
+                    t1.set4x4ColumnMajor(world_pose);
                     g_debugDrawMgr.add_axis(t1);
                     float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
                     g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));

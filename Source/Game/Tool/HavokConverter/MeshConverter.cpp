@@ -31,6 +31,7 @@ static const char* s_attrName[bgfx::Attrib::Count] =
 static const char* s_dataName[] =
 {
     "uint8",
+	"uint10",
     "int16",
     "half",
     "float"
@@ -38,7 +39,7 @@ static const char* s_dataName[] =
 
 static uint32_t bgfx_data_stride[bgfx::AttribType::Count] =
 {
-    sizeof(uint8_t), sizeof(int16_t), sizeof(uint16_t), sizeof(float)
+    sizeof(uint8_t), sizeof(int16_t), sizeof(int16_t), sizeof(uint16_t), sizeof(float),
 };
 
 #ifdef HAVOK_COMPILE
@@ -233,7 +234,7 @@ void MeshConverter::processTangent()
     const hkxVertexDescription::ElementDecl* ed_bn = vb->getVertexDesc().getElementDecl(hkxVertexDescription::HKX_DU_BINORMAL,0);
     if(ed_normal && ed_tang && ed_bn)
     {
-        m_tangents.resize(m_numVertices);
+        m_tangents.setSize(m_numVertices);
         uint8_t* data_normal = (uint8_t*)vb->getVertexDataPtr(*ed_normal);
         uint8_t* data_tang = (uint8_t*)vb->getVertexDataPtr(*ed_tang);
         uint8_t* data_bn = (uint8_t*)vb->getVertexDataPtr(*ed_bn);

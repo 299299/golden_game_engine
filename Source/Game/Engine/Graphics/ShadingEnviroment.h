@@ -8,7 +8,7 @@ struct Texture;
 struct Texture3D;
 struct ShaderProgram;
 
-struct ShadingEnviroment
+ENGINE_NATIVE_ALIGN(struct) ShadingEnviroment
 {
     void update(float dt);
     void submit();

@@ -2,10 +2,10 @@
 #include "Prerequisites.h"
 #include "MathDefs.h"
 
-struct Camera
+ENGINE_NATIVE_ALIGN(struct) Camera
 {
-    float                       m_view[16];
-    float                       m_proj[16];
+    ENGINE_NATIVE_ALIGN(float      m_view[16]);
+    ENGINE_NATIVE_ALIGN(float      m_proj[16]);
     Frustum                     m_frustum;
     float                       m_up[3];
     float                       m_eye[3];

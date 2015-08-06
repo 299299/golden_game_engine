@@ -274,10 +274,11 @@ void* get_all_model()
 
 void transform_model(Id id, const hkQsTransform& t)
 {
-    if(!m_models.has(id)) return;
+    if(!m_models.has(id)) 
+        return;
     Model* model = m_models.get(id);
 #ifdef HAVOK_COMPILE
-    transform_matrix(model->m_transform, t);
+    t.get4x4ColumnMajor(model->m_transform);
     ADD_BITS(model->m_flag, kNodeTransformDirty);
 #endif
 }

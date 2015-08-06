@@ -173,10 +173,11 @@ void* get_all_light()
 
 void transform_light(Id id, const hkQsTransform& t)
 {
-    if(!m_lights.has(id)) return;
+    if(!m_lights.has(id)) 
+        return;
     Light* light = m_lights.get(id);
 #ifdef HAVOK_COMPILE
-    transform_matrix(light->m_transform, t);
+    t.get4x4ColumnMajor(light->m_transform);
     ADD_BITS(light->m_flag, kNodeTransformDirty);
 #endif
 }

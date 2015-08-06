@@ -47,7 +47,7 @@ void PhysicsConverter::process(hkpPhysicsData* data)
 void PhysicsConverter::postProcess()
 {
 #ifdef HAVOK_COMPILE
-#ifdef HKX_BINARY_TO_TEXT
+#ifndef HKX_BINARY_TO_TEXT
     m_phyFileName = m_ownner->m_config->m_exportFolder + m_name + ".havok";
 #else
     m_phyFileName = HKX_TMP;

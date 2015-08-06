@@ -5,9 +5,10 @@
 
 struct ShadingEnviroment;
 
-struct Light
+ENGINE_NATIVE_ALIGN(struct) Light
 {
-    float                   m_transform[16];
+    ENGINE_NATIVE_ALIGN(float   m_transform[16]);
+    
     float                   m_color[3];
     float                   m_dir[3];
 

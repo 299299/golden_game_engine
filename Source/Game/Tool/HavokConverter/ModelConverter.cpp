@@ -67,14 +67,13 @@ void ModelConverter::process(RigSkinData* skinData)
     loadMeshes(meshes);
 
     hkaMeshBinding* skin = skinData->m_skins[0];
-    m_joints.resize(skin->m_boneFromSkinMeshTransforms.getSize());
-    for(size_t i=0;i <m_joints.size(); ++i)
+    m_joints.setSize(skin->m_boneFromSkinMeshTransforms.getSize());
+    for(int i=0;i <m_joints.getSize(); ++i)
     {
-        const hkTransform& invT = skin->m_boneFromSkinMeshTransforms[i];
-        transform_matrix(m_joints[i].m_x, invT);
+        skin->m_boneFromSkinMeshTransforms[i].get4x4ColumnMajor(m_joints[i].m_x);
     }
 
-    ENGINE_ASSERT(m_joints.size() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.size());
+    ENGINE_ASSERT(m_joints.getSize() <= BGFX_CONFIG_MAX_BONES, "joint size overflow = %d", m_joints.getSize());
 #endif
 }
 
@@ -124,22 +123,22 @@ void ModelConverter::writeMesh(const std::string& fileName)
         memorySize += mesh->getVertexBufferSize();
         memorySize += mesh->getIndexBufferSize();
     }
-    memorySize += m_joints.size() * sizeof(Matrix);
-    uint32_t ac_size = memorySize;
     memorySize = NATIVE_ALGIN_SIZE(memorySize);
+    memorySize += m_joints.getSize() * sizeof(Matrix);
+    memorySize = NATIVE_ALGIN_SIZE(memorySize);
+
     LOGI("mesh memory size = %d.", memorySize);
     MemoryBuffer mem(memorySize);
-    char* p = mem.m_buf;
-    char* head = p;
-    Mesh* pMesh = (Mesh*)p;
+    char* head = mem.m_buf;
+    Mesh* pMesh = (Mesh*)head;
     pMesh->m_memory_size = memorySize;
     pMesh->m_decl = m_meshes[0]->getDecl();
     pMesh->m_num_submeshes = m_meshes.size();
-    pMesh->m_num_joints = m_joints.size();
-    p  += sizeof(Mesh);
-    SubMesh* submeshes = (SubMesh*)p;
-    pMesh->m_submesh_offset = (uint32_t)(p - head);
-    p  += sizeof(SubMesh) * m_meshes.size();
+    pMesh->m_num_joints = m_joints.getSize();
+    int offset = sizeof(Mesh);
+    SubMesh* submeshes = (SubMesh*)(head + offset);
+    pMesh->m_submesh_offset = offset;
+    offset  += sizeof(SubMesh) * m_meshes.size();
     float min[3], max[3];
     for(uint32_t i=0; i<pMesh->m_num_submeshes; ++i)
     {
@@ -147,17 +146,16 @@ void ModelConverter::writeMesh(const std::string& fileName)
         SubMesh& subMesh = submeshes[i];
         subMesh.m_vertex_size = mesh->getVertexBufferSize();
         subMesh.m_index_size = mesh->getIndexBufferSize();
-        subMesh.m_vertex_offset = (uint32_t)(p - head);
+        subMesh.m_vertex_offset = offset;
         subMesh.m_vbh.idx = bgfx::invalidHandle;
         subMesh.m_ibh.idx = bgfx::invalidHandle;
 
-        //------------------------------------------------------------------------------
         uint32_t numVertices = mesh->getNumVertices();
         uint32_t vertexStride = mesh->getVertexStride();
 
-        mesh->writeVertexBuffer(p);
-        calcMaxBoundingSphere(subMesh.m_sphere, p, numVertices, vertexStride);
-        calcAabb(subMesh.m_aabb, p, numVertices, vertexStride);
+        mesh->writeVertexBuffer(head + offset);
+        calcMaxBoundingSphere(subMesh.m_sphere, head + offset, numVertices, vertexStride);
+        calcAabb(subMesh.m_aabb, head + offset, numVertices, vertexStride);
 
         if(i == 0)
         {
@@ -174,25 +172,29 @@ void ModelConverter::writeMesh(const std::string& fileName)
             max[2] = bx::fmax(subMesh.m_aabb.m_max[2], max[2]);
         }
 
-        p += subMesh.m_vertex_size;
-        subMesh.m_index_offset = (uint32_t)(p - head);
+        offset += subMesh.m_vertex_size;
+        subMesh.m_index_offset = offset;
 
-        //------------------------------------------------------------------------------
-        mesh->writeIndexBuffer(p);
-        p += subMesh.m_index_size;
+        mesh->writeIndexBuffer(head + offset);
+        offset += subMesh.m_index_size;
     }
+
     pMesh->m_aabb.m_min[0] = min[0];
     pMesh->m_aabb.m_min[1] = min[1];
     pMesh->m_aabb.m_min[2] = min[2];
     pMesh->m_aabb.m_max[0] = max[0];
     pMesh->m_aabb.m_max[1] = max[1];
     pMesh->m_aabb.m_max[2] = max[2];
-    pMesh->m_joint_offset = (uint32_t)(p - head);
-    if(!m_joints.empty())
-        memcpy(p, &m_joints[0], m_joints.size() * sizeof(Matrix));
-    p += m_joints.size() * sizeof(Matrix);
+    offset = NATIVE_ALGIN_SIZE(offset);
+    pMesh->m_joint_offset = offset;
+    LOGI("mesh-joint_offset=%d", pMesh->m_joint_offset);
 
-    ENGINE_ASSERT((head + ac_size) == p, "error offset");
+    if(!m_joints.isEmpty()) {
+        memcpy(head + offset, &m_joints[0], m_joints.getSize() * sizeof(Matrix));
+    }
+
+    offset += m_joints.getSize() * sizeof(Matrix);
+    ENGINE_ASSERT(offset == memorySize, "error offset %d != %d", offset, memorySize);
     write_file(fileName, head, memorySize);
 
     if(g_hc_config->m_verbose)

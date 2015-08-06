@@ -54,7 +54,7 @@ public:
     ModelConverter*                     m_model;
 
     std::vector<uint16_t>               m_indices;
-    std::vector<Vec4>                   m_tangents;
+    hkArray<Vec4>                       m_tangents;
     bgfx::VertexDecl                    m_decl;
     uint32_t                            m_flags;
     uint32_t                            m_numVertices;

@@ -7,7 +7,7 @@ class hkpSimpleShapePhantom;
 class hkpCapsuleShape;
 struct AnimCharacterListener;
 
-struct ProxyResource
+ENGINE_NATIVE_ALIGN(struct) ProxyResource
 {
     void createShape();
     void destroyShape();
@@ -26,7 +26,7 @@ struct ProxyResource
     StringId                    m_layerName;
 };
 
-struct ProxyInstance
+ENGINE_NATIVE_ALIGN(struct) ProxyInstance
 {
     void init(const void* resource);
     void destroy();

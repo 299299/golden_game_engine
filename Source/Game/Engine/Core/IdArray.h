@@ -37,7 +37,7 @@ struct IdArray
         m_alloactor = allocator;
         uint32_t memSize = sizeof(Id) + sizeof(uint16_t) * 2 + sizeof(T);
         memSize *= capacity;
-        char* p = (char*)allocator->allocate(memSize, 16);
+        char* p = (char*)allocator->allocate(memSize, NATIVE_ALIGN_VALUE);
         memset(p, 0x00, memSize);
         m_objects = (T*)p;
         p += sizeof(T) * capacity;
@@ -154,7 +154,7 @@ struct CIdArray
         m_object_size = object_size;
         uint32_t memSize = sizeof(Id) + sizeof(uint16_t) * 2 + m_object_size;
         memSize *= capacity;
-        char* p = (char*)allocator->allocate(memSize, 16);
+        char* p = (char*)allocator->allocate(memSize, NATIVE_ALIGN_VALUE);
         memset(p, 0x00, memSize);
         m_objects = p;
         p += m_object_size * capacity;

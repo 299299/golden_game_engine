@@ -47,7 +47,7 @@ private:
 public:
     std::vector<hkxMeshSection*>        m_havokMeshes;
     std::vector<MeshConverter*>         m_meshes;
-    std::vector<Matrix>                 m_joints;
+    hkArray<Matrix>                     m_joints;
     Aabb                                m_bbox;
     RigSkinData*                        m_skin;
     std::string                         m_meshName;

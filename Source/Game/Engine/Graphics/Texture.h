@@ -2,7 +2,7 @@
 #include "StringId.h"
 #include <bgfx.h>
 
-struct Texture
+ENGINE_NATIVE_ALIGN(struct) Texture
 {
     bgfx::TextureInfo           m_info;
     uint32_t                    m_data_offset;
@@ -11,7 +11,7 @@ struct Texture
     bgfx::TextureHandle         m_handle;
 };
 
-struct Texture3D
+ENGINE_NATIVE_ALIGN(struct) Texture3D
 {
     uint32_t                    m_data_offset;
     uint32_t                    m_data_size;

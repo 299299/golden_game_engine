@@ -155,7 +155,7 @@ jsonxx::Object AnimRigConverter::getRigJson() const
 
 #ifdef HAVOK_COMPILE
     jsonxx::Array attachments;
-    float m[16];
+    ENGINE_NATIVE_ALIGN(float m[16]);
     LOGI("attachment num = %d", m_skin->m_attachments.size());
     for(unsigned i=0; i<m_skin->m_attachments.size(); ++i)
     {
@@ -164,7 +164,7 @@ jsonxx::Object AnimRigConverter::getRigJson() const
         attachment << "name" << std::string(ba->m_name.cString());
         attachment << "bone" << (int)ba->m_boneIndex;
         jsonxx::Array matrixArray;
-        transform_matrix(m, ba->m_boneFromAttachment);
+        ba->m_boneFromAttachment.get4x4ColumnMajor(m);
         for (int i = 0; i < 16; ++i)
         {
             matrixArray << m[i];

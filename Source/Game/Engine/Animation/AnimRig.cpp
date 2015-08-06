@@ -134,10 +134,13 @@ void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
         const BoneAttachment& ba = attachments[i];
         hkQsTransform boneWS;
         boneWS.setMul(worldFromModel, poseInWorld[ba.m_bone_index]);
-        hkMatrix4 worldFromBone; worldFromBone.set(boneWS);
-        hkMatrix4 boneFromAttachment; transform_matrix(boneFromAttachment, ba.m_bone_from_attachment);
-        hkMatrix4 worldFromAttachment; worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
-        transform_matrix(t + i*16, worldFromAttachment);
+        hkMatrix4 worldFromBone; 
+        worldFromBone.set(boneWS);
+        hkMatrix4 boneFromAttachment;
+        boneFromAttachment.set4x4ColumnMajor(ba.m_bone_from_attachment);
+        hkMatrix4 worldFromAttachment; 
+        worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
+        worldFromAttachment.get4x4ColumnMajor(t + i*16);
     }
 #endif
 }
