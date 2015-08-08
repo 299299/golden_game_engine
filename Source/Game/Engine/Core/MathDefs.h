@@ -50,6 +50,15 @@ inline void transform_vec4(float* outVec4, const hkVector4& inVec4)
     outVec4[3] = inVec4.getSimdAt(3);
 }
 
+inline float clamp_angle(float angle)
+{
+    if (angle < 0)
+        angle += HK_REAL_PI*2;
+    if (angle > HK_REAL_PI*2)
+        angle -= HK_REAL_PI*2;
+    return angle;
+}
+
 inline float get_up_axis_angle(const hkQuaternion &r)
 {
 #if 0
@@ -64,7 +73,7 @@ inline float get_up_axis_angle(const hkQuaternion &r)
     hkQuaternion rstOut;
     hkSimdFloat32 angle_out = 0;
     r.decomposeRestAxis(up, rstOut, angle_out);
-    return angle_out.getReal();
+    return clamp_angle(angle_out.getReal());
 #endif
 }
 

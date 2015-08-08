@@ -71,7 +71,7 @@ void PlayerState::step(float dt)
 
     dir.setRotatedDir(t.m_rotation, fwd);
 
-    int texColor = RGBCOLOR(50,150,125);
+    int texColor = RGBCOLOR(255,255,0);
     int idx = 0;
 
     char buf[256];
@@ -80,12 +80,12 @@ void PlayerState::step(float dt)
     float ag = 0;
 
     #define G_DEBUG_OUT \
-    y += 20; \
     t.m_rotation.setAxisAngle(up, ag); \
     bx::snprintf(buf, sizeof(buf), "[%d] angle=%f vs %f", \
         idx++, \
         ag * HK_FLOAT_RAD_TO_DEG, \
         get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG); \
+    y += 20; \
     imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
 
     ag = 0;
@@ -102,23 +102,28 @@ void PlayerState::step(float dt)
 
     ag = HK_REAL_PI*2;
     G_DEBUG_OUT
-
-    ag = -HK_REAL_PI/2;
-    G_DEBUG_OUT
-
-    ag = -HK_REAL_PI;
-    G_DEBUG_OUT
-
-    ag = -HK_REAL_PI*3/2;
-    G_DEBUG_OUT
-
-    ag = -HK_REAL_PI*2;
-    G_DEBUG_OUT
-    
-    y += 20;
-    t.set4x4ColumnMajor(g_camera.m_view);
+  
+    ENGINE_NATIVE_ALIGN(float   invView[16]);
+    bx::mtxInverse(invView, g_camera.m_view);
+    t.set4x4ColumnMajor(invView);
     t.m_translation.setZero4();
-    bx::snprintf(buf, sizeof(buf), "camera angle=%f", get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG);
+    float camera_angle = get_up_axis_angle(t.m_rotation);
+    float input_angle = hkMath::atan2(input.m_axis[0], input.m_axis[1]);
+    input_angle = clamp_angle(input_angle);
+    Actor *a = g_actorWorld.get_actor(m_player);
+    float cur_angle = get_up_axis_angle(a->m_transform.m_rotation);
+    float dst_angle = input_angle + camera_angle;
+    dst_angle = clamp_angle(dst_angle);
+    float angle_diff = dst_angle - cur_angle;
+    //angle_diff = clamp_angle(angle_diff);
+
+    bx::snprintf(buf, sizeof(buf), "input angle=%f camera=%f dst_angle=%f cur_angle=%f angle_diff=%f", 
+        input_angle * HK_FLOAT_RAD_TO_DEG, 
+        camera_angle * HK_FLOAT_RAD_TO_DEG, 
+        dst_angle * HK_FLOAT_RAD_TO_DEG,
+        cur_angle * HK_FLOAT_RAD_TO_DEG, 
+        angle_diff * HK_FLOAT_RAD_TO_DEG);
+    y += 20;
     imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
 
     extern void resource_hot_reload_update(float);
