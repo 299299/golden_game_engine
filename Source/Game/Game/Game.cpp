@@ -34,8 +34,8 @@ int game_main(int argc, bx::CommandLine* cmdline)
     memset(&cfg, 0x00, sizeof(cfg));
     cfg.m_checkMemory = true;
     cfg.m_windowTitle = "game";
-    cfg.m_windowWidth = 640;
-    cfg.m_windowHeight = 480;
+    cfg.m_windowWidth = 800;
+    cfg.m_windowHeight = 600;
     cfg.m_fixedFPS = 60;
 
     const char* name = cmdline->findOption('w');

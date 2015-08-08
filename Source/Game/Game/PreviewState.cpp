@@ -158,7 +158,6 @@ void PreviewState::step( float dt )
     GameState::step(dt);
     g_fpsCamera.update(dt);
 
-#ifdef HAVOK_COMPILE
     if(g_win32Context.is_key_just_pressed(VK_F1))
     {
         m_show_profile = !m_show_profile;
@@ -188,7 +187,6 @@ void PreviewState::step( float dt )
             index = 0;
         g_animMgr.m_time_scale = scales[index];
     }
-#endif
 
     if(m_show_profile)
     {
@@ -204,10 +202,6 @@ void PreviewState::step( float dt )
         draw_debug_animation(dt);
     }
 
-#ifdef HAVOK_COMPILE
-    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity());
-#endif
-
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
 
@@ -217,6 +211,9 @@ void PreviewState::step( float dt )
         draw_actor_info(m_actor_name, m_preview_actor, 0, 25, 400, 600);
 
     debug_update_vdb_camera();
+
+    g_debugDrawMgr.add_grid(20, 5, RGBCOLOR(175,175,175), true);
+    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);
 }
 
 void PreviewState::on_enter( GameState* prev_state )
@@ -240,9 +237,7 @@ void PreviewState::process_cmd_args( void* p )
     {
         LOGD("loading actor %s \n", actor_name);
         hkQsTransform t;
-#ifdef HAVOK_COMPILE
         t.setIdentity();
-#endif
         m_preview_actor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
         LOGD("created actor = %x", m_preview_actor);
     }

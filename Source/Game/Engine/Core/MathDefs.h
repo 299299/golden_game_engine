@@ -52,21 +52,29 @@ inline void transform_vec4(float* outVec4, const hkVector4& inVec4)
 
 inline float clamp_angle(float angle)
 {
+#if 1
+    if (angle < -HK_REAL_PI)
+        angle += HK_REAL_PI*2;
+    if (angle > HK_REAL_PI)
+        angle -= HK_REAL_PI*2;
+    return angle;
+#else
     if (angle < 0)
         angle += HK_REAL_PI*2;
     if (angle > HK_REAL_PI*2)
         angle -= HK_REAL_PI*2;
     return angle;
+#endif
 }
 
 inline float get_up_axis_angle(const hkQuaternion &r)
 {
-#if 0
+#if 1
     hkVector4 dir;
     hkVector4 fwd;
     fwd.set(0, 0, 1, 0);
     dir.setRotatedDir(r, fwd);
-    return hkMath::atan2(dir.getSimdAt(1), dir.getSimdAt(0));
+    return hkMath::atan2(dir.getSimdAt(0), dir.getSimdAt(1));
 #else
     hkVector4 up;
     up.set(0, 1, 0, 0);
@@ -76,6 +84,7 @@ inline float get_up_axis_angle(const hkQuaternion &r)
     return clamp_angle(angle_out.getReal());
 #endif
 }
+
 
 #endif
 
