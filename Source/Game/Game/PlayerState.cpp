@@ -108,9 +108,9 @@ void PlayerState::step(float dt)
     extern void resource_hot_reload_update(float);
     resource_hot_reload_update(dt);
 
-    extern void draw_debug_animation(float);
-    draw_debug_animation(dt);
-    debug_draw_locomotion(&s_locomotion);
+    extern void debug_draw_animation(float);
+    debug_draw_animation(dt);
+    debug_draw_locomotion(&s_locomotion, m_player);
 
     debug_update_vdb_camera();
 

@@ -196,10 +196,10 @@ void PreviewState::step( float dt )
     {
         extern void draw_debug_models();
         extern void draw_debug_lights();
-        extern void draw_debug_animation(float);
+        extern void debug_draw_animation(float);
         draw_debug_lights();
         draw_debug_models();
-        draw_debug_animation(dt);
+        debug_draw_animation(dt);
     }
 
     extern void resource_hot_reload_update(float);

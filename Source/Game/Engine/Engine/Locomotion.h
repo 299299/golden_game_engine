@@ -26,4 +26,4 @@ struct Locomotion
 };
 
 void update_locomotion(Locomotion *l, const LocomotionInput &input, ActorId32 id);
-void debug_draw_locomotion(Locomotion* l);
+void debug_draw_locomotion(Locomotion* l, ActorId32 id);

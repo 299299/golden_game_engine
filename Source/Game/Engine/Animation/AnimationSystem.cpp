@@ -273,14 +273,16 @@ Id create_anim_rig( const void* resource, ActorId32 id)
 void destroy_anim_rig( Id id )
 {
     check_status();
-    if(!m_rigs.has(id)) return;
+    if(!m_rigs.has(id))
+        return;
     m_rigs.get(id)->destroy();
     m_rigs.destroy(id);
 }
 
 void* get_anim_rig( Id id )
 {
-    if(!m_rigs.has(id)) return 0;
+    if(!m_rigs.has(id))
+        return 0;
     return m_rigs.get(id);
 }
 
@@ -312,14 +314,16 @@ Id create_anim_state( const void* resource, ActorId32 id)
 void destroy_anim_state( Id id )
 {
     check_status();
-    if(!m_stateLayers.has(id)) return;
+    if(!m_stateLayers.has(id))
+        return;
     m_stateLayers.get(id)->destroy();
     m_stateLayers.destroy(id);
 }
 
 void* get_anim_state( Id id )
 {
-    if(!m_stateLayers.has(id)) return 0;
+    if(!m_stateLayers.has(id))
+        return 0;
     return m_stateLayers.get(id);
 }
 
@@ -352,9 +356,9 @@ struct DebugEvtText
 };
 
 #include "DebugDraw.h"
-void draw_debug_animation(float dt)
+void debug_draw_animation(float dt)
 {
-    PROFILE(draw_debug_animation);
+    PROFILE(debug_draw_animation);
     extern int g_engineMode;
     int num = m_rigs.size();
     AnimRigInstance* rigs = m_rigs.begin();
@@ -366,14 +370,11 @@ void draw_debug_animation(float dt)
         Actor* actor = g_actorWorld.get_actor(rig.m_actor);
         const hkQsTransform& t = actor->m_transform;
 
-
-        {
-            //draw debug pose
-            if(g_engineMode == 0)
-                draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
-            else
-                draw_pose_vdb(*pose, t);
-        }
+        //draw debug pose
+        if(g_engineMode == 0)
+            draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
+        else
+            draw_pose_vdb(*pose, t);
 
 #ifdef HAVOK_COMPILE
         {
