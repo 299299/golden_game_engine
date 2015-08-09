@@ -27,7 +27,6 @@ struct DebugDrawManager
     void add_quad(const float* center, float width, float height, uint32_t color, bool bDepth);
     void add_frustum(const Frustum& frustum, uint32_t color, bool bDepth);
     void add_grid(int gridsNum, float gridWidth, uint32_t color, bool bDepth);
-    void add_direction(const hkQsTransform& t, float len, uint32_t color, bool bDepth);
 
     DebugText*              m_texts;
     DebugLine*              m_lines[2];

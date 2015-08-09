@@ -377,17 +377,6 @@ void draw_debug_animation(float dt)
 
 #ifdef HAVOK_COMPILE
         {
-            //draw local motion mark
-            //FIXME:TODO move it to a better place
-            hkQsTransform t2 = t;
-            float y = t.m_translation.getSimdAt(1);
-            Model* model = (Model*)actor->get_first_component_of(EngineTypes::MODEL);
-            float halfheight = model ? aabb_get_height(model->m_aabb) / 2 : 1.0f;
-            t2.m_translation(1) = y - halfheight;
-            g_debugDrawMgr.add_direction(t2, 0.5f, RGBCOLOR(225,125,125), false);
-        }
-
-        {
             //draw debug attachment
             uint32_t num_attach = res->m_num_joints;
             const BoneAttachment* attachments = (const BoneAttachment*)((char*)res + res->m_attachment_offset);

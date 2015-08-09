@@ -14,12 +14,16 @@ enum LocomotionState
 struct LocomotionInput
 {
     float               m_dt;
-    float               m_axis[2]; // 0 -> horinzontal 1 -> vertical
+    float               m_moveVec;
+    float               m_desireAngle;
 };
 
 struct Locomotion
 {
     int         m_state;
+    float       m_desireAngle;
+    float       m_turnSpeed;
 };
 
 void update_locomotion(Locomotion *l, const LocomotionInput &input, ActorId32 id);
+void debug_draw_locomotion(Locomotion* l);

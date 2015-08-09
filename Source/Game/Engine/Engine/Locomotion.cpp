@@ -17,8 +17,7 @@ func_update_locomotion_state_t s_funcs[kLocomotionStateNum] =
 
 static int update_idle_state(Locomotion* l, const  LocomotionInput& input, AnimationStatesInstance *s, Actor* actor)
 {
-    float sqrt_move_vec  = input.m_axis[0] * input.m_axis[0] + input.m_axis[1] * input.m_axis[1];
-    if (sqrt_move_vec > 0.1f) {
+    if (input.m_moveVec > 0.1f) {
         s->fire_event(stringid_caculate("move"));
         return kLocomotionMove;
     }
@@ -27,21 +26,19 @@ static int update_idle_state(Locomotion* l, const  LocomotionInput& input, Anima
 
 static int update_move_state(Locomotion* l, const  LocomotionInput& input, AnimationStatesInstance *s, Actor* actor)
 {
-    float sqrt_move_vec  = input.m_axis[0] * input.m_axis[0] + input.m_axis[1] * input.m_axis[1];
-    if (sqrt_move_vec < 0.1f) {
+    if (input.m_moveVec < 0.1f) {
         s->fire_event(stringid_caculate("stop"));
         return kLocomotionStand;
     }
 
     hkQsTransform t = actor->m_transform;
     float cur_angle = get_up_axis_angle(t.m_rotation);
-    float turn_value = input.m_axis[0] * input.m_dt;
-    cur_angle += turn_value;
+    float angle_diff = input.m_desireAngle - cur_angle;
+    cur_angle += (angle_diff * l->m_turnSpeed * input.m_dt);
     hkVector4 up;
     up.set(0, 1, 0);
     t.m_rotation.setAxisAngle(up, cur_angle);
-    // actor->set_transform(t);
-
+    actor->set_transform(t);
     return kLocomotionMove;
 }
 
@@ -55,5 +52,11 @@ void update_locomotion(Locomotion *l, const LocomotionInput &input, ActorId32 id
     if (!s)
         return;
 
+    l->m_desireAngle = input.m_desireAngle;
     l->m_state = s_funcs[l->m_state] (l, input, s, a);
+}
+
+void debug_draw_locomotion(Locomotion* l)
+{
+
 }

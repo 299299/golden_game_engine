@@ -105,8 +105,8 @@ void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
     if(!lineNum)
         return;
 
-	if (!bgfx::isValid(m_shader->m_handle))
-		return;
+    if (!bgfx::isValid(m_shader->m_handle))
+        return;
 
     bgfx::TransientVertexBuffer tvb;
     uint32_t numVertices = lineNum*2;
@@ -292,26 +292,26 @@ void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t c
 void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uint32_t color, bool bDepth)
 {
 #ifdef HAVOK_COMPILE
-    hkQuaternion	orientation;
-    hkVector4		normal;
+    hkQuaternion    orientation;
+    hkVector4       normal;
     transform_vec3(normal, d);
     hkVector4       o;
     transform_vec3(o, pos);
-    const int		steps=64;
+    const int       steps=64;
     normal.normalize3();
     hkQuaternionUtil::_computeShortestRotation(hkVector4(0,0,1,0),normal, orientation);
-    hkVector4		p;
+    hkVector4       p;
     p.setRotatedDir(orientation,hkVector4(r,0,0,0));
     p.add4(o);
 
     float start[3], end[3];
     for(int i=1;i<=steps;++i)
     {
-        const hkReal	angle=i/(hkReal)steps*HK_REAL_PI*2;
-        hkVector4		v(0,0,0,0);
-        v(0)	=	r*hkMath::cos(angle);
-        v(1)	=	r*hkMath::sin(angle);
-        hkVector4		c;
+        const hkReal    angle=i/(hkReal)steps*HK_REAL_PI*2;
+        hkVector4       v(0,0,0,0);
+        v(0)    =   r*hkMath::cos(angle);
+        v(1)    =   r*hkMath::sin(angle);
+        hkVector4       c;
         c.setRotatedDir(orientation,v);
         c.add4(o);
         transform_vec3(start, p);
@@ -384,49 +384,4 @@ void DebugDrawManager::add_grid( int gridsNum, float gridWidth, uint32_t color, 
         add_line(startPt, endPt, color, bDepth);
     }
 }
-
-void DebugDrawManager::add_direction( const hkQsTransform& t, float len, uint32_t color, bool bDepth )
-{
-#ifdef HAVOK_COMPILE
-	float triangle_len = len;
-	float quad_width = triangle_len/2, quad_height = quad_width*4;
-	hkVector4 v0, v1, v2, v3;
-	hkVector4 t_v0, t_v1, t_v2, t_v3;
-	float s_v0[3], s_v1[3], s_v2[3], s_v3[3];
-
-	float z_offset = (quad_height + triangle_len)/2 - triangle_len;
-	v0.set(triangle_len, 0, z_offset);
-	v1.set(0, 0, triangle_len + z_offset);
-	v2.set(-triangle_len, 0, z_offset);
-
-	t_v0.setTransformedPos(t, v0);
-	t_v1.setTransformedPos(t, v1);
-	t_v2.setTransformedPos(t, v2);
-
-	transform_vec3(s_v0, t_v0);
-	transform_vec3(s_v1, t_v1);
-	transform_vec3(s_v2, t_v2);
-	add_triangle(s_v0, s_v1, s_v2, color, bDepth);
-
-	v0.set(-quad_width, 0, z_offset);
-	v1.set(quad_width, 0, z_offset);
-	v2.set(quad_width, 0, -quad_height + z_offset);
-	v3.set(-quad_width, 0, -quad_height + z_offset);
-
-	t_v0.setTransformedPos(t, v0);
-	t_v1.setTransformedPos(t, v1);
-	t_v2.setTransformedPos(t, v2);
-	t_v3.setTransformedPos(t, v3);
-
-	transform_vec3(s_v0, t_v0);
-	transform_vec3(s_v1, t_v1);
-	transform_vec3(s_v2, t_v2);
-	transform_vec3(s_v3, t_v3);
-	add_line(s_v0, s_v1, color, bDepth);
-	add_line(s_v1, s_v2, color, bDepth);
-	add_line(s_v2, s_v3, color, bDepth);
-	add_line(s_v3, s_v0, color, bDepth);
-#endif
-}
-
 
