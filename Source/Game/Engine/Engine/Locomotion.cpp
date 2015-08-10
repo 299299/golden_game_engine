@@ -39,12 +39,11 @@ static int update_move_state(Locomotion* l, const  LocomotionInput& input, Anima
     float angle_diff = input.m_desireAngle - cur_angle;
     angle_diff = clamp_angle(angle_diff);
     float turn_amount = angle_diff * l->m_turnSpeed * input.m_dt;
-    printf("angle_diff=%f m_desireAngle=%f cur_angle=%f turn_amount=%f\n", angle_diff, input.m_desireAngle, cur_angle, turn_amount);
+    // printf("angle_diff=%f m_desireAngle=%f cur_angle=%f turn_amount=%f\n", angle_diff, input.m_desireAngle, cur_angle, turn_amount);
     hkQuaternion deltaRot;
     deltaRot.setAxisAngle(up, turn_amount);
     t.m_rotation.mul(deltaRot);
     a->set_transform(t);
-    float a1 = get_up_axis_angle(a->m_transform.m_rotation);
     return kLocomotionMove;
 }
 

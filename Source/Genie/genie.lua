@@ -166,7 +166,7 @@ bgfx_files = {
     BGFX_DIR .. "src/renderer_null.cpp",
     BGFX_DIR .. "src/vertexdecl.cpp",
     BGFX_DIR .. "3rdparty/forsyth-too/forsythtriangleorderoptimizer.cpp",
-    BGFX_DIR .. "3rdparty/ocornut-imgui/imgui.cpp",
+    BGFX_DIR .. "3rdparty/ocornut-imgui/*.cpp",
     BGFX_DIR .. "examples/common/bounds.cpp",
     BGFX_DIR .. "examples/common/imgui/imgui.cpp",
     BGFX_DIR .. "examples/common/imgui/ocornut_imgui.cpp",

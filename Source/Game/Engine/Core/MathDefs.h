@@ -74,7 +74,7 @@ inline float get_up_axis_angle(const hkQuaternion &r)
     hkVector4 fwd;
     fwd.set(0, 0, 1, 0);
     dir.setRotatedDir(r, fwd);
-    return hkMath::atan2(dir.getSimdAt(0), dir.getSimdAt(1));
+    return hkMath::atan2(dir.getSimdAt(0), dir.getSimdAt(2));
 #else
     hkVector4 up;
     up.set(0, 1, 0, 0);

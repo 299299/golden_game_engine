@@ -68,12 +68,24 @@ void PlayerState::step(float dt)
     dir.setRotatedDir(t.m_rotation, fwd);
 
     int texColor = RGBCOLOR(255,255,0);
-    int idx = 0;
 
     char buf[256];
     int x = 0;
     int y = 0;
     float ag = 0;
+
+    #define G_DEBUG_OUTPUT \
+    t.m_rotation.setAxisAngle(up, ag*HK_FLOAT_DEG_TO_RAD);\
+    bx::snprintf(buf, sizeof(buf), "angle=%f vs %f", ag, get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG);\
+    y+=20;\
+    imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
+
+    float test_angles[] = {15,30,45,75,90};
+    for (int i=0; i<BX_COUNTOF(test_angles); ++i)
+    {
+        ag = test_angles[i];
+        G_DEBUG_OUTPUT;
+    }
 
     hkVector4 cam_dir;
     const float *from = g_camera.m_eye;
