@@ -15,4 +15,6 @@ struct InputController
     float               m_lastLeftInput[2];
     float               m_leftAngle;
     float               m_leftHoldTime;
+
+    bool                m_lockMouse;
 };

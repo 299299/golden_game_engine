@@ -67,6 +67,8 @@ void MaterialConverter::process(hkxMaterial* material)
 
  #ifdef HAVOK_COMPILE
     std::string materialName = material->m_name.cString();
+    LOGD("material name = %s", materialName.c_str());
+    materialName = getFileNameAndExtension(materialName);
     string_replace(materialName, ":", "_");
     setName(materialName);
 
@@ -215,7 +217,7 @@ std::string MaterialConverter::getTextureFileName( hkRefVariant variant )
         LOGD("guess assert folder %s", imagePath.c_str());
         if(isFileExist(imagePath))
             return imagePath;
-        g_hc_config->m_error.add_error("texture %s not exist in hard drive.", fName.c_str());
+        g_hc_config->m_error.add_error("texture %s not exist in hard drive. ret %s", fName.c_str(), fileName.c_str());
         return fileName;
     }
     else

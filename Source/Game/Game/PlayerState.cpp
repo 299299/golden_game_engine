@@ -19,12 +19,14 @@
 #include "AnimationSystem.h"
 #include "Engine.h"
 #include "Locomotion.h"
+#include "InputController.h"
 #include <bx/string.h>
 #include <bx/commandline.h>
 
 extern DebugFPSCamera  g_fpsCamera;
 
 static Locomotion s_locomotion = { 0 };
+static InputController s_input;
 
 PlayerState::PlayerState()
 :m_player(INVALID_U32)
@@ -41,17 +43,10 @@ void PlayerState::step(float dt)
 {
     GameState::step(dt);
     g_fpsCamera.update(dt);
+    s_input.update(dt);
 
     float axis[2] = { 0, 0 };
     LocomotionInput input = { dt, 0, 0 };
-    if (g_win32Context.is_key_down(VK_LEFT))
-        axis[0] -= 1.0f;
-    if (g_win32Context.is_key_down(VK_RIGHT))
-        axis[0] += 1.0f;
-    if (g_win32Context.is_key_down(VK_UP))
-        axis[1] += 1.0f;
-    if (g_win32Context.is_key_down(VK_DOWN))
-        axis[1] -= 1.0f;
 
     hkQsTransform t;
     t.setIdentity();
@@ -72,20 +67,6 @@ void PlayerState::step(float dt)
     char buf[256];
     int x = 0;
     int y = 0;
-    float ag = 0;
-
-    #define G_DEBUG_OUTPUT \
-    t.m_rotation.setAxisAngle(up, ag*HK_FLOAT_DEG_TO_RAD);\
-    bx::snprintf(buf, sizeof(buf), "angle=%f vs %f", ag, get_up_axis_angle(t.m_rotation) * HK_FLOAT_RAD_TO_DEG);\
-    y+=20;\
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
-
-    float test_angles[] = {15,30,45,75,90};
-    for (int i=0; i<BX_COUNTOF(test_angles); ++i)
-    {
-        ag = test_angles[i];
-        G_DEBUG_OUTPUT;
-    }
 
     hkVector4 cam_dir;
     const float *from = g_camera.m_eye;
@@ -98,14 +79,15 @@ void PlayerState::step(float dt)
     float camera_angle = hkMath::atan2(cam_dir.getSimdAt(0), cam_dir.getSimdAt(2)) - HK_REAL_PI;
     camera_angle = clamp_angle(camera_angle);
 
-    float input_angle = hkMath::atan2(axis[0], axis[1]);
+    float input_angle = s_input.m_leftAngle;
     float character_angle = get_up_axis_angle(a->m_transform.m_rotation);
     float angle_diff = input_angle + camera_angle - character_angle;
     angle_diff = clamp_angle(angle_diff);
 
     input.m_desireAngle = input_angle + camera_angle;
     input.m_dt = dt;
-    input.m_moveVec = axis[0] * axis[0] + axis[1] * axis[1];
+    input.m_moveVec = s_input.m_leftInput[2];
+
     s_locomotion.m_turnSpeed = 4.0f;
     update_locomotion(&s_locomotion, input, m_player);
 
