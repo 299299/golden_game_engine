@@ -53,7 +53,7 @@ ENGINE_NATIVE_ALIGN(struct) AnimRigInstance
     void update(float dt);
     void update_attachment(const hkQsTransform& worldFromModel);
     void test_animation(const char* name);
-    int  collect_event(AnimationEvent* events);
+    int  collect_event(AnimationEvent* events, float dt);
 };
 
 void* load_resource_anim_rig(void*, uint32_t);

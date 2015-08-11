@@ -58,8 +58,6 @@ void AnimationSystem::init(const AnimationConfig& cfg)
     m_events = COMMON_ALLOC(AnimationEvent, cfg.max_anim_events);
     m_rigs.init(cfg.max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     m_stateLayers.init(cfg.max_state_layers, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
-    m_time = 0.0f;
-    m_time_scale = 1.0f;
 #ifdef HAVOK_COMPILE
     hkaSampleBlendJobQueueUtils::registerWithJobQueue(g_threadMgr.get_jobqueue());
 #endif
@@ -195,13 +193,6 @@ void AnimationSystem::skin_actors( Actor* actors, int num )
 
 void AnimationSystem::update_animations(float dt)
 {
-    m_time += dt;
-    if(m_time >= ANIMATION_TIME_PERFRAME)
-        m_time -= ANIMATION_TIME_PERFRAME;
-    else
-        return;
-
-    dt = ANIMATION_TIME_PERFRAME * m_time_scale;
     int num = m_rigs.size();
     PROFILE(Animation_Update);
     AnimRigInstance* rigs = m_rigs.begin();
@@ -209,7 +200,7 @@ void AnimationSystem::update_animations(float dt)
     int evt_num = m_numAnimEvts;
     for(int i=0; i<num;++i)
     {
-        int num = rigs[i].collect_event(events);
+        int num = rigs[i].collect_event(events, dt);
         events += num;
         evt_num += num;
         rigs[i].update(dt);

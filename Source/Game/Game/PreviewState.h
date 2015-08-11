@@ -28,7 +28,6 @@ public:
     virtual void on_enter(GameState* prev_state);
     virtual void process_cmd_args(void*);
 
-    void swith_graphics_debug(uint32_t flag);
     void draw_actor_info(const char* name, ActorId32 _actorId, int _x, int _y, int _w, int _h);
     ComponentDebugDrawGUI* find_component_gui(StringId _type);
     void draw_level_info(const char* name, Level* level, int _x, int _y, int _w, int _h);
@@ -41,9 +40,7 @@ public:
     const char*                 m_level_name;
 
     uint32_t                    m_bgfx_debug;
-    bool                        m_show_profile;
-    bool                        m_draw_debug_graphics;
-    
+
     int                         m_num_component_gui;
     ComponentDebugDrawGUI       m_component_gui[MAX_COMPONENT_TYPES];
 };

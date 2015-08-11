@@ -137,9 +137,6 @@ PreviewState::PreviewState()
     ,m_preview_level(0)
     ,m_actor_name(0)
     ,m_level_name(0)
-    ,m_bgfx_debug(BGFX_DEBUG_TEXT)
-    ,m_show_profile(false)
-    ,m_draw_debug_graphics(false)
     ,m_num_component_gui(0)
 {
     memset(m_component_gui, 0x00, sizeof(m_component_gui));
@@ -158,59 +155,12 @@ void PreviewState::step( float dt )
     GameState::step(dt);
     g_fpsCamera.update(dt);
 
-    if(g_win32Context.is_key_just_pressed(VK_F1))
-    {
-        m_show_profile = !m_show_profile;
-    }
-    else if(g_win32Context.is_key_just_pressed(VK_F2))
-    {
-        m_draw_debug_graphics = !m_draw_debug_graphics;
-    }
-    else if(g_win32Context.is_key_just_pressed(VK_F3))
-    {
-        swith_graphics_debug(BGFX_DEBUG_WIREFRAME);
-    }
-    else if(g_win32Context.is_key_just_pressed(VK_F4))
-    {
-        swith_graphics_debug(BGFX_DEBUG_STATS);
-    }
-
-    if(g_win32Context.is_key_just_pressed(VK_ESCAPE))
-        g_engine.shutdown();
-
-    if(g_win32Context.is_key_just_pressed(VK_SPACE))
-    {
-        static int index = 0;
-        ++index;
-        static float scales[] = {0.125f, 0.25f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f};
-        if(index >= BX_COUNTOF(scales))
-            index = 0;
-        g_animMgr.m_time_scale = scales[index];
-    }
-
-    if(m_show_profile)
-    {
-        g_profiler.dump();
-    }
-    if(m_draw_debug_graphics)
-    {
-        extern void draw_debug_models();
-        extern void draw_debug_lights();
-        extern void debug_draw_animation(float);
-        draw_debug_lights();
-        draw_debug_models();
-        debug_draw_animation(dt);
-    }
-
-    extern void resource_hot_reload_update(float);
-    resource_hot_reload_update(dt);
+    step_debug_ctrl(dt);
 
     if(m_preview_level)
         draw_level_info(m_level_name, m_preview_level, 0, 25, 400, 600);
     else
         draw_actor_info(m_actor_name, m_preview_actor, 0, 25, 400, 600);
-
-    debug_update_vdb_camera();
 
     g_debugDrawMgr.add_grid(20, 5, RGBCOLOR(175,175,175), true);
     g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);
@@ -249,15 +199,6 @@ void PreviewState::process_cmd_args( void* p )
         if(m_preview_level)
             start_level(m_preview_level);
     }
-}
-
-void PreviewState::swith_graphics_debug( uint32_t flag )
-{
-    if(!HAS_BITS(m_bgfx_debug,flag))
-        ADD_BITS(m_bgfx_debug, flag);
-    else
-        REMOVE_BITS(m_bgfx_debug, flag);
-    bgfx::setDebug(m_bgfx_debug);
 }
 
 ComponentDebugDrawGUI* PreviewState::find_component_gui( StringId _type )

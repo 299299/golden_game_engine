@@ -46,8 +46,6 @@ struct AnimationSystem
 
     int                     m_numAnimEvts;
     AnimationEvent*         m_events;
-    float                   m_time;
-    float                   m_time_scale;
 
 #ifndef _RETAIL
     anim_debug_map  m_anim_debug_names;

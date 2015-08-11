@@ -99,17 +99,11 @@ void PlayerState::step(float dt)
     y += 20;
     imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
 
-    extern void resource_hot_reload_update(float);
-    resource_hot_reload_update(dt);
-
-    extern void debug_draw_animation(float);
-    debug_draw_animation(dt);
     debug_draw_locomotion(&s_locomotion, m_player);
-
-    debug_update_vdb_camera();
+    step_debug_ctrl(dt);
 
     g_debugDrawMgr.add_grid(20, 5, RGBCOLOR(175,175,175), true);
-    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);
+    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 2);
 }
 
 void PlayerState::on_enter( GameState* prev_state )

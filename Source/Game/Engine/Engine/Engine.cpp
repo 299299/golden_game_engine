@@ -23,6 +23,7 @@ double    g_frameTimeMS = 0.0;
 uint32_t  g_frameId = 0;
 int       g_engineMode = 0;
 uint32_t  g_frameLostNum = 0;
+float     g_timeScale = 1.0f;
 Engine    g_engine;
 
 void Engine::init( const EngineConfig& cfg )
@@ -62,13 +63,13 @@ void Engine::run()
             return;
         }
         m_timer.reset();
-        frame(fixTimeStep);
+        frame(fixTimeStep * g_timeScale);
         double timeMS = (double)m_timer.get_usec(false) / 1000.0;
         g_frameTimeMS = timeMS;
         g_totalSeconds += (float)(timeMS/1000.0);
-        if(timeMS < fixTimeMS) 
+        if(timeMS < fixTimeMS)
             apply_framelimit((uint32_t)(fixTimeMS - timeMS));
-        else 
+        else
             ++g_frameLostNum;
         PROFILE_END();
     }
@@ -134,7 +135,7 @@ void Engine::frame(float timeStep)
 void Engine::apply_framelimit(uint32_t timeMS)
 {
     PROFILE(FrameLimit);
-    if(timeMS < 1) 
+    if(timeMS < 1)
         return;
     bx::sleep(timeMS);
 }
@@ -160,7 +161,7 @@ void Engine::subsystem_init()
 {
     TIMELOG("Engine Subsystem init");
 
-    if(!m_cfg.m_headless) 
+    if(!m_cfg.m_headless)
         g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
     else
         g_engineMode = 1;

@@ -134,11 +134,11 @@ void AnimRigInstance::update_attachment( const hkQsTransform& worldFromModel )
         const BoneAttachment& ba = attachments[i];
         hkQsTransform boneWS;
         boneWS.setMul(worldFromModel, poseInWorld[ba.m_bone_index]);
-        hkMatrix4 worldFromBone; 
+        hkMatrix4 worldFromBone;
         worldFromBone.set(boneWS);
         hkMatrix4 boneFromAttachment;
         boneFromAttachment.set4x4ColumnMajor(ba.m_bone_from_attachment);
-        hkMatrix4 worldFromAttachment; 
+        hkMatrix4 worldFromAttachment;
         worldFromAttachment.setMul(worldFromBone, boneFromAttachment);
         worldFromAttachment.get4x4ColumnMajor(t + i*16);
     }
@@ -165,7 +165,7 @@ void AnimRigInstance::test_animation(const char* name)
 #endif
 }
 
-int AnimRigInstance::collect_event( AnimationEvent* events )
+int AnimRigInstance::collect_event( AnimationEvent* events, float dt )
 {
     int r_num = 0;
 #ifdef HAVOK_COMPILE
@@ -182,7 +182,11 @@ int AnimRigInstance::collect_event( AnimationEvent* events )
             continue;
         AnimationTrigger* triggers = 0;
         float local_time = ac->getLocalTime();
+        float next_time = local_time + dt;
         int frame = (int)(local_time * ANIMATION_FRAME_FPS);
+        int next_frame = (int)(next_time * ANIMATION_FRAME_FPS);
+        if (next_frame == frame)
+            continue;
         int t_num = get_animation_triggers(anim, frame, &triggers);
         for(int j=0; j<t_num; ++j)
         {

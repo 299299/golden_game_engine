@@ -69,7 +69,7 @@ void debug_draw_locomotion(Locomotion* l, ActorId32 id)
 
     float pos[3] = { 0, 0, 0};
     transform_vec3(pos, a->m_transform.m_translation);
-    pos[1] -= 1.0f;
+    // pos[1] -= 1.0f;
 
     float normal[3] = { 0, 1, 0};
     float raidus = 1.0f;

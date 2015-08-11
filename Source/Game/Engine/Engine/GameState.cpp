@@ -2,6 +2,21 @@
 #include "Log.h"
 #include "Profiler.h"
 #include "Actor.h"
+#include "Win32Context.h"
+#include "RenderCamera.h"
+#include "DebugDraw.h"
+#include "Engine.h"
+
+
+static void swith_graphics_debug( uint32_t flag )
+{
+    static int _bgfx_debug = BGFX_DEBUG_TEXT;
+    if(!HAS_BITS(_bgfx_debug,flag))
+        ADD_BITS(_bgfx_debug, flag);
+    else
+        REMOVE_BITS(_bgfx_debug, flag);
+    bgfx::setDebug(_bgfx_debug);
+}
 
 GameState::GameState()
 {
@@ -31,6 +46,54 @@ void GameState::post_step( float dt )
 void GameState::render()
 {
     g_actorWorld.draw();
+}
+
+void GameState::step_debug_ctrl(float dt)
+{
+    static bool _show_profile = false;
+    static bool _draw_debug_graphics = false;
+
+    if(g_win32Context.is_key_just_pressed(VK_F1))
+        _show_profile = !_show_profile;
+    else if(g_win32Context.is_key_just_pressed(VK_F2))
+        _draw_debug_graphics = !_draw_debug_graphics;
+    else if(g_win32Context.is_key_just_pressed(VK_F3))
+        swith_graphics_debug(BGFX_DEBUG_WIREFRAME);
+    else if(g_win32Context.is_key_just_pressed(VK_F4))
+        swith_graphics_debug(BGFX_DEBUG_STATS);
+
+    if(g_win32Context.is_key_just_pressed(VK_ESCAPE))
+        g_engine.shutdown();
+
+    if(g_win32Context.is_key_just_pressed(VK_SPACE))
+    {
+        static int index = 0;
+        static float scales[] = {0.125f, 0.25f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f};
+        if(index >= BX_COUNTOF(scales))
+            index = 0;
+        extern float g_timeScale;
+        g_timeScale = scales[index];
+        LOGD("change time scale to %f!!!", g_timeScale);
+        ++index;
+    }
+
+    if(_show_profile)
+        g_profiler.dump();
+
+    if(_draw_debug_graphics)
+    {
+        extern void draw_debug_models();
+        extern void draw_debug_lights();
+        extern void debug_draw_animation(float);
+        draw_debug_lights();
+        draw_debug_models();
+        debug_draw_animation(dt);
+    }
+
+    extern void resource_hot_reload_update(float);
+    resource_hot_reload_update(dt);
+
+    debug_update_vdb_camera();
 }
 
 GameFSM g_gameFSM;

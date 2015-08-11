@@ -59,7 +59,6 @@ int get_animation_triggers( const Animation* anim, int frame, AnimationTrigger**
     return num;
 }
 
-
 void* load_resource_animation( void* data, uint32_t size)
 {
     Animation* anim = (Animation*)data;

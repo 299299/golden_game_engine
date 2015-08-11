@@ -7,6 +7,7 @@
 #include "Win32Context.h"
 #include "XBoxInput.h"
 #include "MathDefs.h"
+#include "Log.h"
 
 #define KEY_INPUT_GAIN      (10.0f)
 #define MOUSE_INPUT_GAIN    (10.0f)
@@ -53,8 +54,8 @@ void InputController::updateGamePad(float dt)
 
 void InputController::updateKeyboard(float dt)
 {
-    float keyInput[2] = {0, 0};
-    int keyMap[4] = { VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN };
+    float keyInput[2] = {0.0f, 0.0f};
+    const int keyMap[4] = { VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN };
     if(g_win32Context.is_key_down(keyMap[0]))
         keyInput[0] += -1.0f;
     if(g_win32Context.is_key_down(keyMap[1]))

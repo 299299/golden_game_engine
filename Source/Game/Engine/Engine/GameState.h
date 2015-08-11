@@ -17,6 +17,9 @@ public:
     virtual void on_enter(GameState* prev_state) {};
     virtual void on_exit(GameState* next_state) {};
     virtual void process_cmd_args(void* cmdLine) {};
+
+protected:
+    virtual void step_debug_ctrl(float dt);
 };
 
 class GameFSM
