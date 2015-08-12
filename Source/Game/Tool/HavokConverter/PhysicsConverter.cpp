@@ -74,17 +74,25 @@ void PhysicsConverter::postProcess()
 #endif
 
     m_compFileName = m_ownner->m_config->m_exportFolder + m_name + ".physics";
-    jsonxx::Object o;
+    jsonxx::Object new_json;
     extern const char* physics_type_names[];
-    o << "physics_type" << std::string(physics_type_names[m_type]);
-    o << "havok_file" << m_phyFileName;
-    o << "name" << getResourceName();
-    o << "type" << getTypeName();
+    new_json << "physics_type" << std::string(physics_type_names[m_type]);
+    new_json << "havok_file" << m_phyFileName;
+    new_json << "name" << getResourceName();
+    new_json << "type" << getTypeName();
 #ifdef HKX_BINARY_TO_TEXT
-    o << "havok_data" << convert_string;
-    o << "havok_size" << havok_size;
+    new_json << "havok_data" << convert_string;
+    new_json << "havok_size" << havok_size;
 #endif
-    write_json_to_file(o, m_compFileName);
+
+    if (g_hc_config->m_merge) {
+        jsonxx::Object old_json;
+        if (read_json_from_file(old_json, m_compFileName))
+            merge_json(new_json, old_json);
+    }
+
+    if (!write_json_to_file(new_json, m_compFileName))
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, m_compFileName.c_str());
 #endif
 }
 

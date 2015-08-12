@@ -15,7 +15,7 @@ std::string ComponentConverter::getResourceName() const
 
 void ComponentConverter::fillAttributes(jsonxx::Object& object) const
 {
-    if(!m_node) 
+    if(!m_node)
         return;
 #ifdef HAOVK_COMPILE
     fill_object_attributes(object, m_node);
@@ -24,7 +24,16 @@ void ComponentConverter::fillAttributes(jsonxx::Object& object) const
 
 void ComponentConverter::serializeToFile( const std::string& fileName )
 {
-    write_json_to_file(serializeToJson(), fileName);
+    jsonxx::Object new_json = serializeToJson();
+
+    if (g_hc_config->m_merge) {
+        jsonxx::Object old_json;
+        if (read_json_from_file(old_json, fileName))
+            merge_json(new_json, old_json);
+    }
+
+    if (!write_json_to_file(new_json, fileName))
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName.c_str());
 }
 
 std::string ComponentConverter::getOutputFileName() const

@@ -41,6 +41,7 @@ int havok_convert_main(int argc, bx::CommandLine* cmdline)
     g_hc_config->m_packUV = cmdline->hasArg("packuv");
     g_hc_config->m_slient = cmdline->hasArg("slient");
     g_hc_config->m_verbose = cmdline->hasArg("verbose");
+    g_hc_config->m_merge = !cmdline->hasArg('b');
 
     Actor_Config config;
     ActorConverter* converter = 0;

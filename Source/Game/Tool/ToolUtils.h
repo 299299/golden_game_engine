@@ -87,6 +87,8 @@ bool        read_json_from_file(jsonxx::Object& o, const std::string& fileName);
 void        binary_to_string(const unsigned char* b, int len, std::string& s);
 void        string_to_binary(const std::string& s, unsigned char* b, int capacity);
 
+void        merge_json(jsonxx::Object& o, const jsonxx::Object& o1);
+
 typedef tinystl::unordered_map<uint32_t, uint32_t> ResourceFileMap;
 struct ResourceFileDataBase
 {

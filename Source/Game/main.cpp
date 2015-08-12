@@ -36,6 +36,7 @@ void showHelp()
         "--packnormal pack normal\n"
         "--packuv pack uv\n"
         "--verpose pack uv\n"
+        "-b to force not merge old json\n"
         "-----------------------------------------\n"
         "Data Compiler options\n"
         "-i input dir \n"

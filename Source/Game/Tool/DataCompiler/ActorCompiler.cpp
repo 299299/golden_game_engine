@@ -69,7 +69,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
     m_pathPrefix = root.get<std::string>("prefix", "");
 
     uint32_t numComps = 0;
-    jsonxx::Array compsValue = root.get<jsonxx::Array>("components");
+    const jsonxx::Array& compsValue = root.get<jsonxx::Array>("components");
     Fact* fact = json_to_fact(root, "data", NULL);
     uint32_t fact_mem_size = fact ? fact->get_memory_size() : sizeof(Fact);
 
@@ -149,7 +149,7 @@ bool ActorCompiler::readJSON(const jsonxx::Object& root)
 
     actor->m_fact_offset = (uint32_t)(offset - mem.m_buf);
 
-    if(fact) 
+    if(fact)
     {
         memcpy(offset, fact, fact_mem_size);
         COMMON_DEALLOC(fact);

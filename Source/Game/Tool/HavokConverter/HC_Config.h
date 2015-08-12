@@ -23,6 +23,7 @@ struct HC_Config
     ,m_packUV(false)
     ,m_slient(false)
     ,m_verbose(false)
+    ,m_merge(true)
     {
     }
 
@@ -33,6 +34,7 @@ struct HC_Config
     bool                        m_packUV;
     bool                        m_slient;
     bool                        m_verbose;
+    bool                        m_merge;
 };
 
 class hkpPhysicsData;

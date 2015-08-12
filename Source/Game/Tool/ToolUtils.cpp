@@ -987,6 +987,24 @@ void string_to_binary( const std::string& s, unsigned char* b, int capacity )
     }
 }
 
+void merge_json(jsonxx::Object& o, const jsonxx::Object& o1)
+{
+    const std::map<std::string, jsonxx::Value*>& kv = o1.kv_map();
+    std::map<std::string, jsonxx::Value*>::const_iterator it = kv.begin();
+    for(; it != kv.end(); ++it)
+    {
+        jsonxx::Value* v = it->second;
+        if(!v)
+            continue;
+
+        if (o.kv_map().find(it->first) != o.kv_map().end())
+            continue;
+
+        LOGW("merge_json merge a not exist key-value %s", it->first.c_str());
+        o.import(it->first, *v);
+    }
+}
+
 bool ResourceFileDataBase::isFileChanged(const std::string& fileName, uint32_t& modifyTime) const
 {
     //bx::LwMutexScope _l(&m_lock);
