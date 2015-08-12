@@ -19,7 +19,7 @@ class hkxAttributeHolder;
 #define SHADER_INCLUDE_EXT      ("sh")
 #define SHADER_SOURCE_PATH      INTERMEDIATE_PATH"core/shaders/"
 #define DC_RESULT               ("data_compiler_result.txt")
-#define TEMP_PATH               ("temp/")
+#define TEMP_PATH               ("havok/")
 #define DEFAULT_SHADER          ("base")
 
 typedef std::vector<std::string> StringArray;

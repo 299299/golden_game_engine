@@ -345,7 +345,8 @@ void resource_hot_reload_init()
 
 void resource_hot_reload_shutdown()
 {
-    g_hotReload->shutdown();
+    if (g_hotReload)
+        g_hotReload->shutdown();
     SAFE_DELETE(g_hotReload);
 }
 
