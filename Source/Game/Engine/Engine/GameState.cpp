@@ -82,11 +82,11 @@ void GameState::step_debug_ctrl(float dt)
 
     if(_draw_debug_graphics)
     {
-        extern void draw_debug_models();
-        extern void draw_debug_lights();
+        extern void debug_draw_models();
+        extern void debug_draw_lights();
         extern void debug_draw_animation(float);
-        draw_debug_lights();
-        draw_debug_models();
+        debug_draw_lights();
+        debug_draw_models();
         debug_draw_animation(dt);
     }
 

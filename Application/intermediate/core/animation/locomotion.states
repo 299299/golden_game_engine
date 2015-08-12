@@ -22,13 +22,13 @@
                 {
                     "name": "stand_test_1",
                     "type": "value",
-                    "animation":"core/character/stand_idle"
+                    "animation":"core/animation/stand_idle"
                 },
                 "right":
                 {
                     "name": "heihei",
                     "type": "value",
-                    "animation":"core/character/stand_idle"
+                    "animation":"core/animation/stand_idle"
                 }
             }
         },
@@ -53,13 +53,13 @@
                 {
                     "name": "move_test_1",
                     "type": "value",
-                    "animation":"core/character/run"
+                    "animation":"core/animation/run"
                 },
                 "right":
                 {
                     "name": "move_test_2",
                     "type": "value",
-                    "animation":"core/character/run"
+                    "animation":"core/animation/run"
                 }
             }
         },

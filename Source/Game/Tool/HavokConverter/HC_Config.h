@@ -3,8 +3,7 @@
 
 #define     COMMON_MAT_NAME     ("lambert1")
 #define     PROXY_NAME          ("Proxy_")
-#define     LEVEL_NAME          ("Level")
-#define     ENGINE_ATTRIBUTES   ("engine_attributes")
+
 //#define   HC_DUMP_PROFILE
 
 #ifdef HC_DUMP_PROFILE

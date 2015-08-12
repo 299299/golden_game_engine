@@ -16,7 +16,7 @@
 			"type": "rig" 
 		},
 		{
-			"name": "core\/character\/locomotion",
+			"name": "core\/animation\/locomotion",
 			"type": "states" 
 		} 
 	],

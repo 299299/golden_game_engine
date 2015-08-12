@@ -7,6 +7,7 @@
 #include "MathDefs.h"
 #include "MemorySystem.h"
 #include "IdArray.h"
+#include "Profiler.h"
 
 LightWorld g_lightWorld;
 static IdArray<Light>  m_lights;
@@ -173,7 +174,7 @@ void* get_all_light()
 
 void transform_light(Id id, const hkQsTransform& t)
 {
-    if(!m_lights.has(id)) 
+    if(!m_lights.has(id))
         return;
     Light* light = m_lights.get(id);
 #ifdef HAVOK_COMPILE
@@ -183,8 +184,9 @@ void transform_light(Id id, const hkQsTransform& t)
 }
 
 #include "DebugDraw.h"
-void draw_debug_lights()
+void debug_draw_lights()
 {
+    PROFILE(debug_draw_lights);
     int num = m_lights.size();
     Light* lights = m_lights.begin();
     bool bShadow = false;

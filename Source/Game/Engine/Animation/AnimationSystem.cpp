@@ -17,6 +17,7 @@
 #include "AnimRig.h"
 #include "Actor.h"
 #include "AnimationState.h"
+#include "AnimControl.h"
 #ifdef HAVOK_COMPILE
 #include <Common/Base/Container/Array/hkArray.h>
 #include <Common/Base/Container/LocalArray/hkLocalArray.h>
@@ -350,7 +351,7 @@ struct DebugEvtText
 void debug_draw_animation(float dt)
 {
     PROFILE(debug_draw_animation);
-    extern int g_engineMode;
+
     int num = m_rigs.size();
     AnimRigInstance* rigs = m_rigs.begin();
     for (int i=0; i<num; ++i)
@@ -362,6 +363,7 @@ void debug_draw_animation(float dt)
         const hkQsTransform& t = actor->m_transform;
 
         //draw debug pose
+        extern int g_engineMode;
         if(g_engineMode == 0)
             draw_pose(*pose, t, RGBCOLOR(125,125,255), false);
         else
@@ -383,8 +385,20 @@ void debug_draw_animation(float dt)
                     t1.set4x4ColumnMajor(world_pose);
                     g_debugDrawMgr.add_axis(t1);
                     float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
-                    g_debugDrawMgr.add_text_3d(world_pos, stringid_lookup(attchment.m_name), RGBCOLOR(255,0,0));
+                    g_debugDrawMgr.add_text_3d(world_pos, RGBCOLOR(255,0,0), stringid_lookup(attchment.m_name));
                 }
+            }
+        }
+
+        {
+            // draw animation control
+            hkaAnimatedSkeleton* s = rig.m_skeleton;
+            int num = s->getNumAnimationControls();
+            g_debugDrawMgr.add_text(RGBCOLOR(255,0,0), stringid_lookup(actor->m_name));
+            for (int i=0; i<num; ++i)
+            {
+                hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
+                g_debugDrawMgr.add_text(RGBCOLOR(0,0,255), "%s weight = %f, time = %f", get_anim_debug_name(ac->m_animation), ac->getMasterWeight(), ac->getLocalTime());
             }
         }
 #endif
@@ -412,7 +426,7 @@ void debug_draw_animation(float dt)
 #ifdef HAVOK_COMPILE
         transform_vec3(pos, t.m_translation);
 #endif
-        g_debugDrawMgr.add_text_3d(pos, dbg_evt.m_message, RGBCOLOR(255,0,255));
+        g_debugDrawMgr.add_text_3d(pos, RGBCOLOR(255,0,255), dbg_evt.m_message);
     }
 
     num = g_animMgr.m_numAnimEvts;
@@ -436,6 +450,24 @@ void debug_draw_animation(float dt)
     }
 }
 
+typedef tinystl::unordered_map<void*, const char*> anim_debug_map;
+static anim_debug_map  m_anim_debug_names;
+void add_anim_debug_name(void* p, StringId name)
+{
+    anim_debug_map::iterator i = m_anim_debug_names.find(p);
+    if(i != m_anim_debug_names.end())
+        return;
+    m_anim_debug_names[p] = stringid_lookup(name);
+}
+
+const char* get_anim_debug_name(void* p)
+{
+    anim_debug_map::iterator it = m_anim_debug_names.find(p);
+    const char* anim_name = 0;
+    if(it != m_anim_debug_names.end())
+        anim_name = it->second;
+    return anim_name;
+}
 
 #endif
 

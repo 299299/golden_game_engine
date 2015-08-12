@@ -22,7 +22,6 @@ float     g_totalSeconds = 0.0;
 double    g_frameTimeMS = 0.0;
 uint32_t  g_frameId = 0;
 int       g_engineMode = 0;
-uint32_t  g_frameLostNum = 0;
 float     g_timeScale = 1.0f;
 Engine    g_engine;
 
@@ -67,10 +66,6 @@ void Engine::run()
         double timeMS = (double)m_timer.get_usec(false) / 1000.0;
         g_frameTimeMS = timeMS;
         g_totalSeconds += (float)(timeMS/1000.0);
-        if(timeMS < fixTimeMS)
-            apply_framelimit((uint32_t)(fixTimeMS - timeMS));
-        else
-            ++g_frameLostNum;
         PROFILE_END();
     }
 }
@@ -130,14 +125,6 @@ void Engine::frame(float timeStep)
         Graphics::frame_end();
         g_threadMgr.vdb_update(timeStep);
     }
-}
-
-void Engine::apply_framelimit(uint32_t timeMS)
-{
-    PROFILE(FrameLimit);
-    if(timeMS < 1)
-        return;
-    bx::sleep(timeMS);
 }
 
 void Engine::core_init()

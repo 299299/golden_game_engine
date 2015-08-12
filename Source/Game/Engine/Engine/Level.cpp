@@ -38,7 +38,7 @@ void start_level(Level* l)
     {
         LevelObject& object = objects[i];
         transform_object(t, object.m_translation, object.m_rotation, object.m_scale);
-        object.m_actor = g_actorWorld.create_actor(resources[object.m_resource_index].m_resource, t);
+        object.m_actor = g_actorWorld.create_actor(resources[object.m_resource_index].m_resource, t, object.m_name);
     }
 }
 

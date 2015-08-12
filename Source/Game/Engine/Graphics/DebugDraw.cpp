@@ -23,13 +23,6 @@ struct DebugLine
     uint32_t        m_color;
 };
 
-struct DebugText
-{
-    float           m_screenPos[2];
-    uint32_t        m_color;
-    char*           m_text;
-};
-
 struct PosColorVertex
 {
     float m_pos[3];
@@ -51,19 +44,13 @@ void DebugDrawManager::init()
 {
     PosColorVertex::init();
     m_numLines[0] = m_numLines[1] = 0;
-    m_numTexts = 0;
-    m_texts = DEBUG_ALLOC(DebugText, MAX_DEBUG_TEXTS);
     m_lines[0] = DEBUG_ALLOC(DebugLine, MAX_DEBUG_LINES);
     m_lines[1] = DEBUG_ALLOC(DebugLine, MAX_DEBUG_LINES);
 }
 
 void DebugDrawManager::shutdown()
 {
-#if 0
-    COMMON_DEALLOC(m_texts);
-    COMMON_DEALLOC(m_lines[0]);
-    COMMON_DEALLOC(m_lines[1]);
-#endif
+
 }
 
 void DebugDrawManager::ready()
@@ -75,29 +62,17 @@ void DebugDrawManager::ready()
 void DebugDrawManager::frame_start()
 {
     m_numLines[0] = m_numLines[1] = 0;
-    m_numTexts = 0;
+    m_text_y = 0;
 }
 
 void DebugDrawManager::draw()
 {
     PROFILE(Debug_Draw);
-    if(!m_ready) return;
+    if(!m_ready)
+        return;
 
     draw(m_numLines[0], m_lines[0], true);
     draw(m_numLines[1], m_lines[1], false);
-
-    int num = m_numTexts;
-    const DebugText* head = m_texts;
-
-    for (int i = 0; i < num; ++i)
-    {
-        const DebugText& text = head[i];
-        imguiDrawText((int)text.m_screenPos[0],
-                      (int)text.m_screenPos[1],
-                      ImguiTextAlign::Center,
-                      text.m_text,
-                      text.m_color);
-    }
 }
 
 void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
@@ -240,20 +215,40 @@ void DebugDrawManager::add_cross( const float* pos, float size, uint32_t color, 
     }
 }
 
-void DebugDrawManager::add_text_3d( const float* pos, const char* text, uint32_t color )
+void DebugDrawManager::add_text_3d( const float* pos, uint32_t color, const char* fmt,  ...)
 {
     float pos2D[2] = {0,0};
     bool bFlag = g_camera.project_3d_to_2d(pos2D, pos);
     if(!bFlag)
         return;
-    DebugText& dbgText = m_texts[m_numTexts++];
-    dbgText.m_color = color;
-    dbgText.m_screenPos[0] = pos2D[0];
-    dbgText.m_screenPos[1] = pos2D[1];
-    uint32_t textLen = strlen(text);
-    dbgText.m_text = FRAME_ALLOC(char, textLen+1);
-    memcpy(dbgText.m_text, text, textLen);
-    dbgText.m_text[textLen] = '\0';
+    char c_buffer[2048];
+    va_list argp;
+    va_start(argp, fmt);
+    vsnprintf(c_buffer, sizeof(c_buffer), fmt, argp);
+    va_end(argp);
+    imguiDrawText((int)pos2D[0], (int)pos2D[1], ImguiTextAlign::Left, c_buffer, color);
+}
+
+void DebugDrawManager::add_text_2d( const float* pos, uint32_t color, const char* fmt,  ...)
+{
+    char c_buffer[2048];
+    va_list argp;
+    va_start(argp, fmt);
+    vsnprintf(c_buffer, sizeof(c_buffer), fmt, argp);
+    va_end(argp);
+    imguiDrawText((int)pos[0], (int)pos[1], ImguiTextAlign::Left, c_buffer, color);
+}
+
+void DebugDrawManager::add_text(uint32_t color, const char* fmt, ...)
+{
+    char c_buffer[2048];
+    va_list argp;
+    va_start(argp, fmt);
+    vsnprintf(c_buffer, sizeof(c_buffer), fmt, argp);
+    va_end(argp);
+    const int x = 5;
+    m_text_y += 20;
+    imguiDrawText(x, m_text_y, ImguiTextAlign::Left, c_buffer, color);
 }
 
 void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t color, bool bDepth)

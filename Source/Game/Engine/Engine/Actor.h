@@ -50,12 +50,13 @@ struct ActorWorld
     void        clear();
     void        clear_actors(uint32_t type);
 
-    ActorId32   create_actor(StringId resourceName, const hkQsTransform& t);
-    ActorId32   create_actor(void* actorResource, const hkQsTransform& t);
+    ActorId32   create_actor(StringId resourceName, const hkQsTransform& t, StringId name);
+    ActorId32   create_actor(void* actorResource, const hkQsTransform& t, StringId name);
     void        destroy_actor(ActorId32 id);
     Actor*      get_actor(ActorId32 id);
     int         num_actors(int type);
     Actor*      get_actors(int type);
+    ActorId32   find_actor(StringId name, int type = -1);
 
     void        pre_step(float dt);
     void        step(float dt);

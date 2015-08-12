@@ -29,12 +29,11 @@ struct Engine
     void init(const EngineConfig& cfg);
     void quit();
     void run();
-    
+
     void frame(float timeStep);
     bool running() const { return m_running;};
     void shutdown() { m_running = false;};
 
-    void apply_framelimit(uint32_t timeMS);
     void core_init();
     void subsystem_init();
     void core_shutdown();

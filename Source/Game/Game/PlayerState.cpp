@@ -62,12 +62,6 @@ void PlayerState::step(float dt)
 
     dir.setRotatedDir(t.m_rotation, fwd);
 
-    int texColor = RGBCOLOR(255,255,0);
-
-    char buf[256];
-    int x = 0;
-    int y = 0;
-
     hkVector4 cam_dir;
     const float *from = g_camera.m_eye;
     const float *to = g_camera.m_at;
@@ -91,13 +85,12 @@ void PlayerState::step(float dt)
     s_locomotion.m_turnSpeed = 4.0f;
     update_locomotion(&s_locomotion, input, m_player);
 
-    bx::snprintf(buf, sizeof(buf), "input_angle=%f camera_angle=%f character_angle=%f angle_diff=%f",
+    g_debugDrawMgr.add_text(RGBCOLOR(125,100,200),
+        "input_angle=%f camera_angle=%f character_angle=%f angle_diff=%f",
         input_angle * HK_FLOAT_RAD_TO_DEG,
         camera_angle * HK_FLOAT_RAD_TO_DEG,
         character_angle * HK_FLOAT_RAD_TO_DEG,
         angle_diff * HK_FLOAT_RAD_TO_DEG);
-    y += 20;
-    imguiDrawText(x, y, ImguiTextAlign::Left, buf, texColor);
 
     debug_draw_locomotion(&s_locomotion, m_player);
     step_debug_ctrl(dt);
@@ -125,7 +118,7 @@ void PlayerState::process_cmd_args( void* p )
         LOGD("loading actor %s \n", actor_name);
         hkQsTransform t;
         t.setIdentity();
-        m_player = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
+        m_player = g_actorWorld.create_actor(stringid_caculate(actor_name), t, stringid_caculate("player"));
         LOGD("created actor = %x", m_player);
     }
 }

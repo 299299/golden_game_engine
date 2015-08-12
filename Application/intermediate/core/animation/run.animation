@@ -1,6 +1,6 @@
 {
 	"frames": 21,
-	"havok_file": "intermediate\/core\/character\/run.havok",
+	"havok_file": "intermediate\/core\/animation\/run.havok",
 	"triggers": [
 		{
 			"frame": 0,

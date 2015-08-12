@@ -148,7 +148,7 @@ INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
         ac->set_loop(state->m_looped);
 #endif
 #ifndef _RETAIL
-        g_animMgr.add_anim_debug_name(anim_data->m_animation, anim_data->m_name);
+        add_anim_debug_name(anim_data->m_animation, anim_data->m_name);
 #endif
     }
 }

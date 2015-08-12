@@ -175,7 +175,7 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
 
         if(showLabels)
         {
-            g_debugDrawMgr.add_text_3d(start, skeleton->m_bones[i].m_name.cString(), RGBCOLOR(70,125,200));
+            g_debugDrawMgr.add_text_3d(start, RGBCOLOR(70,125,200), skeleton->m_bones[i].m_name.cString());
         }
     }
 #endif

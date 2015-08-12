@@ -45,6 +45,7 @@ ActorConverter::serializeToJson() const
         compsObject << m_components[i]->serializeToJson();
     }
 
+#if 0
 #ifdef HAVOK_COMPILE
     if(scene)
     {
@@ -67,6 +68,7 @@ ActorConverter::serializeToJson() const
             }
         }
     }
+#endif
 #endif
 
     rootObject << "components" << compsObject;

@@ -9,7 +9,6 @@
 #include "MathDefs.h"
 #include "Graphics.h"
 #include "IdArray.h"
-#include "GameConfig.h"
 #include "Shader.h"
 
 void Model::submit()
@@ -274,7 +273,7 @@ void* get_all_model()
 
 void transform_model(Id id, const hkQsTransform& t)
 {
-    if(!m_models.has(id)) 
+    if(!m_models.has(id))
         return;
     Model* model = m_models.get(id);
 #ifdef HAVOK_COMPILE
@@ -302,9 +301,9 @@ void lookup_model_instance_data( void * resource )
 //
 //-----------------------------------------------------------------
 #include "DebugDraw.h"
-void draw_debug_models()
+void debug_draw_models()
 {
-    PROFILE(draw_debug_models);
+    PROFILE(debug_draw_models);
     int num = m_models.size();
     Model* models = m_models.begin();
     for (int i=0; i<num; ++i)

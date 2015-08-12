@@ -71,11 +71,7 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
                 {
                     ValueNode* node = (ValueNode*)nodes;
                     hk_anim_ctrl* ac = (hk_anim_ctrl*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    anim_debug_map::iterator i = g_animMgr.m_anim_debug_names.find(ac->m_animation);
-                    const char* anim_name = 0;
-                    if(i != g_animMgr.m_anim_debug_names.end())
-                        anim_name = i->second;
-                    imguiLabel("     animation = %s", anim_name);
+                    imguiLabel("     animation = %s", get_anim_debug_name(ac->m_animation));
                 }
                 break;
             case AnimationNodeType::Select:
@@ -101,11 +97,7 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
     for (int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = (hk_anim_ctrl*)s->getAnimationControl(i);
-        anim_debug_map::iterator it = g_animMgr.m_anim_debug_names.find(ac->m_animation);
-        const char* anim_name = 0;
-        if(it != g_animMgr.m_anim_debug_names.end())
-            anim_name = it->second;
-        imguiLabel("%s weight = %f, time = %f", anim_name, ac->getMasterWeight(), ac->getLocalTime());
+        imguiLabel("%s weight = %f, time = %f", get_anim_debug_name(ac->m_animation), ac->getMasterWeight(), ac->getLocalTime());
     }
 #endif
 }
@@ -188,7 +180,7 @@ void PreviewState::process_cmd_args( void* p )
         LOGD("loading actor %s \n", actor_name);
         hkQsTransform t;
         t.setIdentity();
-        m_preview_actor = g_actorWorld.create_actor(stringid_caculate(actor_name), t);
+        m_preview_actor = g_actorWorld.create_actor(stringid_caculate(actor_name), t, stringid_caculate("preview-actor"));
         LOGD("created actor = %x", m_preview_actor);
     }
 
