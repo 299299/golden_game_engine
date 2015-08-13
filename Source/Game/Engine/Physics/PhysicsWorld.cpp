@@ -16,6 +16,7 @@
 #include "ProxyInstance.h"
 #include "Actor.h"
 #include "Component.h"
+#include "Engine.h"
 
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
@@ -113,7 +114,7 @@ void PhysicsWorld::frame_start()
     m_numRaycasts = 0;
     g_collisionEvtMap.clear();
     m_collisionEvents = FRAME_ALLOC(CollisionEvent*, m_objects.size());
-    m_raycasts = FRAME_ALLOC(RaycastJob, MAX_RAYCAST_PERFRAME);
+    m_raycasts = FRAME_ALLOC(RaycastJob, g_engine.m_game_cfg.m_max_raycast_per_frame);
 }
 
 
@@ -317,7 +318,7 @@ int PhysicsWorld::add_raycast_job(const float* from, const float* to, int filter
     if(!m_raycasts) return -1;
     int retHandle = m_numRaycasts;
     RaycastJob* job = m_raycasts + (m_numRaycasts++);
-    ENGINE_ASSERT(m_numRaycasts < MAX_RAYCAST_PERFRAME, "raycast overflow");
+    ENGINE_ASSERT(m_numRaycasts < g_engine.m_game_cfg.m_max_raycast_per_frame, "raycast overflow");
     bx::vec3Move(job->m_from, from);
     bx::vec3Move(job->m_to, to);
     job->m_filterInfo = filterInfo;

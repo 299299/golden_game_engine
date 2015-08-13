@@ -9,22 +9,16 @@
 
 HC_Config* g_hc_config = 0;
 
-int havok_convert_main(int argc, bx::CommandLine* cmdline)
+int havok_convert_main(bx::CommandLine* cmdline)
 {
 #ifdef HAVOK_COMPILE
     uint32_t timeMS = GetTickCount();
-    const int numMinArgs = 3;
-    if(argc < numMinArgs)
-    {
-        msg_box("argnum less than %d\n", numMinArgs);
-        return kErrorArg;
-    }
 
     int err = kErrorSuccess;
     LOG_INIT("HavokConverterLog.html", "Havok Converter");
     MemoryConfig cfg;
     memset(&cfg, 0, sizeof(cfg));
-    cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
+    cfg.m_debugMemSize = SIZE_MB(2);
     cfg.m_initHavok = true;
     cfg.m_havokFrameMemSize = 0;
     cfg.m_havokMonitorMemSize = 0;

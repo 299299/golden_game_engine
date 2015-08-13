@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "DataDef.h"
 #include "Profiler.h"
+#include "Engine.h"
 #include <iostream>
 #include <bx/commandline.h>
 
@@ -18,6 +19,8 @@ void showHelp()
         "Game options:\n"
         "-w set window width\n"
         "-h set window height\n"
+        "-x set window left\n"
+        "-y set window top\n"
         "-t set window title\n"
         "--package --> package to load\n"
         "--state --> game state to run\n"
@@ -49,10 +52,10 @@ void showHelp()
         "--ignore_texture to ignore converting all dds \n");
 }
 
-typedef int (*func_app_main)(int, bx::CommandLine*);
-extern int havok_convert_main(int, bx::CommandLine*);
-extern int data_compiler_main(int, bx::CommandLine*);
-extern int game_main(int, bx::CommandLine*);
+typedef int (*func_app_main)(bx::CommandLine*);
+extern int havok_convert_main(bx::CommandLine*);
+extern int data_compiler_main(bx::CommandLine*);
+extern int game_main(bx::CommandLine*);
 
 struct game_app
 {
@@ -77,12 +80,12 @@ int main(int argc, char* argv[])
 #endif
 
     bx::CommandLine cmdline(argc, argv);
-    const char* action = cmdline.findOption("action");
     if(cmdline.hasArg("debug"))
     {
         msg_box("wait for visual studio attach process.");
     }
 
+    const char* action = cmdline.findOption("action");
     if(!action)
         return kErrorAction;
 
@@ -97,6 +100,10 @@ int main(int argc, char* argv[])
         }
     }
 
+    if (!g_engine.load_game_cfg("config.json")) {
+        return kErrorArg;
+    }
+
     HiresTimer::init();
-    return app ? app->func(argc, &cmdline) : kErrorAction;
+    return app ? app->func(&cmdline) : kErrorAction;
 }

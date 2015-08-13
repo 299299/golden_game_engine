@@ -1,0 +1,18 @@
+{
+    "max_models":512,
+    "max_lights":32,
+    "max_rigs":32,
+    "max_anim_fsm":32,
+    "max_anim_evts":1024,
+    "max_characters":32,
+    "max_geometries":256,
+    "max_props":64,
+    "max_physics_objects":256,
+    "max_proxy_objects":32,
+    "max_raycast_per_frame":1024,
+    "debug_memory_size":2,
+    "frame_memory_size":5,
+    "havok_monitor_memory_size":2,
+    "havok_frame_memory_size":4,
+    "havok_check_memory":true
+}

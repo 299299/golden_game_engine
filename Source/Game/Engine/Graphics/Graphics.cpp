@@ -3,6 +3,7 @@
 #include "DataDef.h"
 #include "MemorySystem.h"
 #include "Profiler.h"
+#include "Engine.h"
 //============================================
 #include "RenderCamera.h"
 #include "DebugDraw.h"
@@ -264,7 +265,7 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     bool shadowSamplerSupported = 0 != (caps->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);
     LOGD("support shadow sampler = %d", shadowSamplerSupported);
 
-    if(bFullScreen) 
+    if(bFullScreen)
         g_resetFlag |= BGFX_RESET_FULLSCREEN;
     bgfx::reset(g_win32Context.m_width, g_win32Context.m_height, g_resetFlag);
     bgfx::setDebug(BGFX_DEBUG_TEXT);
@@ -278,8 +279,8 @@ void Graphics::init(void* hwnd, bool bFullScreen)
     g_camera.init();
     g_debugDrawMgr.init();
     g_guiMgr.init();
-    g_modelWorld.init(MAX_MODELS);
-    g_lightWorld.init(MAX_LIGHTS);
+    g_modelWorld.init(g_engine.m_game_cfg.m_max_models);
+    g_lightWorld.init(g_engine.m_game_cfg.m_max_lights);
 
     //----------------------------------------------
     // view name for debug.
@@ -399,7 +400,7 @@ void Graphics::frame_start()
         for (uint32_t i=0; i<g_numFrameBuffers; ++i)
         {
             FrameBuffer& fb = g_frameBuffers[i];
-            if(!fb.m_scaled) 
+            if(!fb.m_scaled)
                 continue;
             fb.resize(w, h);
         }
@@ -424,7 +425,7 @@ void FrameBuffer::resize( int w, int h )
 
 void FrameBuffer::create()
 {
-    if(bgfx::isValid(m_handle)) 
+    if(bgfx::isValid(m_handle))
         bgfx::destroyFrameBuffer(m_handle);
 
     for(uint32_t i=0; i<m_numTextures; ++i)

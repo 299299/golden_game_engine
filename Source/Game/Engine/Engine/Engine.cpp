@@ -16,6 +16,7 @@
 #include "DataDef.h"
 #include "Win32Context.h"
 #include "Actor.h"
+#include "ToolUtils.h"
 #include <bx/timer.h>
 
 float     g_totalSeconds = 0.0;
@@ -23,7 +24,7 @@ double    g_frameTimeMS = 0.0;
 uint32_t  g_frameId = 0;
 int       g_engineMode = 0;
 float     g_timeScale = 1.0f;
-Engine    g_engine;
+Engine    g_engine = { 0 };
 
 void Engine::init( const EngineConfig& cfg )
 {
@@ -131,11 +132,11 @@ void Engine::core_init()
 {
     TIMELOG("Engine Core Init");
     MemoryConfig cfg;
-    cfg.m_checkHavokMem = m_cfg.m_checkMemory;
-    cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
-    cfg.m_frameMemSize = FRAME_MEMORY_SIZE;
-    cfg.m_havokFrameMemSize = HAVOK_FRAMEMEMORY_SIZE;
-    cfg.m_havokMonitorMemSize = HAVOK_MONITOR_MEM_SIZE;
+    cfg.m_checkHavokMem = m_game_cfg.m_havok_check_memory;
+    cfg.m_debugMemSize = m_game_cfg.m_debug_memory_size;
+    cfg.m_frameMemSize = m_game_cfg.m_frame_memory_size;
+    cfg.m_havokFrameMemSize = m_game_cfg.m_havok_frame_memory_size;
+    cfg.m_havokMonitorMemSize = m_game_cfg.m_havok_monitor_memory_size;
     cfg.m_initHavok = true;
     g_memoryMgr.init(cfg);
     g_threadMgr.init(true);
@@ -149,26 +150,36 @@ void Engine::subsystem_init()
     TIMELOG("Engine Subsystem init");
 
     if(!m_cfg.m_headless)
-        g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowWidth, m_cfg.m_windowHeight);
+        g_win32Context.create_window(m_cfg.m_windowTitle, m_cfg.m_windowPosSize[2], m_cfg.m_windowPosSize[3], m_cfg.m_windowPosSize[0], m_cfg.m_windowPosSize[1]);
     else
         g_engineMode = 1;
 
     Graphics::init(g_win32Context.m_hwnd, m_cfg.m_fullScreen);
-    g_physicsWorld.init(MAX_PHYSICS, MAX_PROXY);
 
-    AnimationConfig cfg1;
-    memset(&cfg1, 0x00, sizeof(cfg1));
-    cfg1.max_rigs = MAX_ANIM_RIG;
-    cfg1.max_anim_events = MAX_ANIM_EVENTS;
-    cfg1.max_state_layers = MAX_ANIM_FSM;
-    g_animMgr.init(cfg1);
+    {
+        // physics
+        g_physicsWorld.init(m_game_cfg.m_max_physics_objects, m_game_cfg.m_max_proxy_objects);
+    }
 
-    ActorConfig cfg2;
-    memset(&cfg2, 0x00, sizeof(cfg2));
-    cfg2.max_characters = MAX_CHARACTER;
-    cfg2.max_geometries = MAX_LEVEL_GEOMETRY;
-    cfg2.max_props = MAX_PROP;
-    g_actorWorld.init(cfg2);
+    {
+        //animation
+        AnimationConfig cfg;
+        memset(&cfg, 0x00, sizeof(cfg));
+        cfg.max_rigs = m_game_cfg.m_max_rigs;
+        cfg.max_anim_events = m_game_cfg.m_max_anim_evts;
+        cfg.max_state_layers = m_game_cfg.m_max_anim_fsm;
+        g_animMgr.init(cfg);
+    }
+
+    {
+        //actor
+        ActorConfig cfg;
+        memset(&cfg, 0x00, sizeof(cfg));
+        cfg.max_characters = m_game_cfg.m_max_characters;
+        cfg.max_geometries = m_game_cfg.m_max_geometries;
+        cfg.max_props = m_game_cfg.m_max_props;
+        g_actorWorld.init(cfg);
+    }
 }
 
 void Engine::core_shutdown()
@@ -190,6 +201,36 @@ void Engine::subsystem_shutdown()
     Graphics::shutdown();
     g_debugDrawMgr.shutdown();
     g_resourceMgr.shutdown();
+}
+
+bool Engine::load_game_cfg(const char* cfg_file)
+{
+    jsonxx::Object o;
+    if (!read_json_from_file(o, cfg_file))
+        return false;
+
+    memset (&m_game_cfg, 0x00, sizeof(m_game_cfg));
+
+    m_game_cfg.m_max_models = json_to_int(o, "max_models");
+    m_game_cfg.m_max_lights = json_to_int(o, "max_lights");
+    m_game_cfg.m_max_rigs = json_to_int(o, "max_rigs");
+    m_game_cfg.m_max_anim_evts = json_to_int(o, "max_anim_evts");
+    m_game_cfg.m_max_anim_fsm = json_to_int(o, "max_anim_fsm");
+    m_game_cfg.m_max_characters = json_to_int(o, "max_characters");
+    m_game_cfg.m_max_geometries = json_to_int(o, "max_geometries");
+    m_game_cfg.m_max_props = json_to_int(o, "max_props");
+    m_game_cfg.m_max_physics_objects = json_to_int(o, "max_physics_objects");
+    m_game_cfg.m_max_proxy_objects = json_to_int(o, "max_proxy_objects");
+    m_game_cfg.m_max_raycast_per_frame = json_to_int(o, "max_raycast_per_frame");
+
+    m_game_cfg.m_debug_memory_size = SIZE_MB(json_to_int(o, "debug_memory_size"));
+    m_game_cfg.m_frame_memory_size = SIZE_MB(json_to_int(o, "frame_memory_size"));
+    m_game_cfg.m_havok_monitor_memory_size = SIZE_MB(json_to_int(o, "havok_monitor_memory_size"));
+    m_game_cfg.m_havok_frame_memory_size = SIZE_MB(json_to_int(o, "havok_frame_memory_size"));
+
+    m_game_cfg.m_havok_check_memory = json_to_bool(o, "havok_check_memory");
+
+    return true;
 }
 
 void register_engine_factories()

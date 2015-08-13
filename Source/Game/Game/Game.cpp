@@ -18,7 +18,7 @@
 #include <bx/commandline.h>
 
 
-int game_main(int argc, bx::CommandLine* cmdline)
+int game_main(bx::CommandLine* cmdline)
 {
     if(cmdline->hasArg("compile"))
     {
@@ -29,22 +29,30 @@ int game_main(int argc, bx::CommandLine* cmdline)
     const char* package_name = 0;
     const char* state_name = 0;
     GameState* _state = 0;
+    const char* name = 0;
 
     EngineConfig cfg;
     memset(&cfg, 0x00, sizeof(cfg));
-    cfg.m_checkMemory = true;
     cfg.m_windowTitle = "game";
-    cfg.m_windowWidth = 800;
-    cfg.m_windowHeight = 600;
+    cfg.m_windowPosSize[0] = 0;
+    cfg.m_windowPosSize[1] = 0;
+    cfg.m_windowPosSize[2] = 800;
+    cfg.m_windowPosSize[3] = 600;
     cfg.m_fixedFPS = 60;
 
-    const char* name = cmdline->findOption('w');
-    if(name) cfg.m_windowWidth = atoi(name);
-    name = cmdline->findOption('h');
-    if(name) cfg.m_windowHeight = atoi(name);
+    const char names[4] = {'x', 'y', 'w', 'h'};
+    for (size_t i=0; i<BX_COUNTOF(names); ++i)
+    {
+        const char* option = cmdline->findOption(names[i]);
+        if (!option)
+            continue;
+        cfg.m_windowPosSize[i] = atoi(option);
+    }
+
     cfg.m_headless = cmdline->hasArg("headless");
     name = cmdline->findOption('t');
-    if(name) cfg.m_windowTitle = name;
+    if(name)
+        cfg.m_windowTitle = name;
     package_name = cmdline->findOption("package");
     state_name = cmdline->findOption("state");
 

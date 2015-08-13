@@ -1,9 +1,11 @@
 #include "Win32Context.h"
 #include "DataDef.h"
+#include "Log.h"
 #include <bx/uint32_t.h>
 
 #define WM_USER_SET_WINDOW_SIZE     (WM_USER+0)
 #define WM_USER_TOGGLE_WINDOW_FRAME (WM_USER+1)
+#define WM_USER_SET_WINDOW_POS      (WM_USER+2)
 
 static int g_baseWidth = 1280;
 static int g_baseHeight = 720;
@@ -23,7 +25,7 @@ Win32Context::Win32Context()
     m_frame = true;
 }
 
-void Win32Context::create_window(const char* title, uint32_t w, uint32_t h)
+void Win32Context::create_window(const char* title, uint32_t w, uint32_t h, uint32_t x, uint32_t y)
 {
     g_baseWidth = w;
     g_baseHeight = h;
@@ -80,6 +82,9 @@ void Win32Context::create_window(const char* title, uint32_t w, uint32_t h)
         , 0
         );
 #endif
+
+    m_left = x;
+    m_top = y;
 
     adjust(w, h, true);
     m_width = w;
@@ -193,6 +198,9 @@ void Win32Context::adjust(uint32_t _width, uint32_t _height, bool _windowFrame)
 
     int32_t left = rect.left;
     int32_t top = rect.top;
+    left = m_left;
+    top = m_top;
+
     int32_t width = (newrect.right-newrect.left);
     int32_t height = (newrect.bottom-newrect.top);
 
@@ -264,6 +272,13 @@ void Win32Context::set_window_size(uint32_t _width, uint32_t _height)
 #endif
 }
 
+void Win32Context::set_window_pose(uint32_t x, uint32_t y)
+{
+#ifdef HAVOK_COMPILE
+    PostMessage(m_hwnd, WM_USER_SET_WINDOW_POS, 0, (x<<16) | (y&0xffff) );
+#endif
+}
+
 void Win32Context::toggle_window_frame()
 {
 #ifdef HAVOK_COMPILE
@@ -282,6 +297,16 @@ switch (_id)
             uint32_t width = GET_X_LPARAM(_lparam);
             uint32_t height = GET_Y_LPARAM(_lparam);
             adjust(width, height, true);
+        }
+        break;
+
+    case WM_USER_SET_WINDOW_POS:
+        {
+            uint32_t x = GET_X_LPARAM(_lparam);
+            uint32_t y = GET_Y_LPARAM(_lparam);
+            m_left = x;
+            m_top = y;
+            adjust(m_width, m_height, true);
         }
         break;
 

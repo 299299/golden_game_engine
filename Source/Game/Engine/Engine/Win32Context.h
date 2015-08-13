@@ -32,6 +32,8 @@ struct Win32Context
 
     uint32_t        m_lastWidth;
     uint32_t        m_lastHeight;
+    uint32_t        m_left;
+    uint32_t        m_top;
 
     int32_t         m_mx;
     int32_t         m_my;
@@ -51,7 +53,7 @@ struct Win32Context
 
     Win32Context();
 
-    void create_window(const char* title, uint32_t w, uint32_t h);
+    void create_window(const char* title, uint32_t w, uint32_t h, uint32_t x, uint32_t y);
     void destroy_window();
     void frame_start();
     void reset();
@@ -60,6 +62,8 @@ struct Win32Context
     // SET
     void set_mouse_pos(int32_t _mx, int32_t _my);
     void set_window_size(uint32_t _width, uint32_t _height);
+    void set_window_pose(uint32_t x, uint32_t y);
+
     void toggle_window_frame();
     //----------------------------------------------------------------
 

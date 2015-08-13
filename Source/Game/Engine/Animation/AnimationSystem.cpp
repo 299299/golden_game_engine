@@ -42,8 +42,6 @@ static IdArray<AnimationStatesInstance>            m_stateLayers;
 static int                                         m_status = 0;
 static hkaSampleBlendJob                           m_jobs[MAX_ANIM_RIG];
 
-#define MT_ANIMATION
-
 static void check_status()
 {
     ENGINE_ASSERT((m_status != kTickProcessing),  "AnimSystem Status is Processing!!!");
@@ -57,6 +55,7 @@ void AnimationSystem::init(const AnimationConfig& cfg)
 {
     m_status = 0;
     m_events = COMMON_ALLOC(AnimationEvent, cfg.max_anim_events);
+    ENGINE_ASSERT(MAX_ANIM_RIG >= cfg.max_rigs, "max animation rig overflow %d > %d", MAX_ANIM_RIG, cfg.max_rigs);
     m_rigs.init(cfg.max_rigs, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
     m_stateLayers.init(cfg.max_state_layers, g_memoryMgr.get_allocator(kMemoryCategoryCommon));
 #ifdef HAVOK_COMPILE

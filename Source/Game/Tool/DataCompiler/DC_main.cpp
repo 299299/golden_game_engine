@@ -304,7 +304,7 @@ void package_processing()
     packageCompilers.clear();
 }
 
-int data_compiler_main(int argc, bx::CommandLine* cmdline)
+int data_compiler_main(bx::CommandLine* cmdline)
 {
     delete_file(DC_RESULT);
 
@@ -314,7 +314,7 @@ int data_compiler_main(int argc, bx::CommandLine* cmdline)
     LOG_INIT("DataCompilerLog.html", "Data Compiler");
     MemoryConfig cfg;
     memset(&cfg, 0, sizeof cfg);
-    cfg.m_debugMemSize = DEBUG_MEMORY_SIZE;
+    cfg.m_debugMemSize = SIZE_MB(2);
     g_memoryMgr.init(cfg);
 
 #ifdef DC_DUMP_PROFILE
