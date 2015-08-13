@@ -1,0 +1,22 @@
+{
+	"frames": 29,
+	"havok_file": "intermediate\/core\/animation\/walk_fwd.havok",
+	"triggers": [
+		{
+			"frame": 1,
+			"name": "right_foot_pass" 
+		},
+		{
+			"frame": 10,
+			"name": "right_foot_down" 
+		},
+		{
+			"frame": 14,
+			"name": "left_foot_pass" 
+		},
+		{
+			"frame": 25,
+			"name": "left_foot_down" 
+		} 
+	] 
+} 

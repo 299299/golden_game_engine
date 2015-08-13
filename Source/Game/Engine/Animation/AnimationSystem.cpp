@@ -383,8 +383,7 @@ void debug_draw_animation(float dt)
                     hkQsTransform t1;
                     t1.set4x4ColumnMajor(world_pose);
                     g_debugDrawMgr.add_axis(t1);
-                    float world_pos[] = {world_pose[12], world_pose[13], world_pose[14]};
-                    g_debugDrawMgr.add_text_3d(world_pos, RGBCOLOR(255,0,0), stringid_lookup(attchment.m_name));
+                    g_debugDrawMgr.add_text_3d(t1.m_translation, RGBCOLOR(255,0,0), stringid_lookup(attchment.m_name));
                 }
             }
         }
@@ -420,12 +419,7 @@ void debug_draw_animation(float dt)
         Actor* actor = g_actorWorld.get_actor(iter->first);
         if(!actor)
             continue;
-        const hkQsTransform& t = actor->m_transform;
-        float pos[3];
-#ifdef HAVOK_COMPILE
-        transform_vec3(pos, t.m_translation);
-#endif
-        g_debugDrawMgr.add_text_3d(pos, RGBCOLOR(255,0,255), dbg_evt.m_message);
+        g_debugDrawMgr.add_text_3d(actor->m_transform.m_translation, RGBCOLOR(255,0,255), dbg_evt.m_message);
     }
 
     num = g_animMgr.m_numAnimEvts;

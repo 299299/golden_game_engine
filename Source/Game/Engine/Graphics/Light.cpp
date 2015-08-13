@@ -198,42 +198,50 @@ void debug_draw_lights()
         {
         case kLightDirectional:
             {
-                float start[3] = {0, 10, 0};
-                float end[3];
-                bx::vec3Mul(end, lt.m_dir, 10.0f);
-                float UP[3] = {0, 1, 0};
-                float RIGHT[3] = {1, 0, 0};
-                float offset[3];
-                float tmp1[3], tmp2[3];
+                hkVector4 start;
+                start.setZero4();
+                hkVector4 end;
+                hkVector4 dir;
+                transform_vec3(dir, lt.m_dir);
+                end.setMul(dir, 10.0f);
+                hkVector4 UP;
+                UP.set(0, 1, 0);
+                hkVector4 RIGHT;
+                RIGHT.set(1, 0, 0);
+                hkVector4 offset;
+                hkVector4 tmp1, tmp2;
 
                 for (int i = -1; i < 2; ++i)
                 {
                     for (int j = -1; j < 2; ++j)
                     {
-                        bx::vec3Mul(tmp1, UP, 5.0f*i);
-                        bx::vec3Mul(tmp2, RIGHT, 5.0f*j);
-                        bx::vec3Add(offset, tmp1, tmp2);
-                        bx::vec3Add(tmp1, start, offset);
-                        bx::vec3Add(tmp2, end, offset);
+                        tmp1.setMul(UP, 5.0f*i);
+                        tmp2.setMul(RIGHT, 5.0f*j);
+                        offset.setAdd(tmp1, tmp2);
+                        tmp1.setAdd(start, offset);
+                        tmp2.setAdd(end, offset);
                         g_debugDrawMgr.add_line(tmp1, tmp2, RGBA(252,177,67,255), true);
                     }
                 }
 
-                if(lt.m_hasShadow) bShadow = true;
+                if(lt.m_hasShadow)
+                    bShadow = true;
             }
             break;
         case kLightPoint:
         case kLightSpot:
             {
                 const float* m = lt.m_transform;
-                float pos[3] = {m[12], m[13], m[14]};
+                hkVector4 pos;
+                pos.set(m[12], m[13], m[14]);
                 g_debugDrawMgr.add_cross(pos, 1.0f, RGBA(255,0,0,255), true);
             }
             break;
         }
     }
 
-    if(bShadow) g_debugDrawMgr.add_frustum(g_lightWorld.m_shadowFrustum, RGBA(0,106,106,181), true);
+    if(bShadow)
+        g_debugDrawMgr.add_frustum(g_lightWorld.m_shadowFrustum, RGBA(0,106,106,181), true);
 }
 //-----------------------------------------------------------------
 //

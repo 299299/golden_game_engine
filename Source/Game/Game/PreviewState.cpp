@@ -23,9 +23,7 @@
 
 extern DebugFPSCamera  g_fpsCamera;
 
-
-
-INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
+static void anim_state_debug_imgui(void* component, ComponentData* data)
 {
     AnimationStatesInstance* states = (AnimationStatesInstance*)component;
     const AnimationState* cur_state = states->m_state;
@@ -102,7 +100,7 @@ INTERNAL void anim_state_debug_imgui(void* component, ComponentData* data)
 #endif
 }
 
-INTERNAL void draw_fact(ActorId32 id)
+static void draw_fact(ActorId32 id)
 {
     Actor* actor = g_actorWorld.get_actor(id);
     if(!actor)
@@ -150,9 +148,9 @@ void PreviewState::step( float dt )
     step_debug_ctrl(dt);
 
     if(m_preview_level)
-        draw_level_info(m_level_name, m_preview_level, 0, 25, 400, 600);
+        draw_level_info(m_level_name, m_preview_level, 5, 25, 400, 400);
     else
-        draw_actor_info(m_actor_name, m_preview_actor, 0, 25, 400, 600);
+        draw_actor_info(m_actor_name, m_preview_actor, 5, 25, 400, 400);
 
     g_debugDrawMgr.add_grid(20, 5, RGBCOLOR(175,175,175), true);
     g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);

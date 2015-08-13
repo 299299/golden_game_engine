@@ -140,7 +140,7 @@ bool Model::check_intersection(
 }
 
 ModelWorld g_modelWorld;
-INTERNAL IdArray<Model>      m_models;
+static IdArray<Model>      m_models;
 
 void ModelWorld::init(int max_model)
 {
@@ -306,10 +306,13 @@ void debug_draw_models()
     PROFILE(debug_draw_models);
     int num = m_models.size();
     Model* models = m_models.begin();
+    hkVector4 min, max;
     for (int i=0; i<num; ++i)
     {
         const Aabb& aabb = models[i].m_aabb;
-        g_debugDrawMgr.add_aabb(aabb.m_min, aabb.m_max, RGBA(0,255,0,255), true);
+        transform_vec3(min, aabb.m_min);
+        transform_vec3(max, aabb.m_max);
+        g_debugDrawMgr.add_aabb(min, max, RGBA(0,255,0,255), true);
     }
 }
 //-----------------------------------------------------------------

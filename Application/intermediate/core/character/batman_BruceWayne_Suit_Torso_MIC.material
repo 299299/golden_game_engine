@@ -3,11 +3,11 @@
 		0.5879999995231628,
 		0.5879999995231628,
 		0.5879999995231628,
-		1 
+		1
 	],
 	"flags": [
 	],
-	"name": "core\/character\/batman_v3_BruceWayne_Suit_Torso_MIC",
+	"name": "core\/character\/batman_BruceWayne_Suit_Torso_MIC",
 	"samplers": [
 		{
 			"flags": [
@@ -15,10 +15,10 @@
 			"name": "u_texColor",
 			"texture": {
 				"format": "DXT5",
-				"input": "BruceWayne_Suit_Torso_MIC",
-				"name": "core\/character\/BruceWayne_Suit_Torso_MIC" 
-			} 
-		} 
+				"input": "intermediate\/core\/character\/BruceWayne_Suit_Torso_D.DDS",
+				"name": "core\/character\/BruceWayne_Suit_Torso_MIC"
+			}
+		}
 	],
 	"shader": "skin_diff",
 	"shadow_shader": "skin_shadow",
@@ -26,12 +26,12 @@
 		0.5879999995231628,
 		0.5879999995231628,
 		0.5879999995231628,
-		1 
+		1
 	],
 	"uv_offset_scale": [
 		0,
 		0,
 		1,
-		1 
-	] 
-} 
+		1
+	]
+}

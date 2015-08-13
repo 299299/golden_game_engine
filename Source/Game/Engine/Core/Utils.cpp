@@ -280,7 +280,7 @@ void stacktrace()
         BOOL res = SymGetLineFromAddr64(GetCurrentProcess(), stack.AddrPC.Offset, &ldsp, &line) &&
             SymFromAddr(GetCurrentProcess(), stack.AddrPC.Offset, 0, sym);
 
-        if (res) 
+        if (res)
         {
             LOGE("\t[%i] %s (%s:%d)\n", num, sym->Name, line.FileName, line.LineNumber);
         }
@@ -295,7 +295,7 @@ void stacktrace()
 #else
 #include <cxxabi.h>
 #include <execinfo.h>
-INTERNAL void stacktrace()
+static void stacktrace()
 {
     void* array[50];
     int size = backtrace(array, 50);

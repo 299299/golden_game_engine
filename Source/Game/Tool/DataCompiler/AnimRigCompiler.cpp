@@ -2,7 +2,7 @@
 #include "Animation.h"
 #include "AnimRig.h"
 
-INTERNAL int find_joint_index(StringId name, StringId* names, int size)
+static int find_joint_index(StringId name, StringId* names, int size)
 {
     for(int i=0; i<size; ++i)
     {

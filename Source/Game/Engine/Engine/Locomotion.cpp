@@ -16,6 +16,13 @@ func_update_locomotion_state_t s_funcs[kLocomotionStateNum] =
     update_move_state,
 };
 
+static void apply_root_motion(AnimationStatesInstance *s, hkQsTransform& t, float dt)
+{
+    hkQsTransform deltaMotion;
+    s->get_rootmotion(dt, deltaMotion);
+    t.setMulEq(deltaMotion);
+}
+
 static int update_idle_state(Locomotion* l, const  LocomotionInput& input, AnimationStatesInstance *s, Actor* actor)
 {
     if (input.m_moveVec > 0.1f) {
@@ -32,9 +39,12 @@ static int update_move_state(Locomotion* l, const  LocomotionInput& input, Anima
         return kLocomotionStand;
     }
 
+    hkQsTransform t = a->m_transform;
+    apply_root_motion(s, t, input.m_dt);
+
     hkVector4 up;
     up.set(0, 1, 0);
-    hkQsTransform t = a->m_transform;
+
     float cur_angle = get_up_axis_angle(t.m_rotation);
     float angle_diff = input.m_desireAngle - cur_angle;
     angle_diff = clamp_angle(angle_diff);
@@ -67,22 +77,21 @@ void debug_draw_locomotion(Locomotion* l, ActorId32 id)
     if (!a)
         return;
 
-    float pos[3] = { 0, 0, 0};
-    transform_vec3(pos, a->m_transform.m_translation);
-    // pos[1] -= 1.0f;
+    hkVector4 start, end;
+    start = a->m_transform.m_translation;
 
-    float normal[3] = { 0, 1, 0};
-    float raidus = 1.0f;
-    g_debugDrawMgr.add_cycle(pos, normal, raidus, RGBCOLOR(200,200,200), false);
+    hkVector4 normal;
+    normal.set(0,1,0);
+    float raidus = 0.5f;
+    g_debugDrawMgr.add_cycle(start, normal, raidus, RGBCOLOR(175,100,50), false);
 
-    float dst_pos[3] = {0, pos[1], 0};
     float cur_angle = get_up_axis_angle(a->m_transform.m_rotation);
-    dst_pos[0] = hkMath::sin(cur_angle) * raidus;
-    dst_pos[2] = hkMath::cos(cur_angle) * raidus;
-    g_debugDrawMgr.add_line(pos, dst_pos, RGBCOLOR(200,200,0), false);
+    end.set(hkMath::sin(cur_angle) * raidus, 0, hkMath::cos(cur_angle) * raidus);
+    end.add(a->m_transform.m_translation);
+    g_debugDrawMgr.add_line(start, end, RGBCOLOR(200,200,0), false);
 
     float desireAngle = l->m_desireAngle;
-    dst_pos[0] = hkMath::sin(desireAngle) * raidus;
-    dst_pos[2] = hkMath::cos(desireAngle) * raidus;
-    g_debugDrawMgr.add_line(pos, dst_pos, RGBCOLOR(200,0,2000), false);
+    end.set(hkMath::sin(desireAngle) * raidus, 0, hkMath::cos(desireAngle) * raidus);
+    end.add(a->m_transform.m_translation);
+    g_debugDrawMgr.add_line(start, end, RGBCOLOR(200,0,2000), false);
 }

@@ -55,33 +55,35 @@ jsonxx::Object AnimationConverter::serializeToJson() const
 #ifdef HAVOK_COMPILE
     static const std::string trigger_prefix = "hk_trigger_";
     hkxScene* scene = m_config->m_scene;
-    hkxNode* triggers_node = scene->findNodeByName("animation_triggers");
-    if(triggers_node)
+    if (scene)
     {
-        dumpNodeRec(triggers_node);
-        int keySize = triggers_node->m_keyFrames.getSize();
-        int start = keySize < triggers_node->m_annotations.getSize() ? 1 : 0;
-        for (int i=start; i<triggers_node->m_annotations.getSize(); ++i)
+        hkxNode* triggers_node = scene->findNodeByName("animation_triggers");
+        if(triggers_node)
         {
-            const hkxNode::AnnotationData& data = triggers_node->m_annotations[i];
-            const hkStringPtr& text = data.m_description;
-            if(!text.startsWith(trigger_prefix.c_str()))
-                continue;
-            std::string longName(text.cString());
-            jsonxx::Object obj;
-            int frame = (int)(data.m_time * ANIMATION_FRAME_FPS);
-            obj << "frame" << frame;
-            std::string name(longName.c_str() + trigger_prefix.length(), longName.length() - trigger_prefix.length());
-            obj << "name" << name;
-            triggers << obj;
-            LOGI("animation trigger time = %f, frame = %d, name = %s", data.m_time, frame, name.c_str());
+            dumpNodeRec(triggers_node);
+            int keySize = triggers_node->m_keyFrames.getSize();
+            int start = keySize < triggers_node->m_annotations.getSize() ? 1 : 0;
+            for (int i=start; i<triggers_node->m_annotations.getSize(); ++i)
+            {
+                const hkxNode::AnnotationData& data = triggers_node->m_annotations[i];
+                const hkStringPtr& text = data.m_description;
+                if(!text.startsWith(trigger_prefix.c_str()))
+                    continue;
+                std::string longName(text.cString());
+                jsonxx::Object obj;
+                int frame = (int)(data.m_time * ANIMATION_FRAME_FPS);
+                obj << "frame" << frame;
+                std::string name(longName.c_str() + trigger_prefix.length(), longName.length() - trigger_prefix.length());
+                obj << "name" << name;
+                triggers << obj;
+                LOGI("animation trigger time = %f, frame = %d, name = %s", data.m_time, frame, name.c_str());
+            }
+            object << "triggers" << triggers;
         }
     }
 
     object << "frames" << m_ac->m_animations[0]->getNumOriginalFrames();
 #endif
-
-    object << "triggers" << triggers;
 
 #ifndef HKX_BINARY_TO_TEXT
     object << "havok_file" << m_animationFile;
@@ -97,6 +99,20 @@ jsonxx::Object AnimationConverter::serializeToJson() const
     object << "havok_data" << convert_string;
     object << "havok_size" << havok_size;
 #endif
+
     return object;
 }
 
+void AnimationConverter::serializeToFile(const std::string& fileName)
+{
+    jsonxx::Object new_json = serializeToJson();
+    if (g_hc_config->m_merge) {
+        jsonxx::Object old_json;
+        if (read_json_from_file(old_json, fileName)) {
+            merge_json(new_json, old_json);
+        }
+    }
+
+    if (!write_json_to_file(new_json, fileName))
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName.c_str());
+}

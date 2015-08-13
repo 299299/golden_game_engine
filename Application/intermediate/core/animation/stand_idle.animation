@@ -1,6 +1,4 @@
 {
-	"frames": 249,
-	"havok_file": "intermediate\/core\/animation\/stand_idle.havok",
-	"triggers": [
-	] 
+	"frames": 311,
+	"havok_file": "intermediate\/core\/animation\/stand_idle.havok" 
 } 

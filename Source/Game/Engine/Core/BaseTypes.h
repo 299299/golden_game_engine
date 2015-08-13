@@ -103,9 +103,5 @@ struct Id
         return -1;
 
 
-#ifndef INTERNAL
-#define INTERNAL static
-#endif
-
 #define NATIVE_ALIGN_VALUE  16
 #define NATIVE_ALGIN_SIZE(size) NEXT_MULTIPLE_OF(NATIVE_ALIGN_VALUE, (size))

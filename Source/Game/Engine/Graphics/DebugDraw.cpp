@@ -75,7 +75,7 @@ void DebugDrawManager::draw()
     draw(m_numLines[1], m_lines[1], false);
 }
 
-void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
+void DebugDrawManager::draw(int lineNum, DebugLine* lines, bool bDepth)
 {
     if(!lineNum)
         return;
@@ -112,7 +112,7 @@ void DebugDrawManager::draw( int lineNum, DebugLine* lines, bool bDepth)
     bgfx::submit(kDebugDrawViewId, m_shader->m_handle);
 }
 
-void DebugDrawManager::add_line( const float* start, const float* end, uint32_t color, bool bDepth)
+void DebugDrawManager::add_line( const hkVector4& start, const hkVector4& end, uint32_t color, bool bDepth)
 {
     int index = bDepth ? 0 : 1;
     int& numLines = m_numLines[index];
@@ -122,61 +122,61 @@ void DebugDrawManager::add_line( const float* start, const float* end, uint32_t 
         return;
     }
     DebugLine* line = m_lines[index] + numLines++;
-    bx::vec3Move(line->m_start, start);
-    bx::vec3Move(line->m_end, end);
+    transform_vec3(line->m_start, start);
+    transform_vec3(line->m_end, end);
     line->m_color = color;
 }
 
-void DebugDrawManager::add_aabb( const float* min, const float* max, uint32_t color, bool bDepth)
+void DebugDrawManager::add_aabb( const hkVector4& min, const hkVector4& max, uint32_t color, bool bDepth)
 {
-    float start[3], end[3];
+    hkVector4 start, end;
     //1.
-    vec3_make(start, min[0], min[1], min[2]);
-    vec3_make(end, max[0], min[1], min[2]);
+    start.set(min.getSimdAt(0), min.getSimdAt(1), min.getSimdAt(2));
+    end.set(max.getSimdAt(0), min.getSimdAt(1), min.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //2.
-    vec3_make(start, max[0], min[1], min[2]);
-    vec3_make(end, max[0], max[1], min[2]);
+    start.set(max.getSimdAt(0), min.getSimdAt(1), min.getSimdAt(2));
+    end.set(max.getSimdAt(0), max.getSimdAt(1), min.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //3.
-    vec3_make(start, max[0], max[1], min[2]);
-    vec3_make(end, min[0], max[1], min[2]);
+    start.set(max.getSimdAt(0), max.getSimdAt(1), min.getSimdAt(2));
+    end.set(min.getSimdAt(0), max.getSimdAt(1), min.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //4.
-    vec3_make(start, min[0], max[1], min[2]);
-    vec3_make(end, min[0], min[1], min[2]);
+    start.set(min.getSimdAt(0), max.getSimdAt(1), min.getSimdAt(2));
+    end.set(min.getSimdAt(0), min.getSimdAt(1), min.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //5.
-    vec3_make(start, min[0], min[1], min[2]);
-    vec3_make(end, min[0], min[1], max[2]);
+    start.set(min.getSimdAt(0), min.getSimdAt(1), min.getSimdAt(2));
+    end.set(min.getSimdAt(0), min.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //6.
-    vec3_make(start, max[0], min[1], min[2]);
-    vec3_make(end, max[0], min[1], max[2]);
+    start.set(max.getSimdAt(0), min.getSimdAt(1), min.getSimdAt(2));
+    end.set(max.getSimdAt(0), min.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //7.
-    vec3_make(start, max[0], max[1], min[2]);
-    vec3_make(end, max[0], max[1], max[2]);
+    start.set(max.getSimdAt(0), max.getSimdAt(1), min.getSimdAt(2));
+    end.set(max.getSimdAt(0), max.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //8.
-    vec3_make(start, min[0], max[1], min[2]);
-    vec3_make(end, min[0], max[1], max[2]);
+    start.set(min.getSimdAt(0), max.getSimdAt(1), min.getSimdAt(2));
+    end.set(min.getSimdAt(0), max.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //9.
-    vec3_make(start, min[0], min[1], max[2]);
-    vec3_make(end, max[0], min[1], max[2]);
-    add_line(start, end, color, bDepth);
-    //9.
-    vec3_make(start, max[0], min[1], max[2]);
-    vec3_make(end, max[0], max[1], max[2]);
+    start.set(min.getSimdAt(0), min.getSimdAt(1), max.getSimdAt(2));
+    end.set(max.getSimdAt(0), min.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //10.
-    vec3_make(start, max[0], max[1], max[2]);
-    vec3_make(end, min[0], max[1], max[2]);
+    start.set(max.getSimdAt(0), min.getSimdAt(1), max.getSimdAt(2));
+    end.set(max.getSimdAt(0), max.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
     //11.
-    vec3_make(start, min[0], max[1], max[2]);
-    vec3_make(end, min[0], min[1], max[2]);
+    start.set(max.getSimdAt(0), max.getSimdAt(1), max.getSimdAt(2));
+    end.set(min.getSimdAt(0), max.getSimdAt(1), max.getSimdAt(2));
+    add_line(start, end, color, bDepth);
+    //12.
+    start.set(min.getSimdAt(0), max.getSimdAt(1), max.getSimdAt(2));
+    end.set(min.getSimdAt(0), min.getSimdAt(1), max.getSimdAt(2));
     add_line(start, end, color, bDepth);
 }
 
@@ -190,35 +190,32 @@ void DebugDrawManager::add_axis( const hkQsTransform& t, float size , bool bDept
     y_end.setTransformedPos(t, hkVector4(0,size,0));
     hkVector4 z_end;
     z_end.setTransformedPos(t, hkVector4(0,0,size));
-    float pos[3]; float xPos[3]; float yPos[3]; float zPos[3];
-    transform_vec3(pos, start_pos);
-    transform_vec3(xPos, x_end);
-    transform_vec3(yPos, y_end);
-    transform_vec3(zPos, z_end);
-    add_line(pos, xPos, RGBA(255,0,0,255), bDepth);
-    add_line(pos, yPos, RGBA(0,255,0,255), bDepth);
-    add_line(pos, zPos, RGBA(0,0,255,255), bDepth);
+    add_line(start_pos, x_end, RGBA(255,0,0,255), bDepth);
+    add_line(start_pos, y_end, RGBA(0,255,0,255), bDepth);
+    add_line(start_pos, z_end, RGBA(0,0,255,255), bDepth);
 #endif
 }
 
-void DebugDrawManager::add_cross( const float* pos, float size, uint32_t color, bool bDepth)
+void DebugDrawManager::add_cross( const hkVector4& pos, float size, uint32_t color, bool bDepth)
 {
     float halfSize = size/2.0f;
-    float start[3], end[3];
+    hkVector4 start, end;
     for (int i=0; i<3; ++i)
     {
-        bx::vec3Move(start, pos);
-        bx::vec3Move(end, pos);
-        start[i] -= halfSize;
-        end[i] += halfSize;
+        start = pos;
+        end = pos;
+        start(i) -= halfSize;
+        end(i) += halfSize;
         add_line(start, end, color, bDepth);
     }
 }
 
-void DebugDrawManager::add_text_3d( const float* pos, uint32_t color, const char* fmt,  ...)
+void DebugDrawManager::add_text_3d( const hkVector4& pos, uint32_t color, const char* fmt,  ...)
 {
     float pos2D[2] = {0,0};
-    bool bFlag = g_camera.project_3d_to_2d(pos2D, pos);
+    float pos3D[3];
+    transform_vec3(pos3D, pos);
+    bool bFlag = g_camera.project_3d_to_2d(pos2D, pos3D);
     if(!bFlag)
         return;
     char c_buffer[2048];
@@ -251,10 +248,11 @@ void DebugDrawManager::add_text(uint32_t color, const char* fmt, ...)
     imguiDrawText(x, m_text_y, ImguiTextAlign::Left, c_buffer, color);
 }
 
-void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t color, bool bDepth)
+void DebugDrawManager::add_sphere( const hkVector4& center, float radius, uint32_t color, bool bDepth)
 {
     const uint32_t deg_step = 15;
-    float tmp1[3], tmp2[3];
+    hkVector4 tmp1, tmp2;
+    hkVector4 start, end;
 
     for (uint32_t deg = 0; deg < 360; deg += deg_step)
     {
@@ -262,44 +260,40 @@ void DebugDrawManager::add_sphere( const float* center, float radius, uint32_t c
         float _rad1 = bx::toRad((float)(deg + deg_step));
 
         // XZ plane
-        const float start0[] = {cosf(_rad0) * radius, 0, -sinf(_rad0) * radius};
-        const float end0[] =  {cosf(_rad1) * radius, 0, -sinf(_rad1) * radius};
-        bx::vec3Add(tmp1, start0, center);
-        bx::vec3Add(tmp2, end0, center);
+        start.set(cosf(_rad0) * radius, 0, -sinf(_rad0) * radius);
+        end.set(cosf(_rad1) * radius, 0, -sinf(_rad1) * radius);
+        tmp1.setAdd(start, center);
+        tmp2.setAdd(end, center);
         add_line(tmp1, tmp2, color, bDepth);
 
         // XY plane
-        const float start1[] = {cosf(_rad0) * radius, sinf(_rad0) * radius, 0};
-        const float end1[] =  {cosf(_rad1) * radius, sinf(_rad1) * radius, 0};
-        bx::vec3Add(tmp1, start1, center);
-        bx::vec3Add(tmp2, end1, center);
+        start.set(cosf(_rad0) * radius, sinf(_rad0) * radius, 0);
+        end.set(cosf(_rad1) * radius, sinf(_rad1) * radius, 0);
+        tmp1.setAdd(start, center);
+        tmp2.setAdd(end, center);
         add_line(tmp1, tmp2, color, bDepth);
 
         // YZ plane
-        const float start2[] = {0, sinf(_rad0) * radius, -cosf(_rad0) * radius};
-        const float end2[] =  {0, sinf(_rad1) * radius, -cosf(_rad1) * radius};
-        bx::vec3Add(tmp1, start2, center);
-        bx::vec3Add(tmp2, end2, center);
+        start.set(0, sinf(_rad0) * radius, -cosf(_rad0) * radius);
+        end.set(0, sinf(_rad1) * radius, -cosf(_rad1) * radius);
+        tmp1.setAdd(start, center);
+        tmp2.setAdd(end, center);
         add_line(tmp1, tmp2, color, bDepth);
     }
 }
 
-void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uint32_t color, bool bDepth)
+void DebugDrawManager::add_cycle( const hkVector4& pos, const hkVector4& d, float r, uint32_t color, bool bDepth)
 {
 #ifdef HAVOK_COMPILE
     hkQuaternion    orientation;
-    hkVector4       normal;
-    transform_vec3(normal, d);
-    hkVector4       o;
-    transform_vec3(o, pos);
+    hkVector4       normal = d;
     const int       steps=64;
     normal.normalize3();
     hkQuaternionUtil::_computeShortestRotation(hkVector4(0,0,1,0),normal, orientation);
     hkVector4       p;
     p.setRotatedDir(orientation,hkVector4(r,0,0,0));
-    p.add4(o);
+    p.add4(pos);
 
-    float start[3], end[3];
     for(int i=1;i<=steps;++i)
     {
         const hkReal    angle=i/(hkReal)steps*HK_REAL_PI*2;
@@ -308,35 +302,33 @@ void DebugDrawManager::add_cycle( const float* pos, const float* d, float r, uin
         v(1)    =   r*hkMath::sin(angle);
         hkVector4       c;
         c.setRotatedDir(orientation,v);
-        c.add4(o);
-        transform_vec3(start, p);
-        transform_vec3(end, c);
-        add_line(start, end, color, bDepth);
+        c.add4(pos);
+        add_line(p, c, color, bDepth);
         p=c;
     }
 
-    p.setAddMul4(o, normal, r/4.0f);
-    transform_vec3(start, p);
-    add_line(pos, start, color, bDepth);
+    p.setAddMul4(pos, normal, r/4.0f);
+    add_line(pos, p, color, bDepth);
 #endif
 }
 
-void DebugDrawManager::add_triangle( const float* v0, const float* v1, const float* v2, uint32_t color, bool bDepth)
+void DebugDrawManager::add_triangle( const hkVector4& v0, const hkVector4& v1, const hkVector4& v2, uint32_t color, bool bDepth)
 {
     add_line(v0, v1, color, bDepth);
     add_line(v1, v2, color, bDepth);
     add_line(v2, v0, color, bDepth);
 }
 
-void DebugDrawManager::add_quad(const float* center, float width, float height, uint32_t color, bool bDepth)
+void DebugDrawManager::add_quad(const hkVector4& center, float width, float height, uint32_t color, bool bDepth)
 {
-    float x = center[0];
-    float y = center[1];
-    float z = center[2];
-    float v0[] = { x-width/2, y, z-height/2};
-    float v1[] = { x+width/2, y, z-height/2};
-    float v2[] = { x+width/2, y, z+height/2};
-    float v3[] = { x-width/2, y, z+height/2};
+    float x = center.getSimdAt(0);
+    float y = center.getSimdAt(1);
+    float z = center.getSimdAt(2);
+    hkVector4 v0, v1, v2, v3;
+    v0.set(x-width/2, y, z-height/2);
+    v1.set(x+width/2, y, z-height/2);
+    v2.set(x+width/2, y, z+height/2);
+    v3.set(x-width/2, y, z+height/2);
     add_line(v0, v1, color, bDepth);
     add_line(v1, v2, color, bDepth);
     add_line(v2, v3, color, bDepth);
@@ -346,36 +338,73 @@ void DebugDrawManager::add_quad(const float* center, float width, float height, 
 void DebugDrawManager::add_frustum( const Frustum& frustum, uint32_t color, bool bDepth)
 {
     const Vec3* vertices = frustum.m_corners;
-    add_line(vertices[0].m_vec, vertices[1].m_vec, color, bDepth);
-    add_line(vertices[1].m_vec, vertices[2].m_vec, color, bDepth);
-    add_line(vertices[2].m_vec, vertices[3].m_vec, color, bDepth);
-    add_line(vertices[3].m_vec, vertices[0].m_vec, color, bDepth);
-    add_line(vertices[4].m_vec, vertices[5].m_vec, color, bDepth);
-    add_line(vertices[5].m_vec, vertices[6].m_vec, color, bDepth);
-    add_line(vertices[6].m_vec, vertices[7].m_vec, color, bDepth);
-    add_line(vertices[7].m_vec, vertices[4].m_vec, color, bDepth);
-    add_line(vertices[0].m_vec, vertices[4].m_vec, color, bDepth);
-    add_line(vertices[1].m_vec, vertices[5].m_vec, color, bDepth);
-    add_line(vertices[2].m_vec, vertices[6].m_vec, color, bDepth);
-    add_line(vertices[3].m_vec, vertices[7].m_vec, color, bDepth);
+    hkVector4 start, end;
+
+    transform_vec3(start, vertices[0].m_vec);
+    transform_vec3(end, vertices[1].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[1].m_vec);
+    transform_vec3(end, vertices[2].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[2].m_vec);
+    transform_vec3(end, vertices[3].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[3].m_vec);
+    transform_vec3(end, vertices[0].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[4].m_vec);
+    transform_vec3(end, vertices[5].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[5].m_vec);
+    transform_vec3(end, vertices[6].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[6].m_vec);
+    transform_vec3(end, vertices[7].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[7].m_vec);
+    transform_vec3(end, vertices[4].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[0].m_vec);
+    transform_vec3(end, vertices[4].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[1].m_vec);
+    transform_vec3(end, vertices[5].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[2].m_vec);
+    transform_vec3(end, vertices[6].m_vec);
+    add_line(start, end, color, bDepth);
+
+    transform_vec3(start, vertices[3].m_vec);
+    transform_vec3(end, vertices[7].m_vec);
+    add_line(start, end, color, bDepth);
 }
 
 void DebugDrawManager::add_grid( int gridsNum, float gridWidth, uint32_t color, bool bDepth )
 {
     float start = -gridsNum * gridWidth * 0.5f;
-    float startPt[3], endPt[3];
+    hkVector4 startPt, endPt;
 
     for (int i = 0; i<=gridsNum; ++i)
     {
-        vec3_make(startPt, start + gridWidth * i, 0, start);
-        vec3_make(endPt, start + gridWidth * i, 0, start + gridWidth * gridsNum);
+        startPt.set(start + gridWidth * i, 0, start);
+        endPt.set(start + gridWidth * i, 0, start + gridWidth * gridsNum);
         add_line(startPt, endPt, color, bDepth);
     }
 
     for (int i = 0; i<=gridsNum; ++i)
     {
-        vec3_make(startPt, start, 0, start + gridWidth * i);
-        vec3_make(endPt, start + gridWidth * gridsNum, 0, start + gridWidth * i);
+        startPt.set(start, 0, start + gridWidth * i);
+        endPt.set(start + gridWidth * gridsNum, 0, start + gridWidth * i);
         add_line(startPt, endPt, color, bDepth);
     }
 }

@@ -11,6 +11,7 @@ public:
     virtual void process(void* pData);
     virtual void postProcess();
     virtual jsonxx::Object serializeToJson() const;
+    virtual void serializeToFile(const std::string& fileName);
 
 private:
     hkaAnimationContainer*          m_ac;

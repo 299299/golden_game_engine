@@ -168,7 +168,8 @@ int havok_convert_main(bx::CommandLine* cmdline)
 error_exit:
     SAFE_REMOVEREF(converter);
     SAFE_REMOVEREF(config.m_loader);
-    if(!g_hc_config->m_slient) g_hc_config->m_error.show_error();
+    if(!g_hc_config->m_slient)
+        g_hc_config->m_error.show_error();
     SAFE_DELETE(g_hc_config);
 
 #ifdef HC_DUMP_PROFILE

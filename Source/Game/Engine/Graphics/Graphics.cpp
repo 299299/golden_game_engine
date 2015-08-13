@@ -108,7 +108,7 @@ static uint32_t             g_numFrameBuffers = 0;
 static BgfxCallback         g_callback;
 bgfx::VertexDecl            PosTexCoord0Vertex::ms_decl;
 
-INTERNAL bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enum type, int num = 1)
+static bgfx::UniformHandle createEngineUniform(const char* name, bgfx::UniformType::Enum type, int num = 1)
 {
     if(!name){
         bgfx::UniformHandle handle = BGFX_INVALID_HANDLE;
@@ -120,7 +120,7 @@ INTERNAL bgfx::UniformHandle createEngineUniform(const char* name, bgfx::Uniform
     return handle;
 }
 
-INTERNAL FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, uint32_t numTextures, FrameBufferTexture* textures)
+static FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled, uint32_t numTextures, FrameBufferTexture* textures)
 {
     ENGINE_ASSERT(g_numFrameBuffers < MAX_FRAMEBUFFER_NUM, "g_numEngineUniforms < MAX_UNIFORM_NUM");
     FrameBuffer* fb = g_frameBuffers + g_numFrameBuffers;
@@ -137,7 +137,7 @@ INTERNAL FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool s
     fb->create();
     return fb;
 }
-INTERNAL FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
+static FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool scaled,
                                bgfx::TextureFormat::Enum format,
                                uint32_t texFlags = BGFX_TEXTURE_U_CLAMP|BGFX_TEXTURE_V_CLAMP)
 {
@@ -146,7 +146,7 @@ INTERNAL FrameBuffer* createFrameBuffer(int w, int h, int wDiv, int hDiv, bool s
     return createFrameBuffer(w, h, wDiv, hDiv, scaled, 1, texInfo);
 }
 
-INTERNAL void createUniforms()
+static void createUniforms()
 {
     g_engineUniforms = COMMON_ALLOC(bgfx::UniformHandle, MAX_UNIFORM_NUM);
     extern const char*  g_textureNames[];
@@ -179,7 +179,7 @@ INTERNAL void createUniforms()
     g_shadowMap.m_paramUniform = createEngineUniform("u_shadowParams", bgfx::UniformType::Vec4);
 }
 
-INTERNAL void postProcessInit()
+static void postProcessInit()
 {
     int width = g_win32Context.m_width;
     int height = g_win32Context.m_height;
@@ -210,7 +210,7 @@ INTERNAL void postProcessInit()
     bx::mtxOrtho(g_postProcess.m_proj, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f);
 #endif
 }
-INTERNAL void postProcessSubmit(ShadingEnviroment* env)
+static void postProcessSubmit(ShadingEnviroment* env)
 {
     if(!env) return;
     int width = g_win32Context.m_width;
@@ -336,7 +336,7 @@ void Graphics::update(ShadingEnviroment* env, float dt)
         g_modelWorld.cull_shadows(g_lightWorld.m_shadowFrustum);
 }
 
-INTERNAL void submitPerFrameUniforms()
+static void submitPerFrameUniforms()
 {
     extern float g_totalSeconds;
     bgfx::setUniform(g_uniformPerFrame.m_time, &g_totalSeconds);

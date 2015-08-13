@@ -50,8 +50,8 @@ int find_node(const AnimationState* state, StringId name)
     FIND_IN_ARRAY_RET(node_keys, num, name);
 }
 
-INTERNAL void update_node_recursive(const char*, const AnimationState*, float, char*);
-INTERNAL void update_lerp_node(const char* n, const AnimationState* s, float f, char* d)
+static void update_node_recursive(const char*, const AnimationState*, float, char*);
+static void update_lerp_node(const char* n, const AnimationState* s, float f, char* d)
 {
     const BinaryNode* node = (const BinaryNode*)n;
     float w = *((float*)(d + node->m_dynamic_data_offset));
@@ -59,7 +59,7 @@ INTERNAL void update_lerp_node(const char* n, const AnimationState* s, float f, 
     update_node_recursive((char*)s + node->m_right_offset, s, f*(1-w), d);
 }
 
-INTERNAL void update_additive_node(const char* n, const AnimationState* s, float f, char* d)
+static void update_additive_node(const char* n, const AnimationState* s, float f, char* d)
 {
     const BinaryNode* node = (const BinaryNode*)n;
     float w = *((float*)(d + node->m_dynamic_data_offset));
@@ -67,14 +67,14 @@ INTERNAL void update_additive_node(const char* n, const AnimationState* s, float
     update_node_recursive((char*)s + node->m_right_offset, s, f, d);
 }
 
-INTERNAL void update_value_node(const char* n, const AnimationState* s, float f, char* d)
+static void update_value_node(const char* n, const AnimationState* s, float f, char* d)
 {
     const ValueNode* node = (const ValueNode*)n;
     hk_anim_ctrl* ac = (hk_anim_ctrl*)(d + node->m_dynamic_data_offset);
     ac->set_weight(f);
 }
 
-INTERNAL void update_select_node(const char* n, const AnimationState* s, float f, char* d)
+static void update_select_node(const char* n, const AnimationState* s, float f, char* d)
 {
     const SelectNode* node = (const SelectNode*)n;
     int num_of_children = node->m_num_children;
@@ -95,18 +95,18 @@ static func_update_node_t node_func_table[AnimationNodeType::Num] =
     update_additive_node,
     update_select_node,
 };
-INTERNAL void update_node_recursive(const char* n, const AnimationState* s, float f, char* d)
+static void update_node_recursive(const char* n, const AnimationState* s, float f, char* d)
 {
     node_func_table[*((const uint32_t*)n)](n, s, f, d);
 }
 
 
-INTERNAL void update_node(const AnimationState* s, int i, float f, char* data)
+static void update_node(const AnimationState* s, int i, float f, char* data)
 {
     update_node_recursive(get_node(s, i), s, f, data);
 }
 
-INTERNAL void on_state_enter(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
+static void on_state_enter(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
 {
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
@@ -122,7 +122,7 @@ INTERNAL void on_state_enter(const AnimationState* state, hkaAnimatedSkeleton* s
     }
 }
 
-INTERNAL void remove_state_from_skeleton(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
+static void remove_state_from_skeleton(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
 {
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
@@ -133,7 +133,7 @@ INTERNAL void remove_state_from_skeleton(const AnimationState* state, hkaAnimate
     }
 }
 
-INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
+static void init_state_dynamic_data(const AnimationState* state, char* d)
 {
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
@@ -153,7 +153,7 @@ INTERNAL void init_state_dynamic_data(const AnimationState* state, char* d)
     }
 }
 
-INTERNAL void destroy_state_dynamic_data(const AnimationState* state, char *d)
+static void destroy_state_dynamic_data(const AnimationState* state, char *d)
 {
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
@@ -165,7 +165,7 @@ INTERNAL void destroy_state_dynamic_data(const AnimationState* state, char *d)
     }
 }
 
-INTERNAL void state_get_rootmotion(const AnimationState* state, char *d, float deltaTime, hkQsTransformf& deltaMotionOut)
+static void state_get_rootmotion(const AnimationState* state, char *d, float deltaTime, hkQsTransformf& deltaMotionOut)
 {
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;

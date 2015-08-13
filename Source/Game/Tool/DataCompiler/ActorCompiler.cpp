@@ -22,7 +22,7 @@ public:
     ComponentInstanceData m_data;
 };
 
-INTERNAL BaseCompiler* create_component_compiler(StringId _type)
+static BaseCompiler* create_component_compiler(StringId _type)
 {
     if(_type == EngineTypes::MODEL)
         return new ModelCompiler;
@@ -36,7 +36,7 @@ INTERNAL BaseCompiler* create_component_compiler(StringId _type)
         return NULL;
 }
 
-INTERNAL bool compare_less_component(const ComponentCompilerData& o1, const ComponentCompilerData& o2)
+static bool compare_less_component(const ComponentCompilerData& o1, const ComponentCompilerData& o2)
 {
     ComponentFactory* fac1 = g_componentMgr.get_factory(o1.m_data.m_index);
     ComponentFactory* fac2 = g_componentMgr.get_factory(o2.m_data.m_index);

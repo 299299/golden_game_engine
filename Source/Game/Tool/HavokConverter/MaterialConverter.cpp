@@ -177,6 +177,22 @@ jsonxx::Object MaterialConverter::serializeToJson() const
     return rootObject;
 }
 
+void MaterialConverter::serializeToFile( const std::string& fileName )
+{
+    jsonxx::Object new_json = serializeToJson();
+
+    if (g_hc_config->m_merge) {
+        jsonxx::Object old_json;
+        if (read_json_from_file(old_json, fileName)) {
+            LOGW("ignore material serializeToFile %s", fileName.c_str());
+            return;
+        }
+    }
+
+    if (!write_json_to_file(new_json, fileName))
+        g_hc_config->m_error.add_error("%s to %s IO error.", __FUNCTION__, fileName.c_str());
+}
+
 bool MaterialConverter::isTypeExist(int type) const
 {
     for (size_t i=0; i<m_samplers.size();++i)

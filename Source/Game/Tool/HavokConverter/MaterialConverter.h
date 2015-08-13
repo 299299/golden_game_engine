@@ -18,6 +18,7 @@ public:
     virtual std::string getTypeName() const { return EngineNames::MATERIAL; };
     virtual void process(void* pData, int hint = 0);
     virtual jsonxx::Object serializeToJson() const;
+    virtual void serializeToFile(const std::string& fileName);
 
 private:
     void process(hkxMaterial* material);

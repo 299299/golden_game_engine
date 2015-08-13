@@ -152,24 +152,19 @@ void draw_pose(  const hkaPose& pose, const hkQsTransform& worldFromModel, int c
     const hkQsTransform* poseMS = pose.getSyncedPoseModelSpace().begin();
     int num = pose.getSyncedPoseModelSpace().getSize();
 
-    float start[3], end[3];
+    hkVector4 start, end;
     for (int i=0; i < num; ++i)
     {
         hkInt16 parentIndex = parentIndices[i];
         if(parentIndex == -1)
         {
-            hkVector4 poseT;
-            poseT.setTransformedPos(worldFromModel,  poseMS[i].m_translation);
-            transform_vec3(start, poseT);
-            transform_vec3(end, worldFromModel.m_translation);
+            start.setTransformedPos(worldFromModel,  poseMS[i].m_translation);
+            end = worldFromModel.m_translation;
         }
         else
         {
-            hkVector4 poseT;
-            poseT.setTransformedPos(worldFromModel, poseMS[i].m_translation);
-            transform_vec3(start, poseT);
-            poseT.setTransformedPos(worldFromModel, poseMS[parentIndex].m_translation);
-            transform_vec3(end, poseT);
+            start.setTransformedPos(worldFromModel, poseMS[i].m_translation);
+            end.setTransformedPos(worldFromModel, poseMS[parentIndex].m_translation);
         }
         g_debugDrawMgr.add_line(start, end, color, false);
 
