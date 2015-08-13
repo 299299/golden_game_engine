@@ -7,15 +7,6 @@
 
 typedef int (*func_update_locomotion_state_t)(Locomotion*, const LocomotionInput&, AnimationStatesInstance*, Actor*);
 
-static int update_idle_state(Locomotion*, const  LocomotionInput&, AnimationStatesInstance*, Actor*);
-static int update_move_state(Locomotion*, const  LocomotionInput&, AnimationStatesInstance*, Actor*);
-
-func_update_locomotion_state_t s_funcs[kLocomotionStateNum] =
-{
-    update_idle_state,
-    update_move_state,
-};
-
 static void apply_root_motion(AnimationStatesInstance *s, hkQsTransform& t, float dt)
 {
     hkQsTransform deltaMotion;
@@ -56,6 +47,13 @@ static int update_move_state(Locomotion* l, const  LocomotionInput& input, Anima
     a->set_transform(t);
     return kLocomotionMove;
 }
+
+
+func_update_locomotion_state_t s_funcs[kLocomotionStateNum] =
+{
+    update_idle_state,
+    update_move_state,
+};
 
 void update_locomotion(Locomotion *l, const LocomotionInput &input, ActorId32 id)
 {

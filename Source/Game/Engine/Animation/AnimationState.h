@@ -119,6 +119,7 @@ struct AnimationStatesInstance
     void change_state(StringId name);
     void get_rootmotion(float deltaTime, hkQsTransformf& deltaMotionOut);
     void set_node_data(StringId name, void* d, int size);
+    void set_node_data(StringId state_name, StringId name, void* d, int size);
 
 private:
     void change_state(const AnimationTranstion* t);
@@ -126,6 +127,7 @@ private:
     void update_crossfading(float dt);
     void update_waitingalign(float dt);
     void get_rootmotion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
+    void set_node_data(const AnimationState *state, StringId name, void* d, int size);
 };
 
 void  lookup_animation_states(void*);

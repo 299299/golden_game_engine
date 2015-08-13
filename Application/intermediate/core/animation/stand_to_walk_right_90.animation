@@ -1,0 +1,26 @@
+{
+	"frames": 72,
+	"havok_file": "intermediate\/core\/animation\/stand_to_walk_right_90.havok",
+	"triggers": [
+		{
+			"frame": 22,
+			"name": "right_foot_down" 
+		},
+		{
+			"frame": 28,
+			"name": "left_foot_pass" 
+		},
+		{
+			"frame": 47,
+			"name": "left_foot_down" 
+		},
+		{
+			"frame": 53,
+			"name": "right_foot_pass" 
+		},
+		{
+			"frame": 69,
+			"name": "right_foot_down" 
+		} 
+	] 
+} 

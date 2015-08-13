@@ -149,11 +149,24 @@ void PreviewState::step( float dt )
 
     if(m_preview_level)
         draw_level_info(m_level_name, m_preview_level, 5, 25, 400, 400);
-    else
+    else {
         draw_actor_info(m_actor_name, m_preview_actor, 5, 25, 400, 400);
+        Actor *a = g_actorWorld.get_actor(m_preview_actor);
+        if (a) {
+            AnimationStatesInstance *s = (AnimationStatesInstance*)a->get_first_component_of(EngineTypes::ANIMATION_STATES);
+            if (s) {
+                hkQsTransform t = a->m_transform;
+                hkQsTransform deltaMotion;
+                s->get_rootmotion(dt, deltaMotion);
+                t.setMulEq(deltaMotion);
+                a->set_transform(t);
+            }
+        }
+        g_debugDrawMgr.add_axis(a->m_transform);
+    }
 
     g_debugDrawMgr.add_grid(20, 5, RGBCOLOR(175,175,175), true);
-    g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);
+    //g_debugDrawMgr.add_axis(hkQsTransform::getIdentity(), 5);
 }
 
 void PreviewState::on_enter( GameState* prev_state )

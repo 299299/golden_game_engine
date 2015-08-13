@@ -6,7 +6,7 @@ enum LocomotionState
 {
     kLocomotionStand = 0,
     kLocomotionMove,
-
+    kLocomotionStandToMove,
 
     kLocomotionStateNum
 };

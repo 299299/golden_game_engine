@@ -169,10 +169,10 @@ static void state_get_rootmotion(const AnimationState* state, char *d, float del
 {
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
+    hkQsTransform t;
 
     for (int i=0; i<num; ++i)
     {
-        hkQsTransform t;
         hk_anim_ctrl* ac = anim_ctls + i;
         ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
 #ifdef HAVOK_COMPILE
@@ -424,6 +424,7 @@ void AnimationStatesInstance::fire_event( StringId name )
 void AnimationStatesInstance::get_rootmotion( float deltaTime, hkQsTransformf& deltaMotionOut )
 {
 #ifdef HAVOK_COMPILE
+    deltaMotionOut.setIdentity();
     int status = m_status;
     switch(status)
     {
@@ -489,22 +490,37 @@ void AnimationStatesInstance::get_rootmotion_crossfading(float deltaTime, hkQsTr
 
 void AnimationStatesInstance::set_node_data(StringId name, void* d, int size)
 {
-    if(!m_state)
+    set_node_data(m_state, name, d, size);
+}
+
+void AnimationStatesInstance::set_node_data(const AnimationState *state, StringId name, void* d, int size)
+{
+    if (!state)
         return;
 
-    int i = find_node(m_state, name);
+    int i = find_node(state, name);
     if(i < 0)
         return;
 
-    const char* n = get_node(m_state, i);
+    const char* n = get_node(state, i);
     int type = *(const uint32_t*)n;
     ENGINE_ASSERT(type != AnimationNodeType::Value, "Can not set data to a value node.");
 
     uint32_t offset = *((const uint32_t*)n + 1);
     memcpy(m_dynamic_data + offset, d, size);
-    m_dirty = 1;
+
+    if (state == m_state)
+        m_dirty = 1;
 }
 
+void AnimationStatesInstance::set_node_data(StringId state_name, StringId name, void* d, int size)
+{
+    int index = find_state(m_resource, state_name);
+    if (index < 0)
+        return;
+
+    set_node_data(get_state(m_resource, index), name, d, size);
+}
 
 
 
