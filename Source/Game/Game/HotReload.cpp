@@ -90,29 +90,38 @@ void reload_anim_rig_resource(void* oldResource, void* newResource)
     {
         AnimRigInstance* rig = rigs + i;
         if(rig->m_resource == oldCompResource)
-        {
-            rig->destroy();
-            rig->init(newCompResource, rigs[i].m_actor);
             actors[actor_num++] = rig->m_actor;
-        }
     }
 
+    // reload
     for (int i=0; i<actor_num; ++i)
     {
         Actor* actor = g_actorWorld.get_actor(actors[i]);
         if(!actor)
             continue;
 
+        AnimRigInstance* rig = (AnimRigInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_RIG);
         AnimationStatesInstance* states = (AnimationStatesInstance*)actor->get_first_component_of(EngineTypes::ANIMATION_STATES);
-        if(!states)
-            continue;
+        const AnimationStates* resource = NULL;
 
-        const AnimationStates* resource = states->m_resource;
-        states->destroy();
+        if (states)
+        {
+            resource = states->m_resource;
+            states->destroy();
+        }
 
-        ComponentInstanceData d;
-        d.m_resource = (void*)resource;
-        states->init(&d, actors[i]);
+        if (rig)
+        {
+            rig->destroy();
+            rig->init(newResource, actors[i]);
+        }
+
+        if (states)
+        {
+            ComponentInstanceData d = {0, (void*)resource};
+            states->init(&d, actors[i]);
+        }
+
     }
 }
 
@@ -311,7 +320,7 @@ void reload_anim_state_resource(void* oldResource, void* newResource)
     {
         if(instances[i].m_resource == old_states)
         {
-            instances[i].destroy(true);
+            instances[i].destroy();
 
             ComponentInstanceData d;
             d.m_resource = new_States;

@@ -76,6 +76,13 @@ enum MotionBlendingType
     kMotionBlendingIgnoreDstMotion,
 };
 
+enum TransitionType
+{
+    kTransitionCrossFade,
+    kTransitionFrozen,
+    kTransitionWaitAlgin,
+};
+
 enum HumanBodypart
 {
     kBodyHead,

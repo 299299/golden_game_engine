@@ -46,20 +46,20 @@ static void anim_state_debug_imgui(void* component, ComponentData* data)
         }
 
         int n_num = cur_state->m_num_nodes;
-        StringId* n_names = (StringId*)((char*)cur_state + cur_state->m_node_name_offset);
-        char* nodes = (char*)cur_state + cur_state->m_node_offset;
+        NodeKey* node_keys = (NodeKey*)((char*)cur_state + cur_state->m_node_key_offset);
         extern const char* g_anim_node_names[];
 
         for(int i=0; i<n_num; ++i)
         {
-            int type = *((uint32_t*)nodes);
-            imguiLabel("    node name: %s, type %s", stringid_lookup(n_names[i]), g_anim_node_names[type]);
+            char* p = (char*)cur_state + node_keys[i].m_offset;
+            int type = *((uint32_t*)p);
+            imguiLabel("    node name: %s, type %s", stringid_lookup(node_keys[i].m_name), g_anim_node_names[type]);
             switch(type)
             {
             case AnimationNodeType::Lerp:
             case AnimationNodeType::Additive:
                 {
-                    BinaryNode* node = (BinaryNode*)nodes;
+                    BinaryNode* node = (BinaryNode*)p;
                     float* f = (float*)(states->m_dynamic_data + node->m_dynamic_data_offset);
                     if(imguiSlider("     value: ", *f, 0.0f, 1.0f, 0.01f))
                         states->m_dirty = 1;
@@ -67,14 +67,14 @@ static void anim_state_debug_imgui(void* component, ComponentData* data)
                 break;
             case AnimationNodeType::Value:
                 {
-                    ValueNode* node = (ValueNode*)nodes;
+                    ValueNode* node = (ValueNode*)p;
                     hk_anim_ctrl* ac = (hk_anim_ctrl*)(states->m_dynamic_data + node->m_dynamic_data_offset);
                     imguiLabel("     animation = %s", get_anim_debug_name(ac->m_animation));
                 }
                 break;
             case AnimationNodeType::Select:
                 {
-                    SelectNode* node = (SelectNode*)nodes;
+                    SelectNode* node = (SelectNode*)p;
                     int32_t* i = (int32_t*)(states->m_dynamic_data + node->m_dynamic_data_offset);
                     if(imguiSlider("     value:", *i, 0, node->m_num_children - 1))
                         states->m_dirty = 1;
@@ -83,7 +83,6 @@ static void anim_state_debug_imgui(void* component, ComponentData* data)
             default:
                 break;
             }
-            nodes += NODE_SIZE;
         }
     }
 
@@ -143,16 +142,21 @@ PreviewState::~PreviewState()
 void PreviewState::step( float dt )
 {
     GameState::step(dt);
-    g_fpsCamera.update(dt);
 
+    g_fpsCamera.update(dt);
     step_debug_ctrl(dt);
 
+    int x = 5, y = 25, w = 400, h = 400;
+    x = g_win32Context.m_width - w - x;
+
     if(m_preview_level)
-        draw_level_info(m_level_name, m_preview_level, 5, 25, 400, 400);
+        draw_level_info(m_level_name, m_preview_level, x, y, w, h);
     else {
-        draw_actor_info(m_actor_name, m_preview_actor, 5, 25, 400, 400);
+        draw_actor_info(m_actor_name, m_preview_actor, x, y, w, h);
         Actor *a = g_actorWorld.get_actor(m_preview_actor);
         if (a) {
+
+            // extract motion to character
             AnimationStatesInstance *s = (AnimationStatesInstance*)a->get_first_component_of(EngineTypes::ANIMATION_STATES);
             if (s) {
                 hkQsTransform t = a->m_transform;
@@ -160,6 +164,15 @@ void PreviewState::step( float dt )
                 s->get_rootmotion(dt, deltaMotion);
                 t.setMulEq(deltaMotion);
                 a->set_transform(t);
+            }
+
+            // r to reset object
+            if (g_win32Context.is_key_just_pressed('R')) {
+                hkQsTransform t;
+                t.setIdentity();
+                a->set_transform(t);
+                if (s)
+                    s->reset();
             }
         }
         g_debugDrawMgr.add_axis(a->m_transform);

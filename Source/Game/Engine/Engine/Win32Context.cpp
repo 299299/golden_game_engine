@@ -7,9 +7,6 @@
 #define WM_USER_TOGGLE_WINDOW_FRAME (WM_USER+1)
 #define WM_USER_SET_WINDOW_POS      (WM_USER+2)
 
-static int g_baseWidth = 1280;
-static int g_baseHeight = 720;
-
 Win32Context g_win32Context;
 
 #ifdef HAVOK_COMPILE
@@ -27,8 +24,8 @@ Win32Context::Win32Context()
 
 void Win32Context::create_window(const char* title, uint32_t w, uint32_t h, uint32_t x, uint32_t y)
 {
-    g_baseWidth = w;
-    g_baseHeight = h;
+    m_baseWidth = w;
+    m_baseHeight = h;
 
 #ifdef HAVOK_COMPILE
     HINSTANCE instance = (HINSTANCE)GetModuleHandle(NULL);
@@ -342,7 +339,7 @@ switch (_id)
             case WMSZ_RIGHT:
                 {
                     float aspectRatio = 1.0f/m_aspectRatio;
-                    width = bx::uint32_max(g_baseWidth/4, width);
+                    width = bx::uint32_max(m_baseWidth/4, width);
                     height = uint32_t(float(width)*aspectRatio);
                 }
                 break;
@@ -350,7 +347,7 @@ switch (_id)
             default:
                 {
                     float aspectRatio = m_aspectRatio;
-                    height = bx::uint32_max(g_baseHeight/4, height);
+                    height = bx::uint32_max(m_baseHeight/4, height);
                     width = uint32_t(float(height)*aspectRatio);
                 }
                 break;

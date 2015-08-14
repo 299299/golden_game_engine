@@ -124,6 +124,12 @@ const char* g_anim_node_names[] =
     "value", "lerp", "additive", "select", 0
 };
 
+const char* g_anim_transition_type_names[] =
+{
+  "cross-fade","frozen", "wait-aligned", 0
+};
+
+
 namespace EngineNames
 {
     const char* ANIMATION = "animation";

@@ -5,6 +5,7 @@
 extern const char* g_anim_ease_type_names[];
 extern const char* g_anim_motion_blending_type_names[];
 extern const char* g_anim_node_names[];
+extern const char* g_anim_transition_type_names[];
 
 struct RuntimeAnimationTransition
 {
@@ -19,6 +20,7 @@ struct RuntimeAnimationTransition
         m_transition.m_duration = json_to_float(o, "duration", DEFAULT_ANIM_TRANSITION_DURATION);
         m_transition.m_ease_type = json_to_enum(o, "ease", g_anim_ease_type_names, kEaseCurveSmooth);
         m_transition.m_motion_blend_type = json_to_enum(o, "motion_blending", g_anim_motion_blending_type_names, kMotionBlendingDefault);
+        m_transition.m_type = json_to_enum(o, "type", g_anim_transition_type_names, kTransitionCrossFade);
     }
 };
 
@@ -28,6 +30,7 @@ struct RuntimeAnimationNode
     {
         m_parent = 0;
         m_animationIndex = -1;
+        m_size = 0;
     }
 
     std::vector<RuntimeAnimationNode*>      m_children;
@@ -37,8 +40,8 @@ struct RuntimeAnimationNode
     std::string                             m_animationName;
     std::string                             m_name;
     int                                     m_animationIndex;
-
-    char                                    m_node[NODE_SIZE];
+    int                                     m_size;
+    int                                     m_offset;
 
     void setParent(RuntimeAnimationNode* n)
     {
@@ -59,10 +62,12 @@ struct RuntimeAnimationState
     char*                                   m_memory;
     int                                     m_node_num[AnimationNodeType::Num];
     uint32_t                                m_dynamic_data_size;
+    uint32_t                                m_node_size;
 
     RuntimeAnimationState()
     :m_memory(0)
     ,m_dynamic_data_size(0)
+    ,m_node_size(0)
     {
         memset(&m_state, 0x00, sizeof(m_state));
         memset(m_node_num, 0x00, sizeof(m_node_num));
@@ -121,12 +126,10 @@ struct RuntimeAnimationState
         m_state.m_animation_offset = offset;
         offset += sizeof(AnimationData) * m_state.m_num_animations;
 
-        m_state.m_node_name_offset = offset;
-        offset += sizeof(StringId) * m_state.m_num_nodes;
+        m_state.m_node_key_offset = offset;
+        offset += sizeof(NodeKey) * m_state.m_num_nodes;
 
-        m_state.m_node_offset = offset;
-        offset += NODE_SIZE * m_state.m_num_nodes;
-
+        offset += m_node_size;
         m_memorySize = offset;
     }
 
@@ -146,7 +149,10 @@ struct RuntimeAnimationState
                 memset(&data, 0x00, sizeof(data));
                 data.m_name = stringid_caculate(node->m_animationName.c_str());
                 data.m_speed = json_to_float(o, "speed", 1.0f);
+                data.m_crop_start = json_to_float(o, "crop_start", 0.0f);
+                data.m_crop_end = json_to_float(o, "crop_end", 0.0f);
                 node->m_animationIndex = m_animations.size();
+                node->m_size = sizeof(ValueNode);
                 m_animations.push_back(data);
                 break;
             }
@@ -159,6 +165,7 @@ struct RuntimeAnimationState
                 RuntimeAnimationNode* node2 = createNode(node);
                 readNode(o1, node1);
                 readNode(o2, node2);
+                node->m_size = sizeof(BinaryNode);
                 break;
             }
         case AnimationNodeType::Select:
@@ -170,11 +177,14 @@ struct RuntimeAnimationState
                     RuntimeAnimationNode* node1 = createNode(node);
                     readNode(o, node1);
                 }
+                node->m_size = sizeof(SelectNode) + children.size() * sizeof(uint16_t);
                 break;
             }
         default:
             break;
         }
+
+        m_node_size += node->m_size;
     }
 
     int findState(const std::vector<RuntimeAnimationState>& states, const std::string& name)
@@ -231,12 +241,17 @@ struct RuntimeAnimationState
         }
         p += sizeof(AnimationData) * m_state.m_num_animations;
 
-        StringId* node_names = (StringId*)p;
+        NodeKey* node_keys = (NodeKey*)p;
+        int current_offset = p - m_memory;
+
         for (uint32_t i=0; i<m_state.m_num_nodes; ++i)
         {
-            node_names[i] = stringid_caculate(m_nodes[i]->m_name.c_str());
+            node_keys[i].m_name = stringid_caculate(m_nodes[i]->m_name.c_str());
+            node_keys[i].m_offset = current_offset;
+            m_nodes[i]->m_offset = current_offset;
+            current_offset += m_nodes[i]->m_size;
         }
-        p += sizeof(StringId) * m_state.m_num_nodes;
+        p += sizeof(NodeKey) * m_state.m_num_nodes;
 
         int nums[AnimationNodeType::Num] = {0};
         int sizes[AnimationNodeType::Num] =
@@ -259,7 +274,6 @@ struct RuntimeAnimationState
             total_size += total_sizes[i];
         }
 
-        int node_offset = state->m_node_offset;
         for (uint32_t i=0; i<m_state.m_num_nodes; ++i)
         {
             RuntimeAnimationNode* n = m_nodes[i];
@@ -284,10 +298,11 @@ struct RuntimeAnimationState
                     SelectNode* s = (SelectNode*)p;
                     s->m_dynamic_data_offset = dynamic_offset;
                     s->m_num_children = n->m_children.size();
+                    uint16_t* child_offsets = (uint16_t*)(p + sizeof(SelectNode));
                     for(uint32_t i=0; i<s->m_num_children; ++i)
                     {
                         int index = n->m_children[i]->m_index;
-                        s->m_child_offsets[i] = node_offset + index * NODE_SIZE;
+                        child_offsets[i] = m_nodes[index]->m_offset;
                     }
                     break;
                 }
@@ -299,8 +314,8 @@ struct RuntimeAnimationState
                     int left_index = n->m_children[0]->m_index;
                     int right_index = n->m_children[1]->m_index;
                     ENGINE_ASSERT(left_index != right_index, "AnimationStatets left index == right index!");
-                    b->m_left_offset = node_offset + left_index * NODE_SIZE;
-                    b->m_right_offset = node_offset + right_index * NODE_SIZE;
+                    b->m_left_offset = m_nodes[left_index]->m_offset;
+                    b->m_right_offset = m_nodes[right_index]->m_offset;
                     break;
                 }
             default:
@@ -308,8 +323,8 @@ struct RuntimeAnimationState
             }
 
             ++num;
-            p += NODE_SIZE;
             m_dynamic_data_size += size;
+            p += n->m_size;
         }
 
         ENGINE_ASSERT(p == m_memory + m_memorySize, "Animation State Node Offset check");

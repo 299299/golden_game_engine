@@ -8,7 +8,7 @@
             [
                 {
                     "name":"move",
-                    "duration":0.2,
+                    "duration":0.1,
                     "ease":"smooth",
                     "motion_blending":"default",
                     "dest":"walk_state"
@@ -16,7 +16,7 @@
 
                 {
                     "name":"move_turn",
-                    "duration":0.2,
+                    "duration":0.1,
                     "ease":"smooth",
                     "motion_blending":"ignore_src_motion",
                     "dest":"stand_to_walk_turn_state"
@@ -36,7 +36,7 @@
             [
                 {
                     "name":"stop",
-                    "duration":0.2,
+                    "duration":0.1,
                     "ease":"smooth",
                     "motion_blending":"default",
                     "dest":"idle_state"
@@ -56,7 +56,7 @@
             [
                 {
                     "name":"continue",
-                    "duration":0.2,
+                    "duration":0.1,
                     "ease":"smooth",
                     "motion_blending":"default",
                     "dest":"walk_state"

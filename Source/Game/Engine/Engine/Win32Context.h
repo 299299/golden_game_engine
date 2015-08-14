@@ -40,6 +40,9 @@ struct Win32Context
     int32_t         m_last_mx;
     int32_t         m_last_my;
 
+    int             m_baseWidth;
+    int             m_baseHeight;
+
     bool            m_frame;
     bool            m_exit;
 
