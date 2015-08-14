@@ -137,7 +137,6 @@ static void on_state_exit(const AnimationState* state, hkaAnimatedSkeleton* s, c
             ac->setPlaybackSpeed(0.0f);
         }
     }
-
 }
 
 static void remove_state_from_skeleton(const AnimationState* state, hkaAnimatedSkeleton* s, char* d)
@@ -187,6 +186,7 @@ static void destroy_state_dynamic_data(const AnimationState* state, char *d)
 
 static void state_get_rootmotion(const AnimationState* state, char *d, float deltaTime, hkQsTransformf& deltaMotionOut)
 {
+    deltaMotionOut.setIdentity();
     hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
     int num = state->m_num_animations;
     hkQsTransform t;
@@ -194,6 +194,10 @@ static void state_get_rootmotion(const AnimationState* state, char *d, float del
     for (int i=0; i<num; ++i)
     {
         hk_anim_ctrl* ac = anim_ctls + i;
+        if (!ac->hasExtractedMotion())
+            continue;
+        if (ac->get_weight() < 0.01f)
+            continue;
         ac->getExtractedMotionDeltaReferenceFrame(deltaTime, t);
 #ifdef HAVOK_COMPILE
         deltaMotionOut.setMulEq(t);
@@ -468,7 +472,6 @@ void AnimationStatesInstance::fire_event( StringId name )
 void AnimationStatesInstance::get_rootmotion( float deltaTime, hkQsTransformf& deltaMotionOut )
 {
 #ifdef HAVOK_COMPILE
-    deltaMotionOut.setIdentity();
     int status = m_status;
     switch(status)
     {
@@ -513,18 +516,18 @@ void AnimationStatesInstance::get_rootmotion_crossfading(float deltaTime, hkQsTr
         break;
     case kMotionBlendingIgnoreSrcRotation:
         {
-            hkQsTransformf motionSrc, motionDst;
-            state_get_rootmotion(cur_state, d, deltaTime, deltaMotionOut);
-            state_get_rootmotion(last_state, d, deltaTime, deltaMotionOut);
+            hkQsTransform motionSrc, motionDst;
+            state_get_rootmotion(cur_state, d, deltaTime, motionSrc);
+            state_get_rootmotion(last_state, d, deltaTime, motionDst);
             motionSrc.m_rotation.setIdentity();
             deltaMotionOut.setMul(motionSrc, motionDst);
         }
         break;
     case kMotionBlendingIgnoreDstRotation:
         {
-            hkQsTransformf motionSrc, motionDst;
-            state_get_rootmotion(cur_state, d, deltaTime, deltaMotionOut);
-            state_get_rootmotion(last_state, d, deltaTime, deltaMotionOut);
+            hkQsTransform motionSrc, motionDst;
+            state_get_rootmotion(cur_state, d, deltaTime, motionSrc);
+            state_get_rootmotion(last_state, d, deltaTime, motionDst);
             motionDst.m_rotation.setIdentity();
             deltaMotionOut.setMul(motionSrc, motionDst);
         }
@@ -547,8 +550,7 @@ void AnimationStatesInstance::set_node_data(const AnimationState *state, StringI
     if (!n)
         return;
 
-    int type = *(const uint32_t*)n;
-    ENGINE_ASSERT(type != AnimationNodeType::Value, "Can not set data to a value node.");
+    ENGINE_ASSERT(*(const uint32_t*)n != AnimationNodeType::Value, "Can not set data to a value node.");
 
     uint32_t offset = *((const uint32_t*)n + 1);
     memcpy(m_dynamic_data + offset, d, size);

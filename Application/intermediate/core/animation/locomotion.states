@@ -18,7 +18,7 @@
                     "name":"move_turn",
                     "duration":0.1,
                     "ease":"smooth",
-                    "motion_blending":"ignore_src_motion",
+                    "motion_blending":"ignore_src_rotation",
                     "dest":"stand_to_walk_turn_state"
                 },
             ],
@@ -65,19 +65,25 @@
             "nodes":
             {
                 "name":"stand_to_walk",
-                "type":"lerp",
-                "left":
-                {
-                    "name":"turn_90",
-                    "type":"value",
-                    "animation":"core/animation/stand_to_walk_right_90"
-                },
-                "right":
-                {
-                    "name":"turn_180",
-                    "type":"value",
-                    "animation":"core/animation/stand_to_walk_right_180"
-                }
+                "type":"select",
+                "children":
+                [
+                    {
+                        "name":"turn_0",
+                        "type":"value",
+                        "animation":"core/animation/walk_fwd"
+                    },
+                    {
+                        "name":"turn_90",
+                        "type":"value",
+                        "animation":"core/animation/stand_to_walk_right_90"
+                    },
+                    {
+                        "name":"turn_180",
+                        "type":"value",
+                        "animation":"core/animation/stand_to_walk_right_180"
+                    }
+                ]
             }
         },
     ]

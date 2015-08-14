@@ -51,7 +51,6 @@ struct SelectNode
     uint32_t                    m_type;
     uint32_t                    m_dynamic_data_offset;
     uint32_t                    m_num_children;
-    // uint16_t                    m_child_offsets[MAX_CHILDREN_NUM];
 };
 
 struct AnimationState
@@ -82,10 +81,20 @@ struct StateKey
     uint32_t                    m_offset;
 };
 
+struct DataKey
+{
+    StringId                    m_name;
+    uint32_t                    m_offset;
+    uint8_t                     m_flag;
+    char                        m_padding[3];
+};
+
 struct AnimationStates
 {
     uint32_t                    m_num_states;
+    uint32_t                    m_num_data;
     uint32_t                    m_state_key_offset;
+    uint32_t                    m_data_key_offset;
     uint32_t                    m_dynamic_data_size;
     uint32_t                    m_memory_size;
 };
@@ -113,8 +122,7 @@ struct AnimationStatesInstance
     void fire_event(StringId name);
     void change_state(StringId name);
     void get_rootmotion(float deltaTime, hkQsTransformf& deltaMotionOut);
-    void set_node_data(StringId name, void* d, int size);
-    void set_node_data(StringId state_name, StringId name, void* d, int size);
+    void set_data(StringId name, void* d, int size);
 
 private:
     void change_state(const AnimationTranstion* t);

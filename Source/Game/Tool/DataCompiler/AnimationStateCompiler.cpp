@@ -27,10 +27,10 @@ struct RuntimeAnimationTransition
 struct RuntimeAnimationNode
 {
     RuntimeAnimationNode()
+    :m_parent(NULL)
+    ,m_animationIndex(-1)
+    ,m_size(0)
     {
-        m_parent = 0;
-        m_animationIndex = -1;
-        m_size = 0;
     }
 
     std::vector<RuntimeAnimationNode*>      m_children;
@@ -63,6 +63,7 @@ struct RuntimeAnimationState
     int                                     m_node_num[AnimationNodeType::Num];
     uint32_t                                m_dynamic_data_size;
     uint32_t                                m_node_size;
+    uint32_t                                m_node_offset;
 
     RuntimeAnimationState()
     :m_memory(0)
@@ -129,8 +130,11 @@ struct RuntimeAnimationState
         m_state.m_node_key_offset = offset;
         offset += sizeof(NodeKey) * m_state.m_num_nodes;
 
+        m_node_offset = offset;
         offset += m_node_size;
         m_memorySize = offset;
+
+        LOGD("state memory-size=%d, node-size=%d", m_memorySize, m_node_size);
     }
 
     void readNode(const jsonxx::Object& o, RuntimeAnimationNode* node)
@@ -242,8 +246,7 @@ struct RuntimeAnimationState
         p += sizeof(AnimationData) * m_state.m_num_animations;
 
         NodeKey* node_keys = (NodeKey*)p;
-        int current_offset = p - m_memory;
-
+        int current_offset = m_node_offset;
         for (uint32_t i=0; i<m_state.m_num_nodes; ++i)
         {
             node_keys[i].m_name = stringid_caculate(m_nodes[i]->m_name.c_str());
