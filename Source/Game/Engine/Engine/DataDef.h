@@ -118,6 +118,17 @@ struct AnimationNodeType
     };
 };
 
+enum AnimationDataFlag
+{
+    kAnimationData,
+    kAnimationDataInt,
+    kAnimationDataFloat,
+    kAnimationDataFloat2,
+    kAnimationDataFloat3,
+    kAnimationDataFloat4,
+    kAnimationDataNum
+};
+
 #define DEFAULT_ANIM_TRANSITION_DURATION    (0.1f)
 
 namespace EngineTypes

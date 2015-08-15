@@ -69,6 +69,16 @@ struct hk_anim_ctrl : public hkaDefaultAnimationControl
         s->removeAnimationControl(this);
         m_enabled = false;
     }
+
+    void set_normalized_time(float t)
+    {
+        setLocalTime(t*get_peroid());
+    }
+
+    float get_normalized_time() const
+    {
+        return getLocalTime() / get_peroid();
+    }
 };
 #else
 struct hkaAnimatedSkeleton;

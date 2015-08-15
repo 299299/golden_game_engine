@@ -7,6 +7,7 @@
 #include "Actor.h"
 #include "MemorySystem.h"
 #include "AnimationSystem.h"
+#include "Log.h"
 
 enum LayerState
 {
@@ -64,7 +65,7 @@ static void update_lerp_node(const char* n, const AnimationState* s, float f, ch
 static void update_additive_node(const char* n, const AnimationState* s, float f, char* d)
 {
     const BinaryNode* node = (const BinaryNode*)n;
-    float w = *((float*)(d + node->m_dynamic_data_offset));
+    float w = node->m_dynamic_data_offset ? *((float*)(d + node->m_dynamic_data_offset)) : 1.0f;
     update_node_recursive((char*)s + node->m_left_offset, s, f*w, d);
     update_node_recursive((char*)s + node->m_right_offset, s, f, d);
 }
@@ -80,7 +81,9 @@ static void update_select_node(const char* n, const AnimationState* s, float f, 
 {
     const SelectNode* node = (const SelectNode*)n;
     int num_of_children = node->m_num_children;
-    int i = *((int*)(d + node->m_dynamic_data_offset));
+    int i = node->m_dynamic_data_offset ? *((int*)(d + node->m_dynamic_data_offset)) : 0;
+    if (i >= num_of_children)
+        i = 0;
     const uint16_t* head = (const uint16_t*)(n + sizeof(SelectNode));
     float weights[32];
     memset(weights, 0x00, sizeof(weights));
@@ -205,6 +208,22 @@ static void state_get_rootmotion(const AnimationState* state, char *d, float del
     }
 }
 
+static bool is_state_finished(const AnimationState* state, char* d)
+{
+    hk_anim_ctrl* anim_ctls = (hk_anim_ctrl*)(d + state->m_dynamic_animation_offset);
+    int num = state->m_num_animations;
+    if (!num)
+        return false;
+    for (int i=0; i<num; ++i)
+    {
+        hk_anim_ctrl* ac = anim_ctls;
+        if (ac->get_weight() < 0.01f)
+            continue;
+        if (ac->get_normalized_time() > 0.95f)
+            return true;
+    }
+    return false;
+}
 
 //=============================================================================
 
@@ -300,7 +319,6 @@ void AnimationStatesInstance::destroy()
         destroy_state_dynamic_data(state, d);
     }
 
-
     COMMON_DEALLOC(d);
     SAFE_REMOVEREF(m_ease_in_ctl);
     SAFE_REMOVEREF(m_ease_out_ctrl);
@@ -315,6 +333,11 @@ void AnimationStatesInstance::reset()
 
 void AnimationStatesInstance::update( float dt )
 {
+    if(!m_state)
+        return;
+
+    m_time_in_state += dt;
+
     int s = m_status;
     switch(s)
     {
@@ -337,11 +360,17 @@ void AnimationStatesInstance::update( float dt )
 
 void AnimationStatesInstance::update_default( float dt )
 {
-    if(!m_state || !m_dirty)
-        return;
+    if (!m_state->m_looped && m_state->m_transition_end_index != (uint8_t)-1) {
+        if (is_state_finished(m_state, m_dynamic_data)) {
+            LOGD("anim-state finished!!!");
+            change_state(get_transtions(m_state) + m_state->m_transition_end_index);
+        }
+    }
 
-    update_node(m_state, 0, m_weight, m_dynamic_data);
-    m_dirty = 0;
+    if (m_dirty) {
+        update_node(m_state, 0, m_weight, m_dynamic_data);
+        m_dirty = 0;
+    }
 }
 
 void AnimationStatesInstance::update_crossfading( float dt )
@@ -418,6 +447,8 @@ void AnimationStatesInstance::change_state(const AnimationTranstion* t)
 
     if(new_state == old_state)
         return;
+
+    m_time_in_state = 0.0f;
 
     if(old_state)
         on_state_exit(old_state, m_skeleton, t, m_dynamic_data);

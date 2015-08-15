@@ -1,0 +1,30 @@
+{
+	"frames": 72,
+	"mirrored":
+	{
+		"animation":"core\/animation\/stand_to_walk_right_90",
+		"rig":"core\/character\/batman"
+	},
+	"triggers": [
+		{
+			"frame": 22,
+			"name": "left_foot_down"
+		},
+		{
+			"frame": 28,
+			"name": "right_foot_pass"
+		},
+		{
+			"frame": 47,
+			"name": "right_foot_down"
+		},
+		{
+			"frame": 53,
+			"name": "left_foot_pass"
+		},
+		{
+			"frame": 69,
+			"name": "left_foot_down"
+		}
+	]
+}

@@ -26,6 +26,7 @@ extern DebugFPSCamera  g_fpsCamera;
 static void anim_state_debug_imgui(void* component, ComponentData* data)
 {
     AnimationStatesInstance* states = (AnimationStatesInstance*)component;
+    const AnimationStates* resource = states->m_resource;
     const AnimationState* cur_state = states->m_state;
 
     StringId cur_name = cur_state ? cur_state->m_name : 0;
@@ -44,45 +45,37 @@ static void anim_state_debug_imgui(void* component, ComponentData* data)
                 states->fire_event(t_name);
             }
         }
+    }
 
-        int n_num = cur_state->m_num_nodes;
-        NodeKey* node_keys = (NodeKey*)((char*)cur_state + cur_state->m_node_key_offset);
-        extern const char* g_anim_node_names[];
+    int data_num = states->m_resource->m_num_data;
+    const DataKey* data_keys = (const DataKey*)((char*)resource + resource->m_data_key_offset);
+    char tmp[128];
 
-        for(int i=0; i<n_num; ++i)
+    for (int i=0; i<data_num; ++i)
+    {
+        const char* name = stringid_lookup(data_keys[i].m_name);
+        void* d = states->m_dynamic_data + data_keys[i].m_offset;
+        bx::snprintf(tmp, sizeof(tmp), "%s value:", name);
+
+        switch(data_keys[i].m_flag)
         {
-            char* p = (char*)cur_state + node_keys[i].m_offset;
-            int type = *((uint32_t*)p);
-            imguiLabel("    node name: %s, type %s", stringid_lookup(node_keys[i].m_name), g_anim_node_names[type]);
-            switch(type)
+        case kAnimationDataInt:
             {
-            case AnimationNodeType::Lerp:
-            case AnimationNodeType::Additive:
-                {
-                    BinaryNode* node = (BinaryNode*)p;
-                    float* f = (float*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    if(imguiSlider("     value: ", *f, 0.0f, 1.0f, 0.01f))
-                        states->m_dirty = 1;
-                }
-                break;
-            case AnimationNodeType::Value:
-                {
-                    ValueNode* node = (ValueNode*)p;
-                    hk_anim_ctrl* ac = (hk_anim_ctrl*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    imguiLabel("     animation = %s", get_anim_debug_name(ac->m_animation));
-                }
-                break;
-            case AnimationNodeType::Select:
-                {
-                    SelectNode* node = (SelectNode*)p;
-                    int32_t* i = (int32_t*)(states->m_dynamic_data + node->m_dynamic_data_offset);
-                    if(imguiSlider("     value:", *i, 0, node->m_num_children - 1))
-                        states->m_dirty = 1;
-                }
-                break;
-            default:
-                break;
+                int32_t *i = (int32_t*)d;
+                if(imguiSlider(tmp, *i, 0, 7))
+                    states->m_dirty = 1;
             }
+            break;
+        case kAnimationDataFloat:
+            {
+                float *f = (float*)d;
+                if(imguiSlider(tmp, *f, 0.0f, 1.0f, 0.01f))
+                    states->m_dirty = 1;
+            }
+            break;
+        default:
+            // todo
+            break;
         }
     }
 

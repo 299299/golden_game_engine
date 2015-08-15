@@ -53,6 +53,9 @@ int AnimRig::find_joint_index(StringId jointName) const
 
 void AnimRig::create_mirrored_skeleton()
 {
+    if (m_mirrored_skeleton)
+        return;
+    m_mirrored = true;
 #ifdef HAVOK_COMPILE
     hkArray<hkStringPtr> ltag;
     hkArray<hkStringPtr> rtag;

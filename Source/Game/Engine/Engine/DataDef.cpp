@@ -126,9 +126,13 @@ const char* g_anim_node_names[] =
 
 const char* g_anim_transition_type_names[] =
 {
-  "cross-fade","frozen", "wait-aligned", 0
+    "cross-fade","frozen", "wait-aligned", 0
 };
 
+const char* g_anim_data_flag_type_names[] = 
+{
+    "animation", "int", "float", "float2", "float3", "float4", 0
+};
 
 namespace EngineNames
 {

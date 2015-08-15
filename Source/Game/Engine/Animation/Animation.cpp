@@ -30,6 +30,9 @@ void create_mirrored_animation(const Animation* orginalAnim, Animation* newAnim)
 #ifdef HAVOK_COMPILE
     destroy_resource_animation(newAnim);
     AnimRig* rig = FIND_RESOURCE(AnimRig, EngineTypes::ANIMATION_RIG, newAnim->m_rig_name);
+    if (!rig)
+        return;
+    rig->create_mirrored_skeleton();
     orginalAnim->m_animation->addReference();
     hkaMirroredAnimation* anim = new hkaMirroredAnimation(
         orginalAnim->m_animation,
@@ -64,9 +67,12 @@ void* load_resource_animation( void* data, uint32_t size)
     Animation* anim = (Animation*)data;
     char* p = (char*)data + anim->m_havok_data_offset;
 #ifdef HAVOK_COMPILE
-    hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havok_data_size);
-    anim->m_animation = ac->m_animations[0];
-    anim->m_binding = ac->m_bindings[0];
+	if (anim->m_havok_data_size)
+	{
+		hkaAnimationContainer* ac = (hkaAnimationContainer*)load_havok_inplace(p, anim->m_havok_data_size);
+		anim->m_animation = ac->m_animations[0];
+		anim->m_binding = ac->m_bindings[0];
+	}
 #endif
     return anim;
 }

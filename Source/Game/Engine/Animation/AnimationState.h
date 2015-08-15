@@ -72,7 +72,8 @@ struct AnimationState
     // PROPERTY
     StringId                    m_name;
     bool                        m_looped;
-    char                        m_padding[3];
+    uint8_t                     m_transition_end_index;
+    char                        m_padding[2];
 };
 
 struct StateKey
@@ -113,6 +114,7 @@ struct AnimationStatesInstance
     char*                               m_dynamic_data;
     int                                 m_dirty;
     ActorId32                           m_actor;
+    float                               m_time_in_state;
 
     void init(const void*, ActorId32);
     void update(float dt);

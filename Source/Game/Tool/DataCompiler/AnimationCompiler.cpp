@@ -61,40 +61,44 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
     uint32_t memSize = 0;
     MemoryBuffer mem(0);
 
-
-    if(root.has<std::string>("havok_data"))
+    if(!root.has<jsonxx::Object>("mirrored"))
     {
-        havok_size = json_to_int(root, "havok_size");
-        const std::string& havok_string = root.get<std::string>("havok_data");
-        ENGINE_ASSERT(havok_string.length() == 2*havok_size, "havok size check");
-
-        memSize = havokOffset + havok_size;
-        memSize = NATIVE_ALGIN_SIZE(memSize);
-        mem.alloc(memSize);
-
-        unsigned char* p_mem = (unsigned char*)(mem.m_buf + havokOffset);
-        string_to_binary(havok_string, p_mem, havok_size);
-    }
-    else
-    {
-        std::string havokFile = root.get<std::string>("havok_file");
-        FileReader havokReader(havokFile);
-        if(havokReader.m_size < 16)
+        if(root.has<std::string>("havok_data"))
         {
-            g_config->m_error.add_error("%s can not find havok file [%s]", BX_FUNCTION, havokFile.c_str());
-            return false;
+            havok_size = json_to_int(root, "havok_size");
+            const std::string& havok_string = root.get<std::string>("havok_data");
+            ENGINE_ASSERT(havok_string.length() == 2*havok_size, "havok size check");
+
+            memSize = havokOffset + havok_size;
+            memSize = NATIVE_ALGIN_SIZE(memSize);
+            mem.alloc(memSize);
+
+            unsigned char* p_mem = (unsigned char*)(mem.m_buf + havokOffset);
+            string_to_binary(havok_string, p_mem, havok_size);
         }
+        else if(root.has<std::string>("havok_file"))
+        {
+            std::string havokFile = root.get<std::string>("havok_file");
+            FileReader havokReader(havokFile);
+            if(havokReader.m_size < 16)
+            {
+                g_config->m_error.add_error("%s can not find havok file [%s]", BX_FUNCTION, havokFile.c_str());
+                return false;
+            }
 
-        havok_size = havokReader.m_size;
-        memSize = havokOffset + havok_size;
-        memSize = NATIVE_ALGIN_SIZE(memSize);
-        mem.alloc(memSize);
-        memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
+            havok_size = havokReader.m_size;
+            memSize = havokOffset + havok_size;
+            memSize = NATIVE_ALGIN_SIZE(memSize);
+            mem.alloc(memSize);
+            memcpy(mem.m_buf + havokOffset, havokReader.m_buf, havokReader.m_size);
+        }
     }
-
+    else {
+        memSize = havokOffset;
+        mem.alloc(memSize);
+    }
 
     LOGD("%s total mem-size = %d", m_output.c_str(), memSize);
-
     Animation* anim = (Animation*)mem.m_buf;
     anim->m_num_frames = frames;
 
@@ -106,7 +110,7 @@ bool AnimationCompiler::readJSON(const jsonxx::Object& root)
         anim->m_mirrored_from = stringid_caculate(mirrorFile.c_str());
         anim->m_rig_name = stringid_caculate(rigFile.c_str());
         addDependency("mirror animation", name_to_file_path(mirrorFile, EngineNames::ANIMATION));
-        addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION));
+        addDependency("rig", name_to_file_path(rigFile, EngineNames::ANIMATION_RIG));
     }
 
     anim->m_trigger_offsets = sizeof(Animation);
