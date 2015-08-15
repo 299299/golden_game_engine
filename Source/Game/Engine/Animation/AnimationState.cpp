@@ -536,36 +536,19 @@ void AnimationStatesInstance::get_rootmotion_crossfading(float deltaTime, hkQsTr
 #endif
 }
 
-void AnimationStatesInstance::set_node_data(StringId name, void* d, int size)
+void AnimationStatesInstance::set_data(StringId name, void* d, int size)
 {
-    set_node_data(m_state, name, d, size);
-}
-
-void AnimationStatesInstance::set_node_data(const AnimationState *state, StringId name, void* d, int size)
-{
-    if (!state)
-        return;
-
-    const char* n = (const char*)find_node(state, name);
-    if (!n)
-        return;
-
-    ENGINE_ASSERT(*(const uint32_t*)n != AnimationNodeType::Value, "Can not set data to a value node.");
-
-    uint32_t offset = *((const uint32_t*)n + 1);
-    memcpy(m_dynamic_data + offset, d, size);
-
-    if (state == m_state)
-        m_dirty = 1;
-}
-
-void AnimationStatesInstance::set_node_data(StringId state_name, StringId name, void* d, int size)
-{
-    int index = find_state(m_resource, state_name);
-    if (index < 0)
-        return;
-
-    set_node_data(get_state(m_resource, index), name, d, size);
+    DataKey* data_keys = (DataKey*)((char*)m_resource + m_resource->m_data_key_offset);
+    int num = m_resource->m_num_data;
+    for (int i=0; i<num; ++i)
+    {
+        if (data_keys[i].m_name == name) {
+            char* p_data = m_dynamic_data + data_keys[i].m_offset;
+            memcpy(p_data, d, size);
+            m_dirty = 1;
+            return;
+        }
+    }
 }
 
 

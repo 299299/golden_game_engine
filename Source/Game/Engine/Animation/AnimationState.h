@@ -131,7 +131,6 @@ private:
     void update_waitingalign(float dt);
     void update_frozen(float dt);
     void get_rootmotion_crossfading(float deltaTime, hkQsTransformf& deltaMotionOut);
-    void set_node_data(const AnimationState *state, StringId name, void* d, int size);
 };
 
 const AnimationState* get_state(const AnimationStates*, int);
