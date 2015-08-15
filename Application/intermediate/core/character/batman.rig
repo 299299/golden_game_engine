@@ -4,7 +4,7 @@
 	"havok_file": "intermediate\/core\/character\/batman_rig.havok",
 	"human_body": {
 		"head": "Bip01_Head",
-		"neck": "Bip01_Neck"
+		"neck": "Bip01_Neck" 
 	},
 	"joint_num": 122,
 	"joints": [
@@ -129,9 +129,8 @@
 		"morpherTrackBone06",
 		"morpherTrackBone07",
 		"morpherTrackBone08",
-		"morpherTrackBone09"
+		"morpherTrackBone09" 
 	],
 	"name": "core\/character\/batman",
-	"type": "rig",
-	"mirrored": true
-}
+	"type": "rig" 
+} 

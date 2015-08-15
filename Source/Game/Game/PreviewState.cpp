@@ -139,7 +139,7 @@ void PreviewState::step( float dt )
     g_fpsCamera.update(dt);
     step_debug_ctrl(dt);
 
-    int x = 5, y = 25, w = 400, h = 400;
+    int x = 5, y = 25, w = 500, h = 500;
     x = g_win32Context.m_width - w - x;
 
     if(m_preview_level)

@@ -36,8 +36,8 @@ int game_main(bx::CommandLine* cmdline)
     cfg.m_windowTitle = "game";
     cfg.m_windowPosSize[0] = 0;
     cfg.m_windowPosSize[1] = 0;
-    cfg.m_windowPosSize[2] = 1024;
-    cfg.m_windowPosSize[3] = 768;
+    cfg.m_windowPosSize[2] = 1280;
+    cfg.m_windowPosSize[3] = 800;
     cfg.m_fixedFPS = 60;
 
     const char names[4] = {'x', 'y', 'w', 'h'};

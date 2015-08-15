@@ -216,7 +216,7 @@ static bool is_state_finished(const AnimationState* state, char* d)
         return false;
     for (int i=0; i<num; ++i)
     {
-        hk_anim_ctrl* ac = anim_ctls;
+        hk_anim_ctrl* ac = anim_ctls + i;
         if (ac->get_weight() < 0.01f)
             continue;
         if (ac->get_normalized_time() > 0.95f)
